@@ -1,134 +1,134 @@
-<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://katassyn.github.io/ashen-pantheon/superpowers/plans/2026-04-17-ashen-pantheon-wiki/ rel=canonical><link rel=icon href=../../../logo_256x256.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.7.6"><title>Ashen Pantheon Wiki Implementation Plan - Ashen Pantheon Wiki</title><link rel=stylesheet href=../../../assets/stylesheets/main.484c7ddc.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.ab4e12ef.min.css><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme=slate data-md-color-primary=amber data-md-color-accent=amber> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#ashen-pantheon-wiki-implementation-plan class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class=md-header data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title="Ashen Pantheon Wiki" class="md-header__button md-logo" aria-label="Ashen Pantheon Wiki" data-md-component=logo> <img src=../../../logo_256x256.png alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> Ashen Pantheon Wiki </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Ashen Pantheon Wiki Implementation Plan </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> </button> </nav> <div class=md-search__suggest data-md-component=search-suggest></div> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/katassyn/ashen-pantheon title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg> </div> <div class=md-source__repository> katassyn/ashen-pantheon </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../.. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=../../../game-overview/ class=md-tabs__link> Game Overview </a> </li> <li class=md-tabs__item> <a href=../../../classes/ class=md-tabs__link> Classes </a> </li> <li class=md-tabs__item> <a href=../../../ascendancies/berserker/ class=md-tabs__link> Ascendancies </a> </li> <li class=md-tabs__item> <a href=../../../systems/progression/ class=md-tabs__link> Systems </a> </li> <li class=md-tabs__item> <a href=../../../bosses/ class=md-tabs__link> Bosses </a> </li> <li class=md-tabs__item> <a href=../../../world/ class=md-tabs__link> World </a> </li> <li class=md-tabs__item> <a href=../../../devlog/ class=md-tabs__link> Devlog </a> </li> <li class=md-tabs__item> <a href=../../../tags/ class=md-tabs__link> Tags </a> </li> </ul> </div> </nav> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title="Ashen Pantheon Wiki" class="md-nav__button md-logo" aria-label="Ashen Pantheon Wiki" data-md-component=logo> <img src=../../../logo_256x256.png alt=logo> </a> Ashen Pantheon Wiki </label> <div class=md-nav__source> <a href=https://github.com/katassyn/ashen-pantheon title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg> </div> <div class=md-source__repository> katassyn/ashen-pantheon </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../.. class=md-nav__link> <span class=md-ellipsis> Home </span> </a> </li> <li class=md-nav__item> <a href=../../../game-overview/ class=md-nav__link> <span class=md-ellipsis> Game Overview </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3 id=__nav_3_label tabindex=0> <span class=md-ellipsis> Classes </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_3_label aria-expanded=false> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Classes </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../classes/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../../classes/warrior/ class=md-nav__link> <span class=md-ellipsis> Warrior </span> </a> </li> <li class=md-nav__item> <a href=../../../classes/mage/ class=md-nav__link> <span class=md-ellipsis> Mage </span> </a> </li> <li class=md-nav__item> <a href=../../../classes/archer/ class=md-nav__link> <span class=md-ellipsis> Archer </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_4> <label class=md-nav__link for=__nav_4 id=__nav_4_label tabindex=0> <span class=md-ellipsis> Ascendancies </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_4_label aria-expanded=false> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Ascendancies </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../ascendancies/berserker/ class=md-nav__link> <span class=md-ellipsis> Berserker </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/guardian/ class=md-nav__link> <span class=md-ellipsis> Guardian </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/paladin/ class=md-nav__link> <span class=md-ellipsis> Paladin </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/elementalist/ class=md-nav__link> <span class=md-ellipsis> Elementalist </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/arcanist/ class=md-nav__link> <span class=md-ellipsis> Arcanist </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/hexblade/ class=md-nav__link> <span class=md-ellipsis> Hexblade </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/shadowstalker/ class=md-nav__link> <span class=md-ellipsis> Shadowstalker </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/beastmaster/ class=md-nav__link> <span class=md-ellipsis> Beastmaster </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/pathfinder/ class=md-nav__link> <span class=md-ellipsis> Pathfinder </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_5> <label class=md-nav__link for=__nav_5 id=__nav_5_label tabindex=0> <span class=md-ellipsis> Systems </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_5_label aria-expanded=false> <label class=md-nav__title for=__nav_5> <span class="md-nav__icon md-icon"></span> Systems </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../systems/progression/ class=md-nav__link> <span class=md-ellipsis> Progression </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/skill-tree/ class=md-nav__link> <span class=md-ellipsis> Skill Tree </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/ascendancy-tree/ class=md-nav__link> <span class=md-ellipsis> Ascendancy Tree </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/skill-slots/ class=md-nav__link> <span class=md-ellipsis> Skill Slots </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/instancing/ class=md-nav__link> <span class=md-ellipsis> Instancing </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_6> <label class=md-nav__link for=__nav_6 id=__nav_6_label tabindex=0> <span class=md-ellipsis> Bosses </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_6_label aria-expanded=false> <label class=md-nav__title for=__nav_6> <span class="md-nav__icon md-icon"></span> Bosses </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../bosses/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../../bosses/boss-phases/ class=md-nav__link> <span class=md-ellipsis> Boss Phases </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_7> <label class=md-nav__link for=__nav_7 id=__nav_7_label tabindex=0> <span class=md-ellipsis> World </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_7_label aria-expanded=false> <label class=md-nav__title for=__nav_7> <span class="md-nav__icon md-icon"></span> World </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../world/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../../world/maps/ class=md-nav__link> <span class=md-ellipsis> Maps </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_8> <label class=md-nav__link for=__nav_8 id=__nav_8_label tabindex=0> <span class=md-ellipsis> Devlog </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_8_label aria-expanded=false> <label class=md-nav__title for=__nav_8> <span class="md-nav__icon md-icon"></span> Devlog </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../devlog/ class=md-nav__link> <span class=md-ellipsis> Hub </span> </a> </li> <li class=md-nav__item> <a href=../../../devlog/001-the-beginning/ class=md-nav__link> <span class=md-ellipsis> #001 — The Beginning </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../../../tags/ class=md-nav__link> <span class=md-ellipsis> Tags </span> </a> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#file-map class=md-nav__link> <span class=md-ellipsis> File Map </span> </a> </li> <li class=md-nav__item> <a href=#task-1-python-environment-requirementstxt-mkdocsyml class=md-nav__link> <span class=md-ellipsis> Task 1: Python Environment + requirements.txt + mkdocs.yml </span> </a> </li> <li class=md-nav__item> <a href=#task-2-github-actions-deployment-workflow class=md-nav__link> <span class=md-ellipsis> Task 2: GitHub Actions Deployment Workflow </span> </a> </li> <li class=md-nav__item> <a href=#task-3-home-page-game-overview class=md-nav__link> <span class=md-ellipsis> Task 3: Home Page + Game Overview </span> </a> </li> <li class=md-nav__item> <a href=#task-4-classes-section class=md-nav__link> <span class=md-ellipsis> Task 4: Classes Section </span> </a> </li> <li class=md-nav__item> <a href=#task-5-warrior-ascendancies-berserker-guardian-paladin class=md-nav__link> <span class=md-ellipsis> Task 5: Warrior Ascendancies (Berserker, Guardian, Paladin) </span> </a> </li> <li class=md-nav__item> <a href=#task-6-mage-ascendancies-elementalist-arcanist-hexblade class=md-nav__link> <span class=md-ellipsis> Task 6: Mage Ascendancies (Elementalist, Arcanist, Hexblade) </span> </a> </li> <li class=md-nav__item> <a href=#task-7-archer-ascendancies-shadowstalker-beastmaster-pathfinder class=md-nav__link> <span class=md-ellipsis> Task 7: Archer Ascendancies (Shadowstalker, Beastmaster, Pathfinder) </span> </a> </li> <li class=md-nav__item> <a href=#task-8-systems-section class=md-nav__link> <span class=md-ellipsis> Task 8: Systems Section </span> </a> </li> <li class=md-nav__item> <a href=#task-9-bosses-world-sections class=md-nav__link> <span class=md-ellipsis> Task 9: Bosses + World Sections </span> </a> </li> <li class=md-nav__item> <a href=#task-10-devlog-section class=md-nav__link> <span class=md-ellipsis> Task 10: Devlog Section </span> </a> </li> <li class=md-nav__item> <a href=#task-11-final-build-verification-git-setup-go-live class=md-nav__link> <span class=md-ellipsis> Task 11: Final Build Verification + Git Setup + Go Live </span> </a> </li> <li class=md-nav__item> <a href=#self-review class=md-nav__link> <span class=md-ellipsis> Self-Review </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=ashen-pantheon-wiki-implementation-plan>Ashen Pantheon Wiki Implementation Plan</h1> <blockquote> <p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p> </blockquote> <p><strong>Goal:</strong> Scaffold a full MkDocs Material wiki for Ashen Pantheon and deploy it to GitHub Pages at <code>https://katassyn.github.io/ashen-pantheon/</code>.</p> <p><strong>Architecture:</strong> Static site generated by MkDocs Material from Markdown files in <code>docs/</code>. GitHub Actions CI automatically builds and deploys on every push to <code>main</code> by running <code>mkdocs gh-deploy --force</code>, which pushes the built site to the <code>gh-pages</code> branch.</p> <p><strong>Tech Stack:</strong> MkDocs Material ≥9.5, mkdocs-git-revision-date-localized-plugin, mkdocs-minify-plugin, Python 3.11, GitHub Actions, GitHub Pages.</p> <hr> <h2 id=file-map>File Map</h2> <table> <thead> <tr> <th>File</th> <th>Purpose</th> </tr> </thead> <tbody> <tr> <td><code>mkdocs.yml</code></td> <td>Full site config: theme, nav, plugins</td> </tr> <tr> <td><code>requirements.txt</code></td> <td>Pinned Python deps for local + CI</td> </tr> <tr> <td><code>.github/workflows/deploy.yml</code></td> <td>CI: build + deploy on push to main</td> </tr> <tr> <td><code>docs/index.md</code></td> <td>Home page with cards and at-a-glance table</td> </tr> <tr> <td><code>docs/game-overview.md</code></td> <td>Core concept, world, instancing, lore</td> </tr> <tr> <td><code>docs/tags.md</code></td> <td>Tags index (one-liner, auto-populated by plugin)</td> </tr> <tr> <td><code>docs/classes/index.md</code></td> <td>Classes overview</td> </tr> <tr> <td><code>docs/classes/warrior.md</code></td> <td>Warrior class page</td> </tr> <tr> <td><code>docs/classes/mage.md</code></td> <td>Mage class page</td> </tr> <tr> <td><code>docs/classes/archer.md</code></td> <td>Archer class page</td> </tr> <tr> <td><code>docs/ascendancies/berserker.md</code></td> <td>Berserker ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/guardian.md</code></td> <td>Guardian ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/paladin.md</code></td> <td>Paladin ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/elementalist.md</code></td> <td>Elementalist ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/arcanist.md</code></td> <td>Arcanist ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/hexblade.md</code></td> <td>Hexblade ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/shadowstalker.md</code></td> <td>Shadowstalker ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/beastmaster.md</code></td> <td>Beastmaster ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/pathfinder.md</code></td> <td>Pathfinder ascendancy</td> </tr> <tr> <td><code>docs/systems/progression.md</code></td> <td>Level 1–100 progression overview</td> </tr> <tr> <td><code>docs/systems/skill-tree.md</code></td> <td>Levels 1–50 main skill tree</td> </tr> <tr> <td><code>docs/systems/ascendancy-tree.md</code></td> <td>Levels 50–100 ascendancy tree</td> </tr> <tr> <td><code>docs/systems/skill-slots.md</code></td> <td>Free keybind system</td> </tr> <tr> <td><code>docs/systems/instancing.md</code></td> <td>Solo/party instanced world system</td> </tr> <tr> <td><code>docs/bosses/index.md</code></td> <td>Boss design philosophy + mythology list</td> </tr> <tr> <td><code>docs/bosses/boss-phases.md</code></td> <td>Multi-phase fight system</td> </tr> <tr> <td><code>docs/world/index.md</code></td> <td>World overview</td> </tr> <tr> <td><code>docs/world/maps.md</code></td> <td>Map/zone system</td> </tr> <tr> <td><code>docs/devlog/index.md</code></td> <td>Devlog hub</td> </tr> <tr> <td><code>docs/devlog/001-the-beginning.md</code></td> <td>First devlog entry</td> </tr> </tbody> </table> <hr> <h2 id=task-1-python-environment-requirementstxt-mkdocsyml>Task 1: Python Environment + <code>requirements.txt</code> + <code>mkdocs.yml</code></h2> <p><strong>Files:</strong> - Create: <code>requirements.txt</code> - Create: <code>mkdocs.yml</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>requirements.txt</code></strong></li> </ul> <pre><code>mkdocs-material&gt;=9.5
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://katassyn.github.io/ashen-pantheon/superpowers/plans/2026-04-17-ashen-pantheon-wiki/ rel=canonical><link rel=icon href=../../../logo_256x256.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.7.6"><title>Ashen Pantheon Wiki Implementation Plan - Ashen Pantheon Wiki</title><link rel=stylesheet href=../../../assets/stylesheets/main.484c7ddc.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.ab4e12ef.min.css><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme=slate data-md-color-primary=amber data-md-color-accent=amber> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#ashen-pantheon-wiki-implementation-plan class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class=md-header data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title="Ashen Pantheon Wiki" class="md-header__button md-logo" aria-label="Ashen Pantheon Wiki" data-md-component=logo> <img src=../../../logo_256x256.png alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> Ashen Pantheon Wiki </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Ashen Pantheon Wiki Implementation Plan </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> </button> </nav> <div class=md-search__suggest data-md-component=search-suggest></div> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/katassyn/ashen-pantheon title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg> </div> <div class=md-source__repository> katassyn/ashen-pantheon </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../.. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=../../../game-overview/ class=md-tabs__link> Game Overview </a> </li> <li class=md-tabs__item> <a href=../../../classes/ class=md-tabs__link> Classes </a> </li> <li class=md-tabs__item> <a href=../../../ascendancies/berserker/ class=md-tabs__link> Ascendancies </a> </li> <li class=md-tabs__item> <a href=../../../systems/progression/ class=md-tabs__link> Systems </a> </li> <li class=md-tabs__item> <a href=../../../bosses/ class=md-tabs__link> Bosses </a> </li> <li class=md-tabs__item> <a href=../../../world/ class=md-tabs__link> World </a> </li> <li class=md-tabs__item> <a href=../../../devlog/ class=md-tabs__link> Devlog </a> </li> <li class=md-tabs__item> <a href=../../../tags/ class=md-tabs__link> Tags </a> </li> </ul> </div> </nav> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title="Ashen Pantheon Wiki" class="md-nav__button md-logo" aria-label="Ashen Pantheon Wiki" data-md-component=logo> <img src=../../../logo_256x256.png alt=logo> </a> Ashen Pantheon Wiki </label> <div class=md-nav__source> <a href=https://github.com/katassyn/ashen-pantheon title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg> </div> <div class=md-source__repository> katassyn/ashen-pantheon </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../.. class=md-nav__link> <span class=md-ellipsis> Home </span> </a> </li> <li class=md-nav__item> <a href=../../../game-overview/ class=md-nav__link> <span class=md-ellipsis> Game Overview </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3 id=__nav_3_label tabindex=0> <span class=md-ellipsis> Classes </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_3_label aria-expanded=false> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Classes </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../classes/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../../classes/warrior/ class=md-nav__link> <span class=md-ellipsis> Warrior </span> </a> </li> <li class=md-nav__item> <a href=../../../classes/mage/ class=md-nav__link> <span class=md-ellipsis> Mage </span> </a> </li> <li class=md-nav__item> <a href=../../../classes/archer/ class=md-nav__link> <span class=md-ellipsis> Archer </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_4> <label class=md-nav__link for=__nav_4 id=__nav_4_label tabindex=0> <span class=md-ellipsis> Ascendancies </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_4_label aria-expanded=false> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Ascendancies </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../ascendancies/berserker/ class=md-nav__link> <span class=md-ellipsis> Berserker </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/guardian/ class=md-nav__link> <span class=md-ellipsis> Guardian </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/paladin/ class=md-nav__link> <span class=md-ellipsis> Paladin </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/elementalist/ class=md-nav__link> <span class=md-ellipsis> Elementalist </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/arcanist/ class=md-nav__link> <span class=md-ellipsis> Arcanist </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/hexblade/ class=md-nav__link> <span class=md-ellipsis> Hexblade </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/shadowstalker/ class=md-nav__link> <span class=md-ellipsis> Shadowstalker </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/beastmaster/ class=md-nav__link> <span class=md-ellipsis> Beastmaster </span> </a> </li> <li class=md-nav__item> <a href=../../../ascendancies/pathfinder/ class=md-nav__link> <span class=md-ellipsis> Pathfinder </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_5> <label class=md-nav__link for=__nav_5 id=__nav_5_label tabindex=0> <span class=md-ellipsis> Systems </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_5_label aria-expanded=false> <label class=md-nav__title for=__nav_5> <span class="md-nav__icon md-icon"></span> Systems </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../systems/progression/ class=md-nav__link> <span class=md-ellipsis> Progression </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/skill-tree/ class=md-nav__link> <span class=md-ellipsis> Skill Tree </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/ascendancy-tree/ class=md-nav__link> <span class=md-ellipsis> Ascendancy Tree </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/skill-slots/ class=md-nav__link> <span class=md-ellipsis> Skill Slots </span> </a> </li> <li class=md-nav__item> <a href=../../../systems/instancing/ class=md-nav__link> <span class=md-ellipsis> Instancing </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_6> <label class=md-nav__link for=__nav_6 id=__nav_6_label tabindex=0> <span class=md-ellipsis> Bosses </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_6_label aria-expanded=false> <label class=md-nav__title for=__nav_6> <span class="md-nav__icon md-icon"></span> Bosses </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../bosses/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../../bosses/boss-phases/ class=md-nav__link> <span class=md-ellipsis> Boss Phases </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_7> <label class=md-nav__link for=__nav_7 id=__nav_7_label tabindex=0> <span class=md-ellipsis> World </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_7_label aria-expanded=false> <label class=md-nav__title for=__nav_7> <span class="md-nav__icon md-icon"></span> World </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../world/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../../world/maps/ class=md-nav__link> <span class=md-ellipsis> Maps </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_8> <label class=md-nav__link for=__nav_8 id=__nav_8_label tabindex=0> <span class=md-ellipsis> Devlog </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_8_label aria-expanded=false> <label class=md-nav__title for=__nav_8> <span class="md-nav__icon md-icon"></span> Devlog </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../devlog/ class=md-nav__link> <span class=md-ellipsis> Hub </span> </a> </li> <li class=md-nav__item> <a href=../../../devlog/001-the-beginning/ class=md-nav__link> <span class=md-ellipsis> #001 — The Beginning </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../../../tags/ class=md-nav__link> <span class=md-ellipsis> Tags </span> </a> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#file-map class=md-nav__link> <span class=md-ellipsis> File Map </span> </a> </li> <li class=md-nav__item> <a href=#task-1-python-environment-requirementstxt-mkdocsyml class=md-nav__link> <span class=md-ellipsis> Task 1: Python Environment + requirements.txt + mkdocs.yml </span> </a> </li> <li class=md-nav__item> <a href=#task-2-github-actions-deployment-workflow class=md-nav__link> <span class=md-ellipsis> Task 2: GitHub Actions Deployment Workflow </span> </a> </li> <li class=md-nav__item> <a href=#task-3-home-page-game-overview class=md-nav__link> <span class=md-ellipsis> Task 3: Home Page + Game Overview </span> </a> </li> <li class=md-nav__item> <a href=#task-4-classes-section class=md-nav__link> <span class=md-ellipsis> Task 4: Classes Section </span> </a> </li> <li class=md-nav__item> <a href=#task-5-warrior-ascendancies-berserker-guardian-paladin class=md-nav__link> <span class=md-ellipsis> Task 5: Warrior Ascendancies (Berserker, Guardian, Paladin) </span> </a> </li> <li class=md-nav__item> <a href=#task-6-mage-ascendancies-elementalist-arcanist-hexblade class=md-nav__link> <span class=md-ellipsis> Task 6: Mage Ascendancies (Elementalist, Arcanist, Hexblade) </span> </a> </li> <li class=md-nav__item> <a href=#task-7-archer-ascendancies-shadowstalker-beastmaster-pathfinder class=md-nav__link> <span class=md-ellipsis> Task 7: Archer Ascendancies (Shadowstalker, Beastmaster, Pathfinder) </span> </a> </li> <li class=md-nav__item> <a href=#task-8-systems-section class=md-nav__link> <span class=md-ellipsis> Task 8: Systems Section </span> </a> </li> <li class=md-nav__item> <a href=#task-9-bosses-world-sections class=md-nav__link> <span class=md-ellipsis> Task 9: Bosses + World Sections </span> </a> </li> <li class=md-nav__item> <a href=#task-10-devlog-section class=md-nav__link> <span class=md-ellipsis> Task 10: Devlog Section </span> </a> </li> <li class=md-nav__item> <a href=#task-11-final-build-verification-git-setup-go-live class=md-nav__link> <span class=md-ellipsis> Task 11: Final Build Verification + Git Setup + Go Live </span> </a> </li> <li class=md-nav__item> <a href=#self-review class=md-nav__link> <span class=md-ellipsis> Self-Review </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=ashen-pantheon-wiki-implementation-plan>Ashen Pantheon Wiki Implementation Plan</h1> <blockquote> <p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p> </blockquote> <p><strong>Goal:</strong> Scaffold a full MkDocs Material wiki for Ashen Pantheon and deploy it to GitHub Pages at <code>https://katassyn.github.io/ashen-pantheon/</code>.</p> <p><strong>Architecture:</strong> Static site generated by MkDocs Material from Markdown files in <code>docs/</code>. GitHub Actions CI automatically builds and deploys on every push to <code>main</code> by running <code>mkdocs gh-deploy --force</code>, which pushes the built site to the <code>gh-pages</code> branch.</p> <p><strong>Tech Stack:</strong> MkDocs Material ≥9.5, mkdocs-git-revision-date-localized-plugin, mkdocs-minify-plugin, Python 3.11, GitHub Actions, GitHub Pages.</p> <hr> <h2 id=file-map>File Map</h2> <table> <thead> <tr> <th>File</th> <th>Purpose</th> </tr> </thead> <tbody> <tr> <td><code>mkdocs.yml</code></td> <td>Full site config: theme, nav, plugins</td> </tr> <tr> <td><code>requirements.txt</code></td> <td>Pinned Python deps for local + CI</td> </tr> <tr> <td><code>.github/workflows/deploy.yml</code></td> <td>CI: build + deploy on push to main</td> </tr> <tr> <td><code>docs/index.md</code></td> <td>Home page with cards and at-a-glance table</td> </tr> <tr> <td><code>docs/game-overview.md</code></td> <td>Core concept, world, instancing, lore</td> </tr> <tr> <td><code>docs/tags.md</code></td> <td>Tags index (one-liner, auto-populated by plugin)</td> </tr> <tr> <td><code>docs/classes/index.md</code></td> <td>Classes overview</td> </tr> <tr> <td><code>docs/classes/warrior.md</code></td> <td>Warrior class page</td> </tr> <tr> <td><code>docs/classes/mage.md</code></td> <td>Mage class page</td> </tr> <tr> <td><code>docs/classes/archer.md</code></td> <td>Archer class page</td> </tr> <tr> <td><code>docs/ascendancies/berserker.md</code></td> <td>Berserker ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/guardian.md</code></td> <td>Guardian ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/paladin.md</code></td> <td>Paladin ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/elementalist.md</code></td> <td>Elementalist ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/arcanist.md</code></td> <td>Arcanist ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/hexblade.md</code></td> <td>Hexblade ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/shadowstalker.md</code></td> <td>Shadowstalker ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/beastmaster.md</code></td> <td>Beastmaster ascendancy</td> </tr> <tr> <td><code>docs/ascendancies/pathfinder.md</code></td> <td>Pathfinder ascendancy</td> </tr> <tr> <td><code>docs/systems/progression.md</code></td> <td>Level 1–100 progression overview</td> </tr> <tr> <td><code>docs/systems/skill-tree.md</code></td> <td>Levels 1–50 main skill tree</td> </tr> <tr> <td><code>docs/systems/ascendancy-tree.md</code></td> <td>Levels 50–100 ascendancy tree</td> </tr> <tr> <td><code>docs/systems/skill-slots.md</code></td> <td>Free keybind system</td> </tr> <tr> <td><code>docs/systems/instancing.md</code></td> <td>Solo/party instanced world system</td> </tr> <tr> <td><code>docs/bosses/index.md</code></td> <td>Boss design philosophy + mythology list</td> </tr> <tr> <td><code>docs/bosses/boss-phases.md</code></td> <td>Multi-phase fight system</td> </tr> <tr> <td><code>docs/world/index.md</code></td> <td>World overview</td> </tr> <tr> <td><code>docs/world/maps.md</code></td> <td>Map/zone system</td> </tr> <tr> <td><code>docs/devlog/index.md</code></td> <td>Devlog hub</td> </tr> <tr> <td><code>docs/devlog/001-the-beginning.md</code></td> <td>First devlog entry</td> </tr> </tbody> </table> <hr> <h2 id=task-1-python-environment-requirementstxt-mkdocsyml>Task 1: Python Environment + <code>requirements.txt</code> + <code>mkdocs.yml</code></h2> <p><strong>Files:</strong> - Create: <code>requirements.txt</code> - Create: <code>mkdocs.yml</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>requirements.txt</code></strong></li> </ul> <div class=highlight><pre><span></span><code>mkdocs-material&gt;=9.5
 mkdocs-git-revision-date-localized-plugin&gt;=1.2
 mkdocs-minify-plugin&gt;=0.8
-</code></pre> <ul> <li>[ ] <strong>Step 2: Install dependencies</strong></li> </ul> <p>Run from the project root (<code>C:\Users\mastu\Desktop\Ashen Pantheon</code>):</p> <pre><code class=language-bash>pip install -r requirements.txt
-</code></pre> <p>Expected: all three packages install without errors.</p> <ul> <li>[ ] <strong>Step 3: Create <code>mkdocs.yml</code></strong></li> </ul> <pre><code class=language-yaml>site_name: Ashen Pantheon Wiki
-site_url: https://katassyn.github.io/ashen-pantheon/
-repo_url: https://github.com/katassyn/ashen-pantheon
-repo_name: katassyn/ashen-pantheon
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Install dependencies</strong></li> </ul> <p>Run from the project root (<code>C:\Users\mastu\Desktop\Ashen Pantheon</code>):</p> <div class=highlight><pre><span></span><code>pip<span class=w> </span>install<span class=w> </span>-r<span class=w> </span>requirements.txt
+</code></pre></div> <p>Expected: all three packages install without errors.</p> <ul> <li>[ ] <strong>Step 3: Create <code>mkdocs.yml</code></strong></li> </ul> <div class=highlight><pre><span></span><code><span class=nt>site_name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Ashen Pantheon Wiki</span>
+<span class=nt>site_url</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">https://katassyn.github.io/ashen-pantheon/</span>
+<span class=nt>repo_url</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/katassyn/ashen-pantheon</span>
+<span class=nt>repo_name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">katassyn/ashen-pantheon</span>
 
-theme:
-  name: material
-  logo: logo_256x256.png
-  favicon: logo_256x256.png
-  palette:
-    scheme: slate
-    primary: amber
-    accent: amber
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.top
-    - search.suggest
-    - search.highlight
+<span class=nt>theme</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">material</span>
+<span class=w>  </span><span class=nt>logo</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">logo_256x256.png</span>
+<span class=w>  </span><span class=nt>favicon</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">logo_256x256.png</span>
+<span class=w>  </span><span class=nt>palette</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>scheme</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">slate</span>
+<span class=w>    </span><span class=nt>primary</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">amber</span>
+<span class=w>    </span><span class=nt>accent</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">amber</span>
+<span class=w>  </span><span class=nt>features</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">navigation.tabs</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">navigation.sections</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">navigation.top</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">search.suggest</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">search.highlight</span>
 
-plugins:
-  - search
-  - tags
-  - git-revision-date-localized:
-      enable_creation_date: true
-  - minify:
-      minify_html: true
+<span class=nt>plugins</span><span class=p>:</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">search</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">tags</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>git-revision-date-localized</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>enable_creation_date</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>minify</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>minify_html</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 
-nav:
-  - Home: index.md
-  - Game Overview: game-overview.md
-  - Classes:
-    - Overview: classes/index.md
-    - Warrior: classes/warrior.md
-    - Mage: classes/mage.md
-    - Archer: classes/archer.md
-  - Ascendancies:
-    - Berserker: ascendancies/berserker.md
-    - Guardian: ascendancies/guardian.md
-    - Paladin: ascendancies/paladin.md
-    - Elementalist: ascendancies/elementalist.md
-    - Arcanist: ascendancies/arcanist.md
-    - Hexblade: ascendancies/hexblade.md
-    - Shadowstalker: ascendancies/shadowstalker.md
-    - Beastmaster: ascendancies/beastmaster.md
-    - Pathfinder: ascendancies/pathfinder.md
-  - Systems:
-    - Progression: systems/progression.md
-    - Skill Tree: systems/skill-tree.md
-    - Ascendancy Tree: systems/ascendancy-tree.md
-    - Skill Slots: systems/skill-slots.md
-    - Instancing: systems/instancing.md
-  - Bosses:
-    - Overview: bosses/index.md
-    - Boss Phases: bosses/boss-phases.md
-  - World:
-    - Overview: world/index.md
-    - Maps: world/maps.md
-  - Devlog:
-    - Hub: devlog/index.md
-    - &quot;#001 — The Beginning&quot;: devlog/001-the-beginning.md
-  - Tags: tags.md
-</code></pre> <hr> <h2 id=task-2-github-actions-deployment-workflow>Task 2: GitHub Actions Deployment Workflow</h2> <p><strong>Files:</strong> - Create: <code>.github/workflows/deploy.yml</code></p> <ul> <li>[ ] <strong>Step 1: Create workflow directories</strong></li> </ul> <pre><code class=language-bash>mkdir -p .github/workflows
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>.github/workflows/deploy.yml</code></strong></li> </ul> <pre><code class=language-yaml>name: Deploy Wiki to GitHub Pages
+<span class=nt>nav</span><span class=p>:</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Home</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Game Overview</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">game-overview.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Classes</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Overview</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">classes/index.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Warrior</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">classes/warrior.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Mage</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">classes/mage.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Archer</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">classes/archer.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Ascendancies</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Berserker</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/berserker.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Guardian</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/guardian.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Paladin</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/paladin.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Elementalist</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/elementalist.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Arcanist</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/arcanist.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Hexblade</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/hexblade.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Shadowstalker</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/shadowstalker.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Beastmaster</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/beastmaster.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Pathfinder</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ascendancies/pathfinder.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Systems</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Progression</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">systems/progression.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Skill Tree</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">systems/skill-tree.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Ascendancy Tree</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">systems/ascendancy-tree.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Skill Slots</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">systems/skill-slots.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Instancing</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">systems/instancing.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Bosses</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Overview</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">bosses/index.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Boss Phases</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">bosses/boss-phases.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>World</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Overview</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">world/index.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Maps</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">world/maps.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Devlog</span><span class=p>:</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Hub</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">devlog/index.md</span>
+<span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=s>&quot;#001</span><span class=nv> </span><span class=s>—</span><span class=nv> </span><span class=s>The</span><span class=nv> </span><span class=s>Beginning&quot;</span><span class="p p-Indicator">:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">devlog/001-the-beginning.md</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>Tags</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">tags.md</span>
+</code></pre></div> <hr> <h2 id=task-2-github-actions-deployment-workflow>Task 2: GitHub Actions Deployment Workflow</h2> <p><strong>Files:</strong> - Create: <code>.github/workflows/deploy.yml</code></p> <ul> <li>[ ] <strong>Step 1: Create workflow directories</strong></li> </ul> <div class=highlight><pre><span></span><code>mkdir<span class=w> </span>-p<span class=w> </span>.github/workflows
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>.github/workflows/deploy.yml</code></strong></li> </ul> <div class=highlight><pre><span></span><code><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Deploy Wiki to GitHub Pages</span>
 
-on:
-  push:
-    branches:
-      - main
+<span class=nt>on</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>push</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>branches</span><span class=p>:</span>
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
 
-permissions:
-  contents: write
+<span class=nt>permissions</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>contents</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+<span class=nt>jobs</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>deploy</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>runs-on</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class=w>    </span><span class=nt>steps</span><span class=p>:</span>
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>uses</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class=w>        </span><span class=nt>with</span><span class=p>:</span>
+<span class=w>          </span><span class=nt>fetch-depth</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>uses</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<span class=w>        </span><span class=nt>with</span><span class=p>:</span>
+<span class=w>          </span><span class=nt>python-version</span><span class=p>:</span><span class=w> </span><span class=s>&#39;3.11&#39;</span>
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<span class=w>        </span><span class=nt>run</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">pip install -r requirements.txt</span>
 
-      - name: Deploy
-        run: mkdocs gh-deploy --force
-</code></pre> <p>Note: <code>fetch-depth: 0</code> is required so <code>git-revision-date-localized</code> can read commit history for "last updated" dates.</p> <hr> <h2 id=task-3-home-page-game-overview>Task 3: Home Page + Game Overview</h2> <p><strong>Files:</strong> - Create: <code>docs/index.md</code> - Create: <code>docs/game-overview.md</code> - Create: <code>docs/tags.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/index.md</code></strong></li> </ul> <pre><code class=language-markdown>---
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Deploy</span>
+<span class=w>        </span><span class=nt>run</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">mkdocs gh-deploy --force</span>
+</code></pre></div> <p>Note: <code>fetch-depth: 0</code> is required so <code>git-revision-date-localized</code> can read commit history for "last updated" dates.</p> <hr> <h2 id=task-3-home-page-game-overview>Task 3: Home Page + Game Overview</h2> <p><strong>Files:</strong> - Create: <code>docs/index.md</code> - Create: <code>docs/game-overview.md</code> - Create: <code>docs/tags.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/index.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
 tags: []
 hide:
-  - toc
----
+<span class=gu>  - toc</span>
+<span class=gu>---</span>
 
-# Ashen Pantheon Wiki
+<span class=gh># Ashen Pantheon Wiki</span>
 
-&gt; *Forge your legend. Face the gods. Claim the Ashen Throne.*
+<span class=k>&gt; </span><span class=ge>*Forge your legend. Face the gods. Claim the Ashen Throne.*</span>
 
-**Ashen Pantheon** is a top-down 2D instanced action RPG where heroes battle mythological gods drawn from Greek, Norse, Egyptian, Japanese, and Slavic legend. Choose your class, master your ascendancy, and tear through multi-phase boss encounters on your path to level 100.
+<span class=gs>**Ashen Pantheon**</span> is a top-down 2D instanced action RPG where heroes battle mythological gods drawn from Greek, Norse, Egyptian, Japanese, and Slavic legend. Choose your class, master your ascendancy, and tear through multi-phase boss encounters on your path to level 100.
 
 &lt;div class=&quot;grid cards&quot; markdown&gt;
 
-- :material-sword: **[Classes](classes/index.md)**
+<span class=k>-</span><span class=w> </span>:material-sword: <span class=gs>**[Classes](classes/index.md)**</span>
 
     Three base classes — Warrior, Mage, Archer — each branching into 3 ascendancy paths at level 50.
 
-- :material-tree: **[Systems](systems/progression.md)**
+<span class=k>-</span><span class=w> </span>:material-tree: <span class=gs>**[Systems](systems/progression.md)**</span>
 
     A two-phase skill tree system, free keybind assignment, and deep progression from level 1 to 100.
 
-- :material-skull: **[Bosses](bosses/index.md)**
+<span class=k>-</span><span class=w> </span>:material-skull: <span class=gs>**[Bosses](bosses/index.md)**</span>
 
     Multi-phase mythological bosses drawn from real pantheons. No two fights play the same.
 
-- :material-earth: **[World](world/index.md)**
+<span class=k>-</span><span class=w> </span>:material-earth: <span class=gs>**[World](world/index.md)**</span>
 
     Player-instanced worlds with a shared global layer for chat, rankings, and trading.
 
-- :material-newspaper: **[Devlog](devlog/index.md)**
+<span class=k>-</span><span class=w> </span>:material-newspaper: <span class=gs>**[Devlog](devlog/index.md)**</span>
 
     Follow the development of Ashen Pantheon from concept to release.
 
 &lt;/div&gt;
 
-## At a Glance
+<span class=gu>## At a Glance</span>
 
 | Feature | Detail |
 |---|---|
@@ -139,27 +139,27 @@ hide:
 | Max Party Size | 4 |
 | World Type | Player-owned instances |
 | Boss Mythologies | Greek · Norse · Egyptian · Japanese · Slavic |
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/game-overview.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [overview, lore]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/game-overview.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [overview, lore]</span>
+<span class=gu>---</span>
 
-# Game Overview
+<span class=gh># Game Overview</span>
 
-Ashen Pantheon is set in a fractured realm where the boundaries between mythological pantheons have collapsed. Ancient gods — stripped of their divine order — have gone mad, their power seeping into a world of ash and ruin. You are an **Ashen Hunter**: a mortal who has absorbed enough divine essence to stand against them.
+Ashen Pantheon is set in a fractured realm where the boundaries between mythological pantheons have collapsed. Ancient gods — stripped of their divine order — have gone mad, their power seeping into a world of ash and ruin. You are an <span class=gs>**Ashen Hunter**</span>: a mortal who has absorbed enough divine essence to stand against them.
 
-## Core Concept
+<span class=gu>## Core Concept</span>
 
 The game blends responsive top-down action combat with the depth of an ARPG progression system. Every encounter is hand-crafted, every boss tells a story, and every build decision carries weight. The world is yours — but the gods want it back.
 
-## The Instanced World
+<span class=gu>## The Instanced World</span>
 
-Each player owns their own **world instance** — a personal version of the game map that only they control. You explore, clear zones, and progress at your own pace without interference from other players.
+Each player owns their own <span class=gs>**world instance**</span> — a personal version of the game map that only they control. You explore, clear zones, and progress at your own pace without interference from other players.
 
-When you want company, you can invite up to **3 friends** to join your instance, forming a party of 4.
+When you want company, you can invite up to <span class=gs>**3 friends**</span> to join your instance, forming a party of 4.
 
-### Global Layer
+<span class=gu>### Global Layer</span>
 
-Even in an instanced world, you're never truly alone. A persistent **global layer** connects all players across instances:
+Even in an instanced world, you&#39;re never truly alone. A persistent <span class=gs>**global layer**</span> connects all players across instances:
 
 | Layer Feature | Description |
 |---|---|
@@ -167,7 +167,7 @@ Even in an instanced world, you're never truly alone. A persistent **global laye
 | Rankings | Leaderboards for level, boss kills, gear score |
 | Trading | Player-to-player item exchange across instances |
 
-## Progression at a Glance
+<span class=gu>## Progression at a Glance</span>
 
 | Phase | Levels | What Changes |
 |---|---|---|
@@ -176,63 +176,63 @@ Even in an instanced world, you're never truly alone. A persistent **global laye
 | Mid/Late Game | 51 – 100 | Ascendancy tree — 1 point per 2 levels = 25 total points, fewer but far stronger nodes |
 | Endgame | 100 | Gear farming, challenge bosses, rankings |
 
-## The Bosses
+<span class=gu>## The Bosses</span>
 
-Every major boss in Ashen Pantheon is drawn from real-world mythology. Each boss has a unique visual identity, lore connection, and a **multi-phase fight** that escalates in scope and intensity.
+Every major boss in Ashen Pantheon is drawn from real-world mythology. Each boss has a unique visual identity, lore connection, and a <span class=gs>**multi-phase fight**</span> that escalates in scope and intensity.
 
-**Mythologies represented:**
+<span class=gs>**Mythologies represented:**</span>
 
-- **Greek** — Olympian gods and ancient monsters
-- **Norse** — Aesir, Vanir, and primordial beasts
-- **Egyptian** — Ennead deities and pharaonic guardians
-- **Japanese** — Kami and yokai of the spirit world
-- **Slavic** — Ancient gods and forest spirits
+<span class=k>-</span><span class=w> </span><span class=gs>**Greek**</span> — Olympian gods and ancient monsters
+<span class=k>-</span><span class=w> </span><span class=gs>**Norse**</span> — Aesir, Vanir, and primordial beasts
+<span class=k>-</span><span class=w> </span><span class=gs>**Egyptian**</span> — Ennead deities and pharaonic guardians
+<span class=k>-</span><span class=w> </span><span class=gs>**Japanese**</span> — Kami and yokai of the spirit world
+<span class=k>-</span><span class=w> </span><span class=gs>**Slavic**</span> — Ancient gods and forest spirits
 
 [TODO: Add full boss roster as bosses are designed and named]
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/tags.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: []
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/tags.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: []</span>
+<span class=gu>---</span>
 
-# Tags Index
-</code></pre> <ul> <li>[ ] <strong>Step 4: Verify build</strong></li> </ul> <pre><code class=language-bash>cd &quot;C:/Users/mastu/Desktop/Ashen Pantheon&quot;
-mkdocs build --strict
-</code></pre> <p>Expected: BUILD SUCCESS. If it complains about missing nav files, that's expected — remaining pages are created in later tasks. Ignore "Doc file not found" warnings for now; fix any actual errors.</p> <ul> <li>[ ] <strong>Step 5: Commit</strong></li> </ul> <pre><code class=language-bash>git add mkdocs.yml requirements.txt .github/workflows/deploy.yml docs/index.md docs/game-overview.md docs/tags.md
-git commit -m &quot;feat: initial wiki scaffold with config and core pages&quot;
-</code></pre> <hr> <h2 id=task-4-classes-section>Task 4: Classes Section</h2> <p><strong>Files:</strong> - Create: <code>docs/classes/index.md</code> - Create: <code>docs/classes/warrior.md</code> - Create: <code>docs/classes/mage.md</code> - Create: <code>docs/classes/archer.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/classes/index.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [classes]
----
+<span class=gh># Tags Index</span>
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Verify build</strong></li> </ul> <div class=highlight><pre><span></span><code><span class=nb>cd</span><span class=w> </span><span class=s2>&quot;C:/Users/mastu/Desktop/Ashen Pantheon&quot;</span>
+mkdocs<span class=w> </span>build<span class=w> </span>--strict
+</code></pre></div> <p>Expected: BUILD SUCCESS. If it complains about missing nav files, that's expected — remaining pages are created in later tasks. Ignore "Doc file not found" warnings for now; fix any actual errors.</p> <ul> <li>[ ] <strong>Step 5: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>mkdocs.yml<span class=w> </span>requirements.txt<span class=w> </span>.github/workflows/deploy.yml<span class=w> </span>docs/index.md<span class=w> </span>docs/game-overview.md<span class=w> </span>docs/tags.md
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: initial wiki scaffold with config and core pages&quot;</span>
+</code></pre></div> <hr> <h2 id=task-4-classes-section>Task 4: Classes Section</h2> <p><strong>Files:</strong> - Create: <code>docs/classes/index.md</code> - Create: <code>docs/classes/warrior.md</code> - Create: <code>docs/classes/mage.md</code> - Create: <code>docs/classes/archer.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/classes/index.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [classes]</span>
+<span class=gu>---</span>
 
-# Classes
+<span class=gh># Classes</span>
 
-Ashen Pantheon has **three base classes**. Each class shapes your early playstyle and determines which ascendancies you can choose at level 50. The class you pick at character creation is permanent.
+Ashen Pantheon has <span class=gs>**three base classes**</span>. Each class shapes your early playstyle and determines which ascendancies you can choose at level 50. The class you pick at character creation is permanent.
 
 | Class | Role | Ascendancies |
 |---|---|---|
-| [Warrior](warrior.md) | Melee frontline, high HP, physical power | Berserker · Guardian · Paladin |
-| [Mage](mage.md) | Ranged caster, elemental mastery, summons | Elementalist · Arcanist · Hexblade |
-| [Archer](archer.md) | Ranged precision, mobility, pet synergies | Shadowstalker · Beastmaster · Pathfinder |
+| [<span class=nt>Warrior</span>](<span class=na>warrior.md</span>) | Melee frontline, high HP, physical power | Berserker · Guardian · Paladin |
+| [<span class=nt>Mage</span>](<span class=na>mage.md</span>) | Ranged caster, elemental mastery, summons | Elementalist · Arcanist · Hexblade |
+| [<span class=nt>Archer</span>](<span class=na>archer.md</span>) | Ranged precision, mobility, pet synergies | Shadowstalker · Beastmaster · Pathfinder |
 
-## Choosing a Class
+<span class=gu>## Choosing a Class</span>
 
 Your base class affects:
 
-- **Starting stats** — health, mana, stamina distribution
-- **Skill tree shape** — each class has unique skill tree nodes alongside shared nodes
-- **Available ascendancies** — you can only pick from your class's three ascendancy paths
-- **Weapon proficiency** — Warriors favor melee weapons; Mages favor staves and orbs; Archers favor bows and daggers
+<span class=k>-</span><span class=w> </span><span class=gs>**Starting stats**</span> — health, mana, stamina distribution
+<span class=k>-</span><span class=w> </span><span class=gs>**Skill tree shape**</span> — each class has unique skill tree nodes alongside shared nodes
+<span class=k>-</span><span class=w> </span><span class=gs>**Available ascendancies**</span> — you can only pick from your class&#39;s three ascendancy paths
+<span class=k>-</span><span class=w> </span><span class=gs>**Weapon proficiency**</span> — Warriors favor melee weapons; Mages favor staves and orbs; Archers favor bows and daggers
 
 [TODO: Add base stat tables per class once finalized]
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/classes/warrior.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [classes, warrior]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/classes/warrior.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [classes, warrior]</span>
+<span class=gu>---</span>
 
-# Warrior
+<span class=gh># Warrior</span>
 
-&gt; *Where others fall back, the Warrior steps forward.*
+<span class=k>&gt; </span><span class=ge>*Where others fall back, the Warrior steps forward.*</span>
 
 The Warrior is the backbone of any party and a relentless solo force. Masters of close-quarters combat, Warriors absorb punishment, dish out crushing physical damage, and bend the flow of battle to their will. Whether you charge into the thick of it, hold the line while allies recover, or channel divine power into holy wrath — the Warrior path is defined by presence.
 
-## Base Stats
+<span class=gu>## Base Stats</span>
 
 | Stat | Warrior Start |
 |---|---|
@@ -244,40 +244,40 @@ The Warrior is the backbone of any party and a relentless solo force. Masters of
 
 [TODO: Add exact base values once finalized]
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Warriors thrive in melee range. Your skill tree grants access to gap closers, crowd control, defensive stances, and raw physical damage multipliers. You are built to be where the fight is.
 
-## Ascendancy Paths
+<span class=gu>## Ascendancy Paths</span>
 
-At level 50 you choose one of three paths — this choice is **permanent**:
+At level 50 you choose one of three paths — this choice is <span class=gs>**permanent**</span>:
 
 | Ascendancy | Summary |
 |---|---|
-| [Berserker](../ascendancies/berserker.md) | Rage-fueled damage dealer — lower HP means higher damage, sustained by lifesteal |
-| [Guardian](../ascendancies/guardian.md) | Immovable tank — taunt, party shields, aggro management |
-| [Paladin](../ascendancies/paladin.md) | Holy warrior — AoE divine damage, heals, and party-wide aura buffs |
+| [<span class=nt>Berserker</span>](<span class=na>../ascendancies/berserker.md</span>) | Rage-fueled damage dealer — lower HP means higher damage, sustained by lifesteal |
+| [<span class=nt>Guardian</span>](<span class=na>../ascendancies/guardian.md</span>) | Immovable tank — taunt, party shields, aggro management |
+| [<span class=nt>Paladin</span>](<span class=na>../ascendancies/paladin.md</span>) | Holy warrior — AoE divine damage, heals, and party-wide aura buffs |
 
-## Skill Tree Highlights
+<span class=gu>## Skill Tree Highlights</span>
 
 [TODO: Add skill tree node highlights once tree is designed]
 
-## Tips
+<span class=gu>## Tips</span>
 
-- Warriors benefit enormously from gear with high physical defense and bonus health.
-- Berserker builds want to stay below 50% HP — plan your lifesteal accordingly.
-- Guardian's taunt mechanic is essential in 4-player parties — communicate with your team.
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/classes/mage.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [classes, mage]
----
+<span class=k>-</span><span class=w> </span>Warriors benefit enormously from gear with high physical defense and bonus health.
+<span class=k>-</span><span class=w> </span>Berserker builds want to stay below 50% HP — plan your lifesteal accordingly.
+<span class=k>-</span><span class=w> </span>Guardian&#39;s taunt mechanic is essential in 4-player parties — communicate with your team.
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/classes/mage.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [classes, mage]</span>
+<span class=gu>---</span>
 
-# Mage
+<span class=gh># Mage</span>
 
-&gt; *The elements are not forces to be controlled — they are arguments to be won.*
+<span class=k>&gt; </span><span class=ge>*The elements are not forces to be controlled — they are arguments to be won.*</span>
 
 The Mage wields the raw stuff of the cosmos. Where the Warrior wins through strength and the Archer wins through precision, the Mage wins through understanding — reading the battlefield, stacking elemental reactions, and unleashing damage that no armor can fully stop. Mages are fragile but devastating.
 
-## Base Stats
+<span class=gu>## Base Stats</span>
 
 | Stat | Mage Start |
 |---|---|
@@ -289,40 +289,40 @@ The Mage wields the raw stuff of the cosmos. Where the Warrior wins through stre
 
 [TODO: Add exact base values once finalized]
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Mages operate from range, managing mana pools and elemental combinations. Your skill tree unlocks elemental affinities, cast speed modifiers, summon slots, and aura nodes. You reward deliberate, thoughtful play over button mashing.
 
-## Ascendancy Paths
+<span class=gu>## Ascendancy Paths</span>
 
-At level 50 you choose one of three paths — this choice is **permanent**:
+At level 50 you choose one of three paths — this choice is <span class=gs>**permanent**</span>:
 
 | Ascendancy | Summary |
 |---|---|
-| [Elementalist](../ascendancies/elementalist.md) | Master of Fire, Ice, and Lightning — elemental mixing and massive AoE bursts |
-| [Arcanist](../ascendancies/arcanist.md) | Elemental summoner — conjure entities, micromanage pets, hybrid support |
-| [Hexblade](../ascendancies/hexblade.md) | Chaos mage — AoE auras, debilitating curses, damage-over-time |
+| [<span class=nt>Elementalist</span>](<span class=na>../ascendancies/elementalist.md</span>) | Master of Fire, Ice, and Lightning — elemental mixing and massive AoE bursts |
+| [<span class=nt>Arcanist</span>](<span class=na>../ascendancies/arcanist.md</span>) | Elemental summoner — conjure entities, micromanage pets, hybrid support |
+| [<span class=nt>Hexblade</span>](<span class=na>../ascendancies/hexblade.md</span>) | Chaos mage — AoE auras, debilitating curses, damage-over-time |
 
-## Skill Tree Highlights
+<span class=gu>## Skill Tree Highlights</span>
 
 [TODO: Add skill tree node highlights once tree is designed]
 
-## Tips
+<span class=gu>## Tips</span>
 
-- Mages have low health — invest in magic defense gear and consider movement skills for escape.
-- Elementalist builds synergize around applying multiple elements to a single target.
-- Hexblade curses stack multiplicatively with DoT — apply the curse first, then the DoT.
-</code></pre> <ul> <li>[ ] <strong>Step 4: Create <code>docs/classes/archer.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [classes, archer]
----
+<span class=k>-</span><span class=w> </span>Mages have low health — invest in magic defense gear and consider movement skills for escape.
+<span class=k>-</span><span class=w> </span>Elementalist builds synergize around applying multiple elements to a single target.
+<span class=k>-</span><span class=w> </span>Hexblade curses stack multiplicatively with DoT — apply the curse first, then the DoT.
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Create <code>docs/classes/archer.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [classes, archer]</span>
+<span class=gu>---</span>
 
-# Archer
+<span class=gh># Archer</span>
 
-&gt; *You never see the shot that kills you.*
+<span class=k>&gt; </span><span class=ge>*You never see the shot that kills you.*</span>
 
 The Archer is the most versatile base class — equally comfortable fighting from the treetops, vanishing into shadow, commanding a pack of mythological beasts, or laying a minefield of traps. Archers are mobile, resourceful, and often the most unpredictable player on the battlefield.
 
-## Base Stats
+<span class=gu>## Base Stats</span>
 
 | Stat | Archer Start |
 |---|---|
@@ -334,188 +334,188 @@ The Archer is the most versatile base class — equally comfortable fighting fro
 
 [TODO: Add exact base values once finalized]
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Archers excel at managing distance, using terrain, and maintaining sustained pressure. Your skill tree includes movement skills, pet nodes, trap mechanics, and both melee and ranged damage options — giving you unusual flexibility at the cost of requiring more skill to play optimally.
 
-## Ascendancy Paths
+<span class=gu>## Ascendancy Paths</span>
 
-At level 50 you choose one of three paths — this choice is **permanent**:
+At level 50 you choose one of three paths — this choice is <span class=gs>**permanent**</span>:
 
 | Ascendancy | Summary |
 |---|---|
-| [Shadowstalker](../ascendancies/shadowstalker.md) | Melee burst assassin — invisibility, poison, critical strikes |
-| [Beastmaster](../ascendancies/beastmaster.md) | Pet army commander — animal companions and mythological summons |
-| [Pathfinder](../ascendancies/pathfinder.md) | Tactical survivalist — tanky kiting, traps, self-sufficiency |
+| [<span class=nt>Shadowstalker</span>](<span class=na>../ascendancies/shadowstalker.md</span>) | Melee burst assassin — invisibility, poison, critical strikes |
+| [<span class=nt>Beastmaster</span>](<span class=na>../ascendancies/beastmaster.md</span>) | Pet army commander — animal companions and mythological summons |
+| [<span class=nt>Pathfinder</span>](<span class=na>../ascendancies/pathfinder.md</span>) | Tactical survivalist — tanky kiting, traps, self-sufficiency |
 
-## Skill Tree Highlights
+<span class=gu>## Skill Tree Highlights</span>
 
 [TODO: Add skill tree node highlights once tree is designed]
 
-## Tips
+<span class=gu>## Tips</span>
 
-- Archers are the only class with access to both melee and ranged damage nodes in the base tree.
-- Shadowstalker requires excellent positioning — stealth entry + burst + escape is the full loop.
-- Beastmaster scales with the number and quality of active pets; invest in pet stat nodes early.
-</code></pre> <ul> <li>[ ] <strong>Step 5: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/classes/
-git commit -m &quot;feat: add classes section (Warrior, Mage, Archer)&quot;
-</code></pre> <hr> <h2 id=task-5-warrior-ascendancies-berserker-guardian-paladin>Task 5: Warrior Ascendancies (Berserker, Guardian, Paladin)</h2> <p><strong>Files:</strong> - Create: <code>docs/ascendancies/berserker.md</code> - Create: <code>docs/ascendancies/guardian.md</code> - Create: <code>docs/ascendancies/paladin.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/ascendancies/berserker.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, warrior, berserker, damage, lifesteal]
----
+<span class=k>-</span><span class=w> </span>Archers are the only class with access to both melee and ranged damage nodes in the base tree.
+<span class=k>-</span><span class=w> </span>Shadowstalker requires excellent positioning — stealth entry + burst + escape is the full loop.
+<span class=k>-</span><span class=w> </span>Beastmaster scales with the number and quality of active pets; invest in pet stat nodes early.
+</code></pre></div> <ul> <li>[ ] <strong>Step 5: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/classes/
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add classes section (Warrior, Mage, Archer)&quot;</span>
+</code></pre></div> <hr> <h2 id=task-5-warrior-ascendancies-berserker-guardian-paladin>Task 5: Warrior Ascendancies (Berserker, Guardian, Paladin)</h2> <p><strong>Files:</strong> - Create: <code>docs/ascendancies/berserker.md</code> - Create: <code>docs/ascendancies/guardian.md</code> - Create: <code>docs/ascendancies/paladin.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/ascendancies/berserker.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, warrior, berserker, damage, lifesteal]</span>
+<span class=gu>---</span>
 
-# Berserker
+<span class=gh># Berserker</span>
 
-**Class:** [Warrior](../classes/warrior.md) · **Role:** Melee DPS
+<span class=gs>**Class:**</span> [<span class=nt>Warrior</span>](<span class=na>../classes/warrior.md</span>) · <span class=gs>**Role:**</span> Melee DPS
 
-&gt; *Pain is fuel. Rage is armor. Death is just another resource.*
+<span class=k>&gt; </span><span class=ge>*Pain is fuel. Rage is armor. Death is just another resource.*</span>
 
 The Berserker abandons all pretense of defense and transforms injury into power. Every wound deepens the rage, every point of missing health multiplies the carnage. Berserkers are glass cannons that refuse to break — because they keep stealing life back from everything they hit.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Rage Stacking** | Rage builds passively in combat and is consumed by empowered attacks. Higher Rage = higher damage multiplier. |
-| **Low HP Scaling** | Ascendancy nodes give flat and percentage damage bonuses that increase as your current HP drops below thresholds (75%, 50%, 25%). |
-| **Lifesteal** | A percentage of physical damage dealt is returned as health. Keeps you alive at low HP, enabling the low-HP bonuses. |
+| <span class=gs>**Rage Stacking**</span> | Rage builds passively in combat and is consumed by empowered attacks. Higher Rage = higher damage multiplier. |
+| <span class=gs>**Low HP Scaling**</span> | Ascendancy nodes give flat and percentage damage bonuses that increase as your current HP drops below thresholds (75%, 50%, 25%). |
+| <span class=gs>**Lifesteal**</span> | A percentage of physical damage dealt is returned as health. Keeps you alive at low HP, enabling the low-HP bonuses. |
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
-Berserker is a high-risk, high-reward melee damage dealer. You deliberately operate at low health to maximize damage multipliers, relying on lifesteal and burst windows to stay alive. The gameplay loop is: **build Rage → enter low-HP threshold → lifesteal through the burst window → repeat**.
+Berserker is a high-risk, high-reward melee damage dealer. You deliberately operate at low health to maximize damage multipliers, relying on lifesteal and burst windows to stay alive. The gameplay loop is: <span class=gs>**build Rage → enter low-HP threshold → lifesteal through the burst window → repeat**</span>.
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
 Ascendancy tree nodes for Berserker emphasize:
 
-- Increasing Rage generation rate and max stack cap
-- Adding more low-HP damage thresholds and stronger multipliers per threshold
-- Improving lifesteal rate and adding on-kill healing bursts
-- Reducing skill cooldowns while Rage is above a set value
+<span class=k>-</span><span class=w> </span>Increasing Rage generation rate and max stack cap
+<span class=k>-</span><span class=w> </span>Adding more low-HP damage thresholds and stronger multipliers per threshold
+<span class=k>-</span><span class=w> </span>Improving lifesteal rate and adding on-kill healing bursts
+<span class=k>-</span><span class=w> </span>Reducing skill cooldowns while Rage is above a set value
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Gear with **lifesteal %** and **attack speed** amplifies the burst window enormously.
-- Movement skills assigned to keybinds let you dash into melee range before Rage decays.
-- Avoid stacking too much health — it pushes you away from the low-HP thresholds.
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/ascendancies/guardian.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, warrior, guardian, tank, support]
----
+<span class=k>-</span><span class=w> </span>Gear with <span class=gs>**lifesteal %**</span> and <span class=gs>**attack speed**</span> amplifies the burst window enormously.
+<span class=k>-</span><span class=w> </span>Movement skills assigned to keybinds let you dash into melee range before Rage decays.
+<span class=k>-</span><span class=w> </span>Avoid stacking too much health — it pushes you away from the low-HP thresholds.
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/ascendancies/guardian.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, warrior, guardian, tank, support]</span>
+<span class=gu>---</span>
 
-# Guardian
+<span class=gh># Guardian</span>
 
-**Class:** [Warrior](../classes/warrior.md) · **Role:** Tank / Aggro Management
+<span class=gs>**Class:**</span> [<span class=nt>Warrior</span>](<span class=na>../classes/warrior.md</span>) · <span class=gs>**Role:**</span> Tank / Aggro Management
 
-&gt; *The line holds because I hold it.*
+<span class=k>&gt; </span><span class=ge>*The line holds because I hold it.*</span>
 
 The Guardian is the definitive tank of Ashen Pantheon. Where the Berserker bleeds and the Paladin heals, the Guardian does the unglamorous but essential work: drawing every threat, absorbing every hit, and making sure their party never has to.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Taunt** | Forces nearby enemies and bosses to redirect their attacks to the Guardian for a duration. Essential for party protection. |
-| **Party Shields** | Grants temporary absorption shields to party members. Shields absorb a flat amount of damage before health is affected. |
-| **Aggro Management** | Passive nodes ensure the Guardian generates more threat than any other party member, keeping enemies focused on them. |
+| <span class=gs>**Taunt**</span> | Forces nearby enemies and bosses to redirect their attacks to the Guardian for a duration. Essential for party protection. |
+| <span class=gs>**Party Shields**</span> | Grants temporary absorption shields to party members. Shields absorb a flat amount of damage before health is affected. |
+| <span class=gs>**Aggro Management**</span> | Passive nodes ensure the Guardian generates more threat than any other party member, keeping enemies focused on them. |
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Guardian is the only ascendancy built around protecting others. In solo play, you are nearly unkillable but kill slowly. In a party, you are the backbone — your Taunt ability lets allies operate freely, your Party Shields buy crucial seconds, and your aggro management ensures the Mage standing in the back never gets touched.
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
 Ascendancy tree nodes for Guardian emphasize:
 
-- Increasing Taunt duration and the number of enemies affected
-- Strengthening Party Shield absorption values and cooldown reduction
-- Passive threat generation multipliers
-- Damage reduction while taunting
-- Counter-damage — reflecting a portion of absorbed hits back at attackers
+<span class=k>-</span><span class=w> </span>Increasing Taunt duration and the number of enemies affected
+<span class=k>-</span><span class=w> </span>Strengthening Party Shield absorption values and cooldown reduction
+<span class=k>-</span><span class=w> </span>Passive threat generation multipliers
+<span class=k>-</span><span class=w> </span>Damage reduction while taunting
+<span class=k>-</span><span class=w> </span>Counter-damage — reflecting a portion of absorbed hits back at attackers
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Guardian is most powerful in a 4-player party with at least one healer (Paladin).
-- Gear focused on **physical defense**, **health pool**, and **cooldown reduction** maximizes uptime on Taunt.
-- In solo play, pair Guardian's defense with the highest damage skills available to compensate for slow clear speed.
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/ascendancies/paladin.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, warrior, paladin, holy, healer, support]
----
+<span class=k>-</span><span class=w> </span>Guardian is most powerful in a 4-player party with at least one healer (Paladin).
+<span class=k>-</span><span class=w> </span>Gear focused on <span class=gs>**physical defense**</span>, <span class=gs>**health pool**</span>, and <span class=gs>**cooldown reduction**</span> maximizes uptime on Taunt.
+<span class=k>-</span><span class=w> </span>In solo play, pair Guardian&#39;s defense with the highest damage skills available to compensate for slow clear speed.
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/ascendancies/paladin.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, warrior, paladin, holy, healer, support]</span>
+<span class=gu>---</span>
 
-# Paladin
+<span class=gh># Paladin</span>
 
-**Class:** [Warrior](../classes/warrior.md) · **Role:** Holy DPS / Party Support
+<span class=gs>**Class:**</span> [<span class=nt>Warrior</span>](<span class=na>../classes/warrior.md</span>) · <span class=gs>**Role:**</span> Holy DPS / Party Support
 
-&gt; *Divine fire cleanses what steel cannot.*
+<span class=k>&gt; </span><span class=ge>*Divine fire cleanses what steel cannot.*</span>
 
 The Paladin walks the line between warrior and priest. They deal devastating area-of-effect holy damage, mend wounds with blessed light, and wrap their party in powerful auras that make everyone fight better. The Paladin is the only Warrior ascendancy that meaningfully supports a party, making them one of the most sought-after players in group content.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **AoE Holy Damage** | Paladin skills release bursts of holy energy in areas around the caster, dealing magic damage based on the character's holy power stat. |
-| **Heals** | Targeted and AoE heals restore health to self and party members. Scales with holy power. |
-| **Party Aura Buffs** | Persistent auras that radiate from the Paladin and affect all party members within range — boosting damage, defense, or movement speed. |
+| <span class=gs>**AoE Holy Damage**</span> | Paladin skills release bursts of holy energy in areas around the caster, dealing magic damage based on the character&#39;s holy power stat. |
+| <span class=gs>**Heals**</span> | Targeted and AoE heals restore health to self and party members. Scales with holy power. |
+| <span class=gs>**Party Aura Buffs**</span> | Persistent auras that radiate from the Paladin and affect all party members within range — boosting damage, defense, or movement speed. |
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Paladin rewards players who can juggle offensive and supportive responsibilities simultaneously. In boss fights, you are managing your aura selection, throwing out heals when party members take spike damage, and weaving in AoE holy bursts on the boss. You are never standing still.
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
 Ascendancy tree nodes for Paladin emphasize:
 
-- Expanding AoE radius and damage of holy burst skills
-- Increasing heal potency and adding over-time heal effects
-- Unlocking additional aura types (offensive, defensive, utility)
-- Reducing aura swap cooldown so you can react to changing fight phases
-- Adding holy damage bonuses that scale with current mana
+<span class=k>-</span><span class=w> </span>Expanding AoE radius and damage of holy burst skills
+<span class=k>-</span><span class=w> </span>Increasing heal potency and adding over-time heal effects
+<span class=k>-</span><span class=w> </span>Unlocking additional aura types (offensive, defensive, utility)
+<span class=k>-</span><span class=w> </span>Reducing aura swap cooldown so you can react to changing fight phases
+<span class=k>-</span><span class=w> </span>Adding holy damage bonuses that scale with current mana
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Paladin auras stack with all party member buffs — coordinate with your Berserker for massive damage windows.
-- Gear should prioritize **holy power**, **mana pool**, and **cooldown reduction**.
-- In solo play, lean into the AoE holy damage build — clear speed compensates for the lack of party synergy.
-</code></pre> <ul> <li>[ ] <strong>Step 4: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/ascendancies/berserker.md docs/ascendancies/guardian.md docs/ascendancies/paladin.md
-git commit -m &quot;feat: add warrior ascendancies (Berserker, Guardian, Paladin)&quot;
-</code></pre> <hr> <h2 id=task-6-mage-ascendancies-elementalist-arcanist-hexblade>Task 6: Mage Ascendancies (Elementalist, Arcanist, Hexblade)</h2> <p><strong>Files:</strong> - Create: <code>docs/ascendancies/elementalist.md</code> - Create: <code>docs/ascendancies/arcanist.md</code> - Create: <code>docs/ascendancies/hexblade.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/ascendancies/elementalist.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, mage, elementalist, fire, ice, lightning, aoe]
----
+<span class=k>-</span><span class=w> </span>Paladin auras stack with all party member buffs — coordinate with your Berserker for massive damage windows.
+<span class=k>-</span><span class=w> </span>Gear should prioritize <span class=gs>**holy power**</span>, <span class=gs>**mana pool**</span>, and <span class=gs>**cooldown reduction**</span>.
+<span class=k>-</span><span class=w> </span>In solo play, lean into the AoE holy damage build — clear speed compensates for the lack of party synergy.
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/ascendancies/berserker.md<span class=w> </span>docs/ascendancies/guardian.md<span class=w> </span>docs/ascendancies/paladin.md
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add warrior ascendancies (Berserker, Guardian, Paladin)&quot;</span>
+</code></pre></div> <hr> <h2 id=task-6-mage-ascendancies-elementalist-arcanist-hexblade>Task 6: Mage Ascendancies (Elementalist, Arcanist, Hexblade)</h2> <p><strong>Files:</strong> - Create: <code>docs/ascendancies/elementalist.md</code> - Create: <code>docs/ascendancies/arcanist.md</code> - Create: <code>docs/ascendancies/hexblade.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/ascendancies/elementalist.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, mage, elementalist, fire, ice, lightning, aoe]</span>
+<span class=gu>---</span>
 
-# Elementalist
+<span class=gh># Elementalist</span>
 
-**Class:** [Mage](../classes/mage.md) · **Role:** Elemental AoE DPS
+<span class=gs>**Class:**</span> [<span class=nt>Mage</span>](<span class=na>../classes/mage.md</span>) · <span class=gs>**Role:**</span> Elemental AoE DPS
 
-&gt; *Why choose one element when you can use all three at once?*
+<span class=k>&gt; </span><span class=ge>*Why choose one element when you can use all three at once?*</span>
 
 The Elementalist is the apex predator of area-of-effect damage. They do not specialize in a single element — they weaponize the reactions between Fire, Ice, and Lightning to create cascading damage chains that can devastate entire boss phases in seconds.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Elemental Mixing** | Applying two different elements to the same target creates an elemental reaction (e.g., Fire + Ice = Shatter). Each reaction deals bonus damage and applies a status effect. |
-| **AoE Bursts** | Elementalist signature skills release large area bursts of a chosen element, letting you apply elements to entire groups simultaneously. |
-| **Elemental Mastery** | Passive stat that increases the damage and effect of all elemental reactions triggered. |
+| <span class=gs>**Elemental Mixing**</span> | Applying two different elements to the same target creates an elemental reaction (e.g., Fire + Ice = Shatter). Each reaction deals bonus damage and applies a status effect. |
+| <span class=gs>**AoE Bursts**</span> | Elementalist signature skills release large area bursts of a chosen element, letting you apply elements to entire groups simultaneously. |
+| <span class=gs>**Elemental Mastery**</span> | Passive stat that increases the damage and effect of all elemental reactions triggered. |
 
-## Elemental Reactions
+<span class=gu>## Elemental Reactions</span>
 
 | Element A | Element B | Reaction | Effect |
 |---|---|---|---|
@@ -525,45 +525,45 @@ The Elementalist is the apex predator of area-of-effect damage. They do not spec
 
 [TODO: Finalize reaction table once mechanics are locked]
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
-- Increasing Elemental Mastery stat and reaction damage multipliers
-- Reducing elemental application cooldowns
-- Unlocking passive elemental aura (constantly applying a chosen element to nearby enemies)
-- Adding fourth-element nodes for rare reactions
+<span class=k>-</span><span class=w> </span>Increasing Elemental Mastery stat and reaction damage multipliers
+<span class=k>-</span><span class=w> </span>Reducing elemental application cooldowns
+<span class=k>-</span><span class=w> </span>Unlocking passive elemental aura (constantly applying a chosen element to nearby enemies)
+<span class=k>-</span><span class=w> </span>Adding fourth-element nodes for rare reactions
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Stack **Elemental Mastery** on all gear pieces — it multiplies reaction damage.
-- Assign one element per skill slot and rotate in order to maximize reaction uptime.
-- Elementalist pairs exceptionally well with Arcanist support in parties.
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/ascendancies/arcanist.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, mage, arcanist, summoner, pets, support]
----
+<span class=k>-</span><span class=w> </span>Stack <span class=gs>**Elemental Mastery**</span> on all gear pieces — it multiplies reaction damage.
+<span class=k>-</span><span class=w> </span>Assign one element per skill slot and rotate in order to maximize reaction uptime.
+<span class=k>-</span><span class=w> </span>Elementalist pairs exceptionally well with Arcanist support in parties.
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/ascendancies/arcanist.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, mage, arcanist, summoner, pets, support]</span>
+<span class=gu>---</span>
 
-# Arcanist
+<span class=gh># Arcanist</span>
 
-**Class:** [Mage](../classes/mage.md) · **Role:** Elemental Summoner / Support
+<span class=gs>**Class:**</span> [<span class=nt>Mage</span>](<span class=na>../classes/mage.md</span>) · <span class=gs>**Role:**</span> Elemental Summoner / Support
 
-&gt; *Why fight when your creations can fight for you?*
+<span class=k>&gt; </span><span class=ge>*Why fight when your creations can fight for you?*</span>
 
-The Arcanist forges living constructs from elemental energy and sends them into battle. Part summoner, part strategist, the Arcanist's power scales with how well you manage your elemental entities — positioning them, directing their abilities, and keeping them alive long enough to matter.
+The Arcanist forges living constructs from elemental energy and sends them into battle. Part summoner, part strategist, the Arcanist&#39;s power scales with how well you manage your elemental entities — positioning them, directing their abilities, and keeping them alive long enough to matter.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Elemental Summons** | Conjure persistent entities from Fire, Ice, or Lightning energy. Each type has unique behaviors and abilities. |
-| **Pet Micromanagement** | Arcanist pets can be directed to specific targets or positions. Active management dramatically increases their effectiveness. |
-| **Support Aura** | Arcanist passively emits an aura that buffs nearby allied pets and party members based on active summon types. |
+| <span class=gs>**Elemental Summons**</span> | Conjure persistent entities from Fire, Ice, or Lightning energy. Each type has unique behaviors and abilities. |
+| <span class=gs>**Pet Micromanagement**</span> | Arcanist pets can be directed to specific targets or positions. Active management dramatically increases their effectiveness. |
+| <span class=gs>**Support Aura**</span> | Arcanist passively emits an aura that buffs nearby allied pets and party members based on active summon types. |
 
-## Summon Types
+<span class=gu>## Summon Types</span>
 
 | Summon | Element | Behavior |
 |---|---|---|
@@ -573,134 +573,134 @@ The Arcanist forges living constructs from elemental energy and sends them into 
 
 [TODO: Expand summon roster as designed]
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
-- Increasing max active summon count
-- Boosting individual summon stats (damage, health, speed)
-- Unlocking hybrid-element summons
-- Reducing summon cast cost and cooldown
-- Buffing the support aura radius and effect
+<span class=k>-</span><span class=w> </span>Increasing max active summon count
+<span class=k>-</span><span class=w> </span>Boosting individual summon stats (damage, health, speed)
+<span class=k>-</span><span class=w> </span>Unlocking hybrid-element summons
+<span class=k>-</span><span class=w> </span>Reducing summon cast cost and cooldown
+<span class=k>-</span><span class=w> </span>Buffing the support aura radius and effect
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Pairs powerfully with Elementalist in a party — Arcanist summons apply elements continuously, setting up reactions for the Elementalist.
-- Gear should focus on **summon damage**, **max mana**, and **cooldown reduction**.
-- In solo play, build tanky summons to absorb boss attention while you cast from safety.
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/ascendancies/hexblade.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, mage, hexblade, curses, dots, auras, chaos]
----
+<span class=k>-</span><span class=w> </span>Pairs powerfully with Elementalist in a party — Arcanist summons apply elements continuously, setting up reactions for the Elementalist.
+<span class=k>-</span><span class=w> </span>Gear should focus on <span class=gs>**summon damage**</span>, <span class=gs>**max mana**</span>, and <span class=gs>**cooldown reduction**</span>.
+<span class=k>-</span><span class=w> </span>In solo play, build tanky summons to absorb boss attention while you cast from safety.
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/ascendancies/hexblade.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, mage, hexblade, curses, dots, auras, chaos]</span>
+<span class=gu>---</span>
 
-# Hexblade
+<span class=gh># Hexblade</span>
 
-**Class:** [Mage](../classes/mage.md) · **Role:** Chaos DoT / Debuffer
+<span class=gs>**Class:**</span> [<span class=nt>Mage</span>](<span class=na>../classes/mage.md</span>) · <span class=gs>**Role:**</span> Chaos DoT / Debuffer
 
-&gt; *The curse lands. Then the rot begins. Then you wait.*
+<span class=k>&gt; </span><span class=ge>*The curse lands. Then the rot begins. Then you wait.*</span>
 
 The Hexblade is a patient predator. They do not burst enemies down in a flash of lightning — they hex, curse, and corrode them. Hexblades excel at multi-target scenarios, applying devastating damage-over-time effects and auras that make everything weaker for themselves and their party.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **AoE Auras** | Persistent fields centered on the Hexblade that apply ongoing effects to enemies within range. Multiple auras can stack. |
-| **Curses** | Applied directly to targets. Curses amplify all damage taken by a percentage and can unlock bonus effects for other skills. |
-| **Chaos DoT** | Damage-over-time effects that deal chaos (untyped) damage, bypassing elemental resistances entirely. |
+| <span class=gs>**AoE Auras**</span> | Persistent fields centered on the Hexblade that apply ongoing effects to enemies within range. Multiple auras can stack. |
+| <span class=gs>**Curses**</span> | Applied directly to targets. Curses amplify all damage taken by a percentage and can unlock bonus effects for other skills. |
+| <span class=gs>**Chaos DoT**</span> | Damage-over-time effects that deal chaos (untyped) damage, bypassing elemental resistances entirely. |
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Hexblade is a slow-burn damage dealer. Your opener is always: apply Curse → drop AoE auras → stack DoTs. Once set up, you deal massive sustained damage with minimal input. Against bosses with multiple phases, you must re-apply effects after each phase transition.
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
-- Increasing Curse potency and the number of simultaneous Curses per target
-- Extending AoE aura radius and adding new aura types
-- Boosting Chaos DoT tick rate and damage
-- Adding Curse synergy nodes (e.g., cursed targets take bonus lightning damage)
-- Unlocking a Hexblade passive that makes a percentage of all damage dealt ignore resistances
+<span class=k>-</span><span class=w> </span>Increasing Curse potency and the number of simultaneous Curses per target
+<span class=k>-</span><span class=w> </span>Extending AoE aura radius and adding new aura types
+<span class=k>-</span><span class=w> </span>Boosting Chaos DoT tick rate and damage
+<span class=k>-</span><span class=w> </span>Adding Curse synergy nodes (e.g., cursed targets take bonus lightning damage)
+<span class=k>-</span><span class=w> </span>Unlocking a Hexblade passive that makes a percentage of all damage dealt ignore resistances
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Curses benefit every party member — Hexblade is a strong support pick in 4-player groups.
-- Gear should prioritize **DoT damage**, **curse duration**, and **aura effectiveness**.
-- Avoid building attack speed — Hexblade's damage comes from setup, not spam.
-</code></pre> <ul> <li>[ ] <strong>Step 4: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/ascendancies/elementalist.md docs/ascendancies/arcanist.md docs/ascendancies/hexblade.md
-git commit -m &quot;feat: add mage ascendancies (Elementalist, Arcanist, Hexblade)&quot;
-</code></pre> <hr> <h2 id=task-7-archer-ascendancies-shadowstalker-beastmaster-pathfinder>Task 7: Archer Ascendancies (Shadowstalker, Beastmaster, Pathfinder)</h2> <p><strong>Files:</strong> - Create: <code>docs/ascendancies/shadowstalker.md</code> - Create: <code>docs/ascendancies/beastmaster.md</code> - Create: <code>docs/ascendancies/pathfinder.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/ascendancies/shadowstalker.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, archer, shadowstalker, stealth, poison, crits]
----
+<span class=k>-</span><span class=w> </span>Curses benefit every party member — Hexblade is a strong support pick in 4-player groups.
+<span class=k>-</span><span class=w> </span>Gear should prioritize <span class=gs>**DoT damage**</span>, <span class=gs>**curse duration**</span>, and <span class=gs>**aura effectiveness**</span>.
+<span class=k>-</span><span class=w> </span>Avoid building attack speed — Hexblade&#39;s damage comes from setup, not spam.
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/ascendancies/elementalist.md<span class=w> </span>docs/ascendancies/arcanist.md<span class=w> </span>docs/ascendancies/hexblade.md
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add mage ascendancies (Elementalist, Arcanist, Hexblade)&quot;</span>
+</code></pre></div> <hr> <h2 id=task-7-archer-ascendancies-shadowstalker-beastmaster-pathfinder>Task 7: Archer Ascendancies (Shadowstalker, Beastmaster, Pathfinder)</h2> <p><strong>Files:</strong> - Create: <code>docs/ascendancies/shadowstalker.md</code> - Create: <code>docs/ascendancies/beastmaster.md</code> - Create: <code>docs/ascendancies/pathfinder.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/ascendancies/shadowstalker.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, archer, shadowstalker, stealth, poison, crits]</span>
+<span class=gu>---</span>
 
-# Shadowstalker
+<span class=gh># Shadowstalker</span>
 
-**Class:** [Archer](../classes/archer.md) · **Role:** Melee Burst Assassin
+<span class=gs>**Class:**</span> [<span class=nt>Archer</span>](<span class=na>../classes/archer.md</span>) · <span class=gs>**Role:**</span> Melee Burst Assassin
 
-&gt; *You heard nothing. You saw nothing. You just lost 80% of your health.*
+<span class=k>&gt; </span><span class=ge>*You heard nothing. You saw nothing. You just lost 80% of your health.*</span>
 
 The Shadowstalker is the only Archer ascendancy that fights in melee. They use ranged tools as openers and escape mechanisms, then close in for devastating burst windows amplified by poison and critical hits. Mastering the Shadowstalker means mastering the approach — every engagement should begin and end on your terms.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Invisibility** | Enter a stealth state that makes you untargetable for a duration or until you attack. Breaking stealth with an attack grants a crit multiplier bonus. |
-| **Poison** | A stacking damage-over-time applied by specific skills. Each stack deals independent damage; high stacks deal enormous sustained damage. |
-| **Critical Strikes** | Shadowstalker ascendancy nodes dramatically increase critical hit chance and multiplier, especially on the first hit after stealth. |
+| <span class=gs>**Invisibility**</span> | Enter a stealth state that makes you untargetable for a duration or until you attack. Breaking stealth with an attack grants a crit multiplier bonus. |
+| <span class=gs>**Poison**</span> | A stacking damage-over-time applied by specific skills. Each stack deals independent damage; high stacks deal enormous sustained damage. |
+| <span class=gs>**Critical Strikes**</span> | Shadowstalker ascendancy nodes dramatically increase critical hit chance and multiplier, especially on the first hit after stealth. |
 
-## Playstyle
+<span class=gu>## Playstyle</span>
 
 Engage from stealth → heavy critical opener → apply poison stacks → retreat to range → re-enter stealth → repeat. The loop rewards players who can manage distance and cooldowns precisely.
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
-- Increasing stealth duration and reducing reveal cooldown
-- Adding bonuses to the &quot;first hit from stealth&quot; window
-- Scaling poison stacks (more stacks, higher individual stack damage)
-- Boosting critical hit chance and multiplier passively
-- Unlocking a node that refunds stealth cooldown on kill
+<span class=k>-</span><span class=w> </span>Increasing stealth duration and reducing reveal cooldown
+<span class=k>-</span><span class=w> </span>Adding bonuses to the &quot;first hit from stealth&quot; window
+<span class=k>-</span><span class=w> </span>Scaling poison stacks (more stacks, higher individual stack damage)
+<span class=k>-</span><span class=w> </span>Boosting critical hit chance and multiplier passively
+<span class=k>-</span><span class=w> </span>Unlocking a node that refunds stealth cooldown on kill
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Stack **critical hit chance** and **poison damage** on gear.
-- Movement skills are critical — assign at least two to always have an escape route.
-- Hexblade curses further amplify Shadowstalker poison — a powerful party combo.
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/ascendancies/beastmaster.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, archer, beastmaster, pets, summoner, mythological]
----
+<span class=k>-</span><span class=w> </span>Stack <span class=gs>**critical hit chance**</span> and <span class=gs>**poison damage**</span> on gear.
+<span class=k>-</span><span class=w> </span>Movement skills are critical — assign at least two to always have an escape route.
+<span class=k>-</span><span class=w> </span>Hexblade curses further amplify Shadowstalker poison — a powerful party combo.
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/ascendancies/beastmaster.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, archer, beastmaster, pets, summoner, mythological]</span>
+<span class=gu>---</span>
 
-# Beastmaster
+<span class=gh># Beastmaster</span>
 
-**Class:** [Archer](../classes/archer.md) · **Role:** Pet Army / Summoner
+<span class=gs>**Class:**</span> [<span class=nt>Archer</span>](<span class=na>../classes/archer.md</span>) · <span class=gs>**Role:**</span> Pet Army / Summoner
 
-&gt; *Every myth ever told about a monster? I've tamed one.*
+<span class=k>&gt; </span><span class=ge>*Every myth ever told about a monster? I&#39;ve tamed one.*</span>
 
-The Beastmaster commands a growing menagerie of animal companions and — uniquely — mythological creatures drawn from the same pantheons as the game's bosses. Where the Arcanist creates elemental constructs, the Beastmaster bonds with living things. Your pets level with you, learn abilities, and can even respond to vocal commands mid-combat.
+The Beastmaster commands a growing menagerie of animal companions and — uniquely — mythological creatures drawn from the same pantheons as the game&#39;s bosses. Where the Arcanist creates elemental constructs, the Beastmaster bonds with living things. Your pets level with you, learn abilities, and can even respond to vocal commands mid-combat.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Animal Companions** | Natural animals (wolves, eagles, bears) that fight alongside you. Each has unique abilities and a basic AI that can be overridden with commands. |
-| **Mythological Companions** | Rarer, more powerful creatures based on mythological beasts — unlocked through specific in-game events. |
-| **Companion Synergies** | Certain pet combinations unlock bonus effects (e.g., wolf + eagle = coordinated flanking bonus). |
+| <span class=gs>**Animal Companions**</span> | Natural animals (wolves, eagles, bears) that fight alongside you. Each has unique abilities and a basic AI that can be overridden with commands. |
+| <span class=gs>**Mythological Companions**</span> | Rarer, more powerful creatures based on mythological beasts — unlocked through specific in-game events. |
+| <span class=gs>**Companion Synergies**</span> | Certain pet combinations unlock bonus effects (e.g., wolf + eagle = coordinated flanking bonus). |
 
-## Pet Roster (Starter)
+<span class=gu>## Pet Roster (Starter)</span>
 
 | Pet | Type | Role |
 |---|---|---|
@@ -710,46 +710,46 @@ The Beastmaster commands a growing menagerie of animal companions and — unique
 
 [TODO: Add mythological companion roster as designed]
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
-- Increasing max active pet count
-- Scaling pet stats (damage, health, ability power)
-- Unlocking mythological companion slots
-- Adding companion synergy nodes
-- Giving the Beastmaster a passive aura that buffs all active pets
+<span class=k>-</span><span class=w> </span>Increasing max active pet count
+<span class=k>-</span><span class=w> </span>Scaling pet stats (damage, health, ability power)
+<span class=k>-</span><span class=w> </span>Unlocking mythological companion slots
+<span class=k>-</span><span class=w> </span>Adding companion synergy nodes
+<span class=k>-</span><span class=w> </span>Giving the Beastmaster a passive aura that buffs all active pets
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Gear that boosts **pet damage**, **pet health**, and **cooldown reduction** maximizes impact.
-- In a party, Beastmaster pets can act as secondary tanks, letting Guardian focus on the boss.
-- Pairs well with Arcanist — combined pet armies create overwhelming pressure.
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/ascendancies/pathfinder.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [ascendancy, archer, pathfinder, traps, survival, kiting]
----
+<span class=k>-</span><span class=w> </span>Gear that boosts <span class=gs>**pet damage**</span>, <span class=gs>**pet health**</span>, and <span class=gs>**cooldown reduction**</span> maximizes impact.
+<span class=k>-</span><span class=w> </span>In a party, Beastmaster pets can act as secondary tanks, letting Guardian focus on the boss.
+<span class=k>-</span><span class=w> </span>Pairs well with Arcanist — combined pet armies create overwhelming pressure.
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/ascendancies/pathfinder.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [ascendancy, archer, pathfinder, traps, survival, kiting]</span>
+<span class=gu>---</span>
 
-# Pathfinder
+<span class=gh># Pathfinder</span>
 
-**Class:** [Archer](../classes/archer.md) · **Role:** Tactical Survivalist / Trap Master
+<span class=gs>**Class:**</span> [<span class=nt>Archer</span>](<span class=na>../classes/archer.md</span>) · <span class=gs>**Role:**</span> Tactical Survivalist / Trap Master
 
-&gt; *I was here before the fight started. I'll be here after it ends.*
+<span class=k>&gt; </span><span class=ge>*I was here before the fight started. I&#39;ll be here after it ends.*</span>
 
 The Pathfinder is the most self-sufficient character in Ashen Pantheon. They are the tankiest archer build, capable of kiting bosses indefinitely while a network of traps does continuous work. Pathfinders win by attrition — they outlast everything.
 
-## Core Mechanics
+<span class=gu>## Core Mechanics</span>
 
 | Mechanic | How It Works |
 |---|---|
-| **Traps** | Placed objects that trigger on enemy proximity, dealing damage, applying debuffs, or creating terrain effects. Multiple trap types can be active simultaneously. |
-| **Kiting** | Pathfinder movement skills are designed for sustained repositioning — keeping enemies at range while maintaining damage output. |
-| **Survival** | Pathfinder ascendancy nodes add significant health pool bonuses, damage reduction, and self-healing — making them far tankier than a standard Archer. |
+| <span class=gs>**Traps**</span> | Placed objects that trigger on enemy proximity, dealing damage, applying debuffs, or creating terrain effects. Multiple trap types can be active simultaneously. |
+| <span class=gs>**Kiting**</span> | Pathfinder movement skills are designed for sustained repositioning — keeping enemies at range while maintaining damage output. |
+| <span class=gs>**Survival**</span> | Pathfinder ascendancy nodes add significant health pool bonuses, damage reduction, and self-healing — making them far tankier than a standard Archer. |
 
-## Trap Types
+<span class=gu>## Trap Types</span>
 
 | Trap | Effect |
 |---|---|
@@ -760,107 +760,107 @@ The Pathfinder is the most self-sufficient character in Ashen Pantheon. They are
 
 [TODO: Expand trap list once mechanics are finalized]
 
-## Ascendancy Tree Focus
+<span class=gu>## Ascendancy Tree Focus</span>
 
-- Increasing max simultaneous trap count
-- Boosting trap damage and trigger radius
-- Adding passive trap re-arm mechanics (traps reset after a cooldown)
-- Increasing personal health pool and passive damage reduction
-- Unlocking a &quot;prepared ground&quot; passive that buffs the Pathfinder's damage while standing in a trap zone
+<span class=k>-</span><span class=w> </span>Increasing max simultaneous trap count
+<span class=k>-</span><span class=w> </span>Boosting trap damage and trigger radius
+<span class=k>-</span><span class=w> </span>Adding passive trap re-arm mechanics (traps reset after a cooldown)
+<span class=k>-</span><span class=w> </span>Increasing personal health pool and passive damage reduction
+<span class=k>-</span><span class=w> </span>Unlocking a &quot;prepared ground&quot; passive that buffs the Pathfinder&#39;s damage while standing in a trap zone
 
 [TODO: Add full ascendancy tree node list once designed]
 
-## Recommended Skill Slot Setup
+<span class=gu>## Recommended Skill Slot Setup</span>
 
 [TODO: Add recommended keybind layout once skill list is finalized]
 
-## Synergies
+<span class=gu>## Synergies</span>
 
-- Stack **trap damage**, **movement speed**, and **health** on gear.
-- Pathfinder is the best solo class for learning boss patterns — you can survive long enough to observe every phase.
-- In a party, Pathfinder traps provide reliable AoE damage without requiring attention, freeing mental load for mechanics.
-</code></pre> <ul> <li>[ ] <strong>Step 4: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/ascendancies/shadowstalker.md docs/ascendancies/beastmaster.md docs/ascendancies/pathfinder.md
-git commit -m &quot;feat: add archer ascendancies (Shadowstalker, Beastmaster, Pathfinder)&quot;
-</code></pre> <hr> <h2 id=task-8-systems-section>Task 8: Systems Section</h2> <p><strong>Files:</strong> - Create: <code>docs/systems/progression.md</code> - Create: <code>docs/systems/skill-tree.md</code> - Create: <code>docs/systems/ascendancy-tree.md</code> - Create: <code>docs/systems/skill-slots.md</code> - Create: <code>docs/systems/instancing.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/systems/progression.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [systems, progression, leveling]
----
+<span class=k>-</span><span class=w> </span>Stack <span class=gs>**trap damage**</span>, <span class=gs>**movement speed**</span>, and <span class=gs>**health**</span> on gear.
+<span class=k>-</span><span class=w> </span>Pathfinder is the best solo class for learning boss patterns — you can survive long enough to observe every phase.
+<span class=k>-</span><span class=w> </span>In a party, Pathfinder traps provide reliable AoE damage without requiring attention, freeing mental load for mechanics.
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/ascendancies/shadowstalker.md<span class=w> </span>docs/ascendancies/beastmaster.md<span class=w> </span>docs/ascendancies/pathfinder.md
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add archer ascendancies (Shadowstalker, Beastmaster, Pathfinder)&quot;</span>
+</code></pre></div> <hr> <h2 id=task-8-systems-section>Task 8: Systems Section</h2> <p><strong>Files:</strong> - Create: <code>docs/systems/progression.md</code> - Create: <code>docs/systems/skill-tree.md</code> - Create: <code>docs/systems/ascendancy-tree.md</code> - Create: <code>docs/systems/skill-slots.md</code> - Create: <code>docs/systems/instancing.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/systems/progression.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [systems, progression, leveling]</span>
+<span class=gu>---</span>
 
-# Progression
+<span class=gh># Progression</span>
 
-Ashen Pantheon uses a **two-phase progression system** divided at level 50. Each phase has its own skill tree, its own pacing, and its own focus. Reaching level 100 opens endgame content.
+Ashen Pantheon uses a <span class=gs>**two-phase progression system**</span> divided at level 50. Each phase has its own skill tree, its own pacing, and its own focus. Reaching level 100 opens endgame content.
 
-## The Full Arc
+<span class=gu>## The Full Arc</span>
 
 | Phase | Levels | Focus |
 |---|---|---|
-| **Foundation** | 1 – 49 | Main skill tree, class skills, broad build construction |
-| **Ascendancy Choice** | 50 | One permanent ascendancy selected — no going back |
-| **Mastery** | 51 – 100 | Ascendancy skill tree, specialization deepens |
-| **Endgame** | 100 | Gear farming, challenge bosses, rankings |
+| <span class=gs>**Foundation**</span> | 1 – 49 | Main skill tree, class skills, broad build construction |
+| <span class=gs>**Ascendancy Choice**</span> | 50 | One permanent ascendancy selected — no going back |
+| <span class=gs>**Mastery**</span> | 51 – 100 | Ascendancy skill tree, specialization deepens |
+| <span class=gs>**Endgame**</span> | 100 | Gear farming, challenge bosses, rankings |
 
-## Phase 1: Foundation (Levels 1–49)
+<span class=gu>## Phase 1: Foundation (Levels 1–49)</span>
 
-You earn **1 skill point per level**, giving you 49 points to spend in the main skill tree by the time you hit the ascendancy gate.
+You earn <span class=gs>**1 skill point per level**</span>, giving you 49 points to spend in the main skill tree by the time you hit the ascendancy gate.
 
 The main skill tree is broad:
-- Shared nodes available to all classes
-- Class-specific nodes exclusive to your base class
-- Many nodes — you will not fill the tree in 49 points; choices matter
-- Node types: passive stat boosts, active skill unlocks, and modifier nodes that alter existing skills
+<span class=k>-</span><span class=w> </span>Shared nodes available to all classes
+<span class=k>-</span><span class=w> </span>Class-specific nodes exclusive to your base class
+<span class=k>-</span><span class=w> </span>Many nodes — you will not fill the tree in 49 points; choices matter
+<span class=k>-</span><span class=w> </span>Node types: passive stat boosts, active skill unlocks, and modifier nodes that alter existing skills
 
-See [Skill Tree](skill-tree.md) for full details.
+See [<span class=nt>Skill Tree</span>](<span class=na>skill-tree.md</span>) for full details.
 
-## The Ascendancy Gate (Level 50)
+<span class=gu>## The Ascendancy Gate (Level 50)</span>
 
-At level 50 your progression pauses until you complete the **Ascendancy Trial** — a solo instance designed to test the playstyle of your chosen ascendancy. On completion, you permanently lock in one of your class's three ascendancy paths.
+At level 50 your progression pauses until you complete the <span class=gs>**Ascendancy Trial**</span> — a solo instance designed to test the playstyle of your chosen ascendancy. On completion, you permanently lock in one of your class&#39;s three ascendancy paths.
 
-**This choice cannot be undone.** Choose carefully.
+<span class=gs>**This choice cannot be undone.**</span> Choose carefully.
 
-## Phase 2: Mastery (Levels 51–100)
+<span class=gu>## Phase 2: Mastery (Levels 51–100)</span>
 
-After choosing your ascendancy you enter the second phase. You earn **1 ascendancy point per 2 levels** (levels 52, 54, 56... up to 100), giving you **25 total ascendancy points**.
+After choosing your ascendancy you enter the second phase. You earn <span class=gs>**1 ascendancy point per 2 levels**</span> (levels 52, 54, 56... up to 100), giving you <span class=gs>**25 total ascendancy points**</span>.
 
 The ascendancy tree is focused:
-- Far fewer nodes than the main tree
-- Each node is powerful and identity-defining
-- Nodes build on each other — later nodes assume earlier ones are active
+<span class=k>-</span><span class=w> </span>Far fewer nodes than the main tree
+<span class=k>-</span><span class=w> </span>Each node is powerful and identity-defining
+<span class=k>-</span><span class=w> </span>Nodes build on each other — later nodes assume earlier ones are active
 
-See [Ascendancy Tree](ascendancy-tree.md) for full details.
+See [<span class=nt>Ascendancy Tree</span>](<span class=na>ascendancy-tree.md</span>) for full details.
 
-## Endgame (Level 100)
+<span class=gu>## Endgame (Level 100)</span>
 
 At level 100 the progression systems close and the endgame opens:
 
-- **Gear farming** — hunting specific boss drops to maximize your build
-- **Challenge bosses** — harder versions of existing bosses with new mechanics
-- **Rankings** — compete for clear speed records and leaderboard positions
+<span class=k>-</span><span class=w> </span><span class=gs>**Gear farming**</span> — hunting specific boss drops to maximize your build
+<span class=k>-</span><span class=w> </span><span class=gs>**Challenge bosses**</span> — harder versions of existing bosses with new mechanics
+<span class=k>-</span><span class=w> </span><span class=gs>**Rankings**</span> — compete for clear speed records and leaderboard positions
 
 [TODO: Expand endgame content section once designed]
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/systems/skill-tree.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [systems, skill-tree, leveling]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/systems/skill-tree.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [systems, skill-tree, leveling]</span>
+<span class=gu>---</span>
 
-# Skill Tree (Levels 1–50)
+<span class=gh># Skill Tree (Levels 1–50)</span>
 
 The main skill tree is the foundation of every build in Ashen Pantheon. It is a large, branching network of nodes that you navigate from level 1 through level 49, spending one point per level.
 
-## Overview
+<span class=gu>## Overview</span>
 
-- **49 points** available (one per level, levels 1–49)
-- Tree is **shared across classes** at the outer edges, with **class-exclusive sections** in the center
-- Node types: passive stats, active skill unlocks, and skill modifiers
-- You cannot fill the entire tree — builds are defined by what you choose to skip
+<span class=k>-</span><span class=w> </span><span class=gs>**49 points**</span> available (one per level, levels 1–49)
+<span class=k>-</span><span class=w> </span>Tree is <span class=gs>**shared across classes**</span> at the outer edges, with <span class=gs>**class-exclusive sections**</span> in the center
+<span class=k>-</span><span class=w> </span>Node types: passive stats, active skill unlocks, and skill modifiers
+<span class=k>-</span><span class=w> </span>You cannot fill the entire tree — builds are defined by what you choose to skip
 
-## Node Types
+<span class=gu>## Node Types</span>
 
 | Type | Description |
 |---|---|
-| **Passive Stat Node** | Directly increases a stat (e.g., +5% physical damage, +20 max health) |
-| **Skill Unlock Node** | Adds a new active skill to your available skill pool |
-| **Modifier Node** | Changes the behavior of a specific skill (e.g., &quot;Fire Ball now hits twice but costs 20% more mana&quot;) |
-| **Keystone Node** | Rare, powerful nodes that fundamentally change how a mechanic works. Located deep in the tree. |
+| <span class=gs>**Passive Stat Node**</span> | Directly increases a stat (e.g., +5% physical damage, +20 max health) |
+| <span class=gs>**Skill Unlock Node**</span> | Adds a new active skill to your available skill pool |
+| <span class=gs>**Modifier Node**</span> | Changes the behavior of a specific skill (e.g., &quot;Fire Ball now hits twice but costs 20% more mana&quot;) |
+| <span class=gs>**Keystone Node**</span> | Rare, powerful nodes that fundamentally change how a mechanic works. Located deep in the tree. |
 
-## Class Sections
+<span class=gu>## Class Sections</span>
 
 Each class has an exclusive section of the tree that only they can access:
 
@@ -870,33 +870,33 @@ Each class has an exclusive section of the tree that only they can access:
 | Mage | Elemental affinity, cast speed, mana efficiency |
 | Archer | Range multipliers, mobility skills, pet slot nodes |
 
-## Build Philosophy
+<span class=gu>## Build Philosophy</span>
 
 The skill tree rewards specialization. Spreading points evenly produces a weak generalist build. Strong builds commit to a clear path:
 
-1. Rush toward key Skill Unlock nodes early
-2. Fill in passive stat nodes along the path
-3. Pick up Modifier nodes for your core active skills
-4. Consider Keystone nodes as long-term goals
+<span class=k>1.</span> Rush toward key Skill Unlock nodes early
+<span class=k>2.</span> Fill in passive stat nodes along the path
+<span class=k>3.</span> Pick up Modifier nodes for your core active skills
+<span class=k>4.</span> Consider Keystone nodes as long-term goals
 
 [TODO: Add visual tree diagram once designed]
 [TODO: Add full node list once tree is finalized]
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/systems/ascendancy-tree.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [systems, ascendancy-tree, endgame]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/systems/ascendancy-tree.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [systems, ascendancy-tree, endgame]</span>
+<span class=gu>---</span>
 
-# Ascendancy Tree (Levels 50–100)
+<span class=gh># Ascendancy Tree (Levels 50–100)</span>
 
 The ascendancy tree is the second phase of character progression, unlocked after you choose your ascendancy at level 50. It is a smaller, more powerful tree exclusive to your chosen ascendancy path.
 
-## Overview
+<span class=gu>## Overview</span>
 
-- **25 points** available (one per 2 levels from 52 to 100)
-- Tree is **exclusive to your ascendancy** — Berserker and Guardian trees are completely different
-- Nodes are fewer but far more impactful than main skill tree nodes
-- Tree is designed to amplify and complete the build direction started in the main tree
+<span class=k>-</span><span class=w> </span><span class=gs>**25 points**</span> available (one per 2 levels from 52 to 100)
+<span class=k>-</span><span class=w> </span>Tree is <span class=gs>**exclusive to your ascendancy**</span> — Berserker and Guardian trees are completely different
+<span class=k>-</span><span class=w> </span>Nodes are fewer but far more impactful than main skill tree nodes
+<span class=k>-</span><span class=w> </span>Tree is designed to amplify and complete the build direction started in the main tree
 
-## Pacing
+<span class=gu>## Pacing</span>
 
 | Level Range | Points Earned | Cumulative Total |
 |---|---|---|
@@ -906,17 +906,17 @@ The ascendancy tree is the second phase of character progression, unlocked after
 | ... | ... | ... |
 | 100 | 1 | 25 |
 
-## Node Power Level
+<span class=gu>## Node Power Level</span>
 
 Ascendancy nodes are intentionally strong. Examples of the tier of power:
 
-- &quot;Your critical strikes deal 40% more damage&quot;
-- &quot;Lifesteal heals for double the amount when below 50% health&quot;
-- &quot;Taunt now pulls all enemies in the instance to your location&quot;
+<span class=k>-</span><span class=w> </span>&quot;Your critical strikes deal 40% more damage&quot;
+<span class=k>-</span><span class=w> </span>&quot;Lifesteal heals for double the amount when below 50% health&quot;
+<span class=k>-</span><span class=w> </span>&quot;Taunt now pulls all enemies in the instance to your location&quot;
 
 These are build-defining, not incremental.
 
-## Synergy with Main Tree
+<span class=gu>## Synergy with Main Tree</span>
 
 The ascendancy tree assumes you have built the main tree to support it. For example, Berserker ascendancy nodes that scale with Rage assume you have unlocked Rage-generating skills in the main tree.
 
@@ -924,75 +924,75 @@ Plan your main tree with your intended ascendancy in mind from character creatio
 
 [TODO: Add individual ascendancy tree diagrams once designed]
 [TODO: Add full node lists per ascendancy]
-</code></pre> <ul> <li>[ ] <strong>Step 4: Create <code>docs/systems/skill-slots.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [systems, skill-slots, keybinds]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Create <code>docs/systems/skill-slots.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [systems, skill-slots, keybinds]</span>
+<span class=gu>---</span>
 
-# Skill Slots
+<span class=gh># Skill Slots</span>
 
-Ashen Pantheon uses a **free keybind system** — any skill you have unlocked can be assigned to any keybind slot, with no restrictions.
+Ashen Pantheon uses a <span class=gs>**free keybind system**</span> — any skill you have unlocked can be assigned to any keybind slot, with no restrictions.
 
-## How It Works
+<span class=gu>## How It Works</span>
 
-1. **Unlock skills** via the skill tree (Skill Unlock nodes) and ascendancy tree
-2. Open the **Skills panel** to see all unlocked skills
-3. **Drag any skill** to any empty keybind slot
-4. Your keybind is now active in combat
+<span class=k>1.</span> <span class=gs>**Unlock skills**</span> via the skill tree (Skill Unlock nodes) and ascendancy tree
+<span class=k>2.</span> Open the <span class=gs>**Skills panel**</span> to see all unlocked skills
+<span class=k>3.</span> <span class=gs>**Drag any skill**</span> to any empty keybind slot
+<span class=k>4.</span> Your keybind is now active in combat
 
-## No Restrictions
+<span class=gu>## No Restrictions</span>
 
 There is no concept of a &quot;skill type&quot; that limits assignment. You can:
 
-- Fill every slot with damage skills
-- Mix damage, defense, and movement skills freely
-- Assign healing skills alongside crowd-control skills
-- Run zero defensive skills if you prefer maximum aggression (not recommended)
+<span class=k>-</span><span class=w> </span>Fill every slot with damage skills
+<span class=k>-</span><span class=w> </span>Mix damage, defense, and movement skills freely
+<span class=k>-</span><span class=w> </span>Assign healing skills alongside crowd-control skills
+<span class=k>-</span><span class=w> </span>Run zero defensive skills if you prefer maximum aggression (not recommended)
 
 This means the optimal skill layout is a meaningful build decision, not a default.
 
-## Keybind Slots
+<span class=gu>## Keybind Slots</span>
 
 [TODO: Add exact number of keybind slots once finalized]
 
 Standard layout includes slots for:
-- Primary attack
-- Secondary attack
-- Utility / movement
-- Active defensive
-- Special / signature skill
+<span class=k>-</span><span class=w> </span>Primary attack
+<span class=k>-</span><span class=w> </span>Secondary attack
+<span class=k>-</span><span class=w> </span>Utility / movement
+<span class=k>-</span><span class=w> </span>Active defensive
+<span class=k>-</span><span class=w> </span>Special / signature skill
 
 All slots are freely reassignable. The suggested labels above are for reference only.
 
-## Build Implications
+<span class=gu>## Build Implications</span>
 
 The free keybind system interacts with build design in important ways:
 
-- Skill modifier nodes in the skill tree only apply when the modified skill is slotted
-- Some ascendancy nodes grant passive bonuses to &quot;any movement skill slotted&quot;
-- You can create highly specialized setups (all damage) or flexible setups (mixed toolkit)
+<span class=k>-</span><span class=w> </span>Skill modifier nodes in the skill tree only apply when the modified skill is slotted
+<span class=k>-</span><span class=w> </span>Some ascendancy nodes grant passive bonuses to &quot;any movement skill slotted&quot;
+<span class=k>-</span><span class=w> </span>You can create highly specialized setups (all damage) or flexible setups (mixed toolkit)
 
 [TODO: Add example keybind layouts per ascendancy once skills are finalized]
-</code></pre> <ul> <li>[ ] <strong>Step 5: Create <code>docs/systems/instancing.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [systems, instancing, multiplayer]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 5: Create <code>docs/systems/instancing.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [systems, instancing, multiplayer]</span>
+<span class=gu>---</span>
 
-# Instancing
+<span class=gh># Instancing</span>
 
-Ashen Pantheon uses a **player-owned instancing system**. Every player controls their own copy of the game world, with the option to invite others.
+Ashen Pantheon uses a <span class=gs>**player-owned instancing system**</span>. Every player controls their own copy of the game world, with the option to invite others.
 
-## Your World Instance
+<span class=gu>## Your World Instance</span>
 
 When you log in, you enter your personal instance — a version of the game world that belongs exclusively to you. You control:
 
-- **Progression state** — which bosses you have killed, which zones are cleared
-- **Access** — who can enter your world
-- **Pace** — there is no server-wide day cycle or shared resource depletion
+<span class=k>-</span><span class=w> </span><span class=gs>**Progression state**</span> — which bosses you have killed, which zones are cleared
+<span class=k>-</span><span class=w> </span><span class=gs>**Access**</span> — who can enter your world
+<span class=k>-</span><span class=w> </span><span class=gs>**Pace**</span> — there is no server-wide day cycle or shared resource depletion
 
 Nobody can enter your instance without your invitation.
 
-## Party System
+<span class=gu>## Party System</span>
 
-You can invite up to **3 other players** to your instance, creating a party of 4.
+You can invite up to <span class=gs>**3 other players**</span> to your instance, creating a party of 4.
 
 | Action | How |
 |---|---|
@@ -1001,21 +1001,21 @@ You can invite up to **3 other players** to your instance, creating a party of 4
 | Leave a party | Party panel → Leave Instance (you return to your own world) |
 | Kick a party member | Party leader only — Party panel → Kick Player |
 
-When a party member enters your instance, their progression in **your** world does not affect their own instance. Boss kills in your instance count for you; you must enter their instance for them to get credit.
+When a party member enters your instance, their progression in <span class=gs>**your**</span> world does not affect their own instance. Boss kills in your instance count for you; you must enter their instance for them to get credit.
 
-## Global Layer
+<span class=gu>## Global Layer</span>
 
-Even inside your personal instance, a **global layer** connects you to all players:
+Even inside your personal instance, a <span class=gs>**global layer**</span> connects you to all players:
 
 | Feature | Description |
 |---|---|
-| **Global Chat** | Persistent text channels shared by all players regardless of instance |
-| **Rankings** | Live leaderboards for level, boss kills, and gear score — updated in real time |
-| **Trading** | List items for sale and purchase items from other players across instances |
+| <span class=gs>**Global Chat**</span> | Persistent text channels shared by all players regardless of instance |
+| <span class=gs>**Rankings**</span> | Live leaderboards for level, boss kills, and gear score — updated in real time |
+| <span class=gs>**Trading**</span> | List items for sale and purchase items from other players across instances |
 
 The global layer ensures the game feels like a living world even within solo instancing.
 
-## Boss Instance Scaling
+<span class=gu>## Boss Instance Scaling</span>
 
 Boss encounters scale based on party size:
 
@@ -1027,59 +1027,59 @@ Boss encounters scale based on party size:
 | 4 | 2.5× | Full party tuning |
 
 [TODO: Add exact scaling values once tuned in playtesting]
-</code></pre> <ul> <li>[ ] <strong>Step 6: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/systems/
-git commit -m &quot;feat: add systems section (progression, skill tree, ascendancy tree, skill slots, instancing)&quot;
-</code></pre> <hr> <h2 id=task-9-bosses-world-sections>Task 9: Bosses + World Sections</h2> <p><strong>Files:</strong> - Create: <code>docs/bosses/index.md</code> - Create: <code>docs/bosses/boss-phases.md</code> - Create: <code>docs/world/index.md</code> - Create: <code>docs/world/maps.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/bosses/index.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [bosses, overview]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 6: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/systems/
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add systems section (progression, skill tree, ascendancy tree, skill slots, instancing)&quot;</span>
+</code></pre></div> <hr> <h2 id=task-9-bosses-world-sections>Task 9: Bosses + World Sections</h2> <p><strong>Files:</strong> - Create: <code>docs/bosses/index.md</code> - Create: <code>docs/bosses/boss-phases.md</code> - Create: <code>docs/world/index.md</code> - Create: <code>docs/world/maps.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/bosses/index.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [bosses, overview]</span>
+<span class=gu>---</span>
 
-# Bosses
+<span class=gh># Bosses</span>
 
 Bosses are the heart of Ashen Pantheon. Every major boss is drawn from a real-world mythology and designed to be a memorable, escalating encounter — not a damage sponge with a health bar.
 
-## Design Philosophy
+<span class=gu>## Design Philosophy</span>
 
 Each boss is built around three principles:
 
-1. **Mythological authenticity** — every boss is rooted in real mythology. Their visual design, abilities, and lore reflect their actual mythological origin.
-2. **Multi-phase fights** — bosses evolve as the fight progresses. A boss at 100% health fights differently than the same boss at 20% health.
-3. **Learn-able patterns** — bosses are hard but fair. Every attack has a tell. Every mechanic can be understood and countered.
+<span class=k>1.</span> <span class=gs>**Mythological authenticity**</span> — every boss is rooted in real mythology. Their visual design, abilities, and lore reflect their actual mythological origin.
+<span class=k>2.</span> <span class=gs>**Multi-phase fights**</span> — bosses evolve as the fight progresses. A boss at 100% health fights differently than the same boss at 20% health.
+<span class=k>3.</span> <span class=gs>**Learn-able patterns**</span> — bosses are hard but fair. Every attack has a tell. Every mechanic can be understood and countered.
 
-## Mythologies
+<span class=gu>## Mythologies</span>
 
 Ashen Pantheon draws from five real-world mythological traditions:
 
 | Mythology | Region | Themes |
 |---|---|---|
-| **Greek** | Mediterranean | Hubris, fate, divine punishment |
-| **Norse** | Scandinavia | Doom, honor, the end of all things |
-| **Egyptian** | North Africa | Judgment, the afterlife, cosmic order |
-| **Japanese** | East Asia | Purity, spirits, the boundary between worlds |
-| **Slavic** | Eastern Europe | Nature, dark forests, old gods |
+| <span class=gs>**Greek**</span> | Mediterranean | Hubris, fate, divine punishment |
+| <span class=gs>**Norse**</span> | Scandinavia | Doom, honor, the end of all things |
+| <span class=gs>**Egyptian**</span> | North Africa | Judgment, the afterlife, cosmic order |
+| <span class=gs>**Japanese**</span> | East Asia | Purity, spirits, the boundary between worlds |
+| <span class=gs>**Slavic**</span> | Eastern Europe | Nature, dark forests, old gods |
 
-## Boss Roster
+<span class=gu>## Boss Roster</span>
 
 [TODO: Add individual boss pages and link them here as bosses are designed and named]
 
 Each boss will have a dedicated page covering:
-- Lore and mythological background
-- Phase breakdown
-- Attack patterns and counters
-- Recommended builds and party compositions
-- Drop table
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/bosses/boss-phases.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [bosses, mechanics, phases]
----
+<span class=k>-</span><span class=w> </span>Lore and mythological background
+<span class=k>-</span><span class=w> </span>Phase breakdown
+<span class=k>-</span><span class=w> </span>Attack patterns and counters
+<span class=k>-</span><span class=w> </span>Recommended builds and party compositions
+<span class=k>-</span><span class=w> </span>Drop table
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/bosses/boss-phases.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [bosses, mechanics, phases]</span>
+<span class=gu>---</span>
 
-# Boss Phases
+<span class=gh># Boss Phases</span>
 
-All major bosses in Ashen Pantheon use a **multi-phase fight system**. As a boss's health drops, the encounter changes — new mechanics appear, existing ones become more dangerous, and the visual presentation escalates.
+All major bosses in Ashen Pantheon use a <span class=gs>**multi-phase fight system**</span>. As a boss&#39;s health drops, the encounter changes — new mechanics appear, existing ones become more dangerous, and the visual presentation escalates.
 
-## Why Phases Matter
+<span class=gu>## Why Phases Matter</span>
 
 A single-phase boss fight is a test of one skill set. A multi-phase boss fight is a test of adaptability. Ashen Pantheon bosses are designed so that the strategy that works at 100% health does not simply work at 20% health — you must adjust.
 
-## Standard Phase Structure
+<span class=gu>## Standard Phase Structure</span>
 
 Most bosses use a three-phase structure, though this varies:
 
@@ -1089,57 +1089,57 @@ Most bosses use a three-phase structure, though this varies:
 | Phase 2 | 66% – 33% | New abilities added, arena may change, damage increases |
 | Phase 3 | 33% – 0% | Enraged state, highest damage, signature ultimate ability |
 
-## Phase Transitions
+<span class=gu>## Phase Transitions</span>
 
 Phase transitions are dramatic, scripted moments:
 
-- Boss becomes temporarily invulnerable
-- A cutscene or animation plays showing the boss's escalation
-- The arena may change (new hazards appear, geometry shifts)
-- The boss resets any stacks or statuses
+<span class=k>-</span><span class=w> </span>Boss becomes temporarily invulnerable
+<span class=k>-</span><span class=w> </span>A cutscene or animation plays showing the boss&#39;s escalation
+<span class=k>-</span><span class=w> </span>The arena may change (new hazards appear, geometry shifts)
+<span class=k>-</span><span class=w> </span>The boss resets any stacks or statuses
 
 Phase transitions are the safest moment to use consumables and communicate with your party.
 
-## Enrage Timers
+<span class=gu>## Enrage Timers</span>
 
 Some bosses have a soft enrage — if you do not reach a phase threshold within a time limit, the boss gains a permanent damage buff. This prevents excessively slow fights.
 
 [TODO: Add enrage timer details per boss once tuned]
 
-## Phase-Specific Mechanics
+<span class=gu>## Phase-Specific Mechanics</span>
 
 Many bosses have mechanics unique to a single phase:
 
-- A Greek boss might summon divine champions only in Phase 2
-- A Norse boss might trigger Ragnarok effects in Phase 3, filling the arena with rising water
-- An Egyptian boss might require you to solve a puzzle during the Phase 1→2 transition
+<span class=k>-</span><span class=w> </span>A Greek boss might summon divine champions only in Phase 2
+<span class=k>-</span><span class=w> </span>A Norse boss might trigger Ragnarok effects in Phase 3, filling the arena with rising water
+<span class=k>-</span><span class=w> </span>An Egyptian boss might require you to solve a puzzle during the Phase 1→2 transition
 
 [TODO: Document per-boss phase mechanics as bosses are designed]
-</code></pre> <ul> <li>[ ] <strong>Step 3: Create <code>docs/world/index.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [world, overview]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Create <code>docs/world/index.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [world, overview]</span>
+<span class=gu>---</span>
 
-# World
+<span class=gh># World</span>
 
 The world of Ashen Pantheon is a realm caught between mythological pantheons. Millennia of divine warfare have shattered the natural order — zones that were once distinct regions have collapsed into each other, leaving a fractured landscape where Greek ruins stand beside Norse forests and Egyptian deserts bleed into Slavic marshes.
 
-## The Ashen Realm
+<span class=gu>## The Ashen Realm</span>
 
-The world is called the **Ashen Realm** — named for the divine ash that rains from a sky that has not seen true sunlight since the gods began their war. The ash is not merely atmospheric; it is residual divine energy that empowers those who absorb enough of it. That is what you are: a mortal who has absorbed enough to fight back.
+The world is called the <span class=gs>**Ashen Realm**</span> — named for the divine ash that rains from a sky that has not seen true sunlight since the gods began their war. The ash is not merely atmospheric; it is residual divine energy that empowers those who absorb enough of it. That is what you are: a mortal who has absorbed enough to fight back.
 
-## World Structure
+<span class=gu>## World Structure</span>
 
-The world is divided into **zones** — distinct geographic regions, each themed around one of the game's mythological traditions. Zones contain:
+The world is divided into <span class=gs>**zones**</span> — distinct geographic regions, each themed around one of the game&#39;s mythological traditions. Zones contain:
 
-- Exploration areas with enemies and resources
-- Hidden locations with lore items
-- One or more **boss arenas** — specially designed encounters that trigger when entered
+<span class=k>-</span><span class=w> </span>Exploration areas with enemies and resources
+<span class=k>-</span><span class=w> </span>Hidden locations with lore items
+<span class=k>-</span><span class=w> </span>One or more <span class=gs>**boss arenas**</span> — specially designed encounters that trigger when entered
 
-## Instancing
+<span class=gu>## Instancing</span>
 
-The world is **player-instanced** — you explore your own copy of the Ashen Realm. See [Instancing](../systems/instancing.md) for full details.
+The world is <span class=gs>**player-instanced**</span> — you explore your own copy of the Ashen Realm. See [<span class=nt>Instancing</span>](<span class=na>../systems/instancing.md</span>) for full details.
 
-## Global vs. Instance
+<span class=gu>## Global vs. Instance</span>
 
 | Layer | Who sees it | What it contains |
 |---|---|---|
@@ -1147,37 +1147,37 @@ The world is **player-instanced** — you explore your own copy of the Ashen Rea
 | Global Layer | All players | Chat, rankings, trading |
 
 [TODO: Add zone list with map preview images once zones are named and designed]
-</code></pre> <ul> <li>[ ] <strong>Step 4: Create <code>docs/world/maps.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [world, maps, zones]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 4: Create <code>docs/world/maps.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [world, maps, zones]</span>
+<span class=gu>---</span>
 
-# Maps &amp; Zones
+<span class=gh># Maps &amp; Zones</span>
 
-The Ashen Realm is divided into **zones** — distinct geographic regions that players explore and clear. Each zone has a distinct visual theme drawn from one of the game's mythological traditions.
+The Ashen Realm is divided into <span class=gs>**zones**</span> — distinct geographic regions that players explore and clear. Each zone has a distinct visual theme drawn from one of the game&#39;s mythological traditions.
 
-## Zone Overview
+<span class=gu>## Zone Overview</span>
 
 [TODO: Add full zone list as zones are designed and named]
 
-## Zone Structure
+<span class=gu>## Zone Structure</span>
 
 Each zone contains:
 
 | Element | Description |
 |---|---|
-| **Exploration Area** | Open map space with enemy encounters and environmental storytelling |
-| **Resource Nodes** | Gatherable materials for crafting and trading |
-| **Hidden Areas** | Optional side paths with lore items and rare enemies |
-| **Boss Arena** | A locked area that opens when triggered — contains the zone's boss |
-| **Instance Checkpoint** | Saves your position in the instance so you re-enter in the same zone |
+| <span class=gs>**Exploration Area**</span> | Open map space with enemy encounters and environmental storytelling |
+| <span class=gs>**Resource Nodes**</span> | Gatherable materials for crafting and trading |
+| <span class=gs>**Hidden Areas**</span> | Optional side paths with lore items and rare enemies |
+| <span class=gs>**Boss Arena**</span> | A locked area that opens when triggered — contains the zone&#39;s boss |
+| <span class=gs>**Instance Checkpoint**</span> | Saves your position in the instance so you re-enter in the same zone |
 
-## Zone Progression
+<span class=gu>## Zone Progression</span>
 
 Zones are intended to be completed in a general order based on player level, though the instanced nature means you can attempt any zone at any time:
 
 [TODO: Add recommended zone order once zones are designed]
 
-## Mythological Zone Themes
+<span class=gu>## Mythological Zone Themes</span>
 
 | Theme | Visual Style | Example Hazards |
 |---|---|---|
@@ -1188,76 +1188,76 @@ Zones are intended to be completed in a general order based on player level, tho
 | Slavic | Deep marshes, dark forests, wooden fortress ruins | Cursed mists, animated forest |
 
 [TODO: Add individual zone pages with map images, enemy lists, and boss location guides]
-</code></pre> <ul> <li>[ ] <strong>Step 5: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/bosses/ docs/world/
-git commit -m &quot;feat: add bosses and world sections&quot;
-</code></pre> <hr> <h2 id=task-10-devlog-section>Task 10: Devlog Section</h2> <p><strong>Files:</strong> - Create: <code>docs/devlog/index.md</code> - Create: <code>docs/devlog/001-the-beginning.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/devlog/index.md</code></strong></li> </ul> <pre><code class=language-markdown>---
+</code></pre></div> <ul> <li>[ ] <strong>Step 5: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/bosses/<span class=w> </span>docs/world/
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add bosses and world sections&quot;</span>
+</code></pre></div> <hr> <h2 id=task-10-devlog-section>Task 10: Devlog Section</h2> <p><strong>Files:</strong> - Create: <code>docs/devlog/index.md</code> - Create: <code>docs/devlog/001-the-beginning.md</code></p> <ul> <li>[ ] <strong>Step 1: Create <code>docs/devlog/index.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
 tags: [devlog]
 hide:
-  - toc
----
+<span class=gu>  - toc</span>
+<span class=gu>---</span>
 
-# Devlog
+<span class=gh># Devlog</span>
 
-Follow the development of **Ashen Pantheon** from the first idea to release. These entries are written directly by the developer — unfiltered progress updates, design decisions, lessons learned, and honest looks at what is and isn't working.
+Follow the development of <span class=gs>**Ashen Pantheon**</span> from the first idea to release. These entries are written directly by the developer — unfiltered progress updates, design decisions, lessons learned, and honest looks at what is and isn&#39;t working.
 
-## Entries
+<span class=gu>## Entries</span>
 
 | # | Title | Date |
 |---|---|---|
-| [001](001-the-beginning.md) | The Beginning | 2026-04-17 |
+| [<span class=nt>001</span>](<span class=na>001-the-beginning.md</span>) | The Beginning | 2026-04-17 |
 
 [TODO: New entries added as development progresses]
-</code></pre> <ul> <li>[ ] <strong>Step 2: Create <code>docs/devlog/001-the-beginning.md</code></strong></li> </ul> <pre><code class=language-markdown>---
-tags: [devlog, announcement]
----
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Create <code>docs/devlog/001-the-beginning.md</code></strong></li> </ul> <div class=highlight><pre><span></span><code>---
+<span class=gu>tags: [devlog, announcement]</span>
+<span class=gu>---</span>
 
-# #001 — The Beginning
+<span class=gh># #001 — The Beginning</span>
 
-*April 17, 2026*
+<span class=ge>*April 17, 2026*</span>
 
 ---
 
 Every project starts somewhere. This one started with a frustration.
 
-I've played a lot of action RPGs. I love the genre deeply — the satisfying click of a build coming together, the moment a boss's pattern finally clicks, the way a well-designed skill tree can hold your attention for hundreds of hours. But I kept running into the same walls: instancing systems that felt like afterthoughts, boss fights that were just stat checks dressed up in flashy animations, and ascendancy systems that felt like the designers ran out of budget halfway through.
+I&#39;ve played a lot of action RPGs. I love the genre deeply — the satisfying click of a build coming together, the moment a boss&#39;s pattern finally clicks, the way a well-designed skill tree can hold your attention for hundreds of hours. But I kept running into the same walls: instancing systems that felt like afterthoughts, boss fights that were just stat checks dressed up in flashy animations, and ascendancy systems that felt like the designers ran out of budget halfway through.
 
 So I started designing the game I wanted to play.
 
-## What Ashen Pantheon Is
+<span class=gu>## What Ashen Pantheon Is</span>
 
-At its core, it's a **top-down 2D action RPG** — responsive, fast, skill-expressive. The camera sits above the character. Combat is immediate. Every fight is something you actively participate in, not something you watch your character do.
+At its core, it&#39;s a <span class=gs>**top-down 2D action RPG**</span> — responsive, fast, skill-expressive. The camera sits above the character. Combat is immediate. Every fight is something you actively participate in, not something you watch your character do.
 
-The instancing is first-class. Your world is yours. That means no competition for resources, no one ruining your boss attempt, no waiting for a respawn. But it doesn't mean isolation — the global layer keeps you connected to everyone else: chat is shared, rankings are live, trading works across instances.
+The instancing is first-class. Your world is yours. That means no competition for resources, no one ruining your boss attempt, no waiting for a respawn. But it doesn&#39;t mean isolation — the global layer keeps you connected to everyone else: chat is shared, rankings are live, trading works across instances.
 
-The bosses are mythological. Not loosely inspired — actually pulled from real pantheons. Greek, Norse, Egyptian, Japanese, Slavic. I've been doing a lot of reading.
+The bosses are mythological. Not loosely inspired — actually pulled from real pantheons. Greek, Norse, Egyptian, Japanese, Slavic. I&#39;ve been doing a lot of reading.
 
-## The Three Classes
+<span class=gu>## The Three Classes</span>
 
-Three base classes: **Warrior**, **Mage**, **Archer**. Clean archetypes, but with room to go strange. Each branches into three ascendancies at level 50 — nine total paths, each with a distinct mechanical identity. The Hexblade is a chaos-DoT mage who curses targets and watches them rot. The Shadowstalker is an archer who closes to melee range and backstabs. The Pathfinder is a tank archer who wins by outlasting everything.
+Three base classes: <span class=gs>**Warrior**</span>, <span class=gs>**Mage**</span>, <span class=gs>**Archer**</span>. Clean archetypes, but with room to go strange. Each branches into three ascendancies at level 50 — nine total paths, each with a distinct mechanical identity. The Hexblade is a chaos-DoT mage who curses targets and watches them rot. The Shadowstalker is an archer who closes to melee range and backstabs. The Pathfinder is a tank archer who wins by outlasting everything.
 
-## The Two-Phase Skill System
+<span class=gu>## The Two-Phase Skill System</span>
 
 Levels 1–50: broad skill tree, many nodes, class-specific paths, deep customization. Levels 50–100: focused ascendancy tree, 25 powerful points, 1 per 2 levels. The inflection at 50 is the most important decision in the game.
 
-## Why This Wiki
+<span class=gu>## Why This Wiki</span>
 
-I'm building this wiki as a public development document — it will grow as the game grows. Pages marked **[TODO]** aren't placeholders forever; they're honest signals about where development hasn't reached yet. When a skill tree gets designed, the wiki gets updated. When a boss gets named, the wiki gets its page.
+I&#39;m building this wiki as a public development document — it will grow as the game grows. Pages marked <span class=gs>**[TODO]**</span> aren&#39;t placeholders forever; they&#39;re honest signals about where development hasn&#39;t reached yet. When a skill tree gets designed, the wiki gets updated. When a boss gets named, the wiki gets its page.
 
 This is a living document.
 
 ---
 
-*Next entry will cover early combat prototyping and the first pass at class differentiation.*
-</code></pre> <ul> <li>[ ] <strong>Step 3: Commit</strong></li> </ul> <pre><code class=language-bash>git add docs/devlog/
-git commit -m &quot;feat: add devlog section with first entry&quot;
-</code></pre> <hr> <h2 id=task-11-final-build-verification-git-setup-go-live>Task 11: Final Build Verification + Git Setup + Go Live</h2> <ul> <li>[ ] <strong>Step 1: Initialize git (if not already done)</strong></li> </ul> <pre><code class=language-bash>cd &quot;C:/Users/mastu/Desktop/Ashen Pantheon&quot;
-git init
-git add .
-git commit -m &quot;feat: complete Ashen Pantheon wiki scaffold&quot;
-</code></pre> <ul> <li>[ ] <strong>Step 2: Local build verification</strong></li> </ul> <pre><code class=language-bash>mkdocs build --strict 2&gt;&amp;1
-</code></pre> <p>Expected: <code>INFO - Documentation built in X.XX seconds</code> with no ERRORs. Warnings about git dates are acceptable (git history is shallow locally). If you see a broken link error, track down the offending file and fix the link.</p> <ul> <li>[ ] <strong>Step 3: Local preview (optional but recommended)</strong></li> </ul> <pre><code class=language-bash>mkdocs serve
-</code></pre> <p>Open <code>http://127.0.0.1:8000</code> in a browser. Verify: - Dark amber theme renders correctly - Logo appears in top-left - All nav tabs visible (Home, Game Overview, Classes, Ascendancies, Systems, Bosses, World, Devlog, Tags) - Tags index page loads - At least one class page and one ascendancy page render correctly</p> <p>Press <code>Ctrl+C</code> to stop the server.</p> <ul> <li>[ ] <strong>Step 4: Create GitHub repository</strong></li> </ul> <p>Option A — GitHub CLI (recommended):</p> <pre><code class=language-bash>gh repo create katassyn/ashen-pantheon --public --description &quot;Official wiki for Ashen Pantheon ARPG&quot;
-</code></pre> <p>Option B — Manual: Go to https://github.com/new → name: <code>ashen-pantheon</code> → Public → Create repository</p> <ul> <li>[ ] <strong>Step 5: Push to GitHub</strong></li> </ul> <pre><code class=language-bash>git remote add origin https://github.com/katassyn/ashen-pantheon.git
-git branch -M main
-git push -u origin main
-</code></pre> <ul> <li> <p>[ ] <strong>Step 6: Enable GitHub Pages</strong></p> </li> <li> <p>Go to <code>https://github.com/katassyn/ashen-pantheon/settings/pages</code></p> </li> <li>Under <strong>Source</strong>, select <strong>Deploy from a branch</strong></li> <li>Branch: <code>gh-pages</code> / folder: <code>/ (root)</code></li> <li>Click <strong>Save</strong></li> </ul> <p>Note: The <code>gh-pages</code> branch is created automatically by the GitHub Actions workflow on first push. If it hasn't run yet, wait ~2 minutes after the push then set this.</p> <ul> <li> <p>[ ] <strong>Step 7: Verify deployment</strong></p> </li> <li> <p>Go to <code>https://github.com/katassyn/ashen-pantheon/actions</code></p> </li> <li>Confirm the <code>Deploy Wiki to GitHub Pages</code> workflow completed with a green checkmark</li> <li>Open <code>https://katassyn.github.io/ashen-pantheon/</code></li> <li>Wiki is live ✓</li> </ul> <hr> <h2 id=self-review>Self-Review</h2> <p><strong>Spec coverage:</strong> - ✓ MkDocs Material + GitHub Pages + dark amber theme - ✓ All 30 doc files mapped and created - ✓ Full mkdocs.yml with nav matching every file - ✓ GitHub Actions deploy workflow - ✓ requirements.txt with 3 plugins - ✓ Logo used as logo and favicon - ✓ All classes with full content - ✓ All 9 ascendancies with mechanics - ✓ All 5 systems pages - ✓ Bosses (index + phases) - ✓ World (overview + maps) - ✓ Devlog (hub + entry 001) - ✓ Tags index - ✓ [TODO] markers for future content throughout - ✓ Go-live commands with exact steps</p> <p><strong>No placeholders introduced beyond intentional [TODO] game content markers.</strong></p> <p><strong>Type/path consistency:</strong> All internal links use relative paths matching the file structure. All <code>mkdocs.yml</code> nav entries match created file paths.</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 17, 2026 07:11:51 UTC">April 17, 2026</span> </span> <span class=md-source-file__fact> <span class=md-icon title=Created> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 17, 2026 07:11:51 UTC">April 17, 2026</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <button type=button class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg> Back to top </button> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.79ae519e.min.js></script> </body> </html>
+<span class=ge>*Next entry will cover early combat prototyping and the first pass at class differentiation.*</span>
+</code></pre></div> <ul> <li>[ ] <strong>Step 3: Commit</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>add<span class=w> </span>docs/devlog/
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: add devlog section with first entry&quot;</span>
+</code></pre></div> <hr> <h2 id=task-11-final-build-verification-git-setup-go-live>Task 11: Final Build Verification + Git Setup + Go Live</h2> <ul> <li>[ ] <strong>Step 1: Initialize git (if not already done)</strong></li> </ul> <div class=highlight><pre><span></span><code><span class=nb>cd</span><span class=w> </span><span class=s2>&quot;C:/Users/mastu/Desktop/Ashen Pantheon&quot;</span>
+git<span class=w> </span>init
+git<span class=w> </span>add<span class=w> </span>.
+git<span class=w> </span>commit<span class=w> </span>-m<span class=w> </span><span class=s2>&quot;feat: complete Ashen Pantheon wiki scaffold&quot;</span>
+</code></pre></div> <ul> <li>[ ] <strong>Step 2: Local build verification</strong></li> </ul> <div class=highlight><pre><span></span><code>mkdocs<span class=w> </span>build<span class=w> </span>--strict<span class=w> </span><span class=m>2</span>&gt;<span class=p>&amp;</span><span class=m>1</span>
+</code></pre></div> <p>Expected: <code>INFO - Documentation built in X.XX seconds</code> with no ERRORs. Warnings about git dates are acceptable (git history is shallow locally). If you see a broken link error, track down the offending file and fix the link.</p> <ul> <li>[ ] <strong>Step 3: Local preview (optional but recommended)</strong></li> </ul> <div class=highlight><pre><span></span><code>mkdocs<span class=w> </span>serve
+</code></pre></div> <p>Open <code>http://127.0.0.1:8000</code> in a browser. Verify: - Dark amber theme renders correctly - Logo appears in top-left - All nav tabs visible (Home, Game Overview, Classes, Ascendancies, Systems, Bosses, World, Devlog, Tags) - Tags index page loads - At least one class page and one ascendancy page render correctly</p> <p>Press <code>Ctrl+C</code> to stop the server.</p> <ul> <li>[ ] <strong>Step 4: Create GitHub repository</strong></li> </ul> <p>Option A — GitHub CLI (recommended): <div class=highlight><pre><span></span><code>gh<span class=w> </span>repo<span class=w> </span>create<span class=w> </span>katassyn/ashen-pantheon<span class=w> </span>--public<span class=w> </span>--description<span class=w> </span><span class=s2>&quot;Official wiki for Ashen Pantheon ARPG&quot;</span>
+</code></pre></div></p> <p>Option B — Manual: Go to https://github.com/new → name: <code>ashen-pantheon</code> → Public → Create repository</p> <ul> <li>[ ] <strong>Step 5: Push to GitHub</strong></li> </ul> <div class=highlight><pre><span></span><code>git<span class=w> </span>remote<span class=w> </span>add<span class=w> </span>origin<span class=w> </span>https://github.com/katassyn/ashen-pantheon.git
+git<span class=w> </span>branch<span class=w> </span>-M<span class=w> </span>main
+git<span class=w> </span>push<span class=w> </span>-u<span class=w> </span>origin<span class=w> </span>main
+</code></pre></div> <ul> <li> <p>[ ] <strong>Step 6: Enable GitHub Pages</strong></p> </li> <li> <p>Go to <code>https://github.com/katassyn/ashen-pantheon/settings/pages</code></p> </li> <li>Under <strong>Source</strong>, select <strong>Deploy from a branch</strong></li> <li>Branch: <code>gh-pages</code> / folder: <code>/ (root)</code></li> <li>Click <strong>Save</strong></li> </ul> <p>Note: The <code>gh-pages</code> branch is created automatically by the GitHub Actions workflow on first push. If it hasn't run yet, wait ~2 minutes after the push then set this.</p> <ul> <li> <p>[ ] <strong>Step 7: Verify deployment</strong></p> </li> <li> <p>Go to <code>https://github.com/katassyn/ashen-pantheon/actions</code></p> </li> <li>Confirm the <code>Deploy Wiki to GitHub Pages</code> workflow completed with a green checkmark</li> <li>Open <code>https://katassyn.github.io/ashen-pantheon/</code></li> <li>Wiki is live ✓</li> </ul> <hr> <h2 id=self-review>Self-Review</h2> <p><strong>Spec coverage:</strong> - ✓ MkDocs Material + GitHub Pages + dark amber theme - ✓ All 30 doc files mapped and created - ✓ Full mkdocs.yml with nav matching every file - ✓ GitHub Actions deploy workflow - ✓ requirements.txt with 3 plugins - ✓ Logo used as logo and favicon - ✓ All classes with full content - ✓ All 9 ascendancies with mechanics - ✓ All 5 systems pages - ✓ Bosses (index + phases) - ✓ World (overview + maps) - ✓ Devlog (hub + entry 001) - ✓ Tags index - ✓ [TODO] markers for future content throughout - ✓ Go-live commands with exact steps</p> <p><strong>No placeholders introduced beyond intentional [TODO] game content markers.</strong></p> <p><strong>Type/path consistency:</strong> All internal links use relative paths matching the file structure. All <code>mkdocs.yml</code> nav entries match created file paths.</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 17, 2026 07:11:51 UTC">April 17, 2026</span> </span> <span class=md-source-file__fact> <span class=md-icon title=Created> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 17, 2026 07:11:51 UTC">April 17, 2026</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <button type=button class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg> Back to top </button> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script> <script src=../../../assets/javascripts/bundle.79ae519e.min.js></script> </body> </html>
