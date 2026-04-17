@@ -1,0 +1,62 @@
+site_name: Ashen Pantheon Wiki
+site_url: https://katassyn.github.io/ashen-pantheon/
+repo_url: https://github.com/katassyn/ashen-pantheon
+repo_name: katassyn/ashen-pantheon
+
+theme:
+  name: material
+  logo: logo_256x256.png
+  favicon: logo_256x256.png
+  palette:
+    scheme: slate
+    primary: amber
+    accent: amber
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+plugins:
+  - search
+  - tags
+  - git-revision-date-localized:
+      enable_creation_date: true
+  - minify:
+      minify_html: true
+
+nav:
+  - Home: index.md
+  - Game Overview: game-overview.md
+  - Classes:
+    - Overview: classes/index.md
+    - Warrior: classes/warrior.md
+    - Mage: classes/mage.md
+    - Archer: classes/archer.md
+  - Ascendancies:
+    - Berserker: ascendancies/berserker.md
+    - Guardian: ascendancies/guardian.md
+    - Paladin: ascendancies/paladin.md
+    - Elementalist: ascendancies/elementalist.md
+    - Arcanist: ascendancies/arcanist.md
+    - Hexblade: ascendancies/hexblade.md
+    - Shadowstalker: ascendancies/shadowstalker.md
+    - Beastmaster: ascendancies/beastmaster.md
+    - Pathfinder: ascendancies/pathfinder.md
+  - Systems:
+    - Progression: systems/progression.md
+    - Skill Tree: systems/skill-tree.md
+    - Ascendancy Tree: systems/ascendancy-tree.md
+    - Skill Slots: systems/skill-slots.md
+    - Instancing: systems/instancing.md
+  - Bosses:
+    - Overview: bosses/index.md
+    - Boss Phases: bosses/boss-phases.md
+  - World:
+    - Overview: world/index.md
+    - Maps: world/maps.md
+  - Devlog:
+    - Hub: devlog/index.md
+    - "#001 — The Beginning": devlog/001-the-beginning.md
+  - Tags: tags.md
