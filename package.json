@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@mindstudio-ai/agent": "^0.1.55"
+  }
+}

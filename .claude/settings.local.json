@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(npx skillfish *)",
+      "Bash(npx skills *)",
+      "Bash(npx create-video@latest --yes --blank --no-tailwind ashen-reel)",
+      "Bash(npx remotion *)"
     ]
   }
 }
