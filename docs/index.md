@@ -1,47 +1,77 @@
 ---
 tags: []
 hide:
+  - navigation
   - toc
 ---
 
-# Ashen Pantheon Wiki
+<div class="ap-hero" markdown>
 
-> *Forge your legend. Face the gods. Claim the Ashen Throne.*
+# Ashen Pantheon
 
-**Ashen Pantheon** is a top-down 2D instanced action RPG where heroes battle mythological gods drawn from Greek, Norse, Egyptian, Japanese, and Slavic legend. Choose your class, master your ascendancy, and tear through multi-phase boss encounters on your path to level 100.
+<p class="ap-subtitle">Forge your legend. Face the gods. Claim the Ashen Throne.</p>
+<p class="ap-tagline">A Top-Down 2D Instanced Action RPG</p>
+
+</div>
+
+In a **fractured realm** where the walls between pantheons have collapsed, mortal heroes rise to face mad gods drawn from Greek, Norse, Egyptian, Japanese, and Slavic legend. Choose your class, master your ascendancy, and carve your name into multi-phase boss encounters on the long climb to level 100.
+
+<div class="ap-divider">⸸ ⚔ ⸸</div>
 
 <div class="grid cards" markdown>
 
-- :material-sword: **[Classes](classes/index.md)**
+-   :material-sword-cross:{ .lg .middle } &nbsp; **[Classes](classes/index.md)**
 
-    Three base classes — Warrior, Mage, Archer — each branching into 3 ascendancy paths at level 50.
+    ---
 
-- :material-tree: **[Systems](systems/progression.md)**
+    Three base paths — **Warrior**, **Mage**, **Archer** — each branching into three permanent ascendancies at level 50.
 
-    A two-phase skill tree system, free keybind assignment, and deep progression from level 1 to 100.
+-   :material-tree:{ .lg .middle } &nbsp; **[Systems](systems/progression.md)**
 
-- :material-skull: **[Bosses](bosses/index.md)**
+    ---
 
-    Multi-phase mythological bosses drawn from real pantheons. No two fights play the same.
+    Two-phase skill trees, free keybind assignment, and the long road from level 1 to the ascendancy gate and beyond.
 
-- :material-earth: **[World](world/index.md)**
+-   :material-skull-crossbones:{ .lg .middle } &nbsp; **[Bosses](bosses/index.md)**
 
-    Player-instanced worlds with a shared global layer for chat, rankings, and trading.
+    ---
 
-- :material-newspaper: **[Devlog](devlog/index.md)**
+    Mythological gods reborn as multi-phase encounters. Every fight is authored. Every pattern is learnable. Every death is earned.
 
-    Follow the development of Ashen Pantheon from concept to release.
+-   :material-earth:{ .lg .middle } &nbsp; **[World](world/index.md)**
+
+    ---
+
+    Your own personal instance of the **Ashen Realm**, connected to every other player through a persistent global layer.
+
+-   :material-script-text:{ .lg .middle } &nbsp; **[Devlog](devlog/index.md)**
+
+    ---
+
+    Unfiltered development updates, design decisions, and honest progress from the developer's desk.
+
+-   :material-tag-multiple:{ .lg .middle } &nbsp; **[Tags](tags.md)**
+
+    ---
+
+    Browse the wiki by topic — find every page about curses, bosses, ascendancies, and more.
 
 </div>
+
+<div class="ap-divider">⸸ ⚔ ⸸</div>
 
 ## At a Glance
 
 | Feature | Detail |
 |---|---|
-| Genre | Top-down 2D Action RPG |
-| Level Cap | 100 |
-| Base Classes | 3 (Warrior, Mage, Archer) |
-| Ascendancies | 9 — 3 per class, chosen at level 50 |
-| Max Party Size | 4 |
-| World Type | Player-owned instances |
-| Boss Mythologies | Greek · Norse · Egyptian · Japanese · Slavic |
+| **Genre** | Top-down 2D Action RPG |
+| **Level Cap** | 100 |
+| **Base Classes** | 3 — Warrior · Mage · Archer |
+| **Ascendancies** | 9 — permanent choice at level 50 |
+| **Max Party Size** | 4 |
+| **World Type** | Player-owned instances with global layer |
+| **Boss Mythologies** | Greek · Norse · Egyptian · Japanese · Slavic |
+
+<div class="ap-divider">⸸</div>
+
+> *The gods have fallen, and their madness has painted the world in ash. Rise, hunter — and write what comes next.*
