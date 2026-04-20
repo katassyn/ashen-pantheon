@@ -90,6 +90,7 @@ nav:
     - Pathfinder: ascendancies/pathfinder.md
   - Systems:
     - Progression: systems/progression.md
+    - Stats & Resistances: systems/stats-and-resistances.md
     - Skill Tree: systems/skill-tree.md
     - Ascendancy Tree: systems/ascendancy-tree.md
     - Skill Slots: systems/skill-slots.md
@@ -102,5 +103,6 @@ nav:
     - Maps: world/maps.md
   - Devlog:
     - Hub: devlog/index.md
+    - "#002 — Stats System": devlog/002-stats-system.md
     - "#001 — The Beginning": devlog/001-the-beginning.md
   - Tags: tags.md

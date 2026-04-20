@@ -5,7 +5,9 @@
       "Bash(npx skillfish *)",
       "Bash(npx skills *)",
       "Bash(npx create-video@latest --yes --blank --no-tailwind ashen-reel)",
-      "Bash(npx remotion *)"
+      "Bash(npx remotion *)",
+      "Bash(npx tsc *)",
+      "Bash(start cmd *)"
     ]
   }
 }

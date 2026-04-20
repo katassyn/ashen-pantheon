@@ -1,0 +1,12 @@
+/node_modules/.package-lock.json
+/node_modules/@mindstudio-ai/agent/dist/cli.js
+/node_modules/@mindstudio-ai/agent/dist/index.d.ts
+/node_modules/@mindstudio-ai/agent/dist/index.js
+/node_modules/@mindstudio-ai/agent/dist/index.js.map
+/node_modules/@mindstudio-ai/agent/llms.txt
+/node_modules/.bin/mindstudio
+/node_modules/.bin/mindstudio.cmd
+/node_modules/.bin/mindstudio.ps1
+/node_modules/@mindstudio-ai/agent/package.json
+/node_modules/@mindstudio-ai/agent/dist/postinstall.js
+/node_modules/@mindstudio-ai/agent/README.md
