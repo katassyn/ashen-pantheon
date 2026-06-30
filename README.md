@@ -6,11 +6,16 @@ Pixelowy, top-down **loot ARPG** w klimacie dark-fantasy. Kilka klas + panteon b
 
 ## Status
 
-Wczesny development. Aktualny etap: **M0 — Combat Vertical Slice** (rdzeń walki + hook bogów).
+Wczesny development.
+
+**✅ M0 Part A ukończone** — grywalny rdzeń: ruch click-to-move + dash z i-frames, 2 skille (Q/Strike, W/Bolt), przełączanie boga (1/Pyr, 2/Vael), treningowy manekin z paskiem HP + statusami (Burn/Chill), HUD. Logika walki i system bogów wydzielone do `core/` i pokryte testami (7 🟢). Hook „bóg przekształca skill" udowodniony end-to-end.
+
+**▶️ Następne: M0 Part B** — realni wrogowie z AI, mini-boss z telegrafami, pętla areny (spawn → clear → śmierć → restart), juice.
 
 ## Dokumentacja
 
 - Spec M0: [`docs/superpowers/specs/2026-06-30-ashen-pantheon-m0-combat-slice-design.md`](docs/superpowers/specs/2026-06-30-ashen-pantheon-m0-combat-slice-design.md)
+- Plan M0 Part A: [`docs/superpowers/plans/2026-06-30-ashen-pantheon-m0-part-a-combat-core.md`](docs/superpowers/plans/2026-06-30-ashen-pantheon-m0-part-a-combat-core.md)
 
 ## Roadmapa
 
