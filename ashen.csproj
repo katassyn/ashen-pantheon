@@ -2,6 +2,11 @@
   <ItemGroup>
     <ProjectReference Include="core\AshenPantheon.Core.csproj" />
   </ItemGroup>
+  <!-- core/ i tests/ to osobne projekty (referencja wyżej) — nie kompiluj ich plików w projekcie gry -->
+  <ItemGroup>
+    <Compile Remove="core\**\*.cs" />
+    <Compile Remove="tests\**\*.cs" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
