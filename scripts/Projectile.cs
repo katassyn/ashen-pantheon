@@ -25,7 +25,8 @@ public partial class Projectile : Area2D
     {
         _sprite = GetNode<Sprite2D>("Sprite2D");
         TintByElement();
-        AreaEntered += OnAreaEntered;
+        AreaEntered += TryHit;   // trafialne Area2D (np. manekin)
+        BodyEntered += TryHit;   // solidne ciała (wrogowie, boss)
         _life = Lifetime;
     }
 
@@ -47,11 +48,11 @@ public partial class Projectile : Area2D
         if (_life <= 0f) QueueFree();
     }
 
-    private void OnAreaEntered(Area2D area)
+    private void TryHit(Node node)
     {
-        if (area is not IHittable target) return;
-        if (_hit.Contains(area.GetInstanceId())) return;
-        _hit.Add(area.GetInstanceId());
+        if (node is not IHittable target) return;
+        if (_hit.Contains(node.GetInstanceId())) return;
+        _hit.Add(node.GetInstanceId());
 
         target.ReceiveHit(_skill);
 

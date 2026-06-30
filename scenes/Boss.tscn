@@ -6,10 +6,15 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 30.0
 
-[node name="Boss" type="Area2D" groups=["hittable", "enemies"]]
+[node name="Boss" type="CharacterBody2D" groups=["hittable", "enemies"]]
 collision_layer = 2
-collision_mask = 0
+collision_mask = 1
 script = ExtResource("2_boss")
+MaxHealth = 450.0
+ContactDamage = 16.0
+ContactRange = 52.0
+HpBarWidth = 80.0
+HpBarY = -56.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.45, 0.45)
