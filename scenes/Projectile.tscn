@@ -1,19 +1,18 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="Texture2D" uid="uid://cwkrb11xh5q06" path="res://icon.svg" id="1_icon"]
-[ext_resource type="Script" path="res://scripts/Dummy.cs" id="2_dummy"]
+[ext_resource type="Script" path="res://scripts/Projectile.cs" id="2_proj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 18.0
+radius = 8.0
 
-[node name="Dummy" type="Area2D" groups=["dummies"]]
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("2_dummy")
+[node name="Projectile" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_proj")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.25, 0.25)
-modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(0.06, 0.06)
 texture = ExtResource("1_icon")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

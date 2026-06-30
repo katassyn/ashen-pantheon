@@ -21,11 +21,17 @@ public partial class PlayerController : CharacterBody2D
     private float _iFrameLeft;
     private Vector2 _dashDirection;
 
+    private float _strikeCd;
+    private float _boltCd;
+
+    private PackedScene _projectileScene;
+
     public bool IsInvulnerable => _iFrameLeft > 0f;
 
     public override void _Ready()
     {
         _targetPosition = GlobalPosition;
+        _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -47,8 +53,16 @@ public partial class PlayerController : CharacterBody2D
             _hasTarget = false;
         }
 
-        if (@event.IsActionPressed("skill_q")) CastOnNearestDummy(GodCatalog.Strike);
-        if (@event.IsActionPressed("skill_w")) CastOnNearestDummy(GodCatalog.Bolt);
+        if (@event.IsActionPressed("skill_q") && _strikeCd <= 0f)
+        {
+            CastStrike();
+            _strikeCd = GodCatalog.Strike.Cooldown;
+        }
+        if (@event.IsActionPressed("skill_w") && _boltCd <= 0f)
+        {
+            CastBolt();
+            _boltCd = GodCatalog.Bolt.Cooldown;
+        }
 
         // Przełączanie boga na klawiszach 1/2 (czytane bezpośrednio, bez input map)
         if (@event is InputEventKey k && k.Pressed && !k.Echo)
@@ -58,21 +72,55 @@ public partial class PlayerController : CharacterBody2D
         }
     }
 
-    private void CastOnNearestDummy(SkillDefinition def)
+    private Vector2 AimDirection()
     {
-        ResolvedSkill resolved = GodModifierSystem.Resolve(def, ActiveGod);
+        Vector2 dir = GetGlobalMousePosition() - GlobalPosition;
+        return dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
+    }
 
-        Dummy nearest = null;
-        float best = float.MaxValue;
+    private static Color ElementTint(ResolvedSkill skill, float alpha) =>
+        skill.OnHitStatus switch
+        {
+            StatusType.Burn => new Color(1f, 0.5f, 0.2f, alpha),
+            StatusType.Chill => new Color(0.4f, 0.8f, 1f, alpha),
+            _ => new Color(1f, 1f, 1f, alpha)
+        };
+
+    private void CastBolt()
+    {
+        Vector2 dir = AimDirection();
+        ResolvedSkill resolved = GodModifierSystem.Resolve(GodCatalog.Bolt, ActiveGod);
+
+        var proj = _projectileScene.Instantiate<Projectile>();
+        proj.Setup(resolved, dir);
+        GetParent().AddChild(proj);
+        proj.GlobalPosition = GlobalPosition + dir * 20f;
+    }
+
+    private void CastStrike()
+    {
+        Vector2 dir = AimDirection();
+        ResolvedSkill resolved = GodModifierSystem.Resolve(GodCatalog.Strike, ActiveGod);
+
+        bool cone = resolved.Shape == SkillShape.Cone;
+        float range = 95f;
+        float halfAngleDeg = cone ? 65f : 28f;
+        float halfAngleRad = Mathf.DegToRad(halfAngleDeg);
+
         foreach (Node node in GetTree().GetNodesInGroup("dummies"))
         {
             if (node is Dummy d)
             {
-                float dist = GlobalPosition.DistanceTo(d.GlobalPosition);
-                if (dist < best) { best = dist; nearest = d; }
+                Vector2 to = d.GlobalPosition - GlobalPosition;
+                if (to.Length() <= range && Mathf.Abs(dir.AngleTo(to.Normalized())) <= halfAngleRad)
+                    d.ReceiveHit(resolved);
             }
         }
-        nearest?.ReceiveHit(resolved);
+
+        var arc = new MeleeArc();
+        GetParent().AddChild(arc);
+        arc.GlobalPosition = GlobalPosition;
+        arc.Setup(range, halfAngleDeg, ElementTint(resolved, 0.5f), dir.Angle());
     }
 
     public override void _PhysicsProcess(double delta)
@@ -80,6 +128,8 @@ public partial class PlayerController : CharacterBody2D
         float dt = (float)delta;
         if (_dashCdLeft > 0f) _dashCdLeft -= dt;
         if (_iFrameLeft > 0f) _iFrameLeft -= dt;
+        if (_strikeCd > 0f) _strikeCd -= dt;
+        if (_boltCd > 0f) _boltCd -= dt;
 
         if (_dashTimeLeft > 0f)
         {
