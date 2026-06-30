@@ -3,20 +3,30 @@ using Godot;
 public partial class Hud : CanvasLayer
 {
     private PlayerController _player;
-    private Label _label;
+    private ArenaManager _arena;
+    private Label _info;
+    private Label _center;
 
     public override void _Ready()
     {
-        _player = GetTree().GetFirstNodeInGroup("player") as PlayerController;
-        _label = GetNode<Label>("%Info");
+        _info = GetNode<Label>("%Info");
+        _center = GetNode<Label>("%Center");
     }
 
     public override void _Process(double delta)
     {
-        if (_player == null || _label == null) return;
-        _label.Text =
-            $"HP: {_player.Health:0} / {_player.MaxHealth:0}     Bóg: {_player.ActiveGod.Name}\n" +
-            "WASD - ruch    mysz - cel\n" +
-            "[LPM] Strike   [PPM] Bolt   [Spacja] dash   [1] Pyr  [2] Vael";
+        _player ??= GetTree().GetFirstNodeInGroup("player") as PlayerController;
+        _arena ??= GetTree().GetFirstNodeInGroup("arena") as ArenaManager;
+
+        if (_info != null && _player != null)
+        {
+            string wave = _arena != null ? _arena.TopStatus : "";
+            _info.Text =
+                $"HP: {_player.Health:0} / {_player.MaxHealth:0}     Bóg: {_player.ActiveGod.Name}     {wave}\n" +
+                "WASD ruch · mysz cel · LPM Strike · PPM Bolt · Spacja dash · 1/2 bóg";
+        }
+
+        if (_center != null)
+            _center.Text = _arena != null ? _arena.CenterMessage : "";
     }
 }

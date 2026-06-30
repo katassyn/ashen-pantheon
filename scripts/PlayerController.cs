@@ -12,6 +12,7 @@ public partial class PlayerController : CharacterBody2D
 
     [Export] public float MaxHealth = 100f;
     public float Health { get; private set; }
+    private bool _dead;
 
     public God ActiveGod = GodCatalog.Pyr;
 
@@ -36,17 +37,22 @@ public partial class PlayerController : CharacterBody2D
     /// <summary>Obrażenia od wroga. Dash daje i-frames (nietykalność).</summary>
     public void TakeDamage(float amount)
     {
-        if (IsInvulnerable) return;
+        if (_dead || IsInvulnerable) return;
         Health -= amount;
         if (Health <= 0f)
         {
             Health = 0f;
-            GetTree().ReloadCurrentScene();
+            _dead = true;
+            Velocity = Vector2.Zero;
+            if (GetTree().GetFirstNodeInGroup("arena") is ArenaManager arena)
+                arena.OnPlayerDied();
         }
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (_dead) return;
+
         // Skille: LPM = Strike, PPM = Bolt (celują w kursor)
         if (@event is InputEventMouseButton mb && mb.Pressed)
         {
@@ -144,6 +150,8 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (_dead) { Velocity = Vector2.Zero; return; }
+
         float dt = (float)delta;
         if (_dashCdLeft > 0f) _dashCdLeft -= dt;
         if (_iFrameLeft > 0f) _iFrameLeft -= dt;
