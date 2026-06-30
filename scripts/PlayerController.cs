@@ -49,6 +49,13 @@ public partial class PlayerController : CharacterBody2D
 
         if (@event.IsActionPressed("skill_q")) CastOnNearestDummy(GodCatalog.Strike);
         if (@event.IsActionPressed("skill_w")) CastOnNearestDummy(GodCatalog.Bolt);
+
+        // Przełączanie boga na klawiszach 1/2 (czytane bezpośrednio, bez input map)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo)
+        {
+            if (k.PhysicalKeycode == Key.Key1) ActiveGod = GodCatalog.Pyr;
+            else if (k.PhysicalKeycode == Key.Key2) ActiveGod = GodCatalog.Vael;
+        }
     }
 
     private void CastOnNearestDummy(SkillDefinition def)

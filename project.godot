@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Ashen Pantheon"
 run/main_scene="res://scenes/Main.tscn"
-config/features=PackedStringArray("4.7", "Mobile")
+config/features=PackedStringArray("4.7", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [display]
@@ -63,7 +63,7 @@ skill_r={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
-textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.082, 0.075, 0.11, 1)

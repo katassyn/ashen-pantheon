@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/Hud.cs" id="1_hud"]
+
+[node name="Hud" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Info" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 460.0
+offset_bottom = 92.0
+text = "Bóg: Pyr"
