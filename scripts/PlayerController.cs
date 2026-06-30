@@ -31,10 +31,12 @@ public partial class PlayerController : CharacterBody2D
         {
             _targetPosition = GetGlobalMousePosition();
             _hasTarget = true;
+            GD.Print($"[input] move_click -> {_targetPosition}");
         }
 
         if (@event.IsActionPressed("dash") && _dashCdLeft <= 0f && _dashTimeLeft <= 0f)
         {
+            GD.Print("[input] dash");
             Vector2 dir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
             if (dir == Vector2.Zero) dir = Vector2.Down;
             _dashDirection = dir;
