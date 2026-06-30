@@ -3,21 +3,17 @@ using AshenPantheon.Core;
 
 public partial class PlayerController : CharacterBody2D
 {
-    [Export] public float Speed = 220f;
-    [Export] public float ArriveDistance = 6f;
+    [Export] public float Speed = 240f;
 
-    [Export] public float DashSpeed = 700f;
+    [Export] public float DashSpeed = 750f;
     [Export] public float DashDuration = 0.15f;
-    [Export] public float DashCooldown = 0.8f;
+    [Export] public float DashCooldown = 0.7f;
     [Export] public float IFrameDuration = 0.2f;
 
     [Export] public float MaxHealth = 100f;
     public float Health { get; private set; }
 
     public God ActiveGod = GodCatalog.Pyr;
-
-    private Vector2 _targetPosition;
-    private bool _hasTarget;
 
     private float _dashTimeLeft;
     private float _dashCdLeft;
@@ -33,7 +29,6 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _Ready()
     {
-        _targetPosition = GlobalPosition;
         _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
         Health = MaxHealth;
     }
@@ -52,40 +47,48 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("move_click"))
+        // Skille: LPM = Strike, PPM = Bolt (celują w kursor)
+        if (@event is InputEventMouseButton mb && mb.Pressed)
         {
-            _targetPosition = GetGlobalMousePosition();
-            _hasTarget = true;
+            if (mb.ButtonIndex == MouseButton.Left && _strikeCd <= 0f)
+            {
+                CastStrike();
+                _strikeCd = GodCatalog.Strike.Cooldown;
+            }
+            else if (mb.ButtonIndex == MouseButton.Right && _boltCd <= 0f)
+            {
+                CastBolt();
+                _boltCd = GodCatalog.Bolt.Cooldown;
+            }
         }
 
+        // Dash: w stronę ruchu (WASD), a jak stoisz — w stronę kursora
         if (@event.IsActionPressed("dash") && _dashCdLeft <= 0f && _dashTimeLeft <= 0f)
         {
-            Vector2 dir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
-            if (dir == Vector2.Zero) dir = Vector2.Down;
+            Vector2 dir = ReadMoveInput();
+            if (dir == Vector2.Zero) dir = AimDirection();
             _dashDirection = dir;
             _dashTimeLeft = DashDuration;
             _iFrameLeft = IFrameDuration;
             _dashCdLeft = DashCooldown;
-            _hasTarget = false;
         }
 
-        if (@event.IsActionPressed("skill_q") && _strikeCd <= 0f)
-        {
-            CastStrike();
-            _strikeCd = GodCatalog.Strike.Cooldown;
-        }
-        if (@event.IsActionPressed("skill_w") && _boltCd <= 0f)
-        {
-            CastBolt();
-            _boltCd = GodCatalog.Bolt.Cooldown;
-        }
-
-        // Przełączanie boga na klawiszach 1/2 (czytane bezpośrednio, bez input map)
+        // Przełączanie boga na 1/2
         if (@event is InputEventKey k && k.Pressed && !k.Echo)
         {
             if (k.PhysicalKeycode == Key.Key1) ActiveGod = GodCatalog.Pyr;
             else if (k.PhysicalKeycode == Key.Key2) ActiveGod = GodCatalog.Vael;
         }
+    }
+
+    private static Vector2 ReadMoveInput()
+    {
+        Vector2 v = Vector2.Zero;
+        if (Input.IsPhysicalKeyPressed(Key.W)) v.Y -= 1f;
+        if (Input.IsPhysicalKeyPressed(Key.S)) v.Y += 1f;
+        if (Input.IsPhysicalKeyPressed(Key.A)) v.X -= 1f;
+        if (Input.IsPhysicalKeyPressed(Key.D)) v.X += 1f;
+        return v == Vector2.Zero ? Vector2.Zero : v.Normalized();
     }
 
     private Vector2 AimDirection()
@@ -155,17 +158,7 @@ public partial class PlayerController : CharacterBody2D
             return;
         }
 
-        if (_hasTarget && GlobalPosition.DistanceTo(_targetPosition) > ArriveDistance)
-        {
-            Vector2 direction = (_targetPosition - GlobalPosition).Normalized();
-            Velocity = direction * Speed;
-        }
-        else
-        {
-            Velocity = Vector2.Zero;
-            _hasTarget = false;
-        }
-
+        Velocity = ReadMoveInput() * Speed;
         MoveAndSlide();
     }
 }
