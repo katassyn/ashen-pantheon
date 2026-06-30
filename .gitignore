@@ -1,0 +1,5 @@
+.superpowers/
+.godot/
+*.tmp
+bin/
+obj/
