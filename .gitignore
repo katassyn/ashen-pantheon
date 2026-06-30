@@ -1,5 +1,25 @@
-.superpowers/
+# Godot 4+
 .godot/
-*.tmp
+/android/
+/builds/
+export_presets.cfg
+*.translation
+
+# .NET / C# build output
 bin/
 obj/
+*.user
+*.userprefs
+*.tmp
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Brainstorm visual companion (local only)
+.superpowers/
