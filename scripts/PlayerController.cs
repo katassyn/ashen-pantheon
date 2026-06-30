@@ -11,6 +11,9 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float DashCooldown = 0.8f;
     [Export] public float IFrameDuration = 0.2f;
 
+    [Export] public float MaxHealth = 100f;
+    public float Health { get; private set; }
+
     public God ActiveGod = GodCatalog.Pyr;
 
     private Vector2 _targetPosition;
@@ -32,6 +35,19 @@ public partial class PlayerController : CharacterBody2D
     {
         _targetPosition = GlobalPosition;
         _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
+        Health = MaxHealth;
+    }
+
+    /// <summary>Obrażenia od wroga. Dash daje i-frames (nietykalność).</summary>
+    public void TakeDamage(float amount)
+    {
+        if (IsInvulnerable) return;
+        Health -= amount;
+        if (Health <= 0f)
+        {
+            Health = 0f;
+            GetTree().ReloadCurrentScene();
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -107,13 +123,13 @@ public partial class PlayerController : CharacterBody2D
         float halfAngleDeg = cone ? 65f : 28f;
         float halfAngleRad = Mathf.DegToRad(halfAngleDeg);
 
-        foreach (Node node in GetTree().GetNodesInGroup("dummies"))
+        foreach (Node node in GetTree().GetNodesInGroup("hittable"))
         {
-            if (node is Dummy d)
+            if (node is Node2D n && n is IHittable target)
             {
-                Vector2 to = d.GlobalPosition - GlobalPosition;
+                Vector2 to = n.GlobalPosition - GlobalPosition;
                 if (to.Length() <= range && Mathf.Abs(dir.AngleTo(to.Normalized())) <= halfAngleRad)
-                    d.ReceiveHit(resolved);
+                    target.ReceiveHit(resolved);
             }
         }
 

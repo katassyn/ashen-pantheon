@@ -1,7 +1,7 @@
 using Godot;
 using AshenPantheon.Core;
 
-public partial class Dummy : Area2D
+public partial class Dummy : Area2D, IHittable
 {
     private readonly Combatant _combatant = new() { MaxHealth = 200f, Health = 200f };
     private Sprite2D _sprite;

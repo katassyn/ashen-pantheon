@@ -49,11 +49,11 @@ public partial class Projectile : Area2D
 
     private void OnAreaEntered(Area2D area)
     {
-        if (area is not Dummy dummy) return;
+        if (area is not IHittable target) return;
         if (_hit.Contains(area.GetInstanceId())) return;
         _hit.Add(area.GetInstanceId());
 
-        dummy.ReceiveHit(_skill);
+        target.ReceiveHit(_skill);
 
         if (_skill.Explodes)
         {
@@ -69,13 +69,13 @@ public partial class Projectile : Area2D
 
     private void ExplodeAround()
     {
-        foreach (Node node in GetTree().GetNodesInGroup("dummies"))
+        foreach (Node node in GetTree().GetNodesInGroup("hittable"))
         {
-            if (node is Dummy d && !_hit.Contains(d.GetInstanceId())
-                && GlobalPosition.DistanceTo(d.GlobalPosition) <= ExplodeRadius)
+            if (node is Node2D n && n is IHittable target && !_hit.Contains(n.GetInstanceId())
+                && GlobalPosition.DistanceTo(n.GlobalPosition) <= ExplodeRadius)
             {
-                _hit.Add(d.GetInstanceId());
-                d.ReceiveHit(_skill);
+                _hit.Add(n.GetInstanceId());
+                target.ReceiveHit(_skill);
             }
         }
     }

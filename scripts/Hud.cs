@@ -15,7 +15,7 @@ public partial class Hud : CanvasLayer
     {
         if (_player == null || _label == null) return;
         _label.Text =
-            $"Bóg: {_player.ActiveGod.Name}\n" +
+            $"HP: {_player.Health:0} / {_player.MaxHealth:0}     Bóg: {_player.ActiveGod.Name}\n" +
             "[1] Pyr - ogień     [2] Vael - mróz\n" +
             "[Q] Strike   [W] Bolt   [Spacja] dash";
     }
