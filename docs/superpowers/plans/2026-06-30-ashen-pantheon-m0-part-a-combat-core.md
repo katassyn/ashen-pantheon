@@ -37,9 +37,9 @@ ashen-pantheon/
 │   ├── Combatant.cs                    # HP + aktywne statusy
 │   └── CombatResolver.cs               # liczy obrażenia/statusy/śmierć
 └── tests/
-    ├── AshenPantheon.Core.Tests.csproj # ⌨️ xUnit
-    ├── GodModifierSystemTests.cs
-    └── CombatResolverTests.cs
+	├── AshenPantheon.Core.Tests.csproj # ⌨️ xUnit
+	├── GodModifierSystemTests.cs
+	└── CombatResolverTests.cs
 ```
 
 ---
@@ -239,7 +239,7 @@ public class GodModifierSystemTests
 {
     private static SkillDefinition Bolt() => new()
     {
-        Id = "bolt", BaseDamage = 10f, Cooldown = 0.5f,
+		Id = "bolt", BaseDamage = 10f, Cooldown = 0.5f,
         Shape = SkillShape.Projectile,
         Tags = new() { SkillTag.Damage, SkillTag.Projectile }
     };
@@ -277,7 +277,7 @@ internal static class GodCatalogForTests
 {
     public static readonly God Pyr = new()
     {
-        Name = "Pyr",
+		Name = "Pyr",
         Modifiers =
         {
             (def, r) => { if (def.Tags.Contains(SkillTag.Damage)) { r.OnHitStatus = StatusType.Burn; r.StatusDuration = 3f; } },
@@ -287,7 +287,7 @@ internal static class GodCatalogForTests
 
     public static readonly God Vael = new()
     {
-        Name = "Vael",
+		Name = "Vael",
         Modifiers =
         {
             (def, r) => { if (def.Tags.Contains(SkillTag.Damage)) { r.OnHitStatus = StatusType.Chill; r.StatusDuration = 2f; } },
@@ -380,7 +380,7 @@ public class CombatResolverTests
     public void BasicHit_SubtractsDamage()
     {
         var target = Target();
-        var skill = new ResolvedSkill { Id = "x", Damage = 30f, Shape = SkillShape.SingleTarget };
+		var skill = new ResolvedSkill { Id = "x", Damage = 30f, Shape = SkillShape.SingleTarget };
 
         CombatResolver.ApplyHit(skill, target);
 
@@ -391,7 +391,7 @@ public class CombatResolverTests
     public void OnHitStatus_IsAppliedToTarget()
     {
         var target = Target();
-        var skill = new ResolvedSkill { Id = "x", Damage = 10f, Shape = SkillShape.Projectile,
+		var skill = new ResolvedSkill { Id = "x", Damage = 10f, Shape = SkillShape.Projectile,
             OnHitStatus = StatusType.Burn, StatusDuration = 3f };
 
         CombatResolver.ApplyHit(skill, target);
@@ -406,7 +406,7 @@ public class CombatResolverTests
         var target = Target();
         target.ActiveStatus = StatusType.Chill;
         target.StatusTimeLeft = 2f;
-        var skill = new ResolvedSkill { Id = "x", Damage = 100f, Shape = SkillShape.SingleTarget };
+		var skill = new ResolvedSkill { Id = "x", Damage = 100f, Shape = SkillShape.SingleTarget };
 
         CombatResolver.ApplyHit(skill, target);
 
@@ -418,7 +418,7 @@ public class CombatResolverTests
     public void LethalDamage_MarksDead()
     {
         var target = Target(20f);
-        var skill = new ResolvedSkill { Id = "x", Damage = 25f, Shape = SkillShape.SingleTarget };
+		var skill = new ResolvedSkill { Id = "x", Damage = 25f, Shape = SkillShape.SingleTarget };
 
         CombatResolver.ApplyHit(skill, target);
 
@@ -509,7 +509,7 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("move_click"))
+		if (@event.IsActionPressed("move_click"))
         {
             _targetPosition = GetGlobalMousePosition();
             _hasTarget = true;
@@ -565,64 +565,64 @@ git commit -m "feat: player scene with click-to-move movement"
 Dodaj pola pod istniejące `[Export]`-y:
 
 ```csharp
-    [Export] public float DashSpeed = 700f;
-    [Export] public float DashDuration = 0.15f;
-    [Export] public float DashCooldown = 0.8f;
-    [Export] public float IFrameDuration = 0.2f;
+	[Export] public float DashSpeed = 700f;
+	[Export] public float DashDuration = 0.15f;
+	[Export] public float DashCooldown = 0.8f;
+	[Export] public float IFrameDuration = 0.2f;
 
-    private float _dashTimeLeft;
-    private float _dashCdLeft;
-    private float _iFrameLeft;
-    private Vector2 _dashDirection;
+	private float _dashTimeLeft;
+	private float _dashCdLeft;
+	private float _iFrameLeft;
+	private Vector2 _dashDirection;
 
-    public bool IsInvulnerable => _iFrameLeft > 0f;
+	public bool IsInvulnerable => _iFrameLeft > 0f;
 ```
 
 Dodaj obsługę inputu w `_UnhandledInput` (pod istniejący `if`):
 
 ```csharp
-        if (@event.IsActionPressed("dash") && _dashCdLeft <= 0f && _dashTimeLeft <= 0f)
-        {
-            Vector2 dir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
-            if (dir == Vector2.Zero) dir = Vector2.Down;
-            _dashDirection = dir;
-            _dashTimeLeft = DashDuration;
-            _iFrameLeft = IFrameDuration;
-            _dashCdLeft = DashCooldown;
-            _hasTarget = false;
-        }
+		if (@event.IsActionPressed("dash") && _dashCdLeft <= 0f && _dashTimeLeft <= 0f)
+		{
+			Vector2 dir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
+			if (dir == Vector2.Zero) dir = Vector2.Down;
+			_dashDirection = dir;
+			_dashTimeLeft = DashDuration;
+			_iFrameLeft = IFrameDuration;
+			_dashCdLeft = DashCooldown;
+			_hasTarget = false;
+		}
 ```
 
 Zmień `_PhysicsProcess`, by dash miał priorytet nad ruchem:
 
 ```csharp
-    public override void _PhysicsProcess(double delta)
-    {
-        float dt = (float)delta;
-        if (_dashCdLeft > 0f) _dashCdLeft -= dt;
-        if (_iFrameLeft > 0f) _iFrameLeft -= dt;
+	public override void _PhysicsProcess(double delta)
+	{
+		float dt = (float)delta;
+		if (_dashCdLeft > 0f) _dashCdLeft -= dt;
+		if (_iFrameLeft > 0f) _iFrameLeft -= dt;
 
-        if (_dashTimeLeft > 0f)
-        {
-            _dashTimeLeft -= dt;
-            Velocity = _dashDirection * DashSpeed;
-            MoveAndSlide();
-            return;
-        }
+		if (_dashTimeLeft > 0f)
+		{
+			_dashTimeLeft -= dt;
+			Velocity = _dashDirection * DashSpeed;
+			MoveAndSlide();
+			return;
+		}
 
-        if (_hasTarget && GlobalPosition.DistanceTo(_targetPosition) > ArriveDistance)
-        {
-            Vector2 direction = (_targetPosition - GlobalPosition).Normalized();
-            Velocity = direction * Speed;
-        }
-        else
-        {
-            Velocity = Vector2.Zero;
-            _hasTarget = false;
-        }
+		if (_hasTarget && GlobalPosition.DistanceTo(_targetPosition) > ArriveDistance)
+		{
+			Vector2 direction = (_targetPosition - GlobalPosition).Normalized();
+			Velocity = direction * Speed;
+		}
+		else
+		{
+			Velocity = Vector2.Zero;
+			_hasTarget = false;
+		}
 
-        MoveAndSlide();
-    }
+		MoveAndSlide();
+	}
 ```
 
 - [ ] **Step 2 (🖱️ Godot): Uruchom i sprawdź dash**
@@ -654,40 +654,40 @@ using AshenPantheon.Core;
 /// <summary>Definicje skilli klasy Acolyte i bogów Pyr/Vael. Korzysta z czystej logiki Core.</summary>
 public static class GodCatalog
 {
-    public static readonly SkillDefinition Strike = new()
-    {
-        Id = "strike", BaseDamage = 18f, Cooldown = 0.4f,
-        Shape = SkillShape.SingleTarget,
-        Tags = new() { SkillTag.Damage, SkillTag.Melee }
-    };
+	public static readonly SkillDefinition Strike = new()
+	{
+		Id = "strike", BaseDamage = 18f, Cooldown = 0.4f,
+		Shape = SkillShape.SingleTarget,
+		Tags = new() { SkillTag.Damage, SkillTag.Melee }
+	};
 
-    public static readonly SkillDefinition Bolt = new()
-    {
-        Id = "bolt", BaseDamage = 12f, Cooldown = 0.6f,
-        Shape = SkillShape.Projectile,
-        Tags = new() { SkillTag.Damage, SkillTag.Projectile }
-    };
+	public static readonly SkillDefinition Bolt = new()
+	{
+		Id = "bolt", BaseDamage = 12f, Cooldown = 0.6f,
+		Shape = SkillShape.Projectile,
+		Tags = new() { SkillTag.Damage, SkillTag.Projectile }
+	};
 
-    public static readonly God Pyr = new()
-    {
-        Name = "Pyr",
-        Modifiers =
-        {
-            (def, r) => { if (def.Tags.Contains(SkillTag.Damage)) { r.OnHitStatus = StatusType.Burn; r.StatusDuration = 3f; } },
-            (def, r) => { if (def.Tags.Contains(SkillTag.Projectile)) r.Explodes = true; },
-            (def, r) => { if (def.Tags.Contains(SkillTag.Melee)) r.Shape = SkillShape.Cone; },
-        }
-    };
+	public static readonly God Pyr = new()
+	{
+		Name = "Pyr",
+		Modifiers =
+		{
+			(def, r) => { if (def.Tags.Contains(SkillTag.Damage)) { r.OnHitStatus = StatusType.Burn; r.StatusDuration = 3f; } },
+			(def, r) => { if (def.Tags.Contains(SkillTag.Projectile)) r.Explodes = true; },
+			(def, r) => { if (def.Tags.Contains(SkillTag.Melee)) r.Shape = SkillShape.Cone; },
+		}
+	};
 
-    public static readonly God Vael = new()
-    {
-        Name = "Vael",
-        Modifiers =
-        {
-            (def, r) => { if (def.Tags.Contains(SkillTag.Damage)) { r.OnHitStatus = StatusType.Chill; r.StatusDuration = 2f; } },
-            (def, r) => { if (def.Tags.Contains(SkillTag.Projectile)) r.Pierces = true; },
-        }
-    };
+	public static readonly God Vael = new()
+	{
+		Name = "Vael",
+		Modifiers =
+		{
+			(def, r) => { if (def.Tags.Contains(SkillTag.Damage)) { r.OnHitStatus = StatusType.Chill; r.StatusDuration = 2f; } },
+			(def, r) => { if (def.Tags.Contains(SkillTag.Projectile)) r.Pierces = true; },
+		}
+	};
 }
 ```
 
@@ -721,35 +721,35 @@ using AshenPantheon.Core;
 
 public partial class Dummy : Area2D
 {
-    private readonly Combatant _combatant = new() { MaxHealth = 200f, Health = 200f };
+	private readonly Combatant _combatant = new() { MaxHealth = 200f, Health = 200f };
 
-    public override void _Process(double delta)
-    {
-        // tykanie statusów (Burn DoT / wygasanie Chill)
-        if (_combatant.StatusTimeLeft > 0f)
-        {
-            _combatant.StatusTimeLeft -= (float)delta;
-            if (_combatant.ActiveStatus == StatusType.Burn)
-                _combatant.Health -= 8f * (float)delta; // DoT
-            if (_combatant.StatusTimeLeft <= 0f)
-                _combatant.ActiveStatus = StatusType.None;
-        }
-    }
+	public override void _Process(double delta)
+	{
+		// tykanie statusów (Burn DoT / wygasanie Chill)
+		if (_combatant.StatusTimeLeft > 0f)
+		{
+			_combatant.StatusTimeLeft -= (float)delta;
+			if (_combatant.ActiveStatus == StatusType.Burn)
+				_combatant.Health -= 8f * (float)delta; // DoT
+			if (_combatant.StatusTimeLeft <= 0f)
+				_combatant.ActiveStatus = StatusType.None;
+		}
+	}
 
-    /// <summary>Wywoływane przez gracza przy trafieniu.</summary>
-    public void ReceiveHit(ResolvedSkill skill)
-    {
-        CombatResolver.ApplyHit(skill, _combatant);
-        GD.Print($"Dummy HP: {_combatant.Health:0} | status: {_combatant.ActiveStatus} | chill?: {_combatant.IsChilled}");
-        Modulate = _combatant.ActiveStatus switch
-        {
-            StatusType.Burn => new Color(1f, 0.4f, 0.2f),
-            StatusType.Chill => new Color(0.4f, 0.7f, 1f),
-            _ => Colors.White
-        };
-        if (_combatant.IsDead)
-            QueueFree();
-    }
+	/// <summary>Wywoływane przez gracza przy trafieniu.</summary>
+	public void ReceiveHit(ResolvedSkill skill)
+	{
+		CombatResolver.ApplyHit(skill, _combatant);
+		GD.Print($"Dummy HP: {_combatant.Health:0} | status: {_combatant.ActiveStatus} | chill?: {_combatant.IsChilled}");
+		Modulate = _combatant.ActiveStatus switch
+		{
+			StatusType.Burn => new Color(1f, 0.4f, 0.2f),
+			StatusType.Chill => new Color(0.4f, 0.7f, 1f),
+			_ => Colors.White
+		};
+		if (_combatant.IsDead)
+			QueueFree();
+	}
 }
 ```
 
@@ -770,32 +770,32 @@ Otwórz `scenes/Main.tscn` → Instantiate Child Scene → `scenes/Dummy.tscn`. 
 Dodaj `using AshenPantheon.Core;` na górze. Dodaj pole boga i metodę rzucania, oraz obsługę Q/W w `_UnhandledInput`:
 
 ```csharp
-    public God ActiveGod = GodCatalog.Pyr; // domyślny bóg; zmieniany w Task 9
+	public God ActiveGod = GodCatalog.Pyr; // domyślny bóg; zmieniany w Task 9
 
-    private void CastOnNearestDummy(SkillDefinition def)
-    {
-        ResolvedSkill resolved = GodModifierSystem.Resolve(def, ActiveGod);
+	private void CastOnNearestDummy(SkillDefinition def)
+	{
+		ResolvedSkill resolved = GodModifierSystem.Resolve(def, ActiveGod);
 
-        // znajdź najbliższego Dummy w zasięgu i zaaplikuj trafienie (uproszczenie M0 Part A)
-        Dummy nearest = null;
-        float best = float.MaxValue;
-        foreach (Node node in GetTree().GetNodesInGroup("dummies"))
-        {
-            if (node is Dummy d)
-            {
-                float dist = GlobalPosition.DistanceTo(d.GlobalPosition);
-                if (dist < best) { best = dist; nearest = d; }
-            }
-        }
-        nearest?.ReceiveHit(resolved);
-    }
+		// znajdź najbliższego Dummy w zasięgu i zaaplikuj trafienie (uproszczenie M0 Part A)
+		Dummy nearest = null;
+		float best = float.MaxValue;
+		foreach (Node node in GetTree().GetNodesInGroup("dummies"))
+		{
+			if (node is Dummy d)
+			{
+				float dist = GlobalPosition.DistanceTo(d.GlobalPosition);
+				if (dist < best) { best = dist; nearest = d; }
+			}
+		}
+		nearest?.ReceiveHit(resolved);
+	}
 ```
 
 W `_UnhandledInput` dodaj:
 
 ```csharp
-        if (@event.IsActionPressed("skill_q")) CastOnNearestDummy(GodCatalog.Strike);
-        if (@event.IsActionPressed("skill_w")) CastOnNearestDummy(GodCatalog.Bolt);
+		if (@event.IsActionPressed("skill_q")) CastOnNearestDummy(GodCatalog.Strike);
+		if (@event.IsActionPressed("skill_w")) CastOnNearestDummy(GodCatalog.Bolt);
 ```
 
 - [ ] **Step 5 (🖱️ Godot): Dodaj Dummy do grupy „dummies"**
@@ -836,15 +836,15 @@ public partial class GodSelect : CanvasLayer
     public override void _Ready()
     {
         _player = GetNode<PlayerController>(PlayerPath);
-        GetNode<Button>("%PyrButton").Pressed += () => SelectGod(GodCatalog.Pyr, "Pyr (ogień)");
-        GetNode<Button>("%VaelButton").Pressed += () => SelectGod(GodCatalog.Vael, "Vael (mróz)");
+		GetNode<Button>("%PyrButton").Pressed += () => SelectGod(GodCatalog.Pyr, "Pyr (ogień)");
+		GetNode<Button>("%VaelButton").Pressed += () => SelectGod(GodCatalog.Vael, "Vael (mróz)");
     }
 
     private void SelectGod(AshenPantheon.Core.God god, string label)
     {
         _player.ActiveGod = god;
-        GetNode<Label>("%CurrentGod").Text = $"Bóg: {label}";
-        GD.Print($"Wybrano boga: {god.Name}");
+		GetNode<Label>("%CurrentGod").Text = $"Bóg: {label}";
+		GD.Print($"Wybrano boga: {god.Name}");
     }
 }
 ```

@@ -32,7 +32,7 @@ public partial class ArenaManager : Node
         if (_state is State.Won or State.Lost) return;
         _state = State.Lost;
         TopStatus = "";
-        CenterMessage = "ZGINĄŁEŚ\n[R] restart";
+        CenterMessage = "ZGINĄŁEŚ\n[R] powrót do miasta";
     }
 
     public override void _Process(double delta)
@@ -55,7 +55,7 @@ public partial class ArenaManager : Node
                     {
                         _state = State.Won;
                         TopStatus = "";
-                        CenterMessage = "ARENA OCZYSZCZONA!\n[R] restart";
+                        CenterMessage = "ARENA OCZYSZCZONA!\n[R] powrót do miasta";
                     }
                     else
                     {
@@ -74,7 +74,7 @@ public partial class ArenaManager : Node
             case State.Won:
             case State.Lost:
                 if (Input.IsPhysicalKeyPressed(Key.R))
-                    GetTree().ReloadCurrentScene();
+                    GetTree().ChangeSceneToFile("res://scenes/Main.tscn");
                 break;
         }
     }
