@@ -8,9 +8,15 @@ Pixelowy, top-down **loot ARPG** w klimacie dark-fantasy. Kilka klas + panteon b
 
 Wczesny development.
 
-**✅ M0 Part A ukończone** — grywalny rdzeń: ruch click-to-move + dash z i-frames, 2 skille (Q/Strike, W/Bolt), przełączanie boga (1/Pyr, 2/Vael), treningowy manekin z paskiem HP + statusami (Burn/Chill), HUD. Logika walki i system bogów wydzielone do `core/` i pokryte testami (7 🟢). Hook „bóg przekształca skill" udowodniony end-to-end.
+**✅ M0 rdzeń walki — grywalny prototyp:**
+- Sterowanie twin-stick: WASD ruch + celowanie myszą, dash z i-frames
+- Skille widoczne i fizyczne: Strike (łuk, LPM) + Bolt (pocisk, PPM), celowane w kursor
+- **Hook bogów** end-to-end: ten sam skill inaczej pod Pyrem (ogień: DoT/eksplozja/stożek) vs Vaelem (mróz: spowolnienie/przebicie)
+- Wrogowie z AI (Husk: goni, bije) + **mini-boss „Ashen Warden"** z telegrafowanymi atakami (slam/sweep/charge)
+- Życie gracza, obrażenia, śmierć → restart areny; paski HP, HUD
+- Logika (skille/bogowie/walka) wydzielona do `core/`, pokryta testami (7 🟢)
 
-**▶️ Następne: M0 Part B** — realni wrogowie z AI, mini-boss z telegrafami, pętla areny (spawn → clear → śmierć → restart), juice.
+**▶️ Zostało do domknięcia M0:** pętla areny (fale → clear → win/lose), juice (hit-stop, błyski, screen-shake), strojenie balansu/czytelności. Potem **M1** (hub + loot).
 
 ## Dokumentacja
 
