@@ -1,4 +1,5 @@
 using Godot;
+using AshenPantheon.Core;
 
 public partial class PlayerController : CharacterBody2D
 {
@@ -9,6 +10,8 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float DashDuration = 0.15f;
     [Export] public float DashCooldown = 0.8f;
     [Export] public float IFrameDuration = 0.2f;
+
+    public God ActiveGod = GodCatalog.Pyr;
 
     private Vector2 _targetPosition;
     private bool _hasTarget;
@@ -31,12 +34,10 @@ public partial class PlayerController : CharacterBody2D
         {
             _targetPosition = GetGlobalMousePosition();
             _hasTarget = true;
-            GD.Print($"[input] move_click -> {_targetPosition}");
         }
 
         if (@event.IsActionPressed("dash") && _dashCdLeft <= 0f && _dashTimeLeft <= 0f)
         {
-            GD.Print("[input] dash");
             Vector2 dir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
             if (dir == Vector2.Zero) dir = Vector2.Down;
             _dashDirection = dir;
@@ -45,6 +46,26 @@ public partial class PlayerController : CharacterBody2D
             _dashCdLeft = DashCooldown;
             _hasTarget = false;
         }
+
+        if (@event.IsActionPressed("skill_q")) CastOnNearestDummy(GodCatalog.Strike);
+        if (@event.IsActionPressed("skill_w")) CastOnNearestDummy(GodCatalog.Bolt);
+    }
+
+    private void CastOnNearestDummy(SkillDefinition def)
+    {
+        ResolvedSkill resolved = GodModifierSystem.Resolve(def, ActiveGod);
+
+        Dummy nearest = null;
+        float best = float.MaxValue;
+        foreach (Node node in GetTree().GetNodesInGroup("dummies"))
+        {
+            if (node is Dummy d)
+            {
+                float dist = GlobalPosition.DistanceTo(d.GlobalPosition);
+                if (dist < best) { best = dist; nearest = d; }
+            }
+        }
+        nearest?.ReceiveHit(resolved);
     }
 
     public override void _PhysicsProcess(double delta)
