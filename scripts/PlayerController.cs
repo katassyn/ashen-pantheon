@@ -5,7 +5,11 @@ public partial class PlayerController : CharacterBody2D
 {
     [Export] public float Speed = 240f;
 
-    [Export] public float MaxHealth = 100f;
+    private readonly Attributes _baseAttributes = new() { Strength = 12, Dexterity = 15, Intelligence = 5 };
+    private readonly Equipment _equipment = new();
+    private CharacterSheet _sheet;
+    public CharacterSheet Sheet => _sheet;
+    public float MaxHealth => _sheet?.MaxLife ?? 100f;
     public float Health { get; private set; }
     private bool _dead;
 
@@ -25,8 +29,24 @@ public partial class PlayerController : CharacterBody2D
     public override void _Ready()
     {
         _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
+        RecomputeSheet();
         Health = MaxHealth;
         Concentration = MaxConcentration;
+    }
+
+    private void RecomputeSheet()
+    {
+        _sheet = _equipment.BuildSheet(_baseAttributes, 1);
+        _sheet.BaseLife = 80f;
+        _sheet.BaseMana = 50f;
+        if (Health > MaxHealth) Health = MaxHealth;
+    }
+
+    /// <summary>Podniesienie itemu: załóż (auto) i przelicz postać.</summary>
+    public void PickUp(Item item)
+    {
+        _equipment.EquipAuto(item);
+        RecomputeSheet();
     }
 
     public void TakeDamage(float amount)

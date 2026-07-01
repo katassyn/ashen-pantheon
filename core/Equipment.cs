@@ -7,7 +7,7 @@ public sealed class Equipment
 {
     private readonly Dictionary<EquipmentSlot, Item> _slots = new();
 
-    public Item Get(EquipmentSlot slot) => _slots.GetValueOrDefault(slot);
+    public Item? Get(EquipmentSlot slot) => _slots.GetValueOrDefault(slot);
     public bool IsEmpty(EquipmentSlot slot) => !_slots.ContainsKey(slot);
 
     /// <summary>Czy item danego rodzaju może wejść w slot (z regułą 2H/off-hand).</summary>
@@ -68,7 +68,7 @@ public sealed class Equipment
         return null;
     }
 
-    public Item Unequip(EquipmentSlot slot)
+    public Item? Unequip(EquipmentSlot slot)
     {
         if (_slots.TryGetValue(slot, out var item)) { _slots.Remove(slot); return item; }
         return null;

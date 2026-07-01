@@ -44,7 +44,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
             if (Combatant.ActiveStatus == StatusType.Burn) Combatant.Health -= 8f * dt;
             if (Combatant.StatusTimeLeft <= 0f) { Combatant.ActiveStatus = StatusType.None; UpdateTint(); }
             QueueRedraw();
-            if (Combatant.IsDead) { QueueFree(); return; }
+            if (Combatant.IsDead) { Die(); return; }
         }
 
         if (Combatant.MarkTimeLeft > 0f)
@@ -75,7 +75,15 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         CombatResolver.ApplyHit(skill, Combatant);
         UpdateTint();
         QueueRedraw();
-        if (Combatant.IsDead) QueueFree();
+        if (Combatant.IsDead) Die();
+    }
+
+    protected virtual bool DropsLoot => true;
+
+    protected void Die()
+    {
+        if (DropsLoot) ItemPickup.SpawnRandom(GetParent(), GlobalPosition);
+        QueueFree();
     }
 
     protected void UpdateTint()
