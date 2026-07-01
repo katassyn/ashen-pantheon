@@ -56,6 +56,13 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
         if (Player == null || !IsInstanceValid(Player)) return;
 
+        if (Combatant.IsStunned)
+        {
+            Combatant.StunTimeLeft -= dt;
+            Velocity = Vector2.Zero;
+            return; // ogłuszony
+        }
+
         Vector2 toPlayer = Player.GlobalPosition - GlobalPosition;
         Behavior(dt, toPlayer, toPlayer.Length());
 
@@ -76,6 +83,12 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         UpdateTint();
         QueueRedraw();
         if (Combatant.IsDead) Die();
+    }
+
+    public static System.Collections.Generic.IEnumerable<EnemyBase> All(SceneTree tree)
+    {
+        foreach (Node n in tree.GetNodesInGroup("enemies"))
+            if (n is EnemyBase e) yield return e;
     }
 
     protected virtual bool DropsLoot => true;

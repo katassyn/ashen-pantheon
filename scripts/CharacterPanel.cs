@@ -41,7 +41,7 @@ public partial class CharacterPanel : CanvasLayer
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.I)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.C)
         {
             _root.Visible = !_root.Visible;
             if (_root.Visible) Refresh();

@@ -11,7 +11,11 @@ public sealed class Combatant
     public bool Marked { get; set; }
     public float MarkTimeLeft { get; set; }
 
+    // Ogłuszenie
+    public float StunTimeLeft { get; set; }
+
     public bool IsDead => Health <= 0f;
     public bool IsChilled => ActiveStatus == StatusType.Chill && StatusTimeLeft > 0f;
     public bool IsMarked => Marked && MarkTimeLeft > 0f;
+    public bool IsStunned => StunTimeLeft > 0f;
 }

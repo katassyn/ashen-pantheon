@@ -24,5 +24,8 @@ public static class CombatResolver
             target.Marked = true;
             target.MarkTimeLeft = skill.MarkDuration;
         }
+
+        if (skill.StunDuration > target.StunTimeLeft)
+            target.StunTimeLeft = skill.StunDuration;
     }
 }

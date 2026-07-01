@@ -23,6 +23,9 @@ public sealed class ResolvedSkill
     /// <summary>Egzekutor: przebija tylko dopóki trafia oznaczonych; na nieoznaczonym się zatrzymuje.</summary>
     public bool PierceMarkedOnly { get; set; }
 
+    /// <summary>Ogłuszenie celu na tyle sekund (mina, jastrząb).</summary>
+    public float StunDuration { get; set; }
+
     // Zasób
     public float ConcentrationCost { get; set; }
 }
