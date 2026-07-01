@@ -41,7 +41,7 @@ public partial class CharacterPanel : CanvasLayer
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.C)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.I)
         {
             _root.Visible = !_root.Visible;
             if (_root.Visible) Refresh();
@@ -68,12 +68,7 @@ public partial class CharacterPanel : CanvasLayer
             _bag.AddChild(b);
         }
 
-        var s = GameState.BuildSheet();
-        _stats.Text =
-            $"Życie {s.MaxLife:0}   Mana {s.MaxMana:0}   ES {s.MaxEnergyShield:0}\n" +
-            $"Armour {s.Armour:0}   Evasion {s.EvasionRating:0}   Hit {s.HitChance:0}%\n" +
-            $"Str {s.Attributes.Strength}   Dex {s.Attributes.Dexterity}   Int {s.Attributes.Intelligence}\n" +
-            $"Res F/C/L/Chaos {s.Resistances.Effective(DamageType.Fire, s.Level):0}/{s.Resistances.Effective(DamageType.Cold, s.Level):0}/{s.Resistances.Effective(DamageType.Lightning, s.Level):0}/{s.Resistances.Effective(DamageType.Chaos, s.Level):0}   atk ×{s.AttackDamageMultiplier:0.00}";
+        _stats.Text = "Statystyki → klawisz C";
     }
 
     private static string Describe(Item item)

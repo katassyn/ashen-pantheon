@@ -8,6 +8,9 @@ public static class GameState
     public static Inventory Inventory = new();
     public static int Level = 1;
 
+    /// <summary>Id skilli, dla których gracz wybrał wariant boga (reszta gra bazowo). Wybór per-skill w panelu K.</summary>
+    public static System.Collections.Generic.HashSet<string> GodSkills = new();
+
     public static CharacterSheet BuildSheet()
     {
         var sheet = Equipment.BuildSheet(BaseAttributes, Level);

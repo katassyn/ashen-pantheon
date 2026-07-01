@@ -1,12 +1,18 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/Hud.cs" id="1_hud"]
 [ext_resource type="PackedScene" path="res://scenes/CharacterPanel.tscn" id="2_panel"]
+[ext_resource type="PackedScene" path="res://scenes/StatsPanel.tscn" id="3_stats"]
+[ext_resource type="PackedScene" path="res://scenes/SkillPanel.tscn" id="4_skill"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
 [node name="CharacterPanel" parent="." instance=ExtResource("2_panel")]
+
+[node name="StatsPanel" parent="." instance=ExtResource("3_stats")]
+
+[node name="SkillPanel" parent="." instance=ExtResource("4_skill")]
 
 [node name="Info" type="Label" parent="."]
 unique_name_in_owner = true

@@ -27,7 +27,7 @@ offset_bottom = -14.0
 theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Root/VB"]
-text = "POSTAĆ    [C] zamknij    klik w plecaku = załóż    klik w slocie = zdejmij"
+text = "EKWIPUNEK    [I] zamknij    klik w plecaku = załóż    klik w slocie = zdejmij"
 
 [node name="HB" type="HBoxContainer" parent="Root/VB"]
 size_flags_vertical = 3

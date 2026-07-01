@@ -19,15 +19,14 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float ConcentrationRegen = 30f;
     public float Concentration { get; private set; }
 
-    private bool _godActive;
-    public bool GodActive => _godActive;
+    // Wariant boga wybierany per-skill (panel K). Pasywka gdy pledgowany do boga (dowolny skill w wersji boga).
+    public bool GodActive => GameState.GodSkills.Count > 0;
     public string GodName => RangerKit.GodName;
+    private static bool GodOn(string skillId) => GameState.GodSkills.Contains(skillId);
 
-    // Cooldowny skilli z CD (4–9)
     private float _rainCd, _mineCd, _hedgeCd, _dashCd, _hawkCd, _adrenalineCd;
     private float _adrenalineTime;
 
-    // Dash
     private float _dashTimeLeft, _iFrameLeft;
     private Vector2 _dashDir;
     public bool IsInvulnerable => _iFrameLeft > 0f;
@@ -51,7 +50,6 @@ public partial class PlayerController : CharacterBody2D
     public void PickUp(Item item) => GameState.Inventory.Add(item);
     public void Refresh() => RecomputeSheet();
 
-    /// <summary>Obrażenia od wroga — mitygowane armour/resistami (na razie traktowane jako fizyczne).</summary>
     public void TakeDamage(float amount)
     {
         if (_dead || IsInvulnerable) return;
@@ -88,12 +86,9 @@ public partial class PlayerController : CharacterBody2D
                 case Key.Space: CastDash(); break;
                 case Key.X: CastAdrenaline(); break;
                 case Key.Z: CastHawk(); break;
-                case Key.G: _godActive = !_godActive; break;
             }
         }
     }
-
-    // --- Pomocnicze ---
 
     private Vector2 AimDirection()
     {
@@ -103,13 +98,12 @@ public partial class PlayerController : CharacterBody2D
 
     private bool TrySpend(float cost)
     {
-        if (_adrenalineTime > 0f) return true; // ∞ koncentracji podczas adrenaliny
+        if (_adrenalineTime > 0f) return true;
         if (Concentration < cost) return false;
         Concentration -= cost;
         return true;
     }
 
-    /// <summary>Podpięcie ofensywy: atk damage % z atrybutów/gearu + rzut na krytyka.</summary>
     private ResolvedSkill Offense(ResolvedSkill s)
     {
         if (_sheet == null) return s;
@@ -126,22 +120,21 @@ public partial class PlayerController : CharacterBody2D
         proj.GlobalPosition = GlobalPosition + dir * 20f;
     }
 
-    // --- Skille 1–3 ---
-
     private void CastBasic()
     {
-        var skill = RangerKit.BasicShot(_godActive);
+        var skill = RangerKit.BasicShot(GodOn("basic"));
         if (!TrySpend(skill.ConcentrationCost)) return;
         SpawnProjectile(Offense(skill), AimDirection(), new Color(0.95f, 0.95f, 0.85f));
     }
 
     private void CastSpread()
     {
-        var skill = RangerKit.Spread(_godActive);
+        bool god = GodOn("spread");
+        var skill = RangerKit.Spread(god);
         if (!TrySpend(skill.ConcentrationCost)) return;
         Offense(skill);
 
-        int count = RangerKit.SpreadCount(_godActive);
+        int count = RangerKit.SpreadCount(god);
         float baseAngle = AimDirection().Angle();
         float spread = Mathf.DegToRad(12f);
         float start = -spread * (count - 1) / 2f;
@@ -151,22 +144,21 @@ public partial class PlayerController : CharacterBody2D
 
     private void CastExecutor()
     {
-        var skill = RangerKit.Executor(_godActive);
+        var skill = RangerKit.Executor(GodOn("exec"));
         if (!TrySpend(skill.ConcentrationCost)) return;
         SpawnProjectile(Offense(skill), AimDirection(), new Color(1f, 0.85f, 0.3f));
     }
 
-    // --- Skille 4–9 (koszt + CD) ---
-
     private void CastRain()
     {
         if (_rainCd > 0f) return;
-        var skill = RangerKit.Rain(_godActive);
+        bool god = GodOn("rain");
+        var skill = RangerKit.Rain(god);
         if (!TrySpend(skill.ConcentrationCost)) return;
         _rainCd = RangerKit.RainCd;
 
         var zone = new GroundZone();
-        zone.Setup(Offense(skill), RangerKit.RainRadius(_godActive));
+        zone.Setup(Offense(skill), RangerKit.RainRadius(god));
         GetParent().AddChild(zone);
         zone.GlobalPosition = GetGlobalMousePosition();
     }
@@ -174,7 +166,7 @@ public partial class PlayerController : CharacterBody2D
     private void CastMine()
     {
         if (_mineCd > 0f) return;
-        var skill = RangerKit.Mine(_godActive);
+        var skill = RangerKit.Mine(GodOn("mine"));
         if (!TrySpend(skill.ConcentrationCost)) return;
         _mineCd = RangerKit.MineCd;
 
@@ -187,7 +179,7 @@ public partial class PlayerController : CharacterBody2D
     private void CastHedge()
     {
         if (_hedgeCd > 0f) return;
-        var skill = RangerKit.Hedge(_godActive);
+        var skill = RangerKit.Hedge(GodOn("hedge"));
         if (!TrySpend(skill.ConcentrationCost)) return;
         _hedgeCd = RangerKit.HedgeCd;
 
@@ -220,7 +212,7 @@ public partial class PlayerController : CharacterBody2D
     private void CastHawk()
     {
         if (_hawkCd > 0f) return;
-        var skill = RangerKit.Hawk(_godActive);
+        var skill = RangerKit.Hawk(GodOn("hawk"));
         if (!TrySpend(skill.ConcentrationCost)) return;
         _hawkCd = RangerKit.HawkCd;
 
@@ -269,7 +261,7 @@ public partial class PlayerController : CharacterBody2D
         }
 
         float speed = Speed;
-        if (_godActive) speed *= RangerKit.GodMoveSpeedBonus;
+        if (GodActive) speed *= RangerKit.GodMoveSpeedBonus;
         if (_adrenalineTime > 0f) speed *= 1.4f;
 
         Velocity = ReadMoveInput() * speed;
