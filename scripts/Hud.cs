@@ -37,7 +37,7 @@ public partial class Hud : CanvasLayer
 			_info.Text =
 				$"HP {_player.Health:0}/{_player.MaxHealth:0}    Koncentracja {_player.Concentration:0}/{_player.MaxConcentration:0}    Bóg: {god}    {wave}\n" +
 				stats +
-				"WASD ruch · mysz cel · LPM Strzał (oznacza) · PPM Rozbryzg · Q Egzekutor · G bóg · (loot: wejdź na drop)";
+				"WASD ruch · mysz cel · LPM Strzał · PPM Rozbryzg · Q Egzekutor · G bóg · I ekwipunek · (loot → plecak)";
 		}
 
 		if (_center != null)

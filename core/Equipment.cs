@@ -45,26 +45,17 @@ public sealed class Equipment
         return removed;
     }
 
-    /// <summary>Zakłada item w pierwszy wolny/pasujący slot. Zwraca użyty slot lub null.</summary>
-    public EquipmentSlot? EquipAuto(Item item)
+    /// <summary>Zakłada item w pierwszy wolny (lub pierwszy dozwolony) slot. Zwraca zdjęte itemy, albo null gdy się nie da.</summary>
+    public List<Item>? EquipAuto(Item item)
     {
         foreach (var slot in Item.SlotsFor(item.Kind))
-        {
             if (CanEquip(item, slot) && IsEmpty(slot))
-            {
-                Equip(item, slot);
-                return slot;
-            }
-        }
-        // brak wolnego — wejdź w pierwszy dozwolony (wyprze poprzedni)
+                return Equip(item, slot);
+
         foreach (var slot in Item.SlotsFor(item.Kind))
-        {
             if (CanEquip(item, slot))
-            {
-                Equip(item, slot);
-                return slot;
-            }
-        }
+                return Equip(item, slot);
+
         return null;
     }
 

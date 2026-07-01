@@ -5,8 +5,6 @@ public partial class PlayerController : CharacterBody2D
 {
     [Export] public float Speed = 240f;
 
-    private readonly Attributes _baseAttributes = new() { Strength = 12, Dexterity = 15, Intelligence = 5 };
-    private readonly Equipment _equipment = new();
     private CharacterSheet _sheet;
     public CharacterSheet Sheet => _sheet;
     public float MaxHealth => _sheet?.MaxLife ?? 100f;
@@ -36,18 +34,18 @@ public partial class PlayerController : CharacterBody2D
 
     private void RecomputeSheet()
     {
-        _sheet = _equipment.BuildSheet(_baseAttributes, 1);
-        _sheet.BaseLife = 80f;
-        _sheet.BaseMana = 50f;
+        _sheet = GameState.BuildSheet();
         if (Health > MaxHealth) Health = MaxHealth;
     }
 
-    /// <summary>Podniesienie itemu: załóż (auto) i przelicz postać.</summary>
+    /// <summary>Podniesienie itemu: leci do plecaka (zakładasz ręcznie w panelu I).</summary>
     public void PickUp(Item item)
     {
-        _equipment.EquipAuto(item);
-        RecomputeSheet();
+        GameState.Inventory.Add(item);
     }
+
+    /// <summary>Wołane przez panel po zmianie ekwipunku — przelicza postać.</summary>
+    public void Refresh() => RecomputeSheet();
 
     public void TakeDamage(float amount)
     {
