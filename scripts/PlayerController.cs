@@ -5,36 +5,30 @@ public partial class PlayerController : CharacterBody2D
 {
     [Export] public float Speed = 240f;
 
-    [Export] public float DashSpeed = 750f;
-    [Export] public float DashDuration = 0.15f;
-    [Export] public float DashCooldown = 0.7f;
-    [Export] public float IFrameDuration = 0.2f;
-
     [Export] public float MaxHealth = 100f;
     public float Health { get; private set; }
     private bool _dead;
 
-    public God ActiveGod = GodCatalog.Pyr;
+    [Export] public float MaxConcentration = 100f;
+    [Export] public float ConcentrationRegen = 30f; // /s — mała pula, szybki regen
+    public float Concentration { get; private set; }
 
-    private float _dashTimeLeft;
-    private float _dashCdLeft;
-    private float _iFrameLeft;
-    private Vector2 _dashDirection;
-
-    private float _strikeCd;
-    private float _boltCd;
+    private bool _godActive;
+    public bool GodActive => _godActive;
+    public string GodName => RangerKit.GodName;
 
     private PackedScene _projectileScene;
 
-    public bool IsInvulnerable => _iFrameLeft > 0f;
+    // i-frames zostają jako hook (adrenalina/dash-skill później); teraz brak
+    public bool IsInvulnerable => false;
 
     public override void _Ready()
     {
         _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
         Health = MaxHealth;
+        Concentration = MaxConcentration;
     }
 
-    /// <summary>Obrażenia od wroga. Dash daje i-frames (nietykalność).</summary>
     public void TakeDamage(float amount)
     {
         if (_dead || IsInvulnerable) return;
@@ -53,38 +47,80 @@ public partial class PlayerController : CharacterBody2D
     {
         if (_dead) return;
 
-        // Skille: LPM = Strike, PPM = Bolt (celują w kursor)
         if (@event is InputEventMouseButton mb && mb.Pressed)
         {
-            if (mb.ButtonIndex == MouseButton.Left && _strikeCd <= 0f)
-            {
-                CastStrike();
-                _strikeCd = GodCatalog.Strike.Cooldown;
-            }
-            else if (mb.ButtonIndex == MouseButton.Right && _boltCd <= 0f)
-            {
-                CastBolt();
-                _boltCd = GodCatalog.Bolt.Cooldown;
-            }
+            if (mb.ButtonIndex == MouseButton.Left) CastBasic();
+            else if (mb.ButtonIndex == MouseButton.Right) CastSpread();
         }
 
-        // Dash: w stronę ruchu (WASD), a jak stoisz — w stronę kursora
-        if (@event.IsActionPressed("dash") && _dashCdLeft <= 0f && _dashTimeLeft <= 0f)
-        {
-            Vector2 dir = ReadMoveInput();
-            if (dir == Vector2.Zero) dir = AimDirection();
-            _dashDirection = dir;
-            _dashTimeLeft = DashDuration;
-            _iFrameLeft = IFrameDuration;
-            _dashCdLeft = DashCooldown;
-        }
-
-        // Przełączanie boga na 1/2
         if (@event is InputEventKey k && k.Pressed && !k.Echo)
         {
-            if (k.PhysicalKeycode == Key.Key1) ActiveGod = GodCatalog.Pyr;
-            else if (k.PhysicalKeycode == Key.Key2) ActiveGod = GodCatalog.Vael;
+            if (k.PhysicalKeycode == Key.Q) CastExecutor();
+            else if (k.PhysicalKeycode == Key.G) _godActive = !_godActive;
         }
+    }
+
+    private Vector2 AimDirection()
+    {
+        Vector2 dir = GetGlobalMousePosition() - GlobalPosition;
+        return dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
+    }
+
+    private bool TrySpend(float cost)
+    {
+        if (Concentration < cost) return false;
+        Concentration -= cost;
+        return true;
+    }
+
+    private void SpawnProjectile(ResolvedSkill skill, Vector2 dir, Color tint)
+    {
+        var proj = _projectileScene.Instantiate<Projectile>();
+        proj.Setup(skill, dir, tint);
+        GetParent().AddChild(proj);
+        proj.GlobalPosition = GlobalPosition + dir * 20f;
+    }
+
+    private void CastBasic()
+    {
+        var skill = RangerKit.BasicShot(_godActive);
+        if (!TrySpend(skill.ConcentrationCost)) return;
+        SpawnProjectile(skill, AimDirection(), new Color(0.95f, 0.95f, 0.85f));
+    }
+
+    private void CastSpread()
+    {
+        var skill = RangerKit.Spread(_godActive);
+        if (!TrySpend(skill.ConcentrationCost)) return;
+
+        int count = RangerKit.SpreadCount(_godActive);
+        float baseAngle = AimDirection().Angle();
+        float spread = Mathf.DegToRad(12f);
+        float start = -spread * (count - 1) / 2f;
+        for (int i = 0; i < count; i++)
+        {
+            var dir = Vector2.Right.Rotated(baseAngle + start + spread * i);
+            SpawnProjectile(skill, dir, new Color(0.6f, 0.95f, 0.5f));
+        }
+    }
+
+    private void CastExecutor()
+    {
+        var skill = RangerKit.Executor(_godActive);
+        if (!TrySpend(skill.ConcentrationCost)) return;
+        SpawnProjectile(skill, AimDirection(), new Color(1f, 0.85f, 0.3f));
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_dead) { Velocity = Vector2.Zero; return; }
+
+        float dt = (float)delta;
+        Concentration = Mathf.Min(MaxConcentration, Concentration + ConcentrationRegen * dt);
+
+        float speed = Speed * (_godActive ? RangerKit.GodMoveSpeedBonus : 1f);
+        Velocity = ReadMoveInput() * speed;
+        MoveAndSlide();
     }
 
     private static Vector2 ReadMoveInput()
@@ -95,78 +131,5 @@ public partial class PlayerController : CharacterBody2D
         if (Input.IsPhysicalKeyPressed(Key.A)) v.X -= 1f;
         if (Input.IsPhysicalKeyPressed(Key.D)) v.X += 1f;
         return v == Vector2.Zero ? Vector2.Zero : v.Normalized();
-    }
-
-    private Vector2 AimDirection()
-    {
-        Vector2 dir = GetGlobalMousePosition() - GlobalPosition;
-        return dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
-    }
-
-    private static Color ElementTint(ResolvedSkill skill, float alpha) =>
-        skill.OnHitStatus switch
-        {
-            StatusType.Burn => new Color(1f, 0.5f, 0.2f, alpha),
-            StatusType.Chill => new Color(0.4f, 0.8f, 1f, alpha),
-            _ => new Color(1f, 1f, 1f, alpha)
-        };
-
-    private void CastBolt()
-    {
-        Vector2 dir = AimDirection();
-        ResolvedSkill resolved = GodModifierSystem.Resolve(GodCatalog.Bolt, ActiveGod);
-
-        var proj = _projectileScene.Instantiate<Projectile>();
-        proj.Setup(resolved, dir);
-        GetParent().AddChild(proj);
-        proj.GlobalPosition = GlobalPosition + dir * 20f;
-    }
-
-    private void CastStrike()
-    {
-        Vector2 dir = AimDirection();
-        ResolvedSkill resolved = GodModifierSystem.Resolve(GodCatalog.Strike, ActiveGod);
-
-        bool cone = resolved.Shape == SkillShape.Cone;
-        float range = 95f;
-        float halfAngleDeg = cone ? 65f : 28f;
-        float halfAngleRad = Mathf.DegToRad(halfAngleDeg);
-
-        foreach (Node node in GetTree().GetNodesInGroup("hittable"))
-        {
-            if (node is Node2D n && n is IHittable target)
-            {
-                Vector2 to = n.GlobalPosition - GlobalPosition;
-                if (to.Length() <= range && Mathf.Abs(dir.AngleTo(to.Normalized())) <= halfAngleRad)
-                    target.ReceiveHit(resolved);
-            }
-        }
-
-        var arc = new MeleeArc();
-        GetParent().AddChild(arc);
-        arc.GlobalPosition = GlobalPosition;
-        arc.Setup(range, halfAngleDeg, ElementTint(resolved, 0.5f), dir.Angle());
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        if (_dead) { Velocity = Vector2.Zero; return; }
-
-        float dt = (float)delta;
-        if (_dashCdLeft > 0f) _dashCdLeft -= dt;
-        if (_iFrameLeft > 0f) _iFrameLeft -= dt;
-        if (_strikeCd > 0f) _strikeCd -= dt;
-        if (_boltCd > 0f) _boltCd -= dt;
-
-        if (_dashTimeLeft > 0f)
-        {
-            _dashTimeLeft -= dt;
-            Velocity = _dashDirection * DashSpeed;
-            MoveAndSlide();
-            return;
-        }
-
-        Velocity = ReadMoveInput() * Speed;
-        MoveAndSlide();
     }
 }

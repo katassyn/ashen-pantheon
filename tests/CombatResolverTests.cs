@@ -53,4 +53,30 @@ public class CombatResolverTests
 
 		Assert.True(target.IsDead);
 	}
+
+	[Fact]
+	public void MarkedTarget_TakesMultipliedDamage()
+	{
+		var target = Target();
+		target.Marked = true;
+		target.MarkTimeLeft = 5f;
+		var skill = new ResolvedSkill { Id = "x", Damage = 10f, Shape = SkillShape.Projectile, MarkedMultiplier = 2f };
+
+		CombatResolver.ApplyHit(skill, target);
+
+		// 10 dmg × 2 (marked) = 20 → 100 - 20 = 80
+		Assert.Equal(80f, target.Health);
+	}
+
+	[Fact]
+	public void AppliesMark_MarksTheTarget()
+	{
+		var target = Target();
+		var skill = new ResolvedSkill { Id = "x", Damage = 5f, Shape = SkillShape.Projectile, AppliesMark = true, MarkDuration = 4f };
+
+		CombatResolver.ApplyHit(skill, target);
+
+		Assert.True(target.IsMarked);
+		Assert.Equal(4f, target.MarkTimeLeft);
+	}
 }

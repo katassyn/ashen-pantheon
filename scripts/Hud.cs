@@ -21,9 +21,10 @@ public partial class Hud : CanvasLayer
 		if (_info != null && _player != null)
 		{
 			string wave = _arena != null ? _arena.TopStatus : "";
+			string god = _player.GodActive ? $"{_player.GodName} [G: wł]" : "— [G: wył]";
 			_info.Text =
-				$"HP: {_player.Health:0} / {_player.MaxHealth:0}     Bóg: {_player.ActiveGod.Name}     {wave}\n" +
-				"WASD ruch · mysz cel · LPM Strike · PPM Bolt · Spacja dash · 1/2 bóg";
+				$"HP {_player.Health:0}/{_player.MaxHealth:0}    Koncentracja {_player.Concentration:0}/{_player.MaxConcentration:0}    Bóg: {god}    {wave}\n" +
+				"WASD ruch · mysz cel · LPM Strzał (oznacza) · PPM Rozbryzg · Q Egzekutor (×2+przebicie na oznaczonych) · G bóg";
 		}
 
 		if (_center != null)

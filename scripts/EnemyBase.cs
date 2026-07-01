@@ -19,6 +19,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     private float _contactCd;
 
     protected bool IsChilled => Combatant.IsChilled;
+    public bool IsMarked => Combatant != null && Combatant.IsMarked;
     protected abstract Color BaseTint { get; }
 
     public override void _Ready()
@@ -44,6 +45,13 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
             if (Combatant.StatusTimeLeft <= 0f) { Combatant.ActiveStatus = StatusType.None; UpdateTint(); }
             QueueRedraw();
             if (Combatant.IsDead) { QueueFree(); return; }
+        }
+
+        if (Combatant.MarkTimeLeft > 0f)
+        {
+            Combatant.MarkTimeLeft -= dt;
+            if (Combatant.MarkTimeLeft <= 0f) Combatant.Marked = false;
+            QueueRedraw();
         }
 
         if (Player == null || !IsInstanceValid(Player)) return;
@@ -89,5 +97,13 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         var pos = new Vector2(-HpBarWidth / 2f, HpBarY);
         DrawRect(new Rect2(pos, size), new Color(0f, 0f, 0f, 0.7f));
         DrawRect(new Rect2(pos, new Vector2(size.X * frac, size.Y)), new Color(0.9f, 0.2f, 0.2f));
+
+        // Znacznik Oznaczenia — żółty trójkąt nad paskiem HP
+        if (Combatant.IsMarked)
+        {
+            float y = HpBarY - 8f;
+            var tri = new Vector2[] { new(-6f, y), new(6f, y), new(0f, y + 8f) };
+            DrawColoredPolygon(tri, new Color(1f, 0.85f, 0.2f));
+        }
     }
 }

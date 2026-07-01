@@ -4,41 +4,32 @@ using AshenPantheon.Core;
 
 public partial class Projectile : Area2D
 {
-    [Export] public float Speed = 520f;
+    [Export] public float Speed = 560f;
     [Export] public float Lifetime = 1.5f;
     [Export] public float ExplodeRadius = 110f;
 
     private ResolvedSkill _skill;
     private Vector2 _direction = Vector2.Right;
+    private Color _tint = Colors.White;
     private float _life;
     private Sprite2D _sprite;
     private readonly HashSet<ulong> _hit = new();
 
-    public void Setup(ResolvedSkill skill, Vector2 direction)
+    public void Setup(ResolvedSkill skill, Vector2 direction, Color tint)
     {
         _skill = skill;
         _direction = direction.Normalized();
+        _tint = tint;
         Rotation = _direction.Angle();
     }
 
     public override void _Ready()
     {
         _sprite = GetNode<Sprite2D>("Sprite2D");
-        TintByElement();
-        AreaEntered += TryHit;   // trafialne Area2D (np. manekin)
-        BodyEntered += TryHit;   // solidne ciała (wrogowie, boss)
+        if (_sprite != null) _sprite.Modulate = _tint;
+        AreaEntered += TryHit;
+        BodyEntered += TryHit;
         _life = Lifetime;
-    }
-
-    private void TintByElement()
-    {
-        if (_sprite == null || _skill == null) return;
-        _sprite.Modulate = _skill.OnHitStatus switch
-        {
-            StatusType.Burn => new Color(1f, 0.5f, 0.2f),
-            StatusType.Chill => new Color(0.4f, 0.8f, 1f),
-            _ => Colors.White
-        };
     }
 
     public override void _PhysicsProcess(double delta)
@@ -54,6 +45,8 @@ public partial class Projectile : Area2D
         if (_hit.Contains(node.GetInstanceId())) return;
         _hit.Add(node.GetInstanceId());
 
+        bool wasMarked = node is EnemyBase eb && eb.IsMarked;
+
         target.ReceiveHit(_skill);
 
         if (_skill.Explodes)
@@ -61,11 +54,15 @@ public partial class Projectile : Area2D
             ExplodeAround();
             QueueFree();
         }
+        else if (_skill.PierceMarkedOnly)
+        {
+            // Egzekutor: przebija tylko dopóki trafiał oznaczonych; na nieoznaczonym się zatrzymuje
+            if (!wasMarked) QueueFree();
+        }
         else if (!_skill.Pierces)
         {
             QueueFree();
         }
-        // Pierces → leci dalej i może trafić kolejne cele
     }
 
     private void ExplodeAround()
