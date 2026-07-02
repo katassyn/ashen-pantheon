@@ -20,7 +20,7 @@ Act as a senior game developer and technical architect specializing in Godot 4 (
 
 ## 1. Wizja gry (kontekst)
 
-**Ashen Pantheon** — pixelowy, top-down **loot ARPG** w klimacie dark-fantasy. Inspiracje: Hero Siege (rdzeń walki), Path of Exile (głębia statystyk/itemizacji), Hades (hook bogów).
+**Ashen Pantheon** — pixelowy, top-down **loot ARPG** w klimacie dark-fantasy. Inspiracje: Hero Siege (rdzeń walki), Path of Exile (głębia statystyk/itemizacji).
 
 - **Silnik:** Godot 4.7 (.NET/mono) + C# (.NET 8). IDE: Rider.
 - **Repo:** `C:\Users\mastu\Desktop\Maks\ashen-pantheon` (GitHub: `katassyn/ashen-pantheon`, branch `main`).

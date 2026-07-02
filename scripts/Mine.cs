@@ -39,8 +39,9 @@ public partial class Mine : Node2D
 
     private void Explode()
     {
+        float radius = ExplodeRadius * (_skill?.AoeMult ?? 1f);
         foreach (var e in EnemyBase.All(GetTree()))
-            if (GlobalPosition.DistanceTo(e.GlobalPosition) <= ExplodeRadius)
+            if (GlobalPosition.DistanceTo(e.GlobalPosition) <= radius)
                 e.ReceiveHit(_skill);
         QueueFree();
     }

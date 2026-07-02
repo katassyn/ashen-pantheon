@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Texture2D" uid="uid://cwkrb11xh5q06" path="res://icon.svg" id="1_icon"]
 [ext_resource type="Script" path="res://scripts/Enemy.cs" id="2_enemy"]
+[ext_resource type="Script" path="res://scripts/EnemyAnimator.cs" id="3_anim"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 16.0
@@ -18,3 +19,6 @@ texture = ExtResource("1_icon")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
+
+[node name="Animator" type="Node" parent="."]
+script = ExtResource("3_anim")

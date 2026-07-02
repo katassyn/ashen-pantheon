@@ -12,6 +12,12 @@ public partial class Boss : EnemyBase
 
     protected override Color BaseTint => new(0.7f, 0.35f, 0.85f);
 
+    public Boss()
+    {
+        XpReward = AshenPantheon.Core.RunGenerator.BossXp;
+        LootChance = 1f; // boss zawsze dropi
+    }
+
     protected override void Behavior(float dt, Vector2 toPlayer, float dist)
     {
         float slow = IsChilled ? 0.5f : 1f;

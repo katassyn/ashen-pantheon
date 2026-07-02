@@ -28,4 +28,15 @@ public sealed class ResolvedSkill
 
     // Zasób
     public float ConcentrationCost { get; set; }
+
+    // Mnożniki nakładane przez drzewka skilli / bogów / uniki (konsumowane przez warstwę gry)
+    public float CdMult { get; set; } = 1f;
+    public float CostMult { get; set; } = 1f;
+    public float AoeMult { get; set; } = 1f;
+    public float DurationMult { get; set; } = 1f;
+    public int ExtraProjectiles { get; set; }
+    /// <summary>HP leczone rzucającemu za każde trafienie (bogowie krwi itp.).</summary>
+    public float HealOnHit { get; set; }
+    /// <summary>Znacznik wariantu zachowania — warstwa Godota zmienia implementację skilla po tym tagu.</summary>
+    public string? VariantTag { get; set; }
 }

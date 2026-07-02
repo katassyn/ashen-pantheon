@@ -1,21 +1,135 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AshenPantheon.Core;
 
-/// <summary>Trwały stan postaci na czas sesji gry — przeżywa zmianę sceny (miasto ↔ arena).</summary>
+/// <summary>Trwały stan postaci. Server-ready: całość serializuje się przez IGameStateRepository
+/// (dziś lokalny JSON, docelowo serwer/baza — podmiana repo bez ruszania gameplayu).</summary>
 public static class GameState
 {
-    public static Attributes BaseAttributes = new() { Strength = 12, Dexterity = 15, Intelligence = 5 };
-    public static Equipment Equipment = new();
-    public static Inventory Inventory = new();
-    public static int Level = 1;
+    // Klasa postaci — architektura pod N klas (inne klasy podmienią definicję i caster)
+    public static ClassDefinition Class = RangerKit.Class;
 
-    /// <summary>Id skilli, dla których gracz wybrał wariant boga (reszta gra bazowo). Wybór per-skill w panelu K.</summary>
-    public static System.Collections.Generic.HashSet<string> GodSkills = new();
+    // Startowe atrybuty klasy + punkty wydane przez gracza (osobno — respec zwraca tylko wydane)
+    public static readonly Attributes ClassBase = new() { Strength = 12, Dexterity = 15, Intelligence = 5 };
+    public static Attributes Spent = new();
+
+    public static PlayerProgress Progress = new();
+    public static Wallet Wallet = new();
+    public static Equipment Equipment = new();
+    public static GridInventory Bag = new(12, 6);
+    public static GridInventory Stash = new(12, 8);
+    public static SkillTreeState Trees = new();
+    public static Loadout Loadout = new();
+
+    public static GodId PledgedGod = GodId.None;
+    public static HashSet<string> GodSkills = new();
+
+    public static IGameStateRepository? Repository;
+    private static bool _loaded;
 
     public static CharacterSheet BuildSheet()
     {
-        var sheet = Equipment.BuildSheet(BaseAttributes, Level);
+        var total = new Attributes
+        {
+            Strength = ClassBase.Strength + Spent.Strength,
+            Dexterity = ClassBase.Dexterity + Spent.Dexterity,
+            Intelligence = ClassBase.Intelligence + Spent.Intelligence,
+        };
+        var sheet = Equipment.BuildSheet(total, Progress.Level);
         sheet.BaseLife = 80f;
         sheet.BaseMana = 50f;
         return sheet;
+    }
+
+    /// <summary>Efekty mechaniczne uników z założonego gearu.</summary>
+    public static bool HasUniqueEffect(UniqueEffect effect) =>
+        Equipment.EquippedItems().Any(i => i.Effect == effect);
+
+    public static void EnsureDefaultLoadout()
+    {
+        if (Loadout.Slots.Any(s => s != null)) return;
+        Loadout.Assign(0, "basic");
+        Loadout.Assign(1, "spread");
+        Loadout.Assign(2, "exec");
+        Loadout.Assign(3, "rain");
+        Loadout.Assign(4, "dash");
+    }
+
+    // ── Persystencja ──
+
+    public static void LoadOrInit()
+    {
+        if (_loaded) return;
+        _loaded = true;
+
+        var data = Repository?.Load();
+        if (data == null) { EnsureDefaultLoadout(); return; }
+
+        Progress = new PlayerProgress { Level = data.Level, Xp = data.Xp, AttributePoints = data.AttributePoints, SkillPoints = data.SkillPoints };
+        Spent = new Attributes { Strength = data.SpentStr, Dexterity = data.SpentDex, Intelligence = data.SpentInt };
+        Wallet = new Wallet { Gold = data.Gold };
+        PledgedGod = Enum.TryParse<GodId>(data.PledgedGod, out var g) ? g : GodId.None;
+        GodSkills = new HashSet<string>(data.GodSkills);
+
+        Loadout = new Loadout();
+        for (int i = 0; i < Loadout.SlotCount && i < data.Loadout.Count; i++)
+            Loadout.Assign(i, data.Loadout[i]);
+        EnsureDefaultLoadout();
+
+        Trees = new SkillTreeState();
+        foreach (var (skillId, nodes) in data.TreeNodes)
+            foreach (var n in nodes)
+                Trees.Allocate(skillId, n);
+
+        Equipment = new Equipment();
+        foreach (var (slotName, dto) in data.Equipment)
+            if (Enum.TryParse<EquipmentSlot>(slotName, out var slot))
+                Equipment.Equip(ItemMapper.FromDto(dto), slot);
+
+        Bag = new GridInventory(12, 6);
+        foreach (var p in data.Bag)
+        {
+            var item = ItemMapper.FromDto(p.Item);
+            if (!Bag.PlaceAt(item, p.X, p.Y)) Bag.TryAutoPlace(item);
+        }
+
+        Stash = new GridInventory(12, 8);
+        foreach (var p in data.Stash)
+        {
+            var item = ItemMapper.FromDto(p.Item);
+            if (!Stash.PlaceAt(item, p.X, p.Y)) Stash.TryAutoPlace(item);
+        }
+    }
+
+    public static void Save()
+    {
+        if (Repository == null) return;
+        var data = new SaveData
+        {
+            Level = Progress.Level, Xp = Progress.Xp,
+            AttributePoints = Progress.AttributePoints, SkillPoints = Progress.SkillPoints,
+            SpentStr = Spent.Strength, SpentDex = Spent.Dexterity, SpentInt = Spent.Intelligence,
+            Gold = Wallet.Gold,
+            PledgedGod = PledgedGod.ToString(),
+            GodSkills = GodSkills.ToList(),
+            Loadout = Loadout.Slots.ToList(),
+            TreeNodes = Trees.Allocated.ToDictionary(kv => kv.Key, kv => kv.Value.ToList()),
+            Equipment = SlotDump(),
+            Bag = Bag.Placed.Select(p => new PlacedItemDto { Item = ItemMapper.ToDto(p.Item), X = p.X, Y = p.Y }).ToList(),
+            Stash = Stash.Placed.Select(p => new PlacedItemDto { Item = ItemMapper.ToDto(p.Item), X = p.X, Y = p.Y }).ToList(),
+        };
+        Repository.Save(data);
+    }
+
+    private static Dictionary<string, ItemDto> SlotDump()
+    {
+        var result = new Dictionary<string, ItemDto>();
+        foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+        {
+            var item = Equipment.Get(slot);
+            if (item != null) result[slot.ToString()] = ItemMapper.ToDto(item);
+        }
+        return result;
     }
 }

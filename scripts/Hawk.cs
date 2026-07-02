@@ -1,15 +1,21 @@
 using Godot;
 using AshenPantheon.Core;
 
-/// <summary>Jastrząb: po chwili uderza w najbliższego wroga — dmg + stun + oznaczenie. Na oznaczonym ×3 dmg / ×2 stun.</summary>
+/// <summary>Jastrząb: po chwili uderza — dmg + stun + Mark; ×3 dmg / ×2 stun na oznaczonym.
+/// Wariant Vharosa (hawk_all): uderza WSZYSTKICH oznaczonych naraz.</summary>
 public partial class Hawk : Node2D
 {
     private ResolvedSkill _skill;
+    private bool _strikeAllMarked;
     private const float Delay = 0.6f;
     private float _t;
     private bool _struck;
 
-    public void Setup(ResolvedSkill skill) => _skill = skill;
+    public void Setup(ResolvedSkill skill, bool strikeAllMarked = false)
+    {
+        _skill = skill;
+        _strikeAllMarked = strikeAllMarked;
+    }
 
     public override void _Process(double delta)
     {
@@ -26,6 +32,21 @@ public partial class Hawk : Node2D
 
     private void Strike()
     {
+        if (_strikeAllMarked)
+        {
+            bool any = false;
+            foreach (var e in EnemyBase.All(GetTree()))
+                if (e.IsMarked)
+                {
+                    any = true;
+                    var hit = CloneSkill();
+                    hit.StunDuration *= 2f;
+                    e.ReceiveHit(hit);
+                }
+            if (any) return;
+            // brak oznaczonych → uderz najbliższego normalnie
+        }
+
         EnemyBase target = null;
         float best = float.MaxValue;
         foreach (var e in EnemyBase.All(GetTree()))
@@ -36,9 +57,18 @@ public partial class Hawk : Node2D
         if (target == null) return;
 
         GlobalPosition = target.GlobalPosition;
-        if (target.IsMarked) _skill.StunDuration *= 2f; // ×2 stun (dmg ×3 przez MarkedMultiplier w CombatResolver)
-        target.ReceiveHit(_skill);
+        var s = CloneSkill();
+        if (target.IsMarked) s.StunDuration *= 2f;
+        target.ReceiveHit(s);
     }
+
+    private ResolvedSkill CloneSkill() => new()
+    {
+        Id = _skill.Id, Damage = _skill.Damage, Shape = _skill.Shape,
+        AppliesMark = _skill.AppliesMark, MarkDuration = _skill.MarkDuration,
+        MarkedMultiplier = _skill.MarkedMultiplier, StunDuration = _skill.StunDuration,
+        HealOnHit = _skill.HealOnHit,
+    };
 
     public override void _Draw()
     {

@@ -1,0 +1,245 @@
+using System.IO;
+using System.Linq;
+using AshenPantheon.Core;
+using Xunit;
+
+public class GridInventoryTests
+{
+    private static Item ItemOf(ItemKind kind) => new() { Name = "t", Kind = kind };
+
+    [Fact]
+    public void PlaceAt_RejectsOverlap()
+    {
+        var g = new GridInventory(4, 4);
+        Assert.True(g.PlaceAt(ItemOf(ItemKind.Helmet), 0, 0));   // 2x2
+        Assert.False(g.CanPlaceAt(ItemOf(ItemKind.Ring), 1, 1)); // środek hełmu
+        Assert.True(g.CanPlaceAt(ItemOf(ItemKind.Ring), 2, 0));
+    }
+
+    [Fact]
+    public void PlaceAt_RejectsOutOfBounds()
+    {
+        var g = new GridInventory(4, 4);
+        Assert.False(g.CanPlaceAt(ItemOf(ItemKind.TwoHandWeapon), 3, 0)); // 2x4 nie mieści się od x=3
+        Assert.True(g.CanPlaceAt(ItemOf(ItemKind.TwoHandWeapon), 0, 0));
+    }
+
+    [Fact]
+    public void AutoPlace_FillsUntilFull()
+    {
+        var g = new GridInventory(2, 2);
+        Assert.True(g.TryAutoPlace(ItemOf(ItemKind.Ring)));
+        Assert.True(g.TryAutoPlace(ItemOf(ItemKind.Ring)));
+        Assert.True(g.TryAutoPlace(ItemOf(ItemKind.Belt))); // 2x1 w drugim rzędzie
+        Assert.False(g.TryAutoPlace(ItemOf(ItemKind.Helmet))); // 2x2 już się nie zmieści
+        Assert.Equal(3, g.Count);
+    }
+
+    [Fact]
+    public void At_FindsItemByAnyCoveredCell()
+    {
+        var g = new GridInventory(4, 4);
+        var body = ItemOf(ItemKind.BodyArmour); // 2x3
+        g.PlaceAt(body, 1, 0);
+        Assert.Equal(body, g.At(2, 2)!.Item);
+        Assert.Null(g.At(0, 0));
+    }
+}
+
+public class LootGeneratorTests
+{
+    [Fact]
+    public void SeededGenerator_IsDeterministic()
+    {
+        var a = new LootGenerator(42).Generate();
+        var b = new LootGenerator(42).Generate();
+        Assert.Equal(a.Name, b.Name);
+        Assert.Equal(a.Rarity, b.Rarity);
+        Assert.Equal(a.Affixes.Count, b.Affixes.Count);
+    }
+
+    [Fact]
+    public void HighTiers_ComeFromUniqueCatalog()
+    {
+        var gen = new LootGenerator(7);
+        var item = gen.Generate(Rarity.Mythic);
+        Assert.NotNull(item.UniqueId);
+        Assert.Equal(Rarity.Mythic, item.Rarity);
+    }
+
+    [Fact]
+    public void AffixCounts_MatchRarity()
+    {
+        var gen = new LootGenerator(1);
+        Assert.Empty(gen.Generate(Rarity.Normal).Affixes);
+        Assert.InRange(gen.Generate(Rarity.Magic).Affixes.Count, 1, 2);
+        Assert.InRange(gen.Generate(Rarity.Rare).Affixes.Count, 3, 4);
+    }
+}
+
+public class ProgressionTests
+{
+    [Fact]
+    public void GainXp_LevelsUpAndGrantsPoints()
+    {
+        var p = new PlayerProgress();
+        long need = PlayerProgress.XpToNext(1);
+        int gained = p.GainXp(need);
+        Assert.Equal(1, gained);
+        Assert.Equal(2, p.Level);
+        Assert.Equal(2, p.AttributePoints);
+        Assert.Equal(1, p.SkillPoints);
+    }
+
+    [Fact]
+    public void GainXp_CanMultiLevel()
+    {
+        var p = new PlayerProgress();
+        p.GainXp(PlayerProgress.XpToNext(1) + PlayerProgress.XpToNext(2));
+        Assert.Equal(3, p.Level);
+    }
+}
+
+public class SkillTreeTests
+{
+    [Fact]
+    public void ExclusiveGroup_BlocksSecondPick()
+    {
+        var state = new SkillTreeState();
+        Assert.True(state.Allocate("basic", "basic_pierce"));
+        Assert.False(state.CanAllocate("basic", "basic_twin")); // ta sama grupa b1
+        Assert.True(state.CanAllocate("basic", "basic_dmg"));
+    }
+
+    [Fact]
+    public void ApplyTo_ModifiesSkill()
+    {
+        var state = new SkillTreeState();
+        state.Allocate("basic", "basic_dmg");
+        var s = RangerKit.Get("basic", GodId.None);
+        float before = s.Damage;
+        state.ApplyTo("basic", s);
+        Assert.Equal(before * 1.3f, s.Damage, 2);
+    }
+
+    [Fact]
+    public void ResetAll_RefundsPoints()
+    {
+        var state = new SkillTreeState();
+        state.Allocate("basic", "basic_dmg");
+        state.Allocate("rain", "rain_cd");
+        Assert.Equal(2, state.ResetAll());
+        Assert.Equal(0, state.SpentPoints);
+    }
+
+    [Fact]
+    public void AllNineSkills_HaveTrees()
+    {
+        foreach (var info in RangerKit.Class.Skills)
+            Assert.True(RangerTrees.BySkill.ContainsKey(info.Id), $"brak drzewka: {info.Id}");
+    }
+}
+
+public class GodVariantTests
+{
+    [Fact]
+    public void EveryskillDiffersUnderEachGod()
+    {
+        foreach (var info in RangerKit.Class.Skills)
+        {
+            var baseS = RangerKit.Get(info.Id, GodId.None);
+            foreach (var god in new[] { GodId.Wilds, GodId.Blood })
+            {
+                var g = RangerKit.Get(info.Id, god);
+                bool differs =
+                    g.Damage != baseS.Damage || g.Pierces != baseS.Pierces || g.ExtraProjectiles != baseS.ExtraProjectiles ||
+                    g.OnHitStatus != baseS.OnHitStatus || g.MarkDuration != baseS.MarkDuration ||
+                    g.MarkedMultiplier != baseS.MarkedMultiplier || g.HealOnHit != baseS.HealOnHit ||
+                    g.CdMult != baseS.CdMult || g.AoeMult != baseS.AoeMult || g.DurationMult != baseS.DurationMult ||
+                    g.StunDuration != baseS.StunDuration || g.VariantTag != baseS.VariantTag || g.Shape != baseS.Shape;
+                Assert.True(differs, $"skill {info.Id} nie różni się pod bogiem {god}");
+            }
+        }
+    }
+}
+
+public class PersistenceTests
+{
+    [Fact]
+    public void SaveLoad_RoundTripsCoreFields()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"ap_test_{Path.GetRandomFileName()}.json");
+        try
+        {
+            var repo = new JsonGameStateRepository(path);
+            var data = new SaveData
+            {
+                Level = 7, Xp = 123, Gold = 456, PledgedGod = "Wilds",
+                GodSkills = { "basic", "hawk" },
+                Loadout = { "basic", "spread", null, "dash", "hawk" },
+                TreeNodes = { ["basic"] = new() { "basic_dmg" } },
+                Bag = { new PlacedItemDto { Item = ItemMapper.ToDto(new LootGenerator(3).Generate(Rarity.Rare)), X = 2, Y = 1 } },
+                Equipment = { ["Weapon"] = ItemMapper.ToDto(UniqueCatalog.ById("bow_pantheon")!) },
+            };
+            repo.Save(data);
+            var loaded = repo.Load();
+            Assert.NotNull(loaded);
+            Assert.Equal(7, loaded!.Level);
+            Assert.Equal(456, loaded.Gold);
+            Assert.Equal("Wilds", loaded.PledgedGod);
+            Assert.Contains("hawk", loaded.GodSkills);
+            Assert.Equal("basic", loaded.Loadout[0]);
+            Assert.Single(loaded.TreeNodes["basic"]);
+            Assert.Equal(2, loaded.Bag[0].X);
+
+            // unik odtwarza się z katalogu z efektem mechanicznym
+            var bow = ItemMapper.FromDto(loaded.Equipment["Weapon"]);
+            Assert.Equal(UniqueEffect.MarkOnHit, bow.Effect);
+            Assert.Equal(Rarity.Mythic, bow.Rarity);
+        }
+        finally
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void Load_MissingFile_ReturnsNull()
+    {
+        var repo = new JsonGameStateRepository(Path.Combine(Path.GetTempPath(), "ap_nope_xyz.json"));
+        Assert.Null(repo.Load());
+    }
+}
+
+public class VendorTests
+{
+    [Fact]
+    public void SellPrice_ScalesWithRarity()
+    {
+        var gen = new LootGenerator(5);
+        Assert.True(Vendor.SellPrice(gen.Generate(Rarity.Rare)) > Vendor.SellPrice(gen.Generate(Rarity.Normal)));
+        Assert.True(Vendor.SellPrice(UniqueCatalog.ById("bow_pantheon")!) >= 800);
+    }
+}
+
+public class RunGeneratorTests
+{
+    [Fact]
+    public void Generate_EndsWithBossAndScales()
+    {
+        var plan = RunGenerator.Generate(11, playerLevel: 5);
+        Assert.True(plan.Count >= 5);
+        Assert.True(plan[^1].Boss);
+        Assert.All(plan.SkipLast(1), r => Assert.False(r.Boss));
+        Assert.True(plan[^1].HpMult > plan[0].HpMult);
+    }
+
+    [Fact]
+    public void Generate_IsSeedDeterministic()
+    {
+        var a = RunGenerator.Generate(99, 1);
+        var b = RunGenerator.Generate(99, 1);
+        Assert.Equal(a.Count, b.Count);
+        Assert.Equal(a[0].HuskCount, b[0].HuskCount);
+    }
+}

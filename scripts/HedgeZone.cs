@@ -1,12 +1,13 @@
 using Godot;
 using AshenPantheon.Core;
 
-/// <summary>Kolczasta przesieka: linia na ziemi, mocno spowalnia i zadaje dmg wchodzącym.</summary>
+/// <summary>Kolczasta przesieka: linia na ziemi, mocno spowalnia i rani wchodzących.
+/// Wariant Vharosa (hedge_drain): drenuje — leczy gracza za każdego ranionego wroga.</summary>
 public partial class HedgeZone : Node2D
 {
     private ResolvedSkill _skill;
     private float _length = 340f;
-    private const float HalfWidth = 26f;
+    private float _halfWidth = 26f;
     private const float Lifetime = 4f;
 
     private float _t;
@@ -16,6 +17,7 @@ public partial class HedgeZone : Node2D
     {
         _skill = skill;
         _length = length;
+        _halfWidth = 26f * (skill?.DurationMult ?? 1f); // węzeł hedge_wide poszerza
         Rotation = direction.Angle();
     }
 
@@ -29,11 +31,17 @@ public partial class HedgeZone : Node2D
         if (_tick <= 0f)
         {
             _tick = 0.4f;
-            var hit = new ResolvedSkill { Id = "hedge", Damage = _skill.Damage, Shape = SkillShape.Line, OnHitStatus = StatusType.Chill, StatusDuration = 0.8f };
+            var hit = new ResolvedSkill
+            {
+                Id = "hedge", Damage = _skill.Damage, Shape = SkillShape.Line,
+                OnHitStatus = _skill.OnHitStatus == StatusType.None ? StatusType.Chill : _skill.OnHitStatus,
+                StatusDuration = _skill.OnHitStatus == StatusType.None ? 0.8f : _skill.StatusDuration,
+                HealOnHit = _skill.VariantTag == "hedge_drain" ? _skill.HealOnHit : 0f,
+            };
             foreach (var e in EnemyBase.All(GetTree()))
             {
                 Vector2 p = ToLocal(e.GlobalPosition);
-                if (p.X >= 0f && p.X <= _length && Mathf.Abs(p.Y) <= HalfWidth)
+                if (p.X >= 0f && p.X <= _length && Mathf.Abs(p.Y) <= _halfWidth)
                     e.ReceiveHit(hit);
             }
         }
@@ -43,8 +51,9 @@ public partial class HedgeZone : Node2D
 
     public override void _Draw()
     {
-        var rect = new Rect2(new Vector2(0f, -HalfWidth), new Vector2(_length, HalfWidth * 2f));
-        DrawRect(rect, new Color(0.4f, 0.7f, 0.3f, 0.22f));
-        DrawRect(rect, new Color(0.5f, 0.9f, 0.4f, 0.7f), false, 2f);
+        bool drain = _skill?.VariantTag == "hedge_drain";
+        var rect = new Rect2(new Vector2(0f, -_halfWidth), new Vector2(_length, _halfWidth * 2f));
+        DrawRect(rect, drain ? new Color(0.7f, 0.2f, 0.25f, 0.22f) : new Color(0.4f, 0.7f, 0.3f, 0.22f));
+        DrawRect(rect, drain ? new Color(0.9f, 0.3f, 0.35f, 0.7f) : new Color(0.5f, 0.9f, 0.4f, 0.7f), false, 2f);
     }
 }

@@ -1,13 +1,15 @@
+using System.Collections.Generic;
 using Godot;
 using AshenPantheon.Core;
 
 public partial class PlayerController : CharacterBody2D
 {
     [Export] public float Speed = 240f;
-
     [Export] public float DashSpeed = 780f;
     [Export] public float DashDuration = 0.15f;
     [Export] public float IFrameDuration = 0.2f;
+    /// <summary>W hubie skille są wyłączone (E/klawisze służą interakcji).</summary>
+    [Export] public bool CombatEnabled = true;
 
     private CharacterSheet _sheet;
     public CharacterSheet Sheet => _sheet;
@@ -15,17 +17,16 @@ public partial class PlayerController : CharacterBody2D
     public float Health { get; private set; }
     private bool _dead;
 
-    [Export] public float MaxConcentration = 100f;
-    [Export] public float ConcentrationRegen = 30f;
-    public float Concentration { get; private set; }
+    public float MaxResource => GameState.Class.ResourceMax;
+    public float Resource { get; private set; }
 
-    // Wariant boga wybierany per-skill (panel K). Pasywka gdy pledgowany do boga (dowolny skill w wersji boga).
-    public bool GodActive => GameState.GodSkills.Count > 0;
-    public string GodName => RangerKit.GodName;
-    private static bool GodOn(string skillId) => GameState.GodSkills.Contains(skillId);
+    // Cooldowny per skill id
+    private readonly Dictionary<string, float> _cd = new();
+    public float CooldownLeft(string skillId) => _cd.GetValueOrDefault(skillId);
 
-    private float _rainCd, _mineCd, _hedgeCd, _dashCd, _hawkCd, _adrenalineCd;
     private float _adrenalineTime;
+    private float _adrenalineDmgBonus;
+    public bool AdrenalineActive => _adrenalineTime > 0f;
 
     private float _dashTimeLeft, _iFrameLeft;
     private Vector2 _dashDir;
@@ -36,9 +37,10 @@ public partial class PlayerController : CharacterBody2D
     public override void _Ready()
     {
         _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
+        GameState.LoadOrInit();
         RecomputeSheet();
         Health = MaxHealth;
-        Concentration = MaxConcentration;
+        Resource = MaxResource;
     }
 
     private void RecomputeSheet()
@@ -47,8 +49,21 @@ public partial class PlayerController : CharacterBody2D
         if (Health > MaxHealth) Health = MaxHealth;
     }
 
-    public void PickUp(Item item) => GameState.Inventory.Add(item);
     public void Refresh() => RecomputeSheet();
+
+    public void Heal(float amount)
+    {
+        if (_dead) return;
+        Health = Mathf.Min(MaxHealth, Health + amount);
+    }
+
+    public void PickUp(Item item)
+    {
+        if (!GameState.Bag.TryAutoPlace(item))
+            GD.Print("Plecak pełny!");
+        else
+            GameState.Save();
+    }
 
     public void TakeDamage(float amount)
     {
@@ -65,28 +80,121 @@ public partial class PlayerController : CharacterBody2D
         }
     }
 
+    /// <summary>Bezpośrednia utrata HP (koszty krwi Vharosa) — bez mitygacji, nie zabija poniżej 1 HP.</summary>
+    private void PayHealth(float amount)
+    {
+        Health = Mathf.Max(1f, Health - amount);
+    }
+
+    // ── Budowa skilla: baza/bóg → drzewko → uniki → pasywki ──
+
+    public ResolvedSkill BuildSkill(string skillId)
+    {
+        GodId god = GameState.GodSkills.Contains(skillId) ? GameState.PledgedGod : GodId.None;
+        var s = RangerKit.Get(skillId, god);
+        GameState.Trees.ApplyTo(skillId, s);
+
+        if (GameState.HasUniqueEffect(UniqueEffect.Overcharge)) s.CostMult *= 1.2f;
+        if (skillId == "dash" && GameState.HasUniqueEffect(UniqueEffect.SwiftDash)) s.CdMult *= 0.6f;
+
+        if (s.Damage > 0f && skillId != "adrenaline")
+        {
+            if (GameState.PledgedGod == GodId.Blood) s.Damage *= Gods.BloodDamageBonus;
+            if (_adrenalineTime > 0f && _adrenalineDmgBonus > 0f) s.Damage *= 1f + _adrenalineDmgBonus;
+        }
+        return s;
+    }
+
+    /// <summary>Ofensywa z arkusza: atk%, krytyk, unik MarkOnHit.</summary>
+    private ResolvedSkill Offense(ResolvedSkill s)
+    {
+        if (_sheet != null)
+        {
+            s.Damage *= _sheet.AttackDamageMultiplier;
+            if (GD.Randf() < _sheet.CritChance) s.Damage *= _sheet.CritMultiplier;
+        }
+        if (GameState.HasUniqueEffect(UniqueEffect.MarkOnHit) && !s.AppliesMark)
+        {
+            s.AppliesMark = true;
+            s.MarkDuration = Mathf.Max(s.MarkDuration, 3f);
+        }
+        return s;
+    }
+
+    private bool TryPay(ResolvedSkill s)
+    {
+        float cost = s.ConcentrationCost * s.CostMult;
+        if (s.VariantTag == "dash_blood") { PayHealth(8f); return true; }
+        if (_adrenalineTime > 0f || cost <= 0f) return true;
+
+        if (Resource >= cost) { Resource -= cost; return true; }
+
+        // Vharos: brakującą koncentrację płacisz zdrowiem
+        if (GameState.PledgedGod == GodId.Blood)
+        {
+            float missing = cost - Resource;
+            Resource = 0f;
+            PayHealth(missing * Gods.BloodHpPerConcentration);
+            return true;
+        }
+        return false;
+    }
+
+    // ── Input: sloty loadoutu ──
+
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (_dead) return;
+        if (_dead || !CombatEnabled) return;
 
         if (@event is InputEventMouseButton mb && mb.Pressed)
         {
-            if (mb.ButtonIndex == MouseButton.Left) CastBasic();
-            else if (mb.ButtonIndex == MouseButton.Right) CastSpread();
+            if (mb.ButtonIndex == MouseButton.Left) CastSlot(0);
+            else if (mb.ButtonIndex == MouseButton.Right) CastSlot(1);
         }
 
         if (@event is InputEventKey k && k.Pressed && !k.Echo)
         {
             switch (k.PhysicalKeycode)
             {
-                case Key.Q: CastExecutor(); break;
-                case Key.E: CastRain(); break;
-                case Key.R: CastMine(); break;
-                case Key.F: CastHedge(); break;
-                case Key.Space: CastDash(); break;
-                case Key.X: CastAdrenaline(); break;
-                case Key.Z: CastHawk(); break;
+                case Key.Q: CastSlot(2); break;
+                case Key.E: CastSlot(3); break;
+                case Key.R: CastSlot(4); break;
             }
+        }
+    }
+
+    private void CastSlot(int slot)
+    {
+        string skillId = GameState.Loadout.Slots[slot];
+        if (skillId == null) return;
+
+        var info = GameState.Class.Skill(skillId);
+        if (info == null) return;
+        if (_cd.GetValueOrDefault(skillId) > 0f) return;
+        if (skillId == "dash" && _dashTimeLeft > 0f) return;
+
+        var s = BuildSkill(skillId);
+        if (!TryPay(s)) return;
+
+        Execute(skillId, s);
+
+        float cd = info.Cooldown * s.CdMult;
+        if (cd > 0f) _cd[skillId] = cd;
+    }
+
+    private void Execute(string skillId, ResolvedSkill s)
+    {
+        switch (skillId)
+        {
+            case "basic": CastProjectile(Offense(s), new Color(0.95f, 0.95f, 0.85f)); break;
+            case "spread": CastSpread(s); break;
+            case "exec": CastProjectile(Offense(s), new Color(1f, 0.85f, 0.3f)); break;
+            case "rain": CastRain(s); break;
+            case "mine": CastMine(s); break;
+            case "hedge": CastHedge(s); break;
+            case "dash": CastDash(s); break;
+            case "adrenaline": CastAdrenaline(s); break;
+            case "hawk": CastHawk(s); break;
         }
     }
 
@@ -96,128 +204,124 @@ public partial class PlayerController : CharacterBody2D
         return dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
     }
 
-    private bool TrySpend(float cost)
+    private void CastProjectile(ResolvedSkill s, Color tint, Vector2? dirOverride = null)
     {
-        if (_adrenalineTime > 0f) return true;
-        if (Concentration < cost) return false;
-        Concentration -= cost;
-        return true;
+        Vector2 dir = dirOverride ?? AimDirection();
+        var proj = _projectileScene.Instantiate<Projectile>();
+        proj.Setup(s, dir, tint);
+        GetParent().AddChild(proj);
+        proj.GlobalPosition = GlobalPosition + dir * 20f;
+
+        // dodatkowe pociski z drzewka (basic_twin itd.) — lekki rozrzut
+        for (int i = 0; i < s.ExtraProjectiles && s.Id != "spread"; i++)
+        {
+            var extra = _projectileScene.Instantiate<Projectile>();
+            extra.Setup(s, dir.Rotated(Mathf.DegToRad(6f * (i + 1))), tint);
+            GetParent().AddChild(extra);
+            extra.GlobalPosition = GlobalPosition + dir * 20f;
+        }
     }
 
-    private ResolvedSkill Offense(ResolvedSkill s)
+    private void CastSpread(ResolvedSkill s)
     {
-        if (_sheet == null) return s;
-        s.Damage *= _sheet.AttackDamageMultiplier;
-        if (GD.Randf() < _sheet.CritChance) s.Damage *= _sheet.CritMultiplier;
-        return s;
+        Offense(s);
+        int count = RangerKit.SpreadCount(s);
+        float baseAngle = AimDirection().Angle();
+        float spreadRad = Mathf.DegToRad(12f);
+        float start = -spreadRad * (count - 1) / 2f;
+        for (int i = 0; i < count; i++)
+            CastProjectileRaw(s, Vector2.Right.Rotated(baseAngle + start + spreadRad * i), new Color(0.6f, 0.95f, 0.5f));
     }
 
-    private void SpawnProjectile(ResolvedSkill skill, Vector2 dir, Color tint)
+    private void CastProjectileRaw(ResolvedSkill s, Vector2 dir, Color tint)
     {
         var proj = _projectileScene.Instantiate<Projectile>();
-        proj.Setup(skill, dir, tint);
+        proj.Setup(s, dir, tint);
         GetParent().AddChild(proj);
         proj.GlobalPosition = GlobalPosition + dir * 20f;
     }
 
-    private void CastBasic()
+    private void CastRain(ResolvedSkill s)
     {
-        var skill = RangerKit.BasicShot(GodOn("basic"));
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        SpawnProjectile(Offense(skill), AimDirection(), new Color(0.95f, 0.95f, 0.85f));
-    }
-
-    private void CastSpread()
-    {
-        bool god = GodOn("spread");
-        var skill = RangerKit.Spread(god);
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        Offense(skill);
-
-        int count = RangerKit.SpreadCount(god);
-        float baseAngle = AimDirection().Angle();
-        float spread = Mathf.DegToRad(12f);
-        float start = -spread * (count - 1) / 2f;
-        for (int i = 0; i < count; i++)
-            SpawnProjectile(skill, Vector2.Right.Rotated(baseAngle + start + spread * i), new Color(0.6f, 0.95f, 0.5f));
-    }
-
-    private void CastExecutor()
-    {
-        var skill = RangerKit.Executor(GodOn("exec"));
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        SpawnProjectile(Offense(skill), AimDirection(), new Color(1f, 0.85f, 0.3f));
-    }
-
-    private void CastRain()
-    {
-        if (_rainCd > 0f) return;
-        bool god = GodOn("rain");
-        var skill = RangerKit.Rain(god);
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        _rainCd = RangerKit.RainCd;
-
         var zone = new GroundZone();
-        zone.Setup(Offense(skill), RangerKit.RainRadius(god));
+        zone.Setup(Offense(s), 120f * s.AoeMult);
         GetParent().AddChild(zone);
         zone.GlobalPosition = GetGlobalMousePosition();
     }
 
-    private void CastMine()
+    private void CastMine(ResolvedSkill s)
     {
-        if (_mineCd > 0f) return;
-        var skill = RangerKit.Mine(GodOn("mine"));
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        _mineCd = RangerKit.MineCd;
-
-        var mine = new Mine();
-        mine.Setup(Offense(skill));
-        GetParent().AddChild(mine);
-        mine.GlobalPosition = GlobalPosition;
+        Offense(s);
+        int mines = 1 + s.ExtraProjectiles;
+        for (int i = 0; i < mines; i++)
+        {
+            var mine = new Mine();
+            mine.Setup(s);
+            GetParent().AddChild(mine);
+            mine.GlobalPosition = GlobalPosition + (i == 0 ? Vector2.Zero : new Vector2(46f * i, 0f));
+        }
     }
 
-    private void CastHedge()
+    private void CastHedge(ResolvedSkill s)
     {
-        if (_hedgeCd > 0f) return;
-        var skill = RangerKit.Hedge(GodOn("hedge"));
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        _hedgeCd = RangerKit.HedgeCd;
-
+        Offense(s);
+        if (s.VariantTag == "hedge_bomb")
+        {
+            // Dzikie Ostępy: latająca bomba kolców — eksploduje trucizną, bez CD
+            s.Explodes = true;
+            CastProjectileRaw(s, AimDirection(), new Color(0.5f, 0.9f, 0.4f));
+            return;
+        }
         var hedge = new HedgeZone();
         GetParent().AddChild(hedge);
         hedge.GlobalPosition = GlobalPosition;
-        hedge.Setup(Offense(skill), AimDirection(), 340f);
+        hedge.Setup(s, AimDirection(), 340f * s.AoeMult);
     }
 
-    private void CastDash()
+    private void CastDash(ResolvedSkill s)
     {
-        if (_dashCd > 0f || _dashTimeLeft > 0f) return;
-        if (!TrySpend(RangerKit.DashConcentration)) return;
-        _dashCd = RangerKit.DashCd;
-
         Vector2 dir = ReadMoveInput();
         if (dir == Vector2.Zero) dir = AimDirection();
         _dashDir = dir;
-        _dashTimeLeft = DashDuration;
-        _iFrameLeft = IFrameDuration;
+        _dashTimeLeft = DashDuration * s.AoeMult; // dash_far wydłuża sus
+        _iFrameLeft = IFrameDuration * s.DurationMult;
+
+        if (s.VariantTag == "dash_trail")
+        {
+            // Dzikie Ostępy: kolczasty ślad za dashem
+            var trail = RangerKit.Get("hedge", GodId.None);
+            trail.Damage = 6f;
+            var hedge = new HedgeZone();
+            GetParent().AddChild(hedge);
+            hedge.GlobalPosition = GlobalPosition;
+            hedge.Setup(trail, dir, DashSpeed * DashDuration * s.AoeMult);
+        }
     }
 
-    private void CastAdrenaline()
+    private void CastAdrenaline(ResolvedSkill s)
     {
-        if (_adrenalineCd > 0f) return;
-        _adrenalineCd = RangerKit.AdrenalineCd;
-        _adrenalineTime = RangerKit.AdrenalineDuration;
+        _adrenalineTime = 5f * s.DurationMult;
+        _adrenalineDmgBonus = s.Damage; // węzeł adr_power zapisuje bonus w Damage
+        if (s.VariantTag == "adrenaline_blood") Heal(30f);
     }
 
-    private void CastHawk()
+    private void CastHawk(ResolvedSkill s)
     {
-        if (_hawkCd > 0f) return;
-        var skill = RangerKit.Hawk(GodOn("hawk"));
-        if (!TrySpend(skill.ConcentrationCost)) return;
-        _hawkCd = RangerKit.HawkCd;
-
+        Offense(s);
+        if (s.VariantTag == "hawk_pets")
+        {
+            // Dzikie Ostępy: 3 WIELKIE jastrzębie-pety walczące u boku
+            for (int i = 0; i < 3; i++)
+            {
+                var pet = new Pet();
+                pet.Damage = s.Damage * 0.45f;
+                GetParent().AddChild(pet);
+                pet.GlobalPosition = GlobalPosition + Vector2.Right.Rotated(Mathf.Tau * i / 3f) * 40f;
+            }
+            return;
+        }
         var hawk = new Hawk();
-        hawk.Setup(Offense(skill));
+        hawk.Setup(s, s.VariantTag == "hawk_all");
         GetParent().AddChild(hawk);
         hawk.GlobalPosition = GetGlobalMousePosition();
     }
@@ -238,19 +342,18 @@ public partial class PlayerController : CharacterBody2D
 
         float dt = (float)delta;
 
-        if (_rainCd > 0f) _rainCd -= dt;
-        if (_mineCd > 0f) _mineCd -= dt;
-        if (_hedgeCd > 0f) _hedgeCd -= dt;
-        if (_dashCd > 0f) _dashCd -= dt;
-        if (_hawkCd > 0f) _hawkCd -= dt;
-        if (_adrenalineCd > 0f) _adrenalineCd -= dt;
+        foreach (var key in new List<string>(_cd.Keys))
+        {
+            _cd[key] -= dt;
+            if (_cd[key] <= 0f) _cd.Remove(key);
+        }
         if (_iFrameLeft > 0f) _iFrameLeft -= dt;
         if (_adrenalineTime > 0f) _adrenalineTime -= dt;
 
         if (_adrenalineTime > 0f)
-            Concentration = MaxConcentration;
+            Resource = MaxResource; // nielimitowana koncentracja
         else
-            Concentration = Mathf.Min(MaxConcentration, Concentration + ConcentrationRegen * dt);
+            Resource = Mathf.Min(MaxResource, Resource + GameState.Class.ResourceRegen * dt);
 
         if (_dashTimeLeft > 0f)
         {
@@ -261,7 +364,7 @@ public partial class PlayerController : CharacterBody2D
         }
 
         float speed = Speed;
-        if (GodActive) speed *= RangerKit.GodMoveSpeedBonus;
+        if (GameState.PledgedGod == GodId.Wilds) speed *= Gods.WildsMoveSpeedBonus;
         if (_adrenalineTime > 0f) speed *= 1.4f;
 
         Velocity = ReadMoveInput() * speed;
