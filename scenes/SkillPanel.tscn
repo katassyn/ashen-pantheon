@@ -12,32 +12,7 @@ anchor_left = 0.5
 anchor_top = 0.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -430.0
+offset_left = -470.0
 offset_top = 36.0
-offset_right = 430.0
+offset_right = 470.0
 offset_bottom = -150.0
-
-[node name="VB" type="VBoxContainer" parent="Root"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 14.0
-offset_right = -16.0
-offset_bottom = -14.0
-theme_override_constants/separation = 8
-
-[node name="Title" type="Label" parent="Root/VB"]
-text = "SKILLE I DRZEWKA    [K] zamknij    ≡ przeciągnij skill na pasek na dole"
-
-[node name="Info" type="Label" parent="Root/VB"]
-unique_name_in_owner = true
-text = "info"
-
-[node name="Scroll" type="ScrollContainer" parent="Root/VB"]
-size_flags_vertical = 3
-
-[node name="List" type="VBoxContainer" parent="Root/VB/Scroll"]
-unique_name_in_owner = true
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 6

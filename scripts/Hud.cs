@@ -151,10 +151,14 @@ public partial class SkillSlotUi : PanelContainer
 		var info = GameState.Class.Skill(skillId);
 		float cd = player?.CooldownLeft(skillId) ?? 0f;
 		bool god = GameState.GodSkills.Contains(skillId) && GameState.PledgedGod != GodId.None;
-		_label.Text = cd > 0f
-			? $"[{key}] {info?.Name}\n{cd:0.0}s"
-			: $"[{key}] {info?.Name}{(god ? " ✦" : "")}";
-		Modulate = cd > 0f ? new Color(0.55f, 0.55f, 0.55f) : Colors.White;
+		int reqLvl = GameState.ClassSpec.Skill(skillId)?.RequiredLevel ?? 1;
+		bool locked = reqLvl > GameState.Progress.Level;
+		_label.Text = locked
+			? $"[{key}] {info?.Name}\n🔒 poz.{reqLvl}"
+			: cd > 0f
+				? $"[{key}] {info?.Name}\n{cd:0.0}s"
+				: $"[{key}] {info?.Name}{(god ? " ✦" : "")}";
+		Modulate = locked || cd > 0f ? new Color(0.55f, 0.55f, 0.55f) : Colors.White;
 	}
 
 	public override bool _CanDropData(Vector2 atPosition, Variant data) =>

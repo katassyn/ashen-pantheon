@@ -3,54 +3,54 @@
   "trees": {
     "basic": [
       { "id": "basic_dmg", "name": "Ostre groty", "description": "+30% obrażeń", "effects": [ { "op": "damage_mult", "value": 1.3 } ] },
-      { "id": "basic_pierce", "name": "Przeszycie", "description": "Strzał przebija wrogów", "exclusiveGroup": "b1", "requires": "basic_dmg", "effects": [ { "op": "pierce" } ] },
-      { "id": "basic_twin", "name": "Podwójny strzał", "description": "+1 pocisk", "exclusiveGroup": "b1", "requires": "basic_dmg", "effects": [ { "op": "extra_proj", "value": 1 } ] },
+      { "id": "basic_pierce", "requiredLevel": 5, "name": "Przeszycie", "description": "Strzał przebija wrogów", "exclusiveGroup": "b1", "requires": "basic_dmg", "effects": [ { "op": "pierce" } ] },
+      { "id": "basic_twin", "requiredLevel": 5, "name": "Podwójny strzał", "description": "+1 pocisk", "exclusiveGroup": "b1", "requires": "basic_dmg", "effects": [ { "op": "extra_proj", "value": 1 } ] },
       { "id": "basic_mark", "name": "Głębokie piętno", "description": "Oznaczenie trwa +2s", "effects": [ { "op": "mark_duration", "value": 7 } ] }
     ],
     "spread": [
-      { "id": "spread_extra", "name": "Szerszy wachlarz", "description": "+1 pocisk", "exclusiveGroup": "s1", "effects": [ { "op": "extra_proj", "value": 1 } ] },
-      { "id": "spread_focus", "name": "Skupiony rozrzut", "description": "+25% obrażeń", "exclusiveGroup": "s1", "effects": [ { "op": "damage_mult", "value": 1.25 } ] },
+      { "id": "spread_extra", "requiredLevel": 4, "name": "Szerszy wachlarz", "description": "+1 pocisk", "exclusiveGroup": "s1", "effects": [ { "op": "extra_proj", "value": 1 } ] },
+      { "id": "spread_focus", "requiredLevel": 4, "name": "Skupiony rozrzut", "description": "+25% obrażeń", "exclusiveGroup": "s1", "effects": [ { "op": "damage_mult", "value": 1.25 } ] },
       { "id": "spread_cheap", "name": "Ekonomia ruchu", "description": "Koszt −30%", "effects": [ { "op": "cost_mult", "value": 0.7 } ] },
       { "id": "spread_dmg", "name": "Ciężkie strzały", "description": "+15% obrażeń", "effects": [ { "op": "damage_mult", "value": 1.15 } ] }
     ],
     "exec": [
       { "id": "exec_dmg", "name": "Wyrok", "description": "+20% obrażeń", "effects": [ { "op": "damage_mult", "value": 1.2 } ] },
-      { "id": "exec_mult", "name": "Egzekucja totalna", "description": "×2.5 na oznaczonych", "exclusiveGroup": "e1", "requires": "exec_dmg", "effects": [ { "op": "marked_mult", "value": 2.5 } ] },
-      { "id": "exec_cheap", "name": "Zimna precyzja", "description": "Koszt −40%", "exclusiveGroup": "e1", "requires": "exec_dmg", "effects": [ { "op": "cost_mult", "value": 0.6 } ] }
+      { "id": "exec_mult", "requiredLevel": 7, "name": "Egzekucja totalna", "description": "×2.5 na oznaczonych", "exclusiveGroup": "e1", "requires": "exec_dmg", "effects": [ { "op": "marked_mult", "value": 2.5 } ] },
+      { "id": "exec_cheap", "requiredLevel": 7, "name": "Zimna precyzja", "description": "Koszt −40%", "exclusiveGroup": "e1", "requires": "exec_dmg", "effects": [ { "op": "cost_mult", "value": 0.6 } ] }
     ],
     "rain": [
-      { "id": "rain_area", "name": "Nawałnica", "description": "+40% obszaru", "exclusiveGroup": "r1", "effects": [ { "op": "aoe_mult", "value": 1.4 } ] },
-      { "id": "rain_dmg", "name": "Ciężki grad", "description": "+40% obrażeń", "exclusiveGroup": "r1", "effects": [ { "op": "damage_mult", "value": 1.4 } ] },
+      { "id": "rain_area", "requiredLevel": 8, "name": "Nawałnica", "description": "+40% obszaru", "exclusiveGroup": "r1", "effects": [ { "op": "aoe_mult", "value": 1.4 } ] },
+      { "id": "rain_dmg", "requiredLevel": 8, "name": "Ciężki grad", "description": "+40% obrażeń", "exclusiveGroup": "r1", "effects": [ { "op": "damage_mult", "value": 1.4 } ] },
       { "id": "rain_cd", "name": "Sprawne dłonie", "description": "CD −30%", "effects": [ { "op": "cd_mult", "value": 0.7 } ] },
       { "id": "rain_slow", "name": "Grzęzawisko", "description": "Spowolnienie trwa +50%", "effects": [ { "op": "duration_mult", "value": 1.5 } ] }
     ],
     "mine": [
       { "id": "mine_stun", "name": "Ogłuszający ładunek", "description": "Stun +0.6s", "effects": [ { "op": "stun", "value": 1.8 } ] },
-      { "id": "mine_twin", "name": "Podwójny ładunek", "description": "Stawiasz 2 miny", "exclusiveGroup": "m1", "effects": [ { "op": "extra_proj", "value": 1 } ] },
-      { "id": "mine_dmg", "name": "Silniejszy proch", "description": "+50% obrażeń", "exclusiveGroup": "m1", "effects": [ { "op": "damage_mult", "value": 1.5 } ] },
+      { "id": "mine_twin", "requiredLevel": 10, "name": "Podwójny ładunek", "description": "Stawiasz 2 miny", "exclusiveGroup": "m1", "effects": [ { "op": "extra_proj", "value": 1 } ] },
+      { "id": "mine_dmg", "requiredLevel": 10, "name": "Silniejszy proch", "description": "+50% obrażeń", "exclusiveGroup": "m1", "effects": [ { "op": "damage_mult", "value": 1.5 } ] },
       { "id": "mine_cheap", "name": "Oszczędny zapalnik", "description": "Koszt −30%", "effects": [ { "op": "cost_mult", "value": 0.7 } ] }
     ],
     "hedge": [
       { "id": "hedge_long", "name": "Długa przesieka", "description": "+40% długości", "effects": [ { "op": "aoe_mult", "value": 1.4 } ] },
-      { "id": "hedge_poison", "name": "Zatrute kolce", "description": "Nakłada truciznę", "exclusiveGroup": "h1", "effects": [ { "op": "status", "str": "Poison", "duration": 3, "magnitude": 6 } ] },
-      { "id": "hedge_wide", "name": "Gęstwina", "description": "+50% szerokości", "exclusiveGroup": "h1", "effects": [ { "op": "duration_mult", "value": 1.5 } ] },
+      { "id": "hedge_poison", "requiredLevel": 12, "name": "Zatrute kolce", "description": "Nakłada truciznę", "exclusiveGroup": "h1", "effects": [ { "op": "status", "str": "Poison", "duration": 3, "magnitude": 6 } ] },
+      { "id": "hedge_wide", "requiredLevel": 12, "name": "Gęstwina", "description": "+50% szerokości", "exclusiveGroup": "h1", "effects": [ { "op": "duration_mult", "value": 1.5 } ] },
       { "id": "hedge_cd", "name": "Szybki siew", "description": "CD −25%", "effects": [ { "op": "cd_mult", "value": 0.75 } ] }
     ],
     "dash": [
       { "id": "dash_cd", "name": "Refleks", "description": "CD −30%", "effects": [ { "op": "cd_mult", "value": 0.7 } ] },
-      { "id": "dash_far", "name": "Długi sus", "description": "+35% dystansu", "exclusiveGroup": "d1", "effects": [ { "op": "aoe_mult", "value": 1.35 } ] },
-      { "id": "dash_free", "name": "Lekkość", "description": "Dash nic nie kosztuje", "exclusiveGroup": "d1", "effects": [ { "op": "cost_mult", "value": 0 } ] },
+      { "id": "dash_far", "requiredLevel": 6, "name": "Długi sus", "description": "+35% dystansu", "exclusiveGroup": "d1", "effects": [ { "op": "aoe_mult", "value": 1.35 } ] },
+      { "id": "dash_free", "requiredLevel": 6, "name": "Lekkość", "description": "Dash nic nie kosztuje", "exclusiveGroup": "d1", "effects": [ { "op": "cost_mult", "value": 0 } ] },
       { "id": "dash_iframe", "name": "Cień łowcy", "description": "Nietykalność +50%", "effects": [ { "op": "duration_mult", "value": 1.5 } ] }
     ],
     "adrenaline": [
       { "id": "adr_time", "name": "Długi zryw", "description": "Czas trwania +40%", "effects": [ { "op": "duration_mult", "value": 1.4 } ] },
-      { "id": "adr_cd", "name": "Szybka regeneracja", "description": "CD −30%", "exclusiveGroup": "a1", "effects": [ { "op": "cd_mult", "value": 0.7 } ] },
-      { "id": "adr_power", "name": "Bojowy szał", "description": "+25% obrażeń w trakcie", "exclusiveGroup": "a1", "effects": [ { "op": "damage_add", "value": 0.25 } ] }
+      { "id": "adr_cd", "requiredLevel": 14, "name": "Szybka regeneracja", "description": "CD −30%", "exclusiveGroup": "a1", "effects": [ { "op": "cd_mult", "value": 0.7 } ] },
+      { "id": "adr_power", "requiredLevel": 14, "name": "Bojowy szał", "description": "+25% obrażeń w trakcie", "exclusiveGroup": "a1", "effects": [ { "op": "damage_add", "value": 0.25 } ] }
     ],
     "hawk": [
       { "id": "hawk_dmg", "name": "Ostre szpony", "description": "+30% obrażeń", "effects": [ { "op": "damage_mult", "value": 1.3 } ] },
-      { "id": "hawk_stun", "name": "Druzgocące uderzenie", "description": "Stun +1s", "exclusiveGroup": "hk1", "effects": [ { "op": "stun", "value": 2.5 } ] },
-      { "id": "hawk_cd", "name": "Wierny towarzysz", "description": "CD −30%", "exclusiveGroup": "hk1", "effects": [ { "op": "cd_mult", "value": 0.7 } ] },
+      { "id": "hawk_stun", "requiredLevel": 16, "name": "Druzgocące uderzenie", "description": "Stun +1s", "exclusiveGroup": "hk1", "effects": [ { "op": "stun", "value": 2.5 } ] },
+      { "id": "hawk_cd", "requiredLevel": 16, "name": "Wierny towarzysz", "description": "CD −30%", "exclusiveGroup": "hk1", "effects": [ { "op": "cd_mult", "value": 0.7 } ] },
       { "id": "hawk_mark", "name": "Oko łowcy", "description": "Oznaczenie z jastrzębia trwa 8s", "effects": [ { "op": "mark_duration", "value": 8 } ] }
     ]
   }

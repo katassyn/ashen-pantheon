@@ -151,6 +151,26 @@ public class SkillTreeTests
         foreach (var spec in GameData.Class("ranger").Skills)
             Assert.True(GameData.Trees.ContainsKey(spec.Id), $"brak drzewka: {spec.Id}");
     }
+
+    [Fact]
+    public void RequiredLevel_GatesNode()
+    {
+        var state = new SkillTreeState();
+        state.Allocate("basic", "basic_dmg");
+        // basic_pierce wymaga poziomu 5
+        Assert.False(state.CanAllocate("basic", "basic_pierce", playerLevel: 4));
+        Assert.True(state.CanAllocate("basic", "basic_pierce", playerLevel: 5));
+        Assert.Contains("poziomu", state.BlockReason("basic", "basic_pierce", 4, 10));
+    }
+
+    [Fact]
+    public void BlockReason_ExplainsExclusive()
+    {
+        var state = new SkillTreeState();
+        state.Allocate("basic", "basic_dmg");
+        state.Allocate("basic", "basic_pierce");
+        Assert.Contains("wyklucza", state.BlockReason("basic", "basic_twin", 99, 10));
+    }
 }
 
 public class GodVariantTests

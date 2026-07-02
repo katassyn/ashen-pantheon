@@ -20,8 +20,10 @@ public static class SaveValidator
         int earnedSkill = PlayerProgress.SkillPointsPerLevel * (data.Level - 1);
         if (data.AttributePoints + data.SpentStr + data.SpentDex + data.SpentInt > earnedAttr)
             return (false, "za dużo punktów atrybutów względem poziomu");
-        int allocatedNodes = data.TreeNodes.Values.Sum(v => v.Count);
-        if (data.SkillPoints + allocatedNodes > earnedSkill)
+        int spentOnNodes = GameData.Loaded
+            ? data.TreeNodes.Sum(kv => kv.Value.Sum(id => GameData.FindNode(kv.Key, id)?.Cost ?? 1))
+            : data.TreeNodes.Values.Sum(v => v.Count);
+        if (data.SkillPoints + spentOnNodes > earnedSkill)
             return (false, "za dużo punktów skilli względem poziomu");
 
         // walidacja względem katalogów danych (serwer/testy ładują data/; brak danych → pomiń te checki)
@@ -29,8 +31,13 @@ public static class SaveValidator
         {
             foreach (var (skillId, nodes) in data.TreeNodes)
                 foreach (var n in nodes)
-                    if (GameData.FindNode(skillId, n) == null)
+                {
+                    var node = GameData.FindNode(skillId, n);
+                    if (node == null)
                         return (false, $"nieistniejący węzeł drzewka: {skillId}/{n}");
+                    if (node.RequiredLevel > data.Level)
+                        return (false, $"węzeł {skillId}/{n} wymaga poziomu {node.RequiredLevel}");
+                }
 
             var anyClassHas = (string id) => GameData.Classes.Values.Any(c => c.Skill(id) != null);
             foreach (var id in data.Loadout)

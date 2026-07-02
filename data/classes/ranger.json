@@ -7,55 +7,55 @@
   "weaponKinds": ["OneHandWeapon", "TwoHandWeapon", "OffHand"],
   "skills": [
     {
-      "id": "basic", "name": "Strzał", "description": "Podstawowy strzał. Nakłada Oznaczenie.",
+      "id": "basic", "name": "Strzał", "requiredLevel": 1, "description": "Podstawowy strzał. Nakłada Oznaczenie.",
       "cooldown": 0, "cost": 0, "baseDamage": 6, "weaponScaling": 0.8,
       "castTime": 0.3, "usesAttackSpeed": true, "shape": "Projectile",
       "base": [ { "op": "apply_mark", "duration": 5 } ]
     },
     {
-      "id": "spread", "name": "Rozbryzg", "description": "Wachlarz strzał o średnim zasięgu.",
+      "id": "spread", "name": "Rozbryzg", "requiredLevel": 2, "description": "Wachlarz strzał o średnim zasięgu.",
       "cooldown": 0, "cost": 12, "baseDamage": 4, "weaponScaling": 0.45,
       "castTime": 0.35, "usesAttackSpeed": true, "shape": "Projectile",
       "base": [ { "op": "marked_mult", "value": 1.3 } ]
     },
     {
-      "id": "exec", "name": "Egzekutor", "description": "Na oznaczonych: przebija i zadaje ×2.",
+      "id": "exec", "name": "Egzekutor", "requiredLevel": 4, "description": "Na oznaczonych: przebija i zadaje ×2.",
       "cooldown": 0, "cost": 35, "baseDamage": 12, "weaponScaling": 1.4,
       "castTime": 0.45, "usesAttackSpeed": true, "shape": "Projectile",
       "base": [ { "op": "marked_mult", "value": 2.0 }, { "op": "pierce_marked_only" } ]
     },
     {
-      "id": "rain", "name": "Deszcz strzał", "description": "AoE + spowolnienie na ziemi.",
+      "id": "rain", "name": "Deszcz strzał", "requiredLevel": 6, "description": "AoE + spowolnienie na ziemi.",
       "cooldown": 4, "cost": 25, "baseDamage": 10, "weaponScaling": 0.7,
       "castTime": 0.6, "usesAttackSpeed": false, "shape": "Nova",
       "base": [ { "op": "marked_mult", "value": 1.3 } ]
     },
     {
-      "id": "mine", "name": "Mina", "description": "Wybuch: obrażenia + stun + Oznaczenie.",
+      "id": "mine", "name": "Mina", "requiredLevel": 8, "description": "Wybuch: obrażenia + stun + Oznaczenie.",
       "cooldown": 5, "cost": 20, "baseDamage": 18, "weaponScaling": 0.9,
       "castTime": 0.3, "usesAttackSpeed": false, "shape": "Nova",
       "base": [ { "op": "apply_mark", "duration": 6 }, { "op": "stun", "value": 1.2 }, { "op": "marked_mult", "value": 1.3 } ]
     },
     {
-      "id": "hedge", "name": "Przesieka", "description": "Kolczasta linia: mocny slow + obrażenia.",
+      "id": "hedge", "name": "Przesieka", "requiredLevel": 10, "description": "Kolczasta linia: mocny slow + obrażenia.",
       "cooldown": 6, "cost": 22, "baseDamage": 5, "weaponScaling": 0.25,
       "castTime": 0.4, "usesAttackSpeed": false, "shape": "Line",
       "base": []
     },
     {
-      "id": "dash", "name": "Dash", "description": "Unik z nietykalnością. Mobilność jako skill.",
+      "id": "dash", "name": "Dash", "requiredLevel": 3, "description": "Unik z nietykalnością. Mobilność jako skill.",
       "cooldown": 1.6, "cost": 10, "baseDamage": 0,
       "castTime": 0, "usesAttackSpeed": true, "shape": "SingleTarget",
       "base": []
     },
     {
-      "id": "adrenaline", "name": "Adrenalina", "description": "MS + nielimitowana koncentracja przez chwilę.",
+      "id": "adrenaline", "name": "Adrenalina", "requiredLevel": 12, "description": "MS + nielimitowana koncentracja przez chwilę.",
       "cooldown": 14, "cost": 0, "baseDamage": 0,
       "castTime": 0, "usesAttackSpeed": true, "shape": "SingleTarget",
       "base": []
     },
     {
-      "id": "hawk", "name": "Jastrząb", "description": "Uderzenie z góry: dmg + stun + Mark; ×3 na oznaczonym.",
+      "id": "hawk", "name": "Jastrząb", "requiredLevel": 14, "description": "Uderzenie z góry: dmg + stun + Mark; ×3 na oznaczonym.",
       "cooldown": 7, "cost": 25, "baseDamage": 25, "weaponScaling": 1.1,
       "castTime": 0.35, "usesAttackSpeed": false, "shape": "SingleTarget",
       "base": [ { "op": "apply_mark", "duration": 6 }, { "op": "marked_mult", "value": 3.0 }, { "op": "stun", "value": 1.5 } ]

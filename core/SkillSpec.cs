@@ -14,6 +14,8 @@ public sealed class SkillSpec
     public string Description { get; set; } = "";
     public float Cooldown { get; set; }
     public float Cost { get; set; }
+    /// <summary>Poziom postaci wymagany do używania skilla (odblokowywanie z levelem).</summary>
+    public int RequiredLevel { get; set; } = 1;
     public float BaseDamage { get; set; }
     public string DamageType { get; set; } = "Physical";
     public string Shape { get; set; } = "Projectile";
@@ -69,6 +71,10 @@ public sealed class SkillNode
     public string? ExclusiveGroup { get; set; }
     /// <summary>Id węzła wymaganego wcześniej (prawdziwa struktura drzewa).</summary>
     public string? Requires { get; set; }
+    /// <summary>Wymagany poziom postaci.</summary>
+    public int RequiredLevel { get; set; }
+    /// <summary>Koszt w punktach skilli.</summary>
+    public int Cost { get; set; } = 1;
     public List<Effect> Effects { get; set; } = new();
 }
 

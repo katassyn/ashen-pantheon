@@ -217,6 +217,8 @@ public partial class PlayerController : CharacterBody2D
 
         var info = GameState.Class.Skill(skillId);
         if (info == null) return;
+        // skill odblokowuje się z poziomem postaci
+        if ((GameState.ClassSpec.Skill(skillId)?.RequiredLevel ?? 1) > GameState.Progress.Level) return;
         if (_castLock > 0f) return;
         if (_cd.GetValueOrDefault(skillId) > 0f) return;
         if (skillId == "dash" && _dashTimeLeft > 0f) return;
