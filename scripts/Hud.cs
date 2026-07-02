@@ -65,15 +65,16 @@ public partial class Hud : CanvasLayer
 
 	public override void _Process(double delta)
 	{
-		_player ??= GetTree().GetFirstNodeInGroup("player") as PlayerController;
+		_player = PlayerController.Local;
 		_arena ??= GetTree().GetFirstNodeInGroup("arena") as ArenaManager;
 
 		if (_info != null && _player != null)
 		{
 			string wave = _arena != null ? _arena.TopStatus : "";
 			var p = GameState.Progress;
+			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
-				$"Lv {p.Level}   Bóg: {Gods.Name(GameState.PledgedGod)}   {wave}\n" +
+				$"Lv {p.Level}   Bóg: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
 				"C staty · I ekwipunek · K skille/drzewka · [E przy znacznikach w mieście = interakcja]";
 		}
 

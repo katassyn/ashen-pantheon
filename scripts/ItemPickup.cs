@@ -46,7 +46,8 @@ public partial class ItemPickup : Area2D
 
     private void OnBodyEntered(Node2D body)
     {
-        if (_taken || body is not PlayerController player) return;
+        // loot jest instancjonowany: podnosi tylko LOKALNY gracz (puppet sojusznika nie zbiera twoich dropów)
+        if (_taken || body is not PlayerController player || !player.IsMultiplayerAuthority()) return;
         if (!GameState.Bag.TryAutoPlace(Item))
         {
             GD.Print("Plecak pełny!");

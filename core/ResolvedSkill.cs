@@ -39,4 +39,7 @@ public sealed class ResolvedSkill
     public float HealOnHit { get; set; }
     /// <summary>Znacznik wariantu zachowania — warstwa Godota zmienia implementację skilla po tym tagu.</summary>
     public string? VariantTag { get; set; }
+
+    /// <summary>Id peera rzucającego (multiplayer): lifesteal/heale wracają do właściwego gracza. 1 = host/solo.</summary>
+    public int CasterPeer { get; set; } = 1;
 }

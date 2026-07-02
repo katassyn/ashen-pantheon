@@ -62,7 +62,7 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
     private void AfterChange()
     {
         GameState.Save();
-        _player ??= GetTree().GetFirstNodeInGroup("player") as PlayerController;
+        _player = PlayerController.Local;
         _player?.Refresh();
     }
 

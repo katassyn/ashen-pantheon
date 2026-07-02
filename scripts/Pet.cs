@@ -9,6 +9,7 @@ public partial class Pet : Node2D
     [Export] public float Lifetime = 12f;
 
     public float Damage = 20f;
+    public int CasterPeer = 1;
 
     private float _life;
     private float _atkCd;
@@ -32,10 +33,11 @@ public partial class Pet : Node2D
 
         if (target == null)
         {
-            // wracaj do gracza
-            if (GetTree().GetFirstNodeInGroup("player") is PlayerController p)
+            // wracaj do właściciela (node gracza nazwany peer-id)
+            var owner = GetTree().CurrentScene?.GetNodeOrNull<PlayerController>($"Players/{CasterPeer}");
+            if (owner != null)
             {
-                Vector2 to = p.GlobalPosition - GlobalPosition;
+                Vector2 to = owner.GlobalPosition - GlobalPosition;
                 if (to.Length() > 60f) GlobalPosition += to.Normalized() * Speed * dt;
             }
             return;

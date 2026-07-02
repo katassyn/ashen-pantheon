@@ -64,7 +64,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
 
     private void Refresh()
     {
-        _player ??= GetTree().GetFirstNodeInGroup("player") as PlayerController;
+        _player = PlayerController.Local;
 
         foreach (Node c in _list.GetChildren()) c.QueueFree();
 

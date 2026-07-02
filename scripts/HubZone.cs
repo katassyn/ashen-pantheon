@@ -16,8 +16,8 @@ public partial class HubZone : Area2D
         CollisionMask = 1;
         var shape = new CollisionShape2D { Shape = new CircleShape2D { Radius = Radius } };
         AddChild(shape);
-        BodyEntered += b => { if (b is PlayerController) { _playerInside = true; ShowHint(true); } };
-        BodyExited += b => { if (b is PlayerController) { _playerInside = false; ShowHint(false); } };
+        BodyEntered += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) { _playerInside = true; ShowHint(true); } };
+        BodyExited += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) { _playerInside = false; ShowHint(false); } };
 
         _hint = new Label { Text = "[E]", Position = new Vector2(-12, -70), Visible = false };
         AddChild(_hint);

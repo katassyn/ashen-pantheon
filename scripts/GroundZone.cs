@@ -47,8 +47,9 @@ public partial class GroundZone : Node2D
                 foreach (var e in EnemyBase.All(GetTree()))
                     if (Inside(e.GlobalPosition)) e.ReceiveHit(slow);
 
+                // krwawy deszcz: każda maszyna leczy SWOJEGO gracza stojącego w strefie (co-op synergy)
                 if (_skill?.VariantTag == "rain_blood"
-                    && GetTree().GetFirstNodeInGroup("player") is PlayerController p
+                    && PlayerController.Local is { } p && !p.Dead
                     && Inside(p.GlobalPosition))
                     p.Heal(4f);
             }

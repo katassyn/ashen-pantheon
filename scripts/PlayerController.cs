@@ -4,11 +4,13 @@ using AshenPantheon.Core;
 
 public partial class PlayerController : CharacterBody2D
 {
+    /// <summary>Lokalny gracz tej maszyny (puppety innych peerów tego nie ustawiają).</summary>
+    public static PlayerController Local { get; private set; }
+
     [Export] public float Speed = 240f;
     [Export] public float DashSpeed = 780f;
     [Export] public float DashDuration = 0.15f;
     [Export] public float IFrameDuration = 0.2f;
-    /// <summary>W hubie skille są wyłączone (E/klawisze służą interakcji).</summary>
     [Export] public bool CombatEnabled = true;
 
     private CharacterSheet _sheet;
@@ -16,11 +18,11 @@ public partial class PlayerController : CharacterBody2D
     public float MaxHealth => _sheet?.MaxLife ?? 100f;
     public float Health { get; private set; }
     private bool _dead;
+    public bool Dead => _dead;
 
     public float MaxResource => GameState.Class.ResourceMax;
     public float Resource { get; private set; }
 
-    // Cooldowny per skill id
     private readonly Dictionary<string, float> _cd = new();
     public float CooldownLeft(string skillId) => _cd.GetValueOrDefault(skillId);
 
@@ -32,15 +34,33 @@ public partial class PlayerController : CharacterBody2D
     private Vector2 _dashDir;
     public bool IsInvulnerable => _iFrameLeft > 0f;
 
-    private PackedScene _projectileScene;
+    // puppet: cel interpolacji pozycji z sieci
+    private Vector2 _netPos;
 
     public override void _Ready()
     {
-        _projectileScene = GD.Load<PackedScene>("res://scenes/Projectile.tscn");
+        _netPos = GlobalPosition;
+
+        if (!IsMultiplayerAuthority())
+        {
+            // puppet innego gracza: tylko wizualia
+            var cam = GetNodeOrNull<Camera2D>("Camera2D");
+            if (cam != null) cam.Enabled = false;
+            var sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+            if (sprite != null) sprite.Modulate = new Color(0.7f, 0.9f, 1f); // odróżnij sojusznika
+            return;
+        }
+
+        Local = this;
         GameState.LoadOrInit();
         RecomputeSheet();
         Health = MaxHealth;
         Resource = MaxResource;
+    }
+
+    public override void _ExitTree()
+    {
+        if (Local == this) Local = null;
     }
 
     private void RecomputeSheet()
@@ -57,14 +77,6 @@ public partial class PlayerController : CharacterBody2D
         Health = Mathf.Min(MaxHealth, Health + amount);
     }
 
-    public void PickUp(Item item)
-    {
-        if (!GameState.Bag.TryAutoPlace(item))
-            GD.Print("Plecak pełny!");
-        else
-            GameState.Save();
-    }
-
     public void TakeDamage(float amount)
     {
         if (_dead || IsInvulnerable) return;
@@ -75,24 +87,20 @@ public partial class PlayerController : CharacterBody2D
             Health = 0f;
             _dead = true;
             Velocity = Vector2.Zero;
-            if (GetTree().GetFirstNodeInGroup("arena") is ArenaManager arena)
-                arena.OnPlayerDied();
+            Net.NotifyPlayerDied();
         }
     }
 
-    /// <summary>Bezpośrednia utrata HP (koszty krwi Vharosa) — bez mitygacji, nie zabija poniżej 1 HP.</summary>
-    private void PayHealth(float amount)
-    {
-        Health = Mathf.Max(1f, Health - amount);
-    }
+    private void PayHealth(float amount) => Health = Mathf.Max(1f, Health - amount);
 
-    // ── Budowa skilla: baza/bóg → drzewko → uniki → pasywki ──
+    // ── budowa skilla (baza/bóg → drzewko → uniki → pasywki) ──
 
     public ResolvedSkill BuildSkill(string skillId)
     {
         GodId god = GameState.GodSkills.Contains(skillId) ? GameState.PledgedGod : GodId.None;
         var s = RangerKit.Get(skillId, god);
         GameState.Trees.ApplyTo(skillId, s);
+        s.CasterPeer = Net.MyId;
 
         if (GameState.HasUniqueEffect(UniqueEffect.Overcharge)) s.CostMult *= 1.2f;
         if (skillId == "dash" && GameState.HasUniqueEffect(UniqueEffect.SwiftDash)) s.CdMult *= 0.6f;
@@ -105,7 +113,6 @@ public partial class PlayerController : CharacterBody2D
         return s;
     }
 
-    /// <summary>Ofensywa z arkusza: atk%, krytyk, unik MarkOnHit.</summary>
     private ResolvedSkill Offense(ResolvedSkill s)
     {
         if (_sheet != null)
@@ -129,7 +136,6 @@ public partial class PlayerController : CharacterBody2D
 
         if (Resource >= cost) { Resource -= cost; return true; }
 
-        // Vharos: brakującą koncentrację płacisz zdrowiem
         if (GameState.PledgedGod == GodId.Blood)
         {
             float missing = cost - Resource;
@@ -140,11 +146,11 @@ public partial class PlayerController : CharacterBody2D
         return false;
     }
 
-    // ── Input: sloty loadoutu ──
+    // ── input (tylko lokalny gracz) ──
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (_dead || !CombatEnabled) return;
+        if (!IsMultiplayerAuthority() || _dead || !CombatEnabled) return;
 
         if (@event is InputEventMouseButton mb && mb.Pressed)
         {
@@ -186,10 +192,12 @@ public partial class PlayerController : CharacterBody2D
     {
         switch (skillId)
         {
-            case "basic": CastProjectile(Offense(s), new Color(0.95f, 0.95f, 0.85f)); break;
-            case "spread": CastSpread(s); break;
-            case "exec": CastProjectile(Offense(s), new Color(1f, 0.85f, 0.3f)); break;
-            case "rain": CastRain(s); break;
+            case "basic": FireProjectiles(Offense(s), new Color(0.95f, 0.95f, 0.85f)); break;
+            case "spread": FireSpread(s); break;
+            case "exec": FireProjectiles(Offense(s), new Color(1f, 0.85f, 0.3f)); break;
+            case "rain":
+                Net.SpawnEffect("rain", Offense(s), new Color(0.5f, 0.8f, 1f), GetGlobalMousePosition(), Vector2.Zero, 120f * s.AoeMult);
+                break;
             case "mine": CastMine(s); break;
             case "hedge": CastHedge(s); break;
             case "dash": CastDash(s); break;
@@ -204,49 +212,27 @@ public partial class PlayerController : CharacterBody2D
         return dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
     }
 
-    private void CastProjectile(ResolvedSkill s, Color tint, Vector2? dirOverride = null)
+    private void FireProjectiles(ResolvedSkill s, Color tint)
     {
-        Vector2 dir = dirOverride ?? AimDirection();
-        var proj = _projectileScene.Instantiate<Projectile>();
-        proj.Setup(s, dir, tint);
-        GetParent().AddChild(proj);
-        proj.GlobalPosition = GlobalPosition + dir * 20f;
-
-        // dodatkowe pociski z drzewka (basic_twin itd.) — lekki rozrzut
+        Vector2 dir = AimDirection();
+        Net.SpawnEffect("proj", s, tint, GlobalPosition + dir * 20f, dir);
         for (int i = 0; i < s.ExtraProjectiles && s.Id != "spread"; i++)
-        {
-            var extra = _projectileScene.Instantiate<Projectile>();
-            extra.Setup(s, dir.Rotated(Mathf.DegToRad(6f * (i + 1))), tint);
-            GetParent().AddChild(extra);
-            extra.GlobalPosition = GlobalPosition + dir * 20f;
-        }
+            Net.SpawnEffect("proj", s, tint, GlobalPosition + dir * 20f, dir.Rotated(Mathf.DegToRad(6f * (i + 1))));
     }
 
-    private void CastSpread(ResolvedSkill s)
+    private void FireSpread(ResolvedSkill s)
     {
         Offense(s);
         int count = RangerKit.SpreadCount(s);
         float baseAngle = AimDirection().Angle();
         float spreadRad = Mathf.DegToRad(12f);
         float start = -spreadRad * (count - 1) / 2f;
+        var tint = new Color(0.6f, 0.95f, 0.5f);
         for (int i = 0; i < count; i++)
-            CastProjectileRaw(s, Vector2.Right.Rotated(baseAngle + start + spreadRad * i), new Color(0.6f, 0.95f, 0.5f));
-    }
-
-    private void CastProjectileRaw(ResolvedSkill s, Vector2 dir, Color tint)
-    {
-        var proj = _projectileScene.Instantiate<Projectile>();
-        proj.Setup(s, dir, tint);
-        GetParent().AddChild(proj);
-        proj.GlobalPosition = GlobalPosition + dir * 20f;
-    }
-
-    private void CastRain(ResolvedSkill s)
-    {
-        var zone = new GroundZone();
-        zone.Setup(Offense(s), 120f * s.AoeMult);
-        GetParent().AddChild(zone);
-        zone.GlobalPosition = GetGlobalMousePosition();
+        {
+            var dir = Vector2.Right.Rotated(baseAngle + start + spreadRad * i);
+            Net.SpawnEffect("proj", s, tint, GlobalPosition + dir * 20f, dir);
+        }
     }
 
     private void CastMine(ResolvedSkill s)
@@ -254,12 +240,7 @@ public partial class PlayerController : CharacterBody2D
         Offense(s);
         int mines = 1 + s.ExtraProjectiles;
         for (int i = 0; i < mines; i++)
-        {
-            var mine = new Mine();
-            mine.Setup(s);
-            GetParent().AddChild(mine);
-            mine.GlobalPosition = GlobalPosition + (i == 0 ? Vector2.Zero : new Vector2(46f * i, 0f));
-        }
+            Net.SpawnEffect("mine", s, Colors.White, GlobalPosition + (i == 0 ? Vector2.Zero : new Vector2(46f * i, 0f)), Vector2.Zero);
     }
 
     private void CastHedge(ResolvedSkill s)
@@ -267,15 +248,12 @@ public partial class PlayerController : CharacterBody2D
         Offense(s);
         if (s.VariantTag == "hedge_bomb")
         {
-            // Dzikie Ostępy: latająca bomba kolców — eksploduje trucizną, bez CD
             s.Explodes = true;
-            CastProjectileRaw(s, AimDirection(), new Color(0.5f, 0.9f, 0.4f));
+            Vector2 dir = AimDirection();
+            Net.SpawnEffect("proj", s, new Color(0.5f, 0.9f, 0.4f), GlobalPosition + dir * 20f, dir);
             return;
         }
-        var hedge = new HedgeZone();
-        GetParent().AddChild(hedge);
-        hedge.GlobalPosition = GlobalPosition;
-        hedge.Setup(s, AimDirection(), 340f * s.AoeMult);
+        Net.SpawnEffect("hedge", s, Colors.White, GlobalPosition, AimDirection(), 340f * s.AoeMult);
     }
 
     private void CastDash(ResolvedSkill s)
@@ -283,25 +261,22 @@ public partial class PlayerController : CharacterBody2D
         Vector2 dir = ReadMoveInput();
         if (dir == Vector2.Zero) dir = AimDirection();
         _dashDir = dir;
-        _dashTimeLeft = DashDuration * s.AoeMult; // dash_far wydłuża sus
+        _dashTimeLeft = DashDuration * s.AoeMult;
         _iFrameLeft = IFrameDuration * s.DurationMult;
 
         if (s.VariantTag == "dash_trail")
         {
-            // Dzikie Ostępy: kolczasty ślad za dashem
             var trail = RangerKit.Get("hedge", GodId.None);
             trail.Damage = 6f;
-            var hedge = new HedgeZone();
-            GetParent().AddChild(hedge);
-            hedge.GlobalPosition = GlobalPosition;
-            hedge.Setup(trail, dir, DashSpeed * DashDuration * s.AoeMult);
+            trail.CasterPeer = Net.MyId;
+            Net.SpawnEffect("hedge", trail, Colors.White, GlobalPosition, dir, DashSpeed * DashDuration * s.AoeMult);
         }
     }
 
     private void CastAdrenaline(ResolvedSkill s)
     {
         _adrenalineTime = 5f * s.DurationMult;
-        _adrenalineDmgBonus = s.Damage; // węzeł adr_power zapisuje bonus w Damage
+        _adrenalineDmgBonus = s.Damage;
         if (s.VariantTag == "adrenaline_blood") Heal(30f);
     }
 
@@ -310,20 +285,15 @@ public partial class PlayerController : CharacterBody2D
         Offense(s);
         if (s.VariantTag == "hawk_pets")
         {
-            // Dzikie Ostępy: 3 WIELKIE jastrzębie-pety walczące u boku
             for (int i = 0; i < 3; i++)
             {
-                var pet = new Pet();
-                pet.Damage = s.Damage * 0.45f;
-                GetParent().AddChild(pet);
-                pet.GlobalPosition = GlobalPosition + Vector2.Right.Rotated(Mathf.Tau * i / 3f) * 40f;
+                var petSkill = s;
+                Net.SpawnEffect("pet", new ResolvedSkill { Id = "pet", Damage = s.Damage * 0.45f, Shape = SkillShape.SingleTarget, CasterPeer = Net.MyId },
+                    Colors.White, GlobalPosition + Vector2.Right.Rotated(Mathf.Tau * i / 3f) * 40f, Vector2.Zero);
             }
             return;
         }
-        var hawk = new Hawk();
-        hawk.Setup(s, s.VariantTag == "hawk_all");
-        GetParent().AddChild(hawk);
-        hawk.GlobalPosition = GetGlobalMousePosition();
+        Net.SpawnEffect("hawk", s, Colors.White, GetGlobalMousePosition(), Vector2.Zero, s.VariantTag == "hawk_all" ? 1f : 0f);
     }
 
     private static Vector2 ReadMoveInput()
@@ -336,11 +306,25 @@ public partial class PlayerController : CharacterBody2D
         return v == Vector2.Zero ? Vector2.Zero : v.Normalized();
     }
 
+    // ── sync pozycji ──
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+    private void NetState(Vector2 pos)
+    {
+        _netPos = pos;
+    }
+
     public override void _PhysicsProcess(double delta)
     {
-        if (_dead) { Velocity = Vector2.Zero; return; }
-
         float dt = (float)delta;
+
+        if (!IsMultiplayerAuthority())
+        {
+            GlobalPosition = GlobalPosition.Lerp(_netPos, Mathf.Min(1f, 14f * dt));
+            return;
+        }
+
+        if (_dead) { Velocity = Vector2.Zero; return; }
 
         foreach (var key in new List<string>(_cd.Keys))
         {
@@ -351,7 +335,7 @@ public partial class PlayerController : CharacterBody2D
         if (_adrenalineTime > 0f) _adrenalineTime -= dt;
 
         if (_adrenalineTime > 0f)
-            Resource = MaxResource; // nielimitowana koncentracja
+            Resource = MaxResource;
         else
             Resource = Mathf.Min(MaxResource, Resource + GameState.Class.ResourceRegen * dt);
 
@@ -360,14 +344,18 @@ public partial class PlayerController : CharacterBody2D
             _dashTimeLeft -= dt;
             Velocity = _dashDir * DashSpeed;
             MoveAndSlide();
-            return;
+        }
+        else
+        {
+            float speed = Speed;
+            if (GameState.PledgedGod == GodId.Wilds) speed *= Gods.WildsMoveSpeedBonus;
+            if (_adrenalineTime > 0f) speed *= 1.4f;
+
+            Velocity = ReadMoveInput() * speed;
+            MoveAndSlide();
         }
 
-        float speed = Speed;
-        if (GameState.PledgedGod == GodId.Wilds) speed *= Gods.WildsMoveSpeedBonus;
-        if (_adrenalineTime > 0f) speed *= 1.4f;
-
-        Velocity = ReadMoveInput() * speed;
-        MoveAndSlide();
+        if (Net.Online && Engine.GetPhysicsFrames() % 3 == 0)
+            Rpc(MethodName.NetState, GlobalPosition);
     }
 }

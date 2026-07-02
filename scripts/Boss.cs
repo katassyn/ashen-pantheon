@@ -44,32 +44,20 @@ public partial class Boss : EnemyBase
 
     private void DoAttack(Vector2 toPlayer)
     {
-        var tg = new Telegraph();
-        GetParent().AddChild(tg);
-
+        // telegraf replikowany: każda maszyna symuluje go dla SWOJEGO gracza
         switch (_attackIndex % 3)
         {
-            case 0: // SLAM — krąg pod aktualną pozycją gracza
-                tg.Shape = TelegraphShape.Circle;
-                tg.Radius = 85f;
-                tg.Damage = 26f;
-                tg.GlobalPosition = Player.GlobalPosition;
+            case 0: // SLAM — krąg pod celowanym graczem
+                Net.SpawnTelegraph((int)TelegraphShape.Circle, 85f, 0f, 0f, 26f * DmgMult,
+                    CurrentTarget?.GlobalPosition ?? GlobalPosition, 0f);
                 break;
             case 1: // SWEEP — stożek w stronę gracza
-                tg.Shape = TelegraphShape.Cone;
-                tg.Radius = 230f;
-                tg.HalfAngleDeg = 34f;
-                tg.Damage = 24f;
-                tg.GlobalPosition = GlobalPosition;
-                tg.Rotation = toPlayer.Angle();
+                Net.SpawnTelegraph((int)TelegraphShape.Cone, 230f, 34f, 0f, 24f * DmgMult,
+                    GlobalPosition, toPlayer.Angle());
                 break;
             default: // CHARGE — linia przez gracza
-                tg.Shape = TelegraphShape.Line;
-                tg.Radius = 340f;
-                tg.HalfWidth = 28f;
-                tg.Damage = 28f;
-                tg.GlobalPosition = GlobalPosition;
-                tg.Rotation = toPlayer.Angle();
+                Net.SpawnTelegraph((int)TelegraphShape.Line, 340f, 0f, 28f, 28f * DmgMult,
+                    GlobalPosition, toPlayer.Angle());
                 break;
         }
         _attackIndex++;

@@ -46,8 +46,8 @@ public partial class Enemy : EnemyBase
                 if (_timer <= 0f)
                 {
                     Animator?.Play("attack");
-                    if (dist <= AttackReach) // gracz mógł odejść — atak do uniknięcia
-                        Player.TakeDamage(ContactDamage);
+                    if (dist <= AttackReach && CurrentTarget != null) // gracz mógł odejść — atak do uniknięcia
+                        Net.DamagePlayer(CurrentTarget, ContactDamage);
                     _state = State.Recover;
                     _timer = 0.45f;
                 }

@@ -60,7 +60,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
 
     public void Refresh()
     {
-        _player ??= GetTree().GetFirstNodeInGroup("player") as PlayerController;
+        _player = PlayerController.Local;
 
         // ── sloty EQ ──
         foreach (Node c in _slots.GetChildren()) c.QueueFree();

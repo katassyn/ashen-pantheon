@@ -31,8 +31,9 @@ public partial class Telegraph : Node2D
 
     private void Resolve()
     {
-        if (GetTree().GetFirstNodeInGroup("player") is not PlayerController player) return;
-        if (!IsInstanceValid(player)) return;
+        // multiplayer: każda maszyna sprawdza tylko SWOJEGO gracza (telegraf jest zreplikowany wszędzie)
+        var player = PlayerController.Local;
+        if (player == null || !IsInstanceValid(player) || player.Dead) return;
 
         Vector2 local = ToLocal(player.GlobalPosition);
         if (HitsLocal(local))
