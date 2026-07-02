@@ -20,6 +20,14 @@ public sealed class MonsterDefinition
     public string Tint { get; set; } = "#d94d4d";
     public long Xp { get; set; } = 12;
     public string LootTable { get; set; } = "common";
+
+    // obrona (typy obrażeń graczy mają znaczenie)
+    public float Armour { get; set; }
+    public float EvadeChance { get; set; }
+    public float ResFire { get; set; }
+    public float ResCold { get; set; }
+    public float ResLightning { get; set; }
+    public float ResChaos { get; set; }
     public float AttackInterval { get; set; } = 1.2f;
     public List<AbilityDefinition> Abilities { get; set; } = new();
     /// <summary>Fazy bossa (puste = zwykły potwór). Sortowane malejąco po HpBelow.</summary>
@@ -42,6 +50,8 @@ public sealed class AbilityDefinition
 {
     public string Type { get; set; } = "melee";
     public float Damage { get; set; } = 10f;
+    /// <summary>Typ obrażeń ataku (Physical/Fire/Cold/Lightning/Chaos) — resisty gracza mają znaczenie.</summary>
+    public string DamageType { get; set; } = "Physical";
     public float Cooldown { get; set; } = 0f;     // 0 = ogranicza tylko AttackInterval
     public float Windup { get; set; } = 0.35f;
     public float Reach { get; set; } = 55f;       // melee

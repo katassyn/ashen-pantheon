@@ -11,6 +11,6 @@
   "lootTable": "common",
   "attackInterval": 1.7,
   "abilities": [
-    { "type": "projectile", "damage": 11, "windup": 0.45, "speed": 330 }
+    { "type": "projectile", "damage": 11, "damageType": "Chaos", "windup": 0.45, "speed": 330 }
   ]
 }

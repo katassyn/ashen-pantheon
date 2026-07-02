@@ -42,7 +42,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     protected bool IsChilled => Combatant.IsChilled;
     public bool IsMarked => Combatant != null && Combatant.IsMarked;
     public float HpFrac => Combatant == null ? 1f : Mathf.Clamp(Combatant.Health / Combatant.MaxHealth, 0f, 1f);
-    public StatusType ActiveStatus => Combatant?.ActiveStatus ?? StatusType.None;
+    public int StatusMask => Combatant?.StatusMask() ?? 0;
     public bool Moving => Velocity.LengthSquared() > 1f || _netMoving;
     protected abstract Color BaseTint { get; }
 
@@ -93,26 +93,14 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
         if (_contactCd > 0f) _contactCd -= dt;
 
-        if (Combatant.StatusTimeLeft > 0f)
-        {
-            Combatant.StatusTimeLeft -= dt;
-            // dps DoT-a z danych skilla (Effect.Magnitude), nie ze stałych w kodzie
-            if (Combatant.StatusDps > 0f) Combatant.Health -= Combatant.StatusDps * dt;
-            if (Combatant.StatusTimeLeft <= 0f) { Combatant.ActiveStatus = StatusType.None; UpdateTint(); }
-            QueueRedraw();
-            if (Combatant.IsDead) { Die(); return; }
-        }
-
-        if (Combatant.MarkTimeLeft > 0f)
-        {
-            Combatant.MarkTimeLeft -= dt;
-            if (Combatant.MarkTimeLeft <= 0f) Combatant.Marked = false;
-            QueueRedraw();
-        }
+        // multi-status: tyknięcie w core (DoT-y, mark, stun) — koegzystencja Burn+Chill+Bleed
+        bool statusChanged = Combatant.Tick(dt);
+        if (statusChanged) UpdateTint();
+        if (Combatant.Statuses.Count > 0 || statusChanged) QueueRedraw();
+        if (Combatant.IsDead) { Die(); return; }
 
         if (Combatant.IsStunned)
         {
-            Combatant.StunTimeLeft -= dt;
             Velocity = Vector2.Zero;
             Animator?.Play("idle");
             if (Net.Online && Engine.GetPhysicsFrames() % 6 == 0) Net.SyncEnemy(this);
@@ -186,19 +174,22 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         else Animator?.Flash("hit");
     }
 
-    /// <summary>Puppet: stan z serwera.</summary>
-    public void ApplyNetState(Vector2 pos, float hpFrac, int status, bool marked, bool moving)
+    /// <summary>Puppet: stan z serwera (statusy jako bitmaska — multi-status).</summary>
+    public void ApplyNetState(Vector2 pos, float hpFrac, int statusMask, bool marked, bool moving)
     {
         _netPos = pos;
         _netMoving = moving;
         Combatant.Health = hpFrac * Combatant.MaxHealth;
-        var st = (StatusType)status;
-        if (st != Combatant.ActiveStatus)
+
+        if (statusMask != Combatant.StatusMask())
         {
-            Combatant.ActiveStatus = st;
+            Combatant.Statuses.Clear();
+            foreach (StatusType t in System.Enum.GetValues<StatusType>())
+                if (t != StatusType.None && (statusMask & (1 << (int)t)) != 0)
+                    Combatant.ApplyStatus(t, 1f, 0f); // wizualnie; realne czasy żyją u hosta
             UpdateTint();
         }
-        Combatant.StatusTimeLeft = st == StatusType.None ? 0f : 1f;
+
         Combatant.Marked = marked;
         Combatant.MarkTimeLeft = marked ? 1f : 0f;
         QueueRedraw();
@@ -255,14 +246,13 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     protected void UpdateTint()
     {
         if (Sprite == null) return;
-        Sprite.Modulate = Combatant.ActiveStatus switch
-        {
-            StatusType.Burn => new Color(1f, 0.4f, 0.2f),
-            StatusType.Chill => new Color(0.4f, 0.7f, 1f),
-            StatusType.Poison => new Color(0.5f, 0.9f, 0.35f),
-            StatusType.Bleed => new Color(0.85f, 0.15f, 0.25f),
-            _ => BaseTint
-        };
+        // multi-status: tint od najbardziej "widocznego" aktywnego statusu
+        Sprite.Modulate =
+            Combatant.Has(StatusType.Bleed) ? new Color(0.85f, 0.15f, 0.25f) :
+            Combatant.Has(StatusType.Burn) ? new Color(1f, 0.4f, 0.2f) :
+            Combatant.Has(StatusType.Poison) ? new Color(0.5f, 0.9f, 0.35f) :
+            Combatant.Has(StatusType.Chill) ? new Color(0.4f, 0.7f, 1f) :
+            BaseTint;
     }
 
     public override void _Draw()

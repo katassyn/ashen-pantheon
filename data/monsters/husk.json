@@ -2,6 +2,7 @@
   "id": "husk",
   "name": "Husk",
   "hp": 60,
+  "armour": 15,
   "speed": 95,
   "movement": "chase",
   "scale": 1.0,

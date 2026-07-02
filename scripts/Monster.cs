@@ -40,10 +40,19 @@ public partial class Monster : EnemyBase
 
         base._Ready();
 
+        // obrona z danych bestiariusza — typy obrażeń gracza mają znaczenie
+        Combatant.Armour = _def.Armour;
+        Combatant.EvadeChance = _def.EvadeChance;
+        Combatant.ResFire = _def.ResFire;
+        Combatant.ResCold = _def.ResCold;
+        Combatant.ResLightning = _def.ResLightning;
+        Combatant.ResChaos = _def.ResChaos;
+
         var sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
         if (sprite != null) sprite.Scale = new Vector2(0.22f, 0.22f) * _def.Scale;
         var shape = GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
         if (shape?.Shape is CircleShape2D circle) circle.Radius = 16f * _def.Scale;
+        Animator?.Rebuild(0.22f * _def.Scale); // animacje w skali potwora (boss nie jest ściskany)
 
         _atkTimer = _def.AttackInterval;
         UpdateTint();
@@ -62,7 +71,7 @@ public partial class Monster : EnemyBase
             {
                 Animator?.Play("attack");
                 if (dist <= _pendingMelee.Reach && CurrentTarget != null)
-                    Net.DamagePlayer(CurrentTarget, _pendingMelee.Damage * DmgMult);
+                    Net.DamagePlayer(CurrentTarget, _pendingMelee.Damage * DmgMult, System.Enum.TryParse<DamageType>(_pendingMelee.DamageType, true, out var mt) ? mt : DamageType.Physical);
                 _pendingMelee = null;
             }
             return;
@@ -107,6 +116,7 @@ public partial class Monster : EnemyBase
     private void ExecuteAbility(AbilityDefinition a, Vector2 toPlayer, float dist)
     {
         float dmg = a.Damage * DmgMult;
+        var dmgType = System.Enum.TryParse<DamageType>(a.DamageType, true, out var t) ? t : DamageType.Physical;
         switch (a.Type)
         {
             case "melee":
@@ -119,22 +129,22 @@ public partial class Monster : EnemyBase
             case "projectile":
                 Animator?.Play("windup");
                 Net.SpawnEnemyProjectile(GlobalPosition + toPlayer.Normalized() * 20f,
-                    toPlayer.Normalized(), a.Speed, dmg);
+                    toPlayer.Normalized(), a.Speed, dmg, dmgType);
                 break;
 
             case "tele_circle":
                 Net.SpawnTelegraph((int)TelegraphShape.Circle, a.Radius, 0f, 0f, dmg,
-                    CurrentTarget?.GlobalPosition ?? GlobalPosition, 0f);
+                    CurrentTarget?.GlobalPosition ?? GlobalPosition, 0f, dmgType);
                 break;
 
             case "tele_cone":
                 Net.SpawnTelegraph((int)TelegraphShape.Cone, a.Radius, a.HalfAngleDeg, 0f, dmg,
-                    GlobalPosition, toPlayer.Angle());
+                    GlobalPosition, toPlayer.Angle(), dmgType);
                 break;
 
             case "tele_line":
                 Net.SpawnTelegraph((int)TelegraphShape.Line, a.Length, 0f, a.HalfWidth, dmg,
-                    GlobalPosition, toPlayer.Angle());
+                    GlobalPosition, toPlayer.Angle(), dmgType);
                 break;
 
             case "summon":

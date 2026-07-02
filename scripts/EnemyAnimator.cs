@@ -6,17 +6,38 @@ using Godot;
 /// podmiana na prawdziwy art = podmiana animacji, zero zmian w kodzie sterującym.</summary>
 public partial class EnemyAnimator : Node
 {
+    /// <summary>Bazowa skala sprite'a właściciela (potwory 0.22, gracz 0.3) — animacje skalują się względem niej.</summary>
+    [Export] public float BaseScale = 0.22f;
+
     private AnimationPlayer _player;
     private Sprite2D _sprite;
     private string _current = "";
     private Action _onDeathDone;
+
+    private Vector2 V(float x, float y) => new Vector2(x, y) * (BaseScale / 0.22f);
 
     public override void _Ready()
     {
         _sprite = GetParent().GetNodeOrNull<Sprite2D>("Sprite2D");
         _player = new AnimationPlayer();
         AddChild(_player);
+        _player.AnimationFinished += OnFinished;
+        BuildLibrary();
+        Play("idle");
+    }
 
+    /// <summary>Przebudowa animacji pod inną skalę bazową (potwory z def.Scale wołają to po _Ready).</summary>
+    public void Rebuild(float baseScale)
+    {
+        BaseScale = baseScale;
+        BuildLibrary();
+        _current = "";
+        Play("idle");
+    }
+
+    private void BuildLibrary()
+    {
+        if (_player.HasAnimationLibrary("")) _player.RemoveAnimationLibrary("");
         var lib = new AnimationLibrary();
         lib.AddAnimation("idle", BuildIdle());
         lib.AddAnimation("walk", BuildWalk());
@@ -25,8 +46,6 @@ public partial class EnemyAnimator : Node
         lib.AddAnimation("hit", BuildHit());
         lib.AddAnimation("death", BuildDeath());
         _player.AddAnimationLibrary("", lib);
-        _player.AnimationFinished += OnFinished;
-        Play("idle");
     }
 
     public void Play(string name)
@@ -83,7 +102,7 @@ public partial class EnemyAnimator : Node
     private Animation BuildIdle()
     {
         var a = NewAnim(1.2f, loop: true);
-        TrackVec2(a, "scale", new[] { (0f, new Vector2(0.22f, 0.22f)), (0.6f, new Vector2(0.23f, 0.21f)), (1.2f, new Vector2(0.22f, 0.22f)) });
+        TrackVec2(a, "scale", new[] { (0f, V(0.22f, 0.22f)), (0.6f, V(0.23f, 0.21f)), (1.2f, V(0.22f, 0.22f)) });
         return a;
     }
 
@@ -101,7 +120,7 @@ public partial class EnemyAnimator : Node
     private Animation BuildWindup()
     {
         var a = NewAnim(0.35f, loop: false);
-        TrackVec2(a, "scale", new[] { (0f, new Vector2(0.22f, 0.22f)), (0.35f, new Vector2(0.17f, 0.27f)) });
+        TrackVec2(a, "scale", new[] { (0f, V(0.22f, 0.22f)), (0.35f, V(0.17f, 0.27f)) });
         TrackColor(a, new[] { (0f, Colors.White), (0.35f, new Color(1.4f, 1.1f, 0.9f)) });
         return a;
     }
@@ -109,7 +128,7 @@ public partial class EnemyAnimator : Node
     private Animation BuildAttack()
     {
         var a = NewAnim(0.2f, loop: false);
-        TrackVec2(a, "scale", new[] { (0f, new Vector2(0.17f, 0.27f)), (0.08f, new Vector2(0.3f, 0.18f)), (0.2f, new Vector2(0.22f, 0.22f)) });
+        TrackVec2(a, "scale", new[] { (0f, V(0.17f, 0.27f)), (0.08f, V(0.3f, 0.18f)), (0.2f, V(0.22f, 0.22f)) });
         TrackColor(a, new[] { (0f, new Color(1.4f, 1.1f, 0.9f)), (0.2f, Colors.White) });
         return a;
     }
@@ -124,7 +143,7 @@ public partial class EnemyAnimator : Node
     private Animation BuildDeath()
     {
         var a = NewAnim(0.4f, loop: false);
-        TrackVec2(a, "scale", new[] { (0f, new Vector2(0.22f, 0.22f)), (0.4f, new Vector2(0.02f, 0.02f)) });
+        TrackVec2(a, "scale", new[] { (0f, V(0.22f, 0.22f)), (0.4f, V(0.02f, 0.02f)) });
         int mod = a.AddTrack(Animation.TrackType.Value);
         a.TrackSetPath(mod, $"{SpritePath}:modulate");
         a.TrackInsertKey(mod, 0f, Colors.White);

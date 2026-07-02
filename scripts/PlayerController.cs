@@ -15,8 +15,11 @@ public partial class PlayerController : CharacterBody2D
 
     private CharacterSheet _sheet;
     public CharacterSheet Sheet => _sheet;
+    private readonly PlayerDefense _defense = new();
     public float MaxHealth => _sheet?.MaxLife ?? 100f;
-    public float Health { get; private set; }
+    public float MaxEnergyShield => _sheet?.MaxEnergyShield ?? 0f;
+    public float Health { get => _defense.Health; private set => _defense.Health = value; }
+    public float EnergyShield => _defense.EnergyShield;
     private bool _dead;
     public bool Dead => _dead;
 
@@ -34,6 +37,8 @@ public partial class PlayerController : CharacterBody2D
     private Vector2 _dashDir;
     public bool IsInvulnerable => _iFrameLeft > 0f;
 
+    private EnemyAnimator _animator;
+
     // puppet: interpolacja/ekstrapolacja stanu z sieci
     private Vector2 _netPos;
     private Vector2 _netVel;
@@ -44,6 +49,7 @@ public partial class PlayerController : CharacterBody2D
     public override void _Ready()
     {
         _netPos = GlobalPosition;
+        _animator = GetNodeOrNull<EnemyAnimator>("Animator");
 
         if (!IsMultiplayerAuthority())
         {
@@ -58,7 +64,7 @@ public partial class PlayerController : CharacterBody2D
         Local = this;
         GameState.LoadOrInit();
         RecomputeSheet();
-        Health = MaxHealth;
+        _defense.ResetFull(_sheet);
         Resource = MaxResource;
     }
 
@@ -81,11 +87,12 @@ public partial class PlayerController : CharacterBody2D
         Health = Mathf.Min(MaxHealth, Health + amount);
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, DamageType type = DamageType.Physical)
     {
         if (_dead || IsInvulnerable) return;
-        float mitigated = _sheet != null ? _sheet.MitigatedDamage(DamageType.Physical, amount) : amount;
-        Health -= mitigated;
+        float mitigated = _sheet != null ? _sheet.MitigatedDamage(type, amount) : amount;
+        _defense.Absorb(mitigated, type); // ES przed HP (chaos przebija ES)
+        _animator?.Flash("hit");
         if (Health <= 0f)
         {
             Health = 0f;
@@ -414,6 +421,8 @@ public partial class PlayerController : CharacterBody2D
         else
             Resource = Mathf.Min(MaxResource, Resource + GameState.Class.ResourceRegen * dt);
 
+        if (_sheet != null) _defense.Tick(dt, _sheet); // ES recharge po 3 s + life regen
+
         if (_dashTimeLeft > 0f)
         {
             _dashTimeLeft -= dt;
@@ -426,9 +435,13 @@ public partial class PlayerController : CharacterBody2D
             speed *= GameData.God(GameState.PledgedGod)?.MoveSpeedMult ?? 1f;
             if (_adrenalineTime > 0f) speed *= 1.4f;
 
-            Velocity = ReadMoveInput() * speed;
+            // feel ruchu: przyspieszenie/hamowanie zamiast natychmiastowej prędkości
+            Vector2 target = ReadMoveInput() * speed;
+            float accel = target == Vector2.Zero ? 2600f : 1900f;
+            Velocity = Velocity.MoveToward(target, accel * dt);
             MoveAndSlide();
-        }
 
+            _animator?.Play(Velocity.LengthSquared() > 100f ? "walk" : "idle");
+        }
     }
 }

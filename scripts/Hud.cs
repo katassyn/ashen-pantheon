@@ -8,7 +8,7 @@ public partial class Hud : CanvasLayer
 	private Label _info;
 	private Label _center;
 
-	private ProgressBar _hpBar, _resBar, _xpBar;
+	private ProgressBar _hpBar, _resBar, _xpBar, _esBar;
 	private Label _goldLabel;
 	private readonly SkillSlotUi[] _slots = new SkillSlotUi[Loadout.SlotCount];
 
@@ -29,10 +29,13 @@ public partial class Hud : CanvasLayer
 		root.AddThemeConstantOverride("separation", 4);
 		AddChild(root);
 
+		_esBar = MakeBar(new Color(0.35f, 0.75f, 0.95f)); // Energy Shield nad HP (absorbuje pierwszy)
+		_esBar.CustomMinimumSize = new Vector2(0, 7);
 		_hpBar = MakeBar(new Color(0.75f, 0.2f, 0.2f));
 		_resBar = MakeBar(new Color(0.25f, 0.55f, 0.85f));
 		_xpBar = MakeBar(new Color(0.7f, 0.6f, 0.2f));
 		_xpBar.CustomMinimumSize = new Vector2(0, 8);
+		root.AddChild(_esBar);
 		root.AddChild(_hpBar);
 		root.AddChild(_resBar);
 
@@ -93,6 +96,13 @@ public partial class Hud : CanvasLayer
 			_hpBar.Value = _player.Health;
 			_resBar.MaxValue = _player.MaxResource;
 			_resBar.Value = _player.Resource;
+			bool hasEs = _player.MaxEnergyShield > 0f;
+			_esBar.Visible = hasEs;
+			if (hasEs)
+			{
+				_esBar.MaxValue = _player.MaxEnergyShield;
+				_esBar.Value = _player.EnergyShield;
+			}
 		}
 
 		var prog = GameState.Progress;

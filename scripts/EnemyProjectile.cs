@@ -7,6 +7,7 @@ public partial class EnemyProjectile : Node2D
     public Vector2 Direction = Vector2.Right;
     public float Speed = 320f;
     public float Damage = 10f;
+    public AshenPantheon.Core.DamageType DamageType = AshenPantheon.Core.DamageType.Physical;
 
     private float _life = 2.5f;
     private const float HitRadius = 18f;
@@ -22,7 +23,7 @@ public partial class EnemyProjectile : Node2D
         if (p != null && IsInstanceValid(p) && !p.Dead && !p.IsInvulnerable
             && GlobalPosition.DistanceTo(p.GlobalPosition) <= HitRadius)
         {
-            p.TakeDamage(Damage);
+            p.TakeDamage(Damage, DamageType);
             QueueFree();
         }
     }

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Texture2D" uid="uid://cwkrb11xh5q06" path="res://icon.svg" id="1_icon"]
 [ext_resource type="Script" path="res://scripts/PlayerController.cs" id="2_ctrl"]
+[ext_resource type="Script" path="res://scripts/EnemyAnimator.cs" id="3_anim"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 16.0
@@ -19,3 +20,7 @@ texture = ExtResource("1_icon")
 shape = SubResource("CircleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Animator" type="Node" parent="."]
+script = ExtResource("3_anim")
+BaseScale = 0.3

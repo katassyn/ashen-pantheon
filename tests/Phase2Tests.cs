@@ -215,7 +215,7 @@ public class CombatPipelineTests
         var skill = new ResolvedSkill { Id = "x", Damage = 1f, Shape = SkillShape.Projectile,
             OnHitStatus = StatusType.Poison, StatusDuration = 3f, StatusDps = 6f };
         CombatResolver.ApplyHit(skill, target);
-        Assert.Equal(6f, target.StatusDps);
+        Assert.Equal(6f, System.Linq.Enumerable.Single(target.Statuses).Dps);
     }
 }
 

@@ -9,8 +9,8 @@ public static class CombatResolver
     /// <summary>Deterministyczne trafienie (bez rzutu na celność) — do testów i efektów gwarantowanych.</summary>
     public static void ApplyHit(ResolvedSkill skill, Combatant target) => ApplyHitRolled(skill, target, roll: 0f);
 
-    /// <summary>Pełny pipeline v2: rzut na trafienie (celność atakującego vs unik celu),
-    /// bonusy chill/mark, obrażenia, statusy z danych. Zwraca false przy uniku.</summary>
+    /// <summary>Pipeline v2: rzut celność-vs-unik → bonusy chill/mark → mitygacja celu (armour/resisty wg typu)
+    /// → obrażenia → statusy (multi-status) / mark / stun. Zwraca false przy uniku.</summary>
     public static bool ApplyHitRolled(ResolvedSkill skill, Combatant target, float roll)
     {
         float effectiveHit = (skill.HitChance / 100f) * (1f - target.EvadeChance);
@@ -19,15 +19,11 @@ public static class CombatResolver
         float damage = skill.Damage;
         if (target.IsChilled) damage *= ChillBonusMultiplier;
         if (target.IsMarked) damage *= skill.MarkedMultiplier;
+        damage = target.Mitigate(skill.DamageType, damage);
 
         target.Health -= damage;
 
-        if (skill.OnHitStatus != StatusType.None)
-        {
-            target.ActiveStatus = skill.OnHitStatus;
-            target.StatusTimeLeft = skill.StatusDuration;
-            target.StatusDps = skill.StatusDps;
-        }
+        target.ApplyStatus(skill.OnHitStatus, skill.StatusDuration, skill.StatusDps);
 
         if (skill.AppliesMark)
         {
