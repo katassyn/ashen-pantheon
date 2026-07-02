@@ -11,4 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\core\AshenPantheon.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\data\**\*.json" LinkBase="data" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

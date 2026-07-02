@@ -102,13 +102,27 @@ public class ProgressionTests
 
 public class SkillTreeTests
 {
+    public SkillTreeTests() => TestData.EnsureLoaded();
+
+    private static ResolvedSkill Resolve(string skillId, GodId god, SkillTreeState trees) =>
+        SkillResolver.Resolve(GameData.Class("ranger").Skill(skillId)!, GameData.God(god), trees, new CasterContext());
+
     [Fact]
     public void ExclusiveGroup_BlocksSecondPick()
     {
         var state = new SkillTreeState();
+        Assert.True(state.Allocate("basic", "basic_dmg")); // prereq gałęzi b1
         Assert.True(state.Allocate("basic", "basic_pierce"));
         Assert.False(state.CanAllocate("basic", "basic_twin")); // ta sama grupa b1
-        Assert.True(state.CanAllocate("basic", "basic_dmg"));
+    }
+
+    [Fact]
+    public void Requires_BlocksWithoutPrerequisite()
+    {
+        var state = new SkillTreeState();
+        Assert.False(state.CanAllocate("basic", "basic_pierce")); // wymaga basic_dmg
+        state.Allocate("basic", "basic_dmg");
+        Assert.True(state.CanAllocate("basic", "basic_pierce"));
     }
 
     [Fact]
@@ -116,10 +130,9 @@ public class SkillTreeTests
     {
         var state = new SkillTreeState();
         state.Allocate("basic", "basic_dmg");
-        var s = RangerKit.Get("basic", GodId.None);
-        float before = s.Damage;
-        state.ApplyTo("basic", s);
-        Assert.Equal(before * 1.3f, s.Damage, 2);
+        float before = Resolve("basic", GodId.None, null).Damage;
+        float after = Resolve("basic", GodId.None, state).Damage;
+        Assert.Equal(before * 1.3f, after, 2);
     }
 
     [Fact]
@@ -135,31 +148,74 @@ public class SkillTreeTests
     [Fact]
     public void AllNineSkills_HaveTrees()
     {
-        foreach (var info in RangerKit.Class.Skills)
-            Assert.True(RangerTrees.BySkill.ContainsKey(info.Id), $"brak drzewka: {info.Id}");
+        foreach (var spec in GameData.Class("ranger").Skills)
+            Assert.True(GameData.Trees.ContainsKey(spec.Id), $"brak drzewka: {spec.Id}");
     }
 }
 
 public class GodVariantTests
 {
+    public GodVariantTests() => TestData.EnsureLoaded();
+
     [Fact]
     public void EveryskillDiffersUnderEachGod()
     {
-        foreach (var info in RangerKit.Class.Skills)
+        var cls = GameData.Class("ranger");
+        foreach (var spec in cls.Skills)
         {
-            var baseS = RangerKit.Get(info.Id, GodId.None);
+            var baseS = SkillResolver.Resolve(spec, null, null, new CasterContext());
             foreach (var god in new[] { GodId.Wilds, GodId.Blood })
             {
-                var g = RangerKit.Get(info.Id, god);
+                var g = SkillResolver.Resolve(spec, GameData.God(god), null, new CasterContext());
                 bool differs =
                     g.Damage != baseS.Damage || g.Pierces != baseS.Pierces || g.ExtraProjectiles != baseS.ExtraProjectiles ||
                     g.OnHitStatus != baseS.OnHitStatus || g.MarkDuration != baseS.MarkDuration ||
                     g.MarkedMultiplier != baseS.MarkedMultiplier || g.HealOnHit != baseS.HealOnHit ||
                     g.CdMult != baseS.CdMult || g.AoeMult != baseS.AoeMult || g.DurationMult != baseS.DurationMult ||
                     g.StunDuration != baseS.StunDuration || g.VariantTag != baseS.VariantTag || g.Shape != baseS.Shape;
-                Assert.True(differs, $"skill {info.Id} nie różni się pod bogiem {god}");
+                Assert.True(differs, $"skill {spec.Id} nie różni się pod bogiem {god}");
             }
         }
+    }
+
+    [Fact]
+    public void WeaponScaling_FeedsSkillDamage()
+    {
+        var spec = GameData.Class("ranger").Skill("basic")!;
+        var noWeapon = SkillResolver.Resolve(spec, null, null, new CasterContext());
+        var withWeapon = SkillResolver.Resolve(spec, null, null, new CasterContext { WeaponDamage = 20f });
+        Assert.True(withWeapon.Damage > noWeapon.Damage);
+    }
+
+    [Fact]
+    public void AttackSpeed_ShortensCastTime()
+    {
+        var spec = GameData.Class("ranger").Skill("basic")!;
+        var slow = SkillResolver.Resolve(spec, null, null, new CasterContext { AttackSpeed = 1f });
+        var fast = SkillResolver.Resolve(spec, null, null, new CasterContext { AttackSpeed = 2f });
+        Assert.True(fast.CastTime < slow.CastTime);
+    }
+}
+
+public class CombatPipelineTests
+{
+    [Fact]
+    public void Evasion_CausesMiss()
+    {
+        var target = new Combatant { MaxHealth = 100f, Health = 100f, EvadeChance = 1f }; // zawsze unika
+        var skill = new ResolvedSkill { Id = "x", Damage = 50f, Shape = SkillShape.Projectile, HitChance = 100f };
+        Assert.False(CombatResolver.ApplyHitRolled(skill, target, 0.5f));
+        Assert.Equal(100f, target.Health);
+    }
+
+    [Fact]
+    public void StatusDps_ComesFromSkillData()
+    {
+        var target = new Combatant { MaxHealth = 100f, Health = 100f };
+        var skill = new ResolvedSkill { Id = "x", Damage = 1f, Shape = SkillShape.Projectile,
+            OnHitStatus = StatusType.Poison, StatusDuration = 3f, StatusDps = 6f };
+        CombatResolver.ApplyHit(skill, target);
+        Assert.Equal(6f, target.StatusDps);
     }
 }
 

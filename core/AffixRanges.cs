@@ -28,6 +28,8 @@ public static class AffixRanges
         [AffixStat.ManaRegen] = (1, 6),
         [AffixStat.AttackSpeed] = (0.03f, 0.15f),
         [AffixStat.CastSpeed] = (0.03f, 0.15f),
+        [AffixStat.WeaponDamage] = (6f, 26f),
+        [AffixStat.WeaponAttackSpeed] = (0.0f, 0.2f),
     };
 
     public static bool InRange(AffixStat stat, float value)

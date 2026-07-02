@@ -7,8 +7,11 @@ using AshenPantheon.Core;
 /// (dziś lokalny JSON, docelowo serwer/baza — podmiana repo bez ruszania gameplayu).</summary>
 public static class GameState
 {
-    // Klasa postaci — architektura pod N klas (inne klasy podmienią definicję i caster)
-    public static ClassDefinition Class = RangerKit.Class;
+    // Klasa postaci — architektura pod N klas: definicje w data/classes/*.json
+    public static string ClassId = "ranger";
+    private static ClassDefinition _classDef;
+    public static ClassDefinition Class => _classDef ??= GameData.Class(ClassId).ToDefinition();
+    public static ClassSpec ClassSpec => GameData.Class(ClassId);
 
     // Startowe atrybuty klasy + punkty wydane przez gracza (osobno — respec zwraca tylko wydane)
     public static readonly Attributes ClassBase = new() { Strength = 12, Dexterity = 15, Intelligence = 5 };

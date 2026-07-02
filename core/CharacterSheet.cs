@@ -32,6 +32,8 @@ public sealed class CharacterSheet
     public float CritMultiplier { get; set; } = 1.5f; // ×150%
     public float AttackSpeed { get; set; } = 1.0f;    // ataki/s
     public float CastSpeed { get; set; } = 1.0f;      // casty/s
+    /// <summary>Średnie obrażenia założonej broni (skille skalują przez WeaponScaling).</summary>
+    public float WeaponDamage { get; set; }
 
     // --- Staty pochodne ---
 

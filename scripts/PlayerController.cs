@@ -120,33 +120,36 @@ public partial class PlayerController : CharacterBody2D
 
     private void PayHealth(float amount) => Health = Mathf.Max(1f, Health - amount);
 
-    // ── budowa skilla (baza/bóg → drzewko → uniki → pasywki) ──
+    // ── budowa skilla: SkillResolver (dane) — spec → patch boga → drzewko → broń/arkusz ──
 
     public ResolvedSkill BuildSkill(string skillId)
     {
-        GodId god = GameState.GodSkills.Contains(skillId) ? GameState.PledgedGod : GodId.None;
-        var s = RangerKit.Get(skillId, god);
-        GameState.Trees.ApplyTo(skillId, s);
-        s.CasterPeer = Net.MyId;
+        var spec = GameState.ClassSpec.Skill(skillId);
+        if (spec == null) return null;
+
+        GodSpec god = GameState.GodSkills.Contains(skillId) ? GameData.God(GameState.PledgedGod) : null;
+        var ctx = new CasterContext
+        {
+            AttackDamageMultiplier = _sheet?.AttackDamageMultiplier ?? 1f,
+            HitChance = _sheet?.HitChance ?? 100f,
+            WeaponDamage = _sheet?.WeaponDamage ?? 0f,
+            AttackSpeed = _sheet?.AttackSpeed ?? 1f,
+            CastSpeed = _sheet?.CastSpeed ?? 1f,
+            CasterPeer = Net.MyId,
+        };
+        var s = SkillResolver.Resolve(spec, god, GameState.Trees, ctx);
 
         if (GameState.HasUniqueEffect(UniqueEffect.Overcharge)) s.CostMult *= 1.2f;
         if (skillId == "dash" && GameState.HasUniqueEffect(UniqueEffect.SwiftDash)) s.CdMult *= 0.6f;
-
-        if (s.Damage > 0f && skillId != "adrenaline")
-        {
-            if (GameState.PledgedGod == GodId.Blood) s.Damage *= Gods.BloodDamageBonus;
-            if (_adrenalineTime > 0f && _adrenalineDmgBonus > 0f) s.Damage *= 1f + _adrenalineDmgBonus;
-        }
+        if (s.Damage > 0f && _adrenalineTime > 0f && _adrenalineDmgBonus > 0f)
+            s.Damage *= 1f + _adrenalineDmgBonus;
         return s;
     }
 
+    /// <summary>Rzut na krytyka + unik MarkOnHit (celność/unik liczy CombatResolver per trafienie).</summary>
     private ResolvedSkill Offense(ResolvedSkill s)
     {
-        if (_sheet != null)
-        {
-            s.Damage *= _sheet.AttackDamageMultiplier;
-            if (GD.Randf() < _sheet.CritChance) s.Damage *= _sheet.CritMultiplier;
-        }
+        if (_sheet != null && GD.Randf() < _sheet.CritChance) s.Damage *= _sheet.CritMultiplier;
         if (GameState.HasUniqueEffect(UniqueEffect.MarkOnHit) && !s.AppliesMark)
         {
             s.AppliesMark = true;
@@ -163,11 +166,12 @@ public partial class PlayerController : CharacterBody2D
 
         if (Resource >= cost) { Resource -= cost; return true; }
 
-        if (GameState.PledgedGod == GodId.Blood)
+        float hpPerPoint = GameData.God(GameState.PledgedGod)?.BloodCostHpPerPoint ?? 0f;
+        if (hpPerPoint > 0f)
         {
             float missing = cost - Resource;
             Resource = 0f;
-            PayHealth(missing * Gods.BloodHpPerConcentration);
+            PayHealth(missing * hpPerPoint);
             return true;
         }
         return false;
@@ -196,6 +200,9 @@ public partial class PlayerController : CharacterBody2D
         }
     }
 
+    // globalny lock rzucania — atk/cast speed realnie steruje tempem skilli
+    private float _castLock;
+
     private void CastSlot(int slot)
     {
         string skillId = GameState.Loadout.Slots[slot];
@@ -203,14 +210,16 @@ public partial class PlayerController : CharacterBody2D
 
         var info = GameState.Class.Skill(skillId);
         if (info == null) return;
+        if (_castLock > 0f) return;
         if (_cd.GetValueOrDefault(skillId) > 0f) return;
         if (skillId == "dash" && _dashTimeLeft > 0f) return;
 
         var s = BuildSkill(skillId);
-        if (!TryPay(s)) return;
+        if (s == null || !TryPay(s)) return;
 
         Execute(skillId, s);
 
+        _castLock = s.CastTime;
         float cd = info.Cooldown * s.CdMult;
         if (cd > 0f) _cd[skillId] = cd;
     }
@@ -250,7 +259,7 @@ public partial class PlayerController : CharacterBody2D
     private void FireSpread(ResolvedSkill s)
     {
         Offense(s);
-        int count = RangerKit.SpreadCount(s);
+        int count = 3 + s.ExtraProjectiles;
         float baseAngle = AimDirection().Angle();
         float spreadRad = Mathf.DegToRad(12f);
         float start = -spreadRad * (count - 1) / 2f;
@@ -293,7 +302,7 @@ public partial class PlayerController : CharacterBody2D
 
         if (s.VariantTag == "dash_trail")
         {
-            var trail = RangerKit.Get("hedge", GodId.None);
+            var trail = SkillResolver.Resolve(GameState.ClassSpec.Skill("hedge"), null, null, new CasterContext { CasterPeer = Net.MyId });
             trail.Damage = 6f;
             trail.CasterPeer = Net.MyId;
             Net.SpawnEffect("hedge", trail, Colors.White, GlobalPosition, dir, DashSpeed * DashDuration * s.AoeMult);
@@ -397,6 +406,7 @@ public partial class PlayerController : CharacterBody2D
             if (_cd[key] <= 0f) _cd.Remove(key);
         }
         if (_iFrameLeft > 0f) _iFrameLeft -= dt;
+        if (_castLock > 0f) _castLock -= dt;
         if (_adrenalineTime > 0f) _adrenalineTime -= dt;
 
         if (_adrenalineTime > 0f)
@@ -413,7 +423,7 @@ public partial class PlayerController : CharacterBody2D
         else
         {
             float speed = Speed;
-            if (GameState.PledgedGod == GodId.Wilds) speed *= Gods.WildsMoveSpeedBonus;
+            speed *= GameData.God(GameState.PledgedGod)?.MoveSpeedMult ?? 1f;
             if (_adrenalineTime > 0f) speed *= 1.4f;
 
             Velocity = ReadMoveInput() * speed;

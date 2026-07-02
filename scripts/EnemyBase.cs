@@ -96,11 +96,8 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         if (Combatant.StatusTimeLeft > 0f)
         {
             Combatant.StatusTimeLeft -= dt;
-            float dps = Combatant.ActiveStatus switch
-            {
-                StatusType.Burn => 8f, StatusType.Poison => 6f, StatusType.Bleed => 7f, _ => 0f
-            };
-            if (dps > 0f) Combatant.Health -= dps * dt;
+            // dps DoT-a z danych skilla (Effect.Magnitude), nie ze stałych w kodzie
+            if (Combatant.StatusDps > 0f) Combatant.Health -= Combatant.StatusDps * dt;
             if (Combatant.StatusTimeLeft <= 0f) { Combatant.ActiveStatus = StatusType.None; UpdateTint(); }
             QueueRedraw();
             if (Combatant.IsDead) { Die(); return; }
@@ -177,7 +174,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
             return;
         }
 
-        CombatResolver.ApplyHit(skill, Combatant);
+        // pipeline v2: rzut na trafienie (celność gracza vs unik celu)
+        bool hit = CombatResolver.ApplyHitRolled(skill, Combatant, GD.Randf());
+        if (!hit) return; // unik — brak obrażeń i lifestealu
+
         if (skill.HealOnHit > 0f)
             Net.HealCaster(skill.CasterPeer, skill.HealOnHit);
         UpdateTint();

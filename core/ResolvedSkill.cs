@@ -42,4 +42,16 @@ public sealed class ResolvedSkill
 
     /// <summary>Id peera rzucającego (multiplayer): lifesteal/heale wracają do właściwego gracza. 1 = host/solo.</summary>
     public int CasterPeer { get; set; } = 1;
+
+    // ── Pipeline v2 (skille jako dane) ──
+    public DamageType DamageType { get; set; } = DamageType.Physical;
+    /// <summary>Finalny czas rzucania w sekundach (po atk/cast speed) — pacing skilli.</summary>
+    public float CastTime { get; set; }
+    public float CastTimeMult { get; set; } = 1f;
+    /// <summary>Ułamek obrażeń broni doliczany do bazy (broń wreszcie ma znaczenie).</summary>
+    public float WeaponScaling { get; set; }
+    /// <summary>Szansa trafienia rzucającego w % (celność vs unik celu w CombatResolver).</summary>
+    public float HitChance { get; set; } = 100f;
+    /// <summary>Dps nakładanego DoT-a (z danych, nie z kodu).</summary>
+    public float StatusDps { get; set; }
 }

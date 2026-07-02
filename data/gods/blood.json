@@ -1,0 +1,19 @@
+{
+  "id": "blood",
+  "name": "Vharos, Bóg Krwi",
+  "passive": "+15% obrażeń · brakującą koncentrację płacisz zdrowiem",
+  "moveSpeedMult": 1.0,
+  "damageMult": 1.15,
+  "bloodCostHpPerPoint": 0.75,
+  "skillPatches": {
+    "basic": [ { "op": "status", "str": "Bleed", "duration": 2, "magnitude": 7 } ],
+    "spread": [ { "op": "damage_mult", "value": 1.3 }, { "op": "status", "str": "Bleed", "duration": 2, "magnitude": 7 } ],
+    "exec": [ { "op": "marked_mult", "value": 2.5 }, { "op": "heal_on_hit", "value": 4 } ],
+    "rain": [ { "op": "variant", "str": "rain_blood" } ],
+    "mine": [ { "op": "damage_mult", "value": 1.5 }, { "op": "status", "str": "Bleed", "duration": 3, "magnitude": 7 }, { "op": "heal_on_hit", "value": 3 }, { "op": "stun", "value": 0 } ],
+    "hedge": [ { "op": "variant", "str": "hedge_drain" }, { "op": "heal_on_hit", "value": 2 } ],
+    "dash": [ { "op": "variant", "str": "dash_blood" }, { "op": "cd_mult", "value": 0.75 } ],
+    "adrenaline": [ { "op": "variant", "str": "adrenaline_blood" } ],
+    "hawk": [ { "op": "variant", "str": "hawk_all" }, { "op": "heal_on_hit", "value": 3 } ]
+  }
+}

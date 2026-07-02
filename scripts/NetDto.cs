@@ -22,6 +22,9 @@ public sealed class SkillDto
     public float DurationMult { get; set; } = 1f;
     public string VariantTag { get; set; }
     public int CasterPeer { get; set; } = 1;
+    public float StatusDps { get; set; }
+    public float HitChance { get; set; } = 100f;
+    public int DamageType { get; set; }
     public float Tr { get; set; } = 1f;
     public float Tg { get; set; } = 1f;
     public float Tb { get; set; } = 1f;
@@ -35,6 +38,7 @@ public sealed class SkillDto
         StunDuration = s.StunDuration, HealOnHit = s.HealOnHit,
         AoeMult = s.AoeMult, DurationMult = s.DurationMult,
         VariantTag = s.VariantTag, CasterPeer = s.CasterPeer,
+        StatusDps = s.StatusDps, HitChance = s.HitChance, DamageType = (int)s.DamageType,
         Tr = tint.R, Tg = tint.G, Tb = tint.B,
     });
 
@@ -50,6 +54,7 @@ public sealed class SkillDto
             StunDuration = d.StunDuration, HealOnHit = d.HealOnHit,
             AoeMult = d.AoeMult, DurationMult = d.DurationMult,
             VariantTag = d.VariantTag, CasterPeer = d.CasterPeer,
+            StatusDps = d.StatusDps, HitChance = d.HitChance, DamageType = (DamageType)d.DamageType,
         };
         return (s, new Color(d.Tr, d.Tg, d.Tb));
     }

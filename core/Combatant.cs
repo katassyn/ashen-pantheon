@@ -6,6 +6,10 @@ public sealed class Combatant
     public float Health { get; set; }
     public StatusType ActiveStatus { get; set; } = StatusType.None;
     public float StatusTimeLeft { get; set; }
+    /// <summary>Dps aktywnego DoT-a (ustawiany przez skill z danych).</summary>
+    public float StatusDps { get; set; }
+    /// <summary>Szansa uniku celu 0..1 (celność atakującego vs unik w CombatResolver).</summary>
+    public float EvadeChance { get; set; }
 
     // Ranger: Oznaczenie
     public bool Marked { get; set; }

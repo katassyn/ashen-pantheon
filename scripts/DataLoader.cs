@@ -11,6 +11,9 @@ public static class DataLoader
         if (_done) return;
         _done = true;
 
+        foreach (var json in ReadDir("res://data/classes")) GameData.LoadClass(json);
+        foreach (var json in ReadDir("res://data/gods")) GameData.LoadGod(json);
+        foreach (var json in ReadDir("res://data/trees")) GameData.LoadTrees(json);
         foreach (var json in ReadDir("res://data/loot")) LootTables.Load(json);
         foreach (var json in ReadDir("res://data/monsters")) Bestiary.LoadMonster(json);
         foreach (var json in ReadDir("res://data/zones")) Bestiary.LoadZone(json);

@@ -98,6 +98,16 @@ public sealed class LootGenerator
         };
 
         var affixes = new List<Affix>();
+
+        // implicity broni: broń MUSI mieć obrażenia (bazy itemów) — skille skalują się nimi
+        if (kind == ItemKind.OneHandWeapon)
+            affixes.Add(new Affix { Stat = AffixStat.WeaponDamage, Value = 6f + (float)_rng.NextDouble() * 8f });
+        else if (kind == ItemKind.TwoHandWeapon)
+        {
+            affixes.Add(new Affix { Stat = AffixStat.WeaponDamage, Value = 12f + (float)_rng.NextDouble() * 14f });
+            affixes.Add(new Affix { Stat = AffixStat.WeaponAttackSpeed, Value = -0f + (float)_rng.NextDouble() * 0.1f });
+        }
+
         for (int i = 0; i < affixCount; i++)
         {
             var stat = Pool[_rng.Next(Pool.Length)];

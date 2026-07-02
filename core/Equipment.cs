@@ -80,6 +80,7 @@ public sealed class Equipment
 
         float flatLife = 0, flatMana = 0, flatES = 0, flatArmour = 0, flatEvasion = 0, flatHit = 0;
         float incAtk = 0, lifeRegen = 0, manaRegen = 0, critC = 0, critM = 0, atkSpd = 0, castSpd = 0;
+        float weaponDmg = 0;
 
         foreach (var item in EquippedItems())
             foreach (var a in item.Affixes)
@@ -105,6 +106,8 @@ public sealed class Equipment
                     case AffixStat.CritMultiplier: critM += a.Value; break;
                     case AffixStat.AttackSpeed: atkSpd += a.Value; break;
                     case AffixStat.CastSpeed: castSpd += a.Value; break;
+                    case AffixStat.WeaponDamage: weaponDmg += a.Value; break;
+                    case AffixStat.WeaponAttackSpeed: atkSpd += a.Value; break;
                 }
 
         var sheet = new CharacterSheet
@@ -126,6 +129,7 @@ public sealed class Equipment
         sheet.CritMultiplier += critM;
         sheet.AttackSpeed += atkSpd;
         sheet.CastSpeed += castSpd;
+        sheet.WeaponDamage = weaponDmg;
         return sheet;
     }
 }

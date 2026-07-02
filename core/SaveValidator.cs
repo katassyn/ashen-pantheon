@@ -24,14 +24,19 @@ public static class SaveValidator
         if (data.SkillPoints + allocatedNodes > earnedSkill)
             return (false, "za dużo punktów skilli względem poziomu");
 
-        foreach (var (skillId, nodes) in data.TreeNodes)
-            foreach (var n in nodes)
-                if (RangerTrees.Find(skillId, n) == null)
-                    return (false, $"nieistniejący węzeł drzewka: {skillId}/{n}");
+        // walidacja względem katalogów danych (serwer/testy ładują data/; brak danych → pomiń te checki)
+        if (GameData.Loaded)
+        {
+            foreach (var (skillId, nodes) in data.TreeNodes)
+                foreach (var n in nodes)
+                    if (GameData.FindNode(skillId, n) == null)
+                        return (false, $"nieistniejący węzeł drzewka: {skillId}/{n}");
 
-        foreach (var id in data.Loadout)
-            if (id != null && RangerKit.Class.Skill(id) == null)
-                return (false, $"nieznany skill w loadout: {id}");
+            var anyClassHas = (string id) => GameData.Classes.Values.Any(c => c.Skill(id) != null);
+            foreach (var id in data.Loadout)
+                if (id != null && !anyClassHas(id))
+                    return (false, $"nieznany skill w loadout: {id}");
+        }
 
         foreach (var dto in AllItems(data))
         {
@@ -66,8 +71,10 @@ public static class SaveValidator
             return (false, $"item {dto.Name}: fałszywy UniqueId");
 
         int maxAffixes = rarity switch { Rarity.Normal => 0, Rarity.Magic => 2, Rarity.Rare => 4, _ => 0 };
-        if (dto.Affixes.Count > maxAffixes)
-            return (false, $"item {dto.Name}: za dużo affixów ({dto.Affixes.Count}) dla {rarity}");
+        // implicity broni (WeaponDamage/WeaponAttackSpeed) nie liczą się do limitu affixów
+        int rolled = dto.Affixes.Count(a => a.Stat is not ("WeaponDamage" or "WeaponAttackSpeed"));
+        if (rolled > maxAffixes)
+            return (false, $"item {dto.Name}: za dużo affixów ({rolled}) dla {rarity}");
 
         foreach (var a in dto.Affixes)
         {

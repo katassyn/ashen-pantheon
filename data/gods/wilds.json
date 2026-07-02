@@ -1,0 +1,18 @@
+{
+  "id": "wilds",
+  "name": "Dzikie Ostępy",
+  "passive": "+15% szybkości ruchu · oznaczenia trwają dłużej",
+  "moveSpeedMult": 1.15,
+  "damageMult": 1.0,
+  "skillPatches": {
+    "basic": [ { "op": "pierce" }, { "op": "mark_duration", "value": 8 } ],
+    "spread": [ { "op": "extra_proj", "value": 2 } ],
+    "exec": [ { "op": "damage_mult", "value": 1.25 } ],
+    "rain": [ { "op": "aoe_mult", "value": 1.35 }, { "op": "duration_mult", "value": 1.5 } ],
+    "mine": [ { "op": "status", "str": "Poison", "duration": 3, "magnitude": 6 }, { "op": "mark_duration", "value": 8 } ],
+    "hedge": [ { "op": "variant", "str": "hedge_bomb" }, { "op": "shape", "str": "Projectile" }, { "op": "status", "str": "Poison", "duration": 3, "magnitude": 6 }, { "op": "cd_mult", "value": 0 }, { "op": "damage_mult", "value": 2.2 } ],
+    "dash": [ { "op": "variant", "str": "dash_trail" } ],
+    "adrenaline": [ { "op": "duration_mult", "value": 1.5 } ],
+    "hawk": [ { "op": "variant", "str": "hawk_pets" }, { "op": "mark_duration", "value": 8 } ]
+  }
+}

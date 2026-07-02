@@ -22,7 +22,11 @@ public enum AffixStat
     Strength, Dexterity, Intelligence,
     IncreasedAttackDamage,
     FireResist, ColdResist, LightningResist, ChaosResist,
-    LifeRegen, ManaRegen, CritChance, CritMultiplier, AttackSpeed, CastSpeed
+    LifeRegen, ManaRegen, CritChance, CritMultiplier, AttackSpeed, CastSpeed,
+    /// <summary>Implicit broni: średnie obrażenia broni (skalują skille przez WeaponScaling).</summary>
+    WeaponDamage,
+    /// <summary>Implicit broni: bonus szybkości ataku.</summary>
+    WeaponAttackSpeed
 }
 
 public sealed class Affix

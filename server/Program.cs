@@ -14,7 +14,10 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 });
 
 var app = builder.Build();
-var db = new Db(Path.Combine(AppContext.BaseDirectory, "data", "ashen.db"));
+var db = new Db(Path.Combine(AppContext.BaseDirectory, "db", "ashen.db"));
+
+// katalogi buildów (klasy/drzewka) — walidator zapisu zna dozwolone skille i węzły
+GameData.LoadFromDirectory(Path.Combine(AppContext.BaseDirectory, "data"));
 
 long? Auth(HttpRequest req)
 {
