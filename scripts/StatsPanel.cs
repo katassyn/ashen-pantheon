@@ -2,21 +2,28 @@ using Godot;
 using AshenPantheon.Core;
 
 /// <summary>Panel statystyk (C): pełny arkusz + wydawanie punktów atrybutów + respec atrybutów za złoto.</summary>
-public partial class StatsPanel : CanvasLayer
+public partial class StatsPanel : CanvasLayer, IUiPanel
 {
     private Panel _root;
     private Label _text;
     private HBoxContainer _buttons;
     private PlayerController _player;
 
+    public void CloseUi() => _root.Visible = false;
+
     public override void _Ready()
     {
         _root = GetNode<Panel>("%Root");
         _text = GetNode<Label>("%Text");
+        AddToGroup(UiPanels.Group);
+        UiPanels.Solidify(_root);
 
         _buttons = new HBoxContainer();
         _buttons.AddThemeConstantOverride("separation", 8);
-        _buttons.Position = new Vector2(20, 420);
+        // przypięte do dołu panelu (niezależnie od jego wysokości)
+        _buttons.AnchorTop = 1f; _buttons.AnchorBottom = 1f; _buttons.AnchorLeft = 0f; _buttons.AnchorRight = 0f;
+        _buttons.OffsetLeft = 20f; _buttons.OffsetTop = -46f; _buttons.OffsetBottom = -12f;
+        _buttons.GrowVertical = Control.GrowDirection.Begin;
         _root.AddChild(_buttons);
 
         AddAttrButton("+ Siła", () => GameState.Spent.Strength++);
@@ -63,7 +70,12 @@ public partial class StatsPanel : CanvasLayer
     {
         if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.C)
         {
-            _root.Visible = !_root.Visible;
+            if (_root.Visible) { _root.Visible = false; }
+            else
+            {
+                UiPanels.CloseAllExcept(GetTree(), this);
+                _root.Visible = true;
+            }
             GetViewport().SetInputAsHandled();
         }
     }

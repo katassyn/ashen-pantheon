@@ -171,11 +171,13 @@ public static class UiKit
 {
     public static Panel Window(CanvasLayer layer, string title)
     {
+        UiPanels.CloseAllExcept(layer.GetTree(), null); // zamknij panele C/I/K pod spodem
         var root = new Panel
         {
-            AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
-            OffsetLeft = -380, OffsetTop = -260, OffsetRight = 380, OffsetBottom = 260,
+            AnchorLeft = 0.5f, AnchorTop = 0f, AnchorRight = 0.5f, AnchorBottom = 1f,
+            OffsetLeft = -380, OffsetTop = 36, OffsetRight = 380, OffsetBottom = -150,
         };
+        UiPanels.Solidify(root);
         layer.AddChild(root);
         var vb = new VBoxContainer { Name = "VB", AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 16, OffsetTop = 14, OffsetRight = -16, OffsetBottom = -14 };
         vb.AddThemeConstantOverride("separation", 10);

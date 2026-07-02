@@ -134,7 +134,8 @@ public partial class ArenaManager : Node
             var pos = PlayerPos() + new Vector2(Mathf.Cos(ang), Mathf.Sin(ang)) * dist;
             float w = 40f + rng.Next(60), h = 40f + rng.Next(60);
 
-            var body = new StaticBody2D { Position = pos, CollisionLayer = 1, CollisionMask = 0 };
+            // warstwa 4 = teren/przeszkody: blokuje i gracza (maska 4), i wrogów (maska 4)
+            var body = new StaticBody2D { Position = pos, CollisionLayer = 4, CollisionMask = 0 };
             var shape = new CollisionShape2D { Shape = new RectangleShape2D { Size = new Vector2(w, h) } };
             body.AddChild(shape);
             var rect = new ColorRect

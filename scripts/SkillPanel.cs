@@ -3,7 +3,7 @@ using AshenPantheon.Core;
 
 /// <summary>Panel skilli (K): pledge boga, per-skill BAZA/BÓG, drzewka ulepszeń (punkty skilli),
 /// przeciąganie skilla na pasek na dole ekranu (drag&drop), respec drzewek za złoto.</summary>
-public partial class SkillPanel : CanvasLayer
+public partial class SkillPanel : CanvasLayer, IUiPanel
 {
     private Panel _root;
     private VBoxContainer _list;
@@ -11,11 +11,15 @@ public partial class SkillPanel : CanvasLayer
     private HBoxContainer _godRow;
     private PlayerController _player;
 
+    public void CloseUi() => _root.Visible = false;
+
     public override void _Ready()
     {
         _root = GetNode<Panel>("%Root");
         _list = GetNode<VBoxContainer>("%List");
         _header = GetNode<Label>("%Info");
+        AddToGroup(UiPanels.Group);
+        UiPanels.Solidify(_root);
         BuildGodRow();
         _root.Visible = false;
     }
@@ -47,8 +51,13 @@ public partial class SkillPanel : CanvasLayer
     {
         if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.K)
         {
-            _root.Visible = !_root.Visible;
-            if (_root.Visible) Refresh();
+            if (_root.Visible) { _root.Visible = false; }
+            else
+            {
+                UiPanels.CloseAllExcept(GetTree(), this);
+                _root.Visible = true;
+                Refresh();
+            }
             GetViewport().SetInputAsHandled();
         }
     }

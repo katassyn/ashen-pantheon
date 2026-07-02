@@ -9,13 +9,13 @@ script = ExtResource("1_stats")
 [node name="Root" type="Panel" parent="."]
 unique_name_in_owner = true
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.0
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -340.0
-offset_top = -240.0
+offset_top = 36.0
 offset_right = 340.0
-offset_bottom = 240.0
+offset_bottom = -150.0
 
 [node name="Text" type="Label" parent="Root"]
 unique_name_in_owner = true

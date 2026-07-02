@@ -5,7 +5,7 @@ using AshenPantheon.Core;
 
 /// <summary>Panel ekwipunku (I): 11 slotów + plecak-siatka (tetris). Drag&drop item↔slot i w obrębie siatki;
 /// PPM na itemie w siatce = szybkie założenie. Tooltips z affixami.</summary>
-public partial class CharacterPanel : CanvasLayer
+public partial class CharacterPanel : CanvasLayer, IUiPanel
 {
     private static readonly EquipmentSlot[] SlotOrder =
     {
@@ -21,11 +21,15 @@ public partial class CharacterPanel : CanvasLayer
     private Control _gridHost;
     private PlayerController _player;
 
+    public void CloseUi() => _root.Visible = false;
+
     public override void _Ready()
     {
         _root = GetNode<Panel>("%Root");
         _slots = GetNode<VBoxContainer>("%Slots");
         _gridHost = GetNode<Control>("%GridHost");
+        AddToGroup(UiPanels.Group);
+        UiPanels.Solidify(_root);
         _root.Visible = false;
     }
 
@@ -33,8 +37,13 @@ public partial class CharacterPanel : CanvasLayer
     {
         if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.I)
         {
-            _root.Visible = !_root.Visible;
-            if (_root.Visible) Refresh();
+            if (_root.Visible) { _root.Visible = false; }
+            else
+            {
+                UiPanels.CloseAllExcept(GetTree(), this);
+                _root.Visible = true;
+                Refresh();
+            }
             GetViewport().SetInputAsHandled();
         }
     }
