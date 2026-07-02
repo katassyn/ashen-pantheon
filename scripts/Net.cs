@@ -132,15 +132,14 @@ public partial class Net : Node
     {
         e.NetId = _nextEnemyId++;
         EnemiesById[e.NetId] = e;
-        I.Rpc(MethodName.RpcSpawnEnemy, e.NetId, e is Boss, e.GlobalPosition, e.HpMult, e.DmgMult);
+        I.Rpc(MethodName.RpcSpawnEnemy, e.NetId, e.ReplicationId, e.GlobalPosition, e.HpMult, e.DmgMult);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RpcSpawnEnemy(long netId, bool isBoss, Vector2 pos, float hpMult, float dmgMult)
+    private void RpcSpawnEnemy(long netId, string monsterId, Vector2 pos, float hpMult, float dmgMult)
     {
-        GD.Print($"[net] puppet wroga #{netId}{(isBoss ? " (boss)" : "")}");
-        var scene = GD.Load<PackedScene>(isBoss ? "res://scenes/Boss.tscn" : "res://scenes/Enemy.tscn");
-        var e = scene.Instantiate<EnemyBase>();
+        GD.Print($"[net] puppet wroga #{netId} ({monsterId})");
+        var e = Monster.Create(monsterId);
         e.Puppet = true;
         e.NetId = netId;
         e.HpMult = hpMult;
@@ -148,6 +147,22 @@ public partial class Net : Node
         e.Position = pos;
         EnemiesById[netId] = e;
         GetTree().CurrentScene?.AddChild(e);
+    }
+
+    /// <summary>Pocisk wroga: replikowany wszędzie, każda maszyna trafia tylko SWOJEGO gracza.</summary>
+    public static void SpawnEnemyProjectile(Vector2 pos, Vector2 dir, float speed, float damage)
+    {
+        I.Rpc(MethodName.RpcEnemyProjectile, pos, dir, speed, damage);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcEnemyProjectile(Vector2 pos, Vector2 dir, float speed, float damage)
+    {
+        var scene = GetTree().CurrentScene;
+        if (scene == null) return;
+        var proj = new EnemyProjectile { Direction = dir, Speed = speed, Damage = damage };
+        scene.AddChild(proj);
+        proj.GlobalPosition = pos;
     }
 
     public static void SyncEnemy(EnemyBase e)
@@ -318,6 +333,25 @@ public partial class Net : Node
         var dto = System.Text.Json.JsonSerializer.Deserialize<ItemDto>(itemJson);
         if (dto == null || GetTree().CurrentScene == null) return;
         ItemPickup.Spawn(GetTree().CurrentScene, pos, ItemMapper.FromDto(dto));
+    }
+
+    /// <summary>Złoto instancjonowane per-gracz (jak itemy).</summary>
+    public static void GiveGold(int peer, long amount, Vector2 pos)
+    {
+        if (peer == MyId) I.SpawnGoldLocal(amount, pos);
+        else I.RpcId(peer, MethodName.RpcSpawnGold, amount, pos);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcSpawnGold(long amount, Vector2 pos) => SpawnGoldLocal(amount, pos);
+
+    private void SpawnGoldLocal(long amount, Vector2 pos)
+    {
+        var scene = GetTree().CurrentScene;
+        if (scene == null) return;
+        var gold = new GoldPickup { Amount = amount };
+        scene.AddChild(gold);
+        gold.GlobalPosition = pos;
     }
 
     public static void NotifyPlayerDied()

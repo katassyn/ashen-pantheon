@@ -224,22 +224,31 @@ public class VendorTests
 
 public class RunGeneratorTests
 {
+    private static ZoneDefinition TestZone() => new()
+    {
+        Id = "test", Boss = "ashen_warden",
+        Monsters = { new SpawnWeight { Id = "husk", Weight = 3 }, new SpawnWeight { Id = "spitter", Weight = 1 } },
+        RoomsMin = 4, RoomsMax = 5, BaseSpawnCount = 4, SpawnCountPerRoom = 2,
+    };
+
     [Fact]
     public void Generate_EndsWithBossAndScales()
     {
-        var plan = RunGenerator.Generate(11, playerLevel: 5);
+        var plan = RunGenerator.Generate(11, playerLevel: 5, TestZone());
         Assert.True(plan.Count >= 5);
         Assert.True(plan[^1].Boss);
+        Assert.Equal("ashen_warden", plan[^1].BossId);
         Assert.All(plan.SkipLast(1), r => Assert.False(r.Boss));
         Assert.True(plan[^1].HpMult > plan[0].HpMult);
+        Assert.All(plan, r => Assert.All(r.Spawns, id => Assert.Contains(id, new[] { "husk", "spitter" })));
     }
 
     [Fact]
     public void Generate_IsSeedDeterministic()
     {
-        var a = RunGenerator.Generate(99, 1);
-        var b = RunGenerator.Generate(99, 1);
+        var a = RunGenerator.Generate(99, 1, TestZone());
+        var b = RunGenerator.Generate(99, 1, TestZone());
         Assert.Equal(a.Count, b.Count);
-        Assert.Equal(a[0].HuskCount, b[0].HuskCount);
+        Assert.Equal(a[0].Spawns, b[0].Spawns);
     }
 }

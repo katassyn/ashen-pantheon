@@ -1,0 +1,16 @@
+{
+  "id": "spitter",
+  "name": "Spitter",
+  "hp": 40,
+  "speed": 80,
+  "movement": "keep_distance",
+  "preferredRange": 300,
+  "scale": 0.85,
+  "tint": "#8f5fd4",
+  "xp": 16,
+  "lootTable": "common",
+  "attackInterval": 1.7,
+  "abilities": [
+    { "type": "projectile", "damage": 11, "windup": 0.45, "speed": 330 }
+  ]
+}

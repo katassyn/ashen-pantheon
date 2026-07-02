@@ -14,11 +14,16 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
     public float HpMult = 1f;
     public float DmgMult = 1f;
+    public float XpMult = 1f;
     public long XpReward = 12;
-    public float LootChance = 0.45f;
 
     public long NetId;
     public bool Puppet;
+
+    /// <summary>Id do replikacji (klient odtwarza puppet z bestiariusza).</summary>
+    public virtual string ReplicationId => "husk";
+    /// <summary>Tabela lootu (data-driven, patrz data/loot/).</summary>
+    protected virtual string LootTableId => "common";
 
     protected Combatant Combatant;
     protected Sprite2D Sprite;
@@ -38,6 +43,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     protected abstract Color BaseTint { get; }
 
     private static readonly LootGenerator Loot = new();
+    private static readonly System.Random LootRng = new();
 
     public override void _Ready()
     {
@@ -183,10 +189,20 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
         Net.GrantXpAll(XpReward);
 
+        // loot z TABELI (data/loot/*.json), rolowany OSOBNO per gracz (instancjonowany)
         if (DropsLoot)
             foreach (int peer in Net.AllPeers())
-                if (GD.Randf() < LootChance)
-                    Net.GivePickup(peer, Loot.Generate(), GlobalPosition);
+            {
+                var drops = LootTables.Roll(LootTableId, LootRng, Loot);
+                int i = 0;
+                foreach (var drop in drops)
+                {
+                    var pos = GlobalPosition + new Vector2(26f * i, 14f * (i % 2));
+                    i++;
+                    if (drop.Item != null) Net.GivePickup(peer, drop.Item, pos);
+                    else if (drop.Gold > 0) Net.GiveGold(peer, drop.Gold, pos);
+                }
+            }
 
         if (Net.Online) Net.DespawnEnemy(this, died: true);
         PlayDeathAndFree();

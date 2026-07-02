@@ -15,8 +15,7 @@ public partial class ArenaManager : Node
     private float _timer = 1.2f;
     private readonly HashSet<int> _deadPlayers = new();
 
-    private PackedScene _enemyScene;
-    private PackedScene _bossScene;
+    private ZoneDefinition _zone;
     private readonly List<Node> _obstacles = new();
 
     public string TopStatus { get; private set; } = "";
@@ -26,11 +25,11 @@ public partial class ArenaManager : Node
     public override void _Ready()
     {
         AddToGroup("arena");
-        _enemyScene = GD.Load<PackedScene>("res://scenes/Enemy.tscn");
-        _bossScene = GD.Load<PackedScene>("res://scenes/Boss.tscn");
+        DataLoader.LoadAll();
+        _zone = Bestiary.Zone("ashen_wastes");
 
         int seed = Net.RunSeed != 0 ? Net.RunSeed : (int)(GD.Randi() % int.MaxValue);
-        _plan = RunGenerator.Generate(seed, GameState.Progress.Level);
+        _plan = RunGenerator.Generate(seed, GameState.Progress.Level, _zone);
     }
 
     /// <summary>Klient: status od hosta.</summary>
@@ -140,17 +139,17 @@ public partial class ArenaManager : Node
         float coopHp = 1f + 0.6f * (n - 1);
         float coopDmg = 1f + 0.25f * (n - 1);
 
-        for (int i = 0; i < room.HuskCount; i++)
+        foreach (var monsterId in room.Spawns)
         {
-            var e = _enemyScene.Instantiate<Enemy>();
-            ApplyPlan(e, room, coopHp, coopDmg);
-            e.Position = RandomEdgePosition();
-            GetParent().AddChild(e);
+            var m = Monster.Create(monsterId);
+            ApplyPlan(m, room, coopHp, coopDmg);
+            m.Position = RandomEdgePosition();
+            GetParent().AddChild(m);
         }
 
         if (room.Boss)
         {
-            var b = _bossScene.Instantiate<Boss>();
+            var b = Monster.Create(room.BossId);
             ApplyPlan(b, room, coopHp, coopDmg);
             b.Position = AnchorPos() + new Vector2(0f, -360f);
             GetParent().AddChild(b);
@@ -161,7 +160,7 @@ public partial class ArenaManager : Node
     {
         e.HpMult = room.HpMult * coopHp;
         e.DmgMult = room.DmgMult * coopDmg;
-        if (e is Enemy) e.XpReward = room.XpPerHusk;
+        e.XpMult = room.XpMult;
     }
 
     private void SpawnObstacles(RoomPlan room)

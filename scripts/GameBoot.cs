@@ -7,6 +7,8 @@ public partial class GameBoot : Node
 {
     public override void _Ready()
     {
+        DataLoader.LoadAll(); // bestiariusz/strefy/tabele lootu przed czymkolwiek
+
         var args = OS.GetCmdlineUserArgs();
         bool join = args.Contains("--join");
 

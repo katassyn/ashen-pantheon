@@ -1,0 +1,34 @@
+{
+  "id": "ashen_warden",
+  "name": "Ashen Warden",
+  "hp": 450,
+  "speed": 55,
+  "movement": "keep_distance",
+  "preferredRange": 150,
+  "scale": 2.0,
+  "tint": "#b359d9",
+  "xp": 150,
+  "lootTable": "boss",
+  "attackInterval": 2.2,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 2.2,
+      "abilities": [
+        { "type": "tele_circle", "damage": 26, "radius": 85, "windup": 0.9 },
+        { "type": "tele_cone", "damage": 24, "radius": 230, "halfAngleDeg": 34, "windup": 0.9 },
+        { "type": "tele_line", "damage": 28, "length": 340, "halfWidth": 28, "windup": 0.9 }
+      ]
+    },
+    {
+      "hpBelow": 0.5,
+      "attackInterval": 1.5,
+      "abilities": [
+        { "type": "tele_circle", "damage": 30, "radius": 100, "windup": 0.75 },
+        { "type": "tele_line", "damage": 32, "length": 380, "halfWidth": 30, "windup": 0.75 },
+        { "type": "summon", "monsterId": "husk", "count": 2, "cooldown": 9 }
+      ]
+    }
+  ]
+}

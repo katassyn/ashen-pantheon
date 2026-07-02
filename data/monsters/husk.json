@@ -1,0 +1,15 @@
+{
+  "id": "husk",
+  "name": "Husk",
+  "hp": 60,
+  "speed": 95,
+  "movement": "chase",
+  "scale": 1.0,
+  "tint": "#d94d4d",
+  "xp": 14,
+  "lootTable": "common",
+  "attackInterval": 1.1,
+  "abilities": [
+    { "type": "melee", "damage": 12, "windup": 0.35, "reach": 55 }
+  ]
+}

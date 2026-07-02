@@ -1,0 +1,10 @@
+{
+  "id": "boss",
+  "rolls": 3,
+  "entries": [
+    { "type": "gold", "weight": 30, "goldMin": 25, "goldMax": 60 },
+    { "type": "item", "weight": 40 },
+    { "type": "item", "weight": 8, "rarity": "Rare" },
+    { "type": "table", "weight": 22, "table": "common" }
+  ]
+}

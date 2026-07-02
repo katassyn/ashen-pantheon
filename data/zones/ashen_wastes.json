@@ -1,0 +1,13 @@
+{
+  "id": "ashen_wastes",
+  "name": "Popielate Pustkowia",
+  "monsters": [
+    { "id": "husk", "weight": 3 },
+    { "id": "spitter", "weight": 2 }
+  ],
+  "boss": "ashen_warden",
+  "roomsMin": 4,
+  "roomsMax": 5,
+  "baseSpawnCount": 4,
+  "spawnCountPerRoom": 2
+}

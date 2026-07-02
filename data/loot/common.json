@@ -1,0 +1,9 @@
+{
+  "id": "common",
+  "rolls": 1,
+  "entries": [
+    { "type": "nothing", "weight": 45 },
+    { "type": "gold", "weight": 30, "goldMin": 3, "goldMax": 14 },
+    { "type": "item", "weight": 25 }
+  ]
+}
