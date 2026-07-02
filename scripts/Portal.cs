@@ -4,6 +4,8 @@ using Godot;
 public partial class Portal : Area2D
 {
     [Export] public string TargetScene = "res://scenes/Arena.tscn";
+    /// <summary>Id strefy mapy świata (dla WorldZone.tscn).</summary>
+    [Export] public string TargetZone = "";
 
     private bool _used;
 
@@ -24,6 +26,6 @@ public partial class Portal : Area2D
     {
         int seed = (int)(GD.Randi() % int.MaxValue);
         if (seed == 0) seed = 1;
-        Net.TravelAll(TargetScene, seed);
+        Net.TravelAll(TargetScene, seed, TargetZone);
     }
 }

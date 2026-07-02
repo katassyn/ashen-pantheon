@@ -13,6 +13,8 @@ public partial class Net : Node
     public const int MaxClients = 3; // host + 3 = 4 graczy
 
     public static int RunSeed;
+    /// <summary>Id strefy mapy świata dla WorldZone.tscn (ustawiane przy podróży grupowej).</summary>
+    public static string TravelZoneId = "";
     public static string Status { get; private set; } = "offline (solo)";
 
     public static bool Online => I != null && I.Multiplayer.MultiplayerPeer is ENetMultiplayerPeer;
@@ -112,16 +114,17 @@ public partial class Net : Node
 
     // ── podróż grupowa ──
 
-    public static void TravelAll(string scenePath, int seed)
+    public static void TravelAll(string scenePath, int seed, string zoneId = "")
     {
-        I.Rpc(MethodName.RpcTravel, scenePath, seed);
+        I.Rpc(MethodName.RpcTravel, scenePath, seed, zoneId);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RpcTravel(string scenePath, int seed)
+    private void RpcTravel(string scenePath, int seed, string zoneId)
     {
         GameState.Save();
         RunSeed = seed;
+        TravelZoneId = zoneId;
         EnemiesById.Clear();
         GetTree().ChangeSceneToFile(scenePath);
     }

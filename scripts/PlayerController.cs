@@ -91,8 +91,13 @@ public partial class PlayerController : CharacterBody2D
             Health = 0f;
             SetDead(true);
             Net.NotifyPlayerDied();
+            // mapa świata: brak wipe'u — samo-odrodzenie u wejścia strefy po 3 s
+            if (GetTree().GetFirstNodeInGroup("arena") is WorldZoneManager)
+                _worldRespawn = 3f;
         }
     }
+
+    private float _worldRespawn;
 
     /// <summary>Odrodzenie (po oczyszczeniu pokoju przez drużynę).</summary>
     public void Revive(float healthFraction)
@@ -371,7 +376,20 @@ public partial class PlayerController : CharacterBody2D
             Rpc(MethodName.NetState, GlobalPosition, Velocity,
                 MaxHealth > 0f ? Health / MaxHealth : 0f, _dead);
 
-        if (_dead) { Velocity = Vector2.Zero; return; }
+        if (_dead)
+        {
+            Velocity = Vector2.Zero;
+            if (_worldRespawn > 0f)
+            {
+                _worldRespawn -= dt;
+                if (_worldRespawn <= 0f && GetTree().GetFirstNodeInGroup("arena") is WorldZoneManager zone)
+                {
+                    GlobalPosition = zone.SpawnPoint;
+                    Revive(0.5f);
+                }
+            }
+            return;
+        }
 
         foreach (var key in new List<string>(_cd.Keys))
         {

@@ -67,10 +67,11 @@ public partial class Hud : CanvasLayer
 	{
 		_player = PlayerController.Local;
 		_arena ??= GetTree().GetFirstNodeInGroup("arena") as ArenaManager;
+		var worldZone = _arena == null ? GetTree().GetFirstNodeInGroup("arena") as WorldZoneManager : null;
 
 		if (_info != null && _player != null)
 		{
-			string wave = _arena != null ? _arena.TopStatus : "";
+			string wave = _arena?.TopStatus ?? worldZone?.TopStatus ?? "";
 			var p = GameState.Progress;
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =

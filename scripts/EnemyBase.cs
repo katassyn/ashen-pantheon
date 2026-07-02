@@ -20,6 +20,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     public long NetId;
     public bool Puppet;
 
+    /// <summary>Mapy świata: zasięg aggro (arena = praktycznie nieskończony) i punkt domowy packa.</summary>
+    public float AggroRange = 100000f;
+    public Vector2 HomePos;
+
     /// <summary>Id do replikacji (klient odtwarza puppet z bestiariusza).</summary>
     public virtual string ReplicationId => "husk";
     /// <summary>Tabela lootu (data-driven, patrz data/loot/).</summary>
@@ -54,6 +58,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         AddToGroup("hittable");
         AddToGroup("enemies");
         _netPos = GlobalPosition;
+        if (HomePos == Vector2.Zero) HomePos = GlobalPosition;
         UpdateTint();
         QueueRedraw();
 
@@ -118,7 +123,28 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         }
 
         CurrentTarget = NearestPlayer();
-        if (CurrentTarget != null)
+
+        // leash pack: bez gracza w zasięgu aggro → wracaj do domu / stój
+        if (CurrentTarget != null && GlobalPosition.DistanceTo(CurrentTarget.GlobalPosition) > AggroRange)
+            CurrentTarget = null;
+        if (CurrentTarget == null)
+        {
+            Vector2 toHome = HomePos - GlobalPosition;
+            if (toHome.Length() > 30f)
+            {
+                Velocity = toHome.Normalized() * 60f;
+                MoveAndSlide();
+                Animator?.Play("walk");
+            }
+            else
+            {
+                Velocity = Vector2.Zero;
+                Animator?.Play("idle");
+            }
+            if (Net.Online && Engine.GetPhysicsFrames() % 6 == 0) Net.SyncEnemy(this);
+            return;
+        }
+
         {
             Vector2 toPlayer = CurrentTarget.GlobalPosition - GlobalPosition;
             Behavior(dt, toPlayer, toPlayer.Length());

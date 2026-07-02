@@ -27,6 +27,11 @@ script = ExtResource("9_login")
 [node name="Portal" parent="." instance=ExtResource("3_portal")]
 position = Vector2(340, 0)
 
+[node name="WorldPortal" parent="." instance=ExtResource("3_portal")]
+position = Vector2(340, -200)
+TargetScene = "res://scenes/WorldZone.tscn"
+TargetZone = "ashen_outskirts"
+
 [node name="StashMark" type="Sprite2D" parent="."]
 position = Vector2(-320, -170)
 scale = Vector2(0.3, 0.3)
