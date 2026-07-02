@@ -133,6 +133,7 @@ public static class GameData
         foreach (var f in SafeFiles(Path.Combine(dataDir, "classes"))) LoadClass(File.ReadAllText(f));
         foreach (var f in SafeFiles(Path.Combine(dataDir, "gods"))) LoadGod(File.ReadAllText(f));
         foreach (var f in SafeFiles(Path.Combine(dataDir, "trees"))) LoadTrees(File.ReadAllText(f));
+        foreach (var f in SafeFiles(Path.Combine(dataDir, "classtrees"))) ClassTree.Load(File.ReadAllText(f));
     }
 
     private static IEnumerable<string> SafeFiles(string dir) =>

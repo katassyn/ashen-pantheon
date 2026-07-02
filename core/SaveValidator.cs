@@ -23,8 +23,19 @@ public static class SaveValidator
         int spentOnNodes = GameData.Loaded
             ? data.TreeNodes.Sum(kv => kv.Value.Sum(id => GameData.FindNode(kv.Key, id)?.Cost ?? 1))
             : data.TreeNodes.Values.Sum(v => v.Count);
-        if (data.SkillPoints + spentOnNodes > earnedSkill)
+        int spentOnPassives = data.PassiveNodes.Sum(id => ClassTree.Find(data.ClassId, id)?.Cost ?? 1);
+        if (data.SkillPoints + spentOnNodes + spentOnPassives > earnedSkill)
             return (false, "za dużo punktów skilli względem poziomu");
+
+        if (ClassTree.Trees.Count > 0)
+            foreach (var id in data.PassiveNodes)
+            {
+                var node = ClassTree.Find(data.ClassId, id);
+                if (node == null || node.Type != "passive")
+                    return (false, $"nieistniejąca pasywka drzewa klasy: {id}");
+                if (node.RequiredLevel > data.Level)
+                    return (false, $"pasywka {id} wymaga poziomu {node.RequiredLevel}");
+            }
 
         // walidacja względem katalogów danych (serwer/testy ładują data/; brak danych → pomiń te checki)
         if (GameData.Loaded)

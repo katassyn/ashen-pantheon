@@ -92,6 +92,8 @@ public partial class PlayerController : CharacterBody2D
         if (_dead || IsInvulnerable) return;
         float mitigated = _sheet != null ? _sheet.MitigatedDamage(type, amount) : amount;
         _defense.Absorb(mitigated, type); // ES przed HP (chaos przebija ES)
+        if (mitigated > 0.5f)
+            FloatingText.Spawn(GetParent(), GlobalPosition, $"-{mitigated:0}", new Color(1f, 0.35f, 0.3f), 15);
         _animator?.Flash("hit");
         if (Health <= 0f)
         {
@@ -156,7 +158,11 @@ public partial class PlayerController : CharacterBody2D
     /// <summary>Rzut na krytyka + unik MarkOnHit (celność/unik liczy CombatResolver per trafienie).</summary>
     private ResolvedSkill Offense(ResolvedSkill s)
     {
-        if (_sheet != null && GD.Randf() < _sheet.CritChance) s.Damage *= _sheet.CritMultiplier;
+        if (_sheet != null && GD.Randf() < _sheet.CritChance)
+        {
+            s.Damage *= _sheet.CritMultiplier;
+            s.IsCrit = true;
+        }
         if (GameState.HasUniqueEffect(UniqueEffect.MarkOnHit) && !s.AppliesMark)
         {
             s.AppliesMark = true;

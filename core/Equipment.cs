@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AshenPantheon.Core;
 
@@ -68,7 +69,7 @@ public sealed class Equipment
     public IEnumerable<Item> EquippedItems() => _slots.Values;
 
     /// <summary>Buduje arkusz postaci: bazowe atrybuty + affixy ze wszystkich założonych itemów.</summary>
-    public CharacterSheet BuildSheet(Attributes baseAttributes, int level)
+    public CharacterSheet BuildSheet(Attributes baseAttributes, int level, IEnumerable<Affix>? extraAffixes = null)
     {
         var attr = new Attributes
         {
@@ -82,8 +83,11 @@ public sealed class Equipment
         float incAtk = 0, lifeRegen = 0, manaRegen = 0, critC = 0, critM = 0, atkSpd = 0, castSpd = 0;
         float weaponDmg = 0;
 
-        foreach (var item in EquippedItems())
-            foreach (var a in item.Affixes)
+        // gear + dodatkowe źródła (pasywki z drzewa klasy — ten sam pipeline)
+        var allAffixes = EquippedItems().SelectMany(i => i.Affixes);
+        if (extraAffixes != null) allAffixes = allAffixes.Concat(extraAffixes);
+
+        foreach (var a in allAffixes)
                 switch (a.Stat)
                 {
                     case AffixStat.FlatLife: flatLife += a.Value; break;

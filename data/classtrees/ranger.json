@@ -1,0 +1,35 @@
+{
+  "classId": "ranger",
+  "nodes": [
+    { "id": "start", "type": "start", "name": "START" },
+
+    { "id": "s_basic", "type": "skill", "skillId": "basic", "requires": "start" },
+
+    { "id": "p_vit", "type": "passive", "name": "Żywotność", "description": "+20 do maks. życia", "requires": "s_basic", "exclusiveGroup": "t1", "requiredLevel": 2, "passives": [ { "stat": "FlatLife", "value": 20 } ] },
+    { "id": "p_pow", "type": "passive", "name": "Siła ramienia", "description": "+6% obrażeń ataków", "requires": "s_basic", "exclusiveGroup": "t1", "requiredLevel": 2, "passives": [ { "stat": "IncreasedAttackDamage", "value": 0.06 } ] },
+
+    { "id": "s_dash", "type": "skill", "skillId": "dash", "requires": "s_basic" },
+    { "id": "s_spread", "type": "skill", "skillId": "spread", "requires": "s_basic" },
+
+    { "id": "s_exec", "type": "skill", "skillId": "exec", "requires": "s_dash" },
+    { "id": "s_rain", "type": "skill", "skillId": "rain", "requires": "s_spread" },
+
+    { "id": "p_prec", "type": "passive", "name": "Precyzja", "description": "+6% szansy trafienia", "requires": "s_exec", "exclusiveGroup": "t2", "requiredLevel": 5, "passives": [ { "stat": "FlatHitChance", "value": 6 } ] },
+    { "id": "p_swift", "type": "passive", "name": "Zwinne dłonie", "description": "+6% szybkości ataku", "requires": "s_exec", "exclusiveGroup": "t2", "requiredLevel": 5, "passives": [ { "stat": "AttackSpeed", "value": 0.06 } ] },
+
+    { "id": "p_eva", "type": "passive", "name": "Refleks łowcy", "description": "+30 uniku", "requires": "s_rain", "exclusiveGroup": "t3", "requiredLevel": 7, "passives": [ { "stat": "FlatEvasion", "value": 30 } ] },
+    { "id": "p_es", "type": "passive", "name": "Popiołowa osłona", "description": "+15 tarczy energetycznej", "requires": "s_rain", "exclusiveGroup": "t3", "requiredLevel": 7, "passives": [ { "stat": "FlatEnergyShield", "value": 15 } ] },
+
+    { "id": "s_mine", "type": "skill", "skillId": "mine", "requires": "s_exec" },
+    { "id": "s_hedge", "type": "skill", "skillId": "hedge", "requires": "s_rain" },
+
+    { "id": "p_crit", "type": "passive", "name": "Słaby punkt", "description": "+2% szansy na krytyka", "requires": "s_mine", "requiredLevel": 9, "passives": [ { "stat": "CritChance", "value": 0.02 } ] },
+    { "id": "p_regen", "type": "passive", "name": "Dzika krew", "description": "+2 regeneracji życia/s", "requires": "s_hedge", "requiredLevel": 11, "passives": [ { "stat": "LifeRegen", "value": 2 } ] },
+
+    { "id": "s_adr", "type": "skill", "skillId": "adrenaline", "requires": "s_mine" },
+    { "id": "s_hawk", "type": "skill", "skillId": "hawk", "requires": "s_hedge" },
+
+    { "id": "p_wep", "type": "passive", "name": "Mistrzostwo broni", "description": "+4 obrażeń broni", "requires": "s_adr", "requiredLevel": 13, "passives": [ { "stat": "WeaponDamage", "value": 4 } ] },
+    { "id": "p_hunt", "type": "passive", "name": "Instynkt drapieżnika", "description": "+10% mnożnika krytyka", "requires": "s_hawk", "requiredLevel": 15, "passives": [ { "stat": "CritMultiplier", "value": 0.1 } ] }
+  ]
+}

@@ -163,8 +163,18 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         }
 
         // pipeline v2: rzut na trafienie (celność gracza vs unik celu)
+        float before = Combatant.Health;
         bool hit = CombatResolver.ApplyHitRolled(skill, Combatant, GD.Randf());
-        if (!hit) return; // unik — brak obrażeń i lifestealu
+        if (!hit)
+        {
+            FloatingText.Spawn(GetParent(), GlobalPosition, "unik", new Color(0.7f, 0.7f, 0.75f), 12);
+            return; // unik — brak obrażeń i lifestealu
+        }
+
+        float dealt = before - Combatant.Health;
+        if (dealt > 0.5f)
+            FloatingText.Spawn(GetParent(), GlobalPosition, $"{dealt:0}",
+                skill.IsCrit ? new Color(1f, 0.85f, 0.2f) : Colors.White, skill.IsCrit ? 20 : 14);
 
         if (skill.HealOnHit > 0f)
             Net.HealCaster(skill.CasterPeer, skill.HealOnHit);
@@ -179,6 +189,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     {
         _netPos = pos;
         _netMoving = moving;
+        // klient: przybliżone liczby obrażeń z delty HP (dokładne żyją u hosta)
+        float delta = (Combatant.Health / Combatant.MaxHealth - hpFrac) * Combatant.MaxHealth;
+        if (delta > 1f)
+            FloatingText.Spawn(GetParent(), GlobalPosition, $"{delta:0}", Colors.White, 14);
         Combatant.Health = hpFrac * Combatant.MaxHealth;
 
         if (statusMask != Combatant.StatusMask())

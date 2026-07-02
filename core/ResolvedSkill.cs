@@ -54,4 +54,6 @@ public sealed class ResolvedSkill
     public float HitChance { get; set; } = 100f;
     /// <summary>Dps nakładanego DoT-a (z danych, nie z kodu).</summary>
     public float StatusDps { get; set; }
+    /// <summary>Czy ten cast wylosował krytyka (floating numbers na żółto).</summary>
+    public bool IsCrit { get; set; }
 }

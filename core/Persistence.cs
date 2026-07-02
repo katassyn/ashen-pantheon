@@ -24,7 +24,11 @@ public sealed class PlacedItemDto { public ItemDto Item { get; set; } = new(); p
 
 public sealed class SaveData
 {
+    public string Name { get; set; } = "Bezimienny";
+    public string ClassId { get; set; } = "ranger";
     public int Level { get; set; } = 1;
+    /// <summary>Odblokowane pasywne węzły drzewa klasy (track między skillami).</summary>
+    public List<string> PassiveNodes { get; set; } = new();
     public long Xp { get; set; }
     public int AttributePoints { get; set; }
     public int SkillPoints { get; set; }

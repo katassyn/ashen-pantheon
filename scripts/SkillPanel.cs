@@ -12,10 +12,15 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
     private VBoxContainer _skillList;
     private Label _header;
     private SkillGraphCanvas _graph;
+    private ClassTreeCanvas _classCanvas;
+    private Button _backBtn;
     private RichTextLabel _details;
     private string _selectedSkill = "basic";
+    /// <summary>Widok: "class" = główne drzewo klasy (DSO-style), "skill" = mini-drzewko ulepszeń.</summary>
+    private string _mode = "class";
 
     public void CloseUi() => _root.Visible = false;
+    public bool IsOpen => _root != null && _root.Visible;
 
     public override void _Ready()
     {
@@ -60,9 +65,17 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         right.AddThemeConstantOverride("separation", 8);
         hb.AddChild(right);
 
+        _backBtn = new Button { Text = "← wróć do drzewa klasy", Visible = false };
+        _backBtn.Pressed += () => { _mode = "class"; Refresh(); };
+        right.AddChild(_backBtn);
+
         var graphScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var graphHost = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        _classCanvas = new ClassTreeCanvas { Panel = this };
         _graph = new SkillGraphCanvas { Panel = this };
-        graphScroll.AddChild(_graph);
+        graphHost.AddChild(_classCanvas);
+        graphHost.AddChild(_graph);
+        graphScroll.AddChild(graphHost);
         right.AddChild(graphScroll);
 
         _details = new RichTextLabel { BbcodeEnabled = true, FitContent = true, CustomMinimumSize = new Vector2(0, 168), ScrollActive = true };
@@ -127,7 +140,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
                 TooltipText = locked ? $"Odblokowanie na poziomie {spec.RequiredLevel}" : "Kliknij = pokaż drzewko · przeciągnij na pasek",
             };
             var sid = spec.Id;
-            drag.Pressed += () => { _selectedSkill = sid; Refresh(); };
+            drag.Pressed += () => OpenSkillTree(sid);
             if (spec.Id == _selectedSkill) drag.Modulate = new Color(1f, 0.9f, 0.5f);
             row.AddChild(drag);
 
@@ -148,8 +161,62 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
             _skillList.AddChild(row);
         }
 
-        _graph.ShowSkill(_selectedSkill);
-        ShowSkillDetails(_selectedSkill);
+        bool skillMode = _mode == "skill";
+        _backBtn.Visible = skillMode;
+        _graph.Visible = skillMode;
+        _classCanvas.Visible = !skillMode;
+        if (skillMode)
+        {
+            _graph.ShowSkill(_selectedSkill);
+            ShowSkillDetails(_selectedSkill);
+        }
+        else
+        {
+            _classCanvas.Rebuild();
+            _details.Text = "[b]Drzewo klasy[/b] — skille odblokowują się z poziomem; pasywki na trackach kupujesz punktami skilli.\nKliknij SKILL, aby otworzyć jego mini-drzewko ulepszeń.";
+        }
+    }
+
+    /// <summary>Wejście w mini-drzewko ulepszeń skilla (z listy lub z węzła drzewa klasy).</summary>
+    public void OpenSkillTree(string skillId)
+    {
+        _selectedSkill = skillId;
+        _mode = "skill";
+        Refresh();
+    }
+
+    public void TryAllocatePassive(ClassTreeNode node)
+    {
+        var prog = GameState.Progress;
+        string reason = ClassTree.BlockReason(GameState.ClassId, node.Id, prog.Level, prog.SkillPoints, GameState.PassiveNodes);
+        if (GameState.PassiveNodes.Contains(node.Id) || reason != null)
+        {
+            ShowPassiveDetails(node, reason);
+            return;
+        }
+        GameState.PassiveNodes.Add(node.Id);
+        prog.SkillPoints -= node.Cost;
+        GameState.Save();
+        PlayerController.Local?.Refresh();
+        Refresh();
+        ShowPassiveDetails(node, null);
+    }
+
+    public void ShowPassiveDetails(ClassTreeNode node, string reason)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"[b]{node.Name}[/b]  [pasywka · koszt {node.Cost} pkt{(node.RequiredLevel > 0 ? $" · wym. poziom {node.RequiredLevel}" : "")}]");
+        sb.AppendLine(node.Description);
+        if (node.ExclusiveGroup != null)
+        {
+            var siblings = ClassTree.Trees[GameState.ClassId]
+                .Where(n => n.ExclusiveGroup == node.ExclusiveGroup && n.Id != node.Id).Select(n => n.Name);
+            sb.AppendLine($"[color=#d47070]Wyklucza się z: {string.Join(", ", siblings)}[/color]");
+        }
+        sb.AppendLine(GameState.PassiveNodes.Contains(node.Id) ? "[color=#8fd48f]✔ KUPIONA[/color]"
+            : reason != null ? $"[color=#d4a050]🔒 {reason}[/color]"
+            : "[color=#f0e080]Kliknij, aby kupić[/color]");
+        _details.Text = sb.ToString();
     }
 
     // ── szczegóły: LIVE skalowanie z aktualnego builda (broń+bóg+drzewko+arkusz) ──
@@ -327,6 +394,126 @@ public partial class SkillGraphCanvas : Control
                 var b = members[i + 1].Position + new Vector2(NodeW / 2f, 0);
                 DrawDashedLine(a, b, new Color(0.9f, 0.35f, 0.35f, 0.8f), 2f, 6f);
                 DrawString(ThemeDB.FallbackFont, (a + b) / 2f + new Vector2(6, 4), "ALBO",
+                    HorizontalAlignment.Left, -1, 11, new Color(0.9f, 0.45f, 0.45f));
+            }
+        }
+    }
+}
+
+/// <summary>Canvas GŁÓWNEGO drzewa klasy (DSO-style, pionowe): START u góry, skille jako duże węzły,
+/// pasywki-wybory na trackach między nimi. Klik skill = otwiera jego mini-drzewko.</summary>
+public partial class ClassTreeCanvas : Control
+{
+    public SkillPanel Panel;
+
+    private const float RowH = 96f, ColW = 210f, SkillW = 190f, SkillH = 60f, PassW = 170f, PassH = 52f, Pad = 20f;
+    private readonly Dictionary<string, Button> _buttons = new();
+
+    public void Rebuild()
+    {
+        foreach (Node c in GetChildren()) c.QueueFree();
+        _buttons.Clear();
+        if (!ClassTree.Trees.TryGetValue(GameState.ClassId, out var nodes)) { QueueRedraw(); return; }
+
+        int Depth(ClassTreeNode n) => n.Requires == null ? 0
+            : 1 + Depth(nodes.First(x => x.Id == n.Requires));
+
+        var prog = GameState.Progress;
+        var byDepth = nodes.GroupBy(Depth).OrderBy(g => g.Key).ToList();
+        float maxW = 0;
+
+        foreach (var tier in byDepth)
+        {
+            var members = tier.ToList();
+            float totalW = members.Count * ColW;
+            float startX = Pad + Mathf.Max(0, (900f - totalW) / 2f);
+            int col = 0;
+            foreach (var node in members)
+            {
+                bool isSkill = node.Type == "skill";
+                bool isStart = node.Type == "start";
+                var spec = isSkill ? GameState.ClassSpec.Skill(node.SkillId) : null;
+                bool satisfied = ClassTree.NodeSatisfied(GameState.ClassId, node, prog.Level, GameState.PassiveNodes);
+                string reason = node.Type == "passive"
+                    ? ClassTree.BlockReason(GameState.ClassId, node.Id, prog.Level, prog.SkillPoints, GameState.PassiveNodes)
+                    : null;
+
+                var btn = new Button
+                {
+                    Position = new Vector2(startX + col * ColW, Pad + tier.Key * RowH),
+                    Size = isSkill || isStart ? new Vector2(SkillW, SkillH) : new Vector2(PassW, PassH),
+                    ClipText = true,
+                    Text = isStart ? "★ START"
+                        : isSkill ? $"{spec?.Name ?? node.SkillId}\n{(satisfied ? "▶ drzewko ulepszeń" : $"🔒 poziom {spec?.RequiredLevel}")}"
+                        : $"◈ {node.Name}\n[{node.Cost} pkt{(node.RequiredLevel > 0 ? $" · poz.{node.RequiredLevel}" : "")}]",
+                };
+
+                var style = new StyleBoxFlat();
+                style.SetBorderWidthAll(2);
+                style.SetCornerRadiusAll(isSkill || isStart ? 4 : 14);
+                if (isStart) { style.BgColor = new Color(0.25f, 0.2f, 0.35f); style.BorderColor = new Color(0.8f, 0.7f, 1f); }
+                else if (isSkill)
+                {
+                    style.BgColor = satisfied ? new Color(0.13f, 0.2f, 0.3f) : new Color(0.1f, 0.1f, 0.13f);
+                    style.BorderColor = satisfied ? new Color(0.45f, 0.7f, 1f) : new Color(0.35f, 0.33f, 0.45f);
+                }
+                else
+                {
+                    bool bought = GameState.PassiveNodes.Contains(node.Id);
+                    style.BgColor = bought ? new Color(0.12f, 0.3f, 0.14f)
+                        : reason == null ? new Color(0.24f, 0.22f, 0.1f)
+                        : new Color(0.1f, 0.1f, 0.13f);
+                    style.BorderColor = bought ? new Color(0.35f, 0.9f, 0.4f)
+                        : reason == null ? new Color(0.95f, 0.85f, 0.4f)
+                        : new Color(0.35f, 0.33f, 0.45f);
+                }
+                btn.AddThemeStyleboxOverride("normal", style);
+                btn.AddThemeStyleboxOverride("hover", style);
+                btn.AddThemeStyleboxOverride("pressed", style);
+
+                var captured = node;
+                if (isSkill && satisfied)
+                    btn.Pressed += () => Panel.OpenSkillTree(captured.SkillId);
+                else if (node.Type == "passive")
+                {
+                    btn.Pressed += () => Panel.TryAllocatePassive(captured);
+                    btn.MouseEntered += () => Panel.ShowPassiveDetails(captured,
+                        ClassTree.BlockReason(GameState.ClassId, captured.Id, GameState.Progress.Level, GameState.Progress.SkillPoints, GameState.PassiveNodes));
+                }
+
+                AddChild(btn);
+                _buttons[node.Id] = btn;
+                col++;
+                maxW = Mathf.Max(maxW, btn.Position.X + btn.Size.X);
+            }
+        }
+
+        CustomMinimumSize = new Vector2(maxW + Pad, Pad * 2 + byDepth.Count * RowH);
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        if (!ClassTree.Trees.TryGetValue(GameState.ClassId, out var nodes)) return;
+        foreach (var node in nodes)
+        {
+            if (node.Requires == null || !_buttons.TryGetValue(node.Id, out var to) || !_buttons.TryGetValue(node.Requires, out var from))
+                continue;
+            var a = from.Position + new Vector2(from.Size.X / 2f, from.Size.Y);
+            var b = to.Position + new Vector2(to.Size.X / 2f, 0);
+            bool active = ClassTree.NodeSatisfied(GameState.ClassId, node, GameState.Progress.Level, GameState.PassiveNodes);
+            DrawLine(a, b, active ? new Color(0.45f, 0.85f, 0.5f) : new Color(0.45f, 0.42f, 0.6f), 2f);
+        }
+
+        foreach (var group in nodes.Where(n => n.ExclusiveGroup != null).GroupBy(n => n.ExclusiveGroup))
+        {
+            var members = group.Where(n => _buttons.ContainsKey(n.Id)).Select(n => _buttons[n.Id]).OrderBy(b => b.Position.X).ToList();
+            for (int i = 0; i + 1 < members.Count; i++)
+            {
+                var a = members[i].Position + new Vector2(members[i].Size.X, members[i].Size.Y / 2f);
+                var b = members[i + 1].Position + new Vector2(0, members[i + 1].Size.Y / 2f);
+                DrawDashedLine(a, b, new Color(0.9f, 0.35f, 0.35f, 0.8f), 2f, 6f);
+                DrawString(ThemeDB.FallbackFont, (a + b) / 2f + new Vector2(-16, -6), "ALBO",
                     HorizontalAlignment.Left, -1, 11, new Color(0.9f, 0.45f, 0.45f));
             }
         }

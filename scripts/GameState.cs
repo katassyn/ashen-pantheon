@@ -25,6 +25,10 @@ public static class GameState
     public static SkillTreeState Trees = new();
     public static Loadout Loadout = new();
 
+    public static string CharacterName = "Bezimienny";
+    /// <summary>Kupione pasywki z GŁÓWNEGO drzewa klasy (track między skillami).</summary>
+    public static System.Collections.Generic.HashSet<string> PassiveNodes = new();
+
     public static GodId PledgedGod = GodId.None;
     public static HashSet<string> GodSkills = new();
 
@@ -39,10 +43,34 @@ public static class GameState
             Dexterity = ClassBase.Dexterity + Spent.Dexterity,
             Intelligence = ClassBase.Intelligence + Spent.Intelligence,
         };
-        var sheet = Equipment.BuildSheet(total, Progress.Level);
+        // pasywki z drzewa klasy wchodzą tym samym pipeline co affixy gearu
+        var sheet = Equipment.BuildSheet(total, Progress.Level, ClassTree.PassiveAffixes(ClassId, PassiveNodes));
         sheet.BaseLife = 80f;
         sheet.BaseMana = 50f;
         return sheet;
+    }
+
+    /// <summary>Świeża postać (kreator w menu głównym).</summary>
+    public static void NewCharacter(string name, string classId, IGameStateRepository repo)
+    {
+        Repository = repo;
+        _loaded = true;
+        CharacterName = string.IsNullOrWhiteSpace(name) ? "Bezimienny" : name.Trim();
+        ClassId = classId;
+        _classDef = null;
+        Progress = new PlayerProgress();
+        Spent = new Attributes();
+        Wallet = new Wallet();
+        Equipment = new Equipment();
+        Bag = new GridInventory(12, 6);
+        Stash = new GridInventory(12, 8);
+        Trees = new SkillTreeState();
+        PassiveNodes = new();
+        GodSkills = new();
+        PledgedGod = GodId.None;
+        Loadout = new Loadout();
+        EnsureDefaultLoadout();
+        Save();
     }
 
     /// <summary>Efekty mechaniczne uników z założonego gearu.</summary>
@@ -83,6 +111,10 @@ public static class GameState
 
     private static void Apply(SaveData data)
     {
+        CharacterName = data.Name;
+        ClassId = string.IsNullOrEmpty(data.ClassId) ? "ranger" : data.ClassId;
+        _classDef = null;
+        PassiveNodes = new System.Collections.Generic.HashSet<string>(data.PassiveNodes);
         Progress = new PlayerProgress { Level = data.Level, Xp = data.Xp, AttributePoints = data.AttributePoints, SkillPoints = data.SkillPoints };
         Spent = new Attributes { Strength = data.SpentStr, Dexterity = data.SpentDex, Intelligence = data.SpentInt };
         Wallet = new Wallet { Gold = data.Gold };
@@ -128,6 +160,9 @@ public static class GameState
             AttributePoints = Progress.AttributePoints, SkillPoints = Progress.SkillPoints,
             SpentStr = Spent.Strength, SpentDex = Spent.Dexterity, SpentInt = Spent.Intelligence,
             Gold = Wallet.Gold,
+            Name = CharacterName,
+            ClassId = ClassId,
+            PassiveNodes = PassiveNodes.ToList(),
             PledgedGod = PledgedGod.ToString(),
             GodSkills = GodSkills.ToList(),
             Loadout = Loadout.Slots.ToList(),

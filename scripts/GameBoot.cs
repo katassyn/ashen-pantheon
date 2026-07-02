@@ -19,6 +19,7 @@ public partial class GameBoot : Node
         GameState.LoadOrInit();
         GD.Print($"[boot] save: {path}");
 
+        if (args.Contains("--host") || join) CallDeferred(nameof(SkipMenu)); // testy: pomiń menu główne
         if (args.Contains("--host")) CallDeferred(nameof(AutoHost));
         else if (join) CallDeferred(nameof(AutoJoin));
 
@@ -33,6 +34,12 @@ public partial class GameBoot : Node
             };
             AddChild(t);
         }
+    }
+
+    private void SkipMenu()
+    {
+        if (GetTree().CurrentScene?.Name == "MainMenu")
+            GetTree().ChangeSceneToFile("res://scenes/Main.tscn");
     }
 
     private void AutoHost()

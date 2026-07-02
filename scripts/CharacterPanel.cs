@@ -22,6 +22,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
     private PlayerController _player;
 
     public void CloseUi() => _root.Visible = false;
+    public bool IsOpen => _root != null && _root.Visible;
 
     public override void _Ready()
     {

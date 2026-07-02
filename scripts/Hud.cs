@@ -9,6 +9,7 @@ public partial class Hud : CanvasLayer
 	private Label _center;
 
 	private ProgressBar _hpBar, _resBar, _xpBar, _esBar;
+	private Label _hpNum, _resNum, _xpNum, _esNum;
 	private Label _goldLabel;
 	private readonly SkillSlotUi[] _slots = new SkillSlotUi[Loadout.SlotCount];
 
@@ -38,6 +39,9 @@ public partial class Hud : CanvasLayer
 		root.AddChild(_esBar);
 		root.AddChild(_hpBar);
 		root.AddChild(_resBar);
+		_esNum = AddBarNumber(_esBar);
+		_hpNum = AddBarNumber(_hpBar);
+		_resNum = AddBarNumber(_resBar);
 
 		var slotRow = new HBoxContainer();
 		slotRow.AddThemeConstantOverride("separation", 8);
@@ -52,8 +56,11 @@ public partial class Hud : CanvasLayer
 		}
 
 		root.AddChild(_xpBar);
+		_xpNum = AddBarNumber(_xpBar);
 		_goldLabel = new Label { HorizontalAlignment = HorizontalAlignment.Center };
 		root.AddChild(_goldLabel);
+
+		AddChild(new PauseMenu()); // ESC: zamyka panele / otwiera pauzę
 	}
 
 	private static ProgressBar MakeBar(Color color)
@@ -64,6 +71,24 @@ public partial class Hud : CanvasLayer
 		bar.AddThemeStyleboxOverride("fill", fill);
 		bar.AddThemeStyleboxOverride("background", bg);
 		return bar;
+	}
+
+	/// <summary>Liczba na środku paska ("123/456").</summary>
+	private static Label AddBarNumber(ProgressBar bar)
+	{
+		var label = new Label
+		{
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			AnchorRight = 1f, AnchorBottom = 1f,
+			MouseFilter = Control.MouseFilterEnum.Ignore,
+		};
+		label.AddThemeFontSizeOverride("font_size", 11);
+		label.AddThemeColorOverride("font_color", Colors.White);
+		label.AddThemeConstantOverride("outline_size", 3);
+		label.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.9f));
+		bar.AddChild(label);
+		return label;
 	}
 
 	public override void _Process(double delta)
@@ -96,18 +121,22 @@ public partial class Hud : CanvasLayer
 			_hpBar.Value = _player.Health;
 			_resBar.MaxValue = _player.MaxResource;
 			_resBar.Value = _player.Resource;
+			_hpNum.Text = $"{_player.Health:0} / {_player.MaxHealth:0}";
+			_resNum.Text = $"{_player.Resource:0} / {_player.MaxResource:0}";
 			bool hasEs = _player.MaxEnergyShield > 0f;
 			_esBar.Visible = hasEs;
 			if (hasEs)
 			{
 				_esBar.MaxValue = _player.MaxEnergyShield;
 				_esBar.Value = _player.EnergyShield;
+				_esNum.Text = $"{_player.EnergyShield:0} / {_player.MaxEnergyShield:0}";
 			}
 		}
 
 		var prog = GameState.Progress;
 		_xpBar.MaxValue = PlayerProgress.XpToNext(prog.Level);
 		_xpBar.Value = prog.Xp;
+		_xpNum.Text = $"{prog.Xp} / {PlayerProgress.XpToNext(prog.Level)}";
 		_goldLabel.Text = $"Złoto: {GameState.Wallet.Gold}    XP: {prog.Xp}/{PlayerProgress.XpToNext(prog.Level)}    pkt atrybutów: {prog.AttributePoints}   pkt skilli: {prog.SkillPoints}";
 
 		foreach (var slot in _slots) slot.Refresh(_player);
@@ -168,5 +197,84 @@ public partial class SkillSlotUi : PanelContainer
 	{
 		GameState.Loadout.Assign(SlotIndex, data.AsString());
 		GameState.Save();
+	}
+}
+
+/// <summary>ESC: najpierw zamyka otwarte panele, potem otwiera pauzę (Wznów/Opcje/Menu główne/Wyjdź).</summary>
+public partial class PauseMenu : CanvasLayer
+{
+	private Panel _root;
+	private CheckBox _fullscreen;
+
+	public override void _Ready()
+	{
+		Layer = 20;
+		_root = new Panel
+		{
+			AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
+			OffsetLeft = -170, OffsetTop = -160, OffsetRight = 170, OffsetBottom = 160,
+			Visible = false,
+		};
+		UiPanels.Solidify(_root);
+		AddChild(_root);
+
+		var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 20, OffsetTop = 16, OffsetRight = -20, OffsetBottom = -16 };
+		vb.AddThemeConstantOverride("separation", 10);
+		_root.AddChild(vb);
+
+		vb.AddChild(new Label { Text = "PAUZA", HorizontalAlignment = HorizontalAlignment.Center });
+
+		var resume = new Button { Text = "Wznów" };
+		resume.Pressed += () => _root.Visible = false;
+		vb.AddChild(resume);
+
+		_fullscreen = new CheckBox { Text = "Pełny ekran" };
+		_fullscreen.Toggled += on => DisplayServer.WindowSetMode(
+			on ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
+		vb.AddChild(_fullscreen);
+
+		var volRow = new HBoxContainer();
+		volRow.AddChild(new Label { Text = "Głośność" });
+		var vol = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05f, Value = 1, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+		vol.ValueChanged += v => AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb((float)v));
+		volRow.AddChild(vol);
+		vb.AddChild(volRow);
+
+		var toMenu = new Button { Text = "Menu główne" };
+		toMenu.Pressed += () =>
+		{
+			GameState.Save();
+			Net.Leave(goHub: false);
+			GetTree().ChangeSceneToFile("res://scenes/MainMenu.tscn");
+		};
+		vb.AddChild(toMenu);
+
+		var quit = new Button { Text = "Wyjdź z gry" };
+		quit.Pressed += () =>
+		{
+			GameState.Save();
+			if (GameState.Repository is HttpGameStateRepository http) http.FlushBlocking();
+			GetTree().Quit();
+		};
+		vb.AddChild(quit);
+	}
+
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (@event is not InputEventKey k || !k.Pressed || k.Echo || k.PhysicalKeycode != Key.Escape) return;
+
+		if (_root.Visible)
+		{
+			_root.Visible = false;
+		}
+		else if (UiPanels.AnyOpen(GetTree()))
+		{
+			UiPanels.CloseAllExcept(GetTree(), null); // ESC zamyka aktywne okno
+		}
+		else
+		{
+			_root.Visible = true;
+		}
+		GetViewport().SetInputAsHandled();
 	}
 }

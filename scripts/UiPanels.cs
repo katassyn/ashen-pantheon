@@ -4,6 +4,7 @@ using Godot;
 public interface IUiPanel
 {
     void CloseUi();
+    bool IsOpen { get; }
 }
 
 public static class UiPanels
@@ -15,6 +16,13 @@ public static class UiPanels
         foreach (var n in tree.GetNodesInGroup(Group))
             if (n is IUiPanel p && !ReferenceEquals(p, except))
                 p.CloseUi();
+    }
+
+    public static bool AnyOpen(SceneTree tree)
+    {
+        foreach (var n in tree.GetNodesInGroup(Group))
+            if (n is IUiPanel { IsOpen: true }) return true;
+        return false;
     }
 
     /// <summary>Nieprzezroczyste tło panelu (panele nie prześwitują na siebie/grę).</summary>

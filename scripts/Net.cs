@@ -77,14 +77,14 @@ public partial class Net : Node
         return true;
     }
 
-    public static void Leave()
+    public static void Leave(bool goHub = true)
     {
         I.Multiplayer.MultiplayerPeer?.Close();
         I.EnsureOffline();
         EnemiesById.Clear();
         Status = "offline (solo)";
         SessionChanged?.Invoke();
-        if (I.GetTree().CurrentScene?.Name != "Hub")
+        if (goHub && I.GetTree().CurrentScene?.Name != "Hub")
             I.GetTree().ChangeSceneToFile("res://scenes/Main.tscn");
     }
 
