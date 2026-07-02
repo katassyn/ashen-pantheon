@@ -117,18 +117,10 @@ public sealed class LootGenerator
         _ => kind.ToString()
     };
 
-    private float RollValue(AffixStat stat) => stat switch
+    private float RollValue(AffixStat stat)
     {
-        AffixStat.FlatLife => 10 + _rng.Next(30),
-        AffixStat.FlatMana => 8 + _rng.Next(20),
-        AffixStat.FlatArmour => 20 + _rng.Next(80),
-        AffixStat.FlatEvasion => 20 + _rng.Next(80),
-        AffixStat.FlatEnergyShield => 5 + _rng.Next(30),
-        AffixStat.Strength or AffixStat.Dexterity or AffixStat.Intelligence => 3 + _rng.Next(8),
-        AffixStat.FireResist or AffixStat.ColdResist or AffixStat.LightningResist => 5 + _rng.Next(25),
-        AffixStat.ChaosResist => 3 + _rng.Next(15),
-        AffixStat.IncreasedAttackDamage => 0.05f + _rng.Next(20) / 100f,
-        AffixStat.CritChance => 0.01f + _rng.Next(3) / 100f,
-        _ => 5f
-    };
+        // wartości zawsze w AffixRanges — walidator serwera używa tych samych granic
+        if (!AffixRanges.Bounds.TryGetValue(stat, out var b)) return 5f;
+        return b.Min + (float)_rng.NextDouble() * (b.Max - b.Min);
+    }
 }

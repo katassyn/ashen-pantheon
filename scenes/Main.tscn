@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/ArenaGrid.cs" id="2_grid"]
 [ext_resource type="PackedScene" path="res://scenes/Portal.tscn" id="3_portal"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/Hud.tscn" id="6_hud"]
 [ext_resource type="Script" path="res://scripts/NetPlayers.cs" id="7_players"]
 [ext_resource type="Script" path="res://scripts/LobbyPanel.cs" id="8_lobby"]
+[ext_resource type="Script" path="res://scripts/LoginPanel.cs" id="9_login"]
 
 [node name="Hub" type="Node2D"]
 
@@ -19,6 +20,9 @@ CombatEnabled = false
 
 [node name="Lobby" type="CanvasLayer" parent="."]
 script = ExtResource("8_lobby")
+
+[node name="Login" type="CanvasLayer" parent="."]
+script = ExtResource("9_login")
 
 [node name="Portal" parent="." instance=ExtResource("3_portal")]
 position = Vector2(340, 0)

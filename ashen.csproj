@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Remove="core\**\*.cs" />
     <Compile Remove="tests\**\*.cs" />
+    <Compile Remove="server\**\*.cs" />
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>

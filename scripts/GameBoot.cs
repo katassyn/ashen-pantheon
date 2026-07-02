@@ -50,6 +50,8 @@ public partial class GameBoot : Node
         if (what == NotificationWMCloseRequest)
         {
             GameState.Save();
+            if (GameState.Repository is HttpGameStateRepository http)
+                http.FlushBlocking(); // dopchnij ostatni zapis na serwer przed wyjściem
             GetTree().Quit();
         }
     }

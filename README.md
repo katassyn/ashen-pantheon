@@ -10,6 +10,7 @@ Wczesny development — **pełna pętla mechanik + CO-OP do 4 graczy** (fazy 2�
 
 - **Co-op (host-authoritative):** hostuj z miasta / dołącz po IP (panel w hubie). Host = autorytet walki, klienci widzą puppety wrogów; loot **instancjonowany per-gracz**; wspólne XP; grupowa podróż portalem (host prowadzi); trudność skaluje się z liczbą graczy; polegli **wstają po oczyszczeniu pokoju** (50% HP); wipe = przegrana. Solo używa tych samych ścieżek kodu.
 - Testy dwóch instancji lokalnie: druga instancja `Godot...exe --path . -- --join` (osobny zapis `save_guest.json`).
+- **Konta online (meta-serwer, faza 4):** `dotnet run --project server` (ASP.NET + SQLite) → w hubie panel „Konto online": rejestracja/logowanie, postać przenosi się na serwer (lokalna migruje przy pierwszym logowaniu). Serwer **waliduje zapisy** (zakresy affixów, uniki z katalogu, punkty vs poziom) — fundament pod przyszły AH. Bez logowania gra działa w pełni offline.
 
 - **Klasa Ranger** (architektura pod N klas): zasób Koncentracja, mechanika Oznaczenia, **9 skilli**, każdy z **pełnym drzewkiem ulepszeń** (wykluczające się gałęzie, punkty z poziomów)
 - **Loadout**: pasek 5 slotów (LPM/PPM/Q/E/R), skille **przeciągane z panelu na pasek** (drag&drop)

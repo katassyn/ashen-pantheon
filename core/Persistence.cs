@@ -51,9 +51,11 @@ public interface IGameStateRepository
 public sealed class JsonGameStateRepository : IGameStateRepository
 {
     private readonly string _path;
-    private static readonly JsonSerializerOptions Options = new()
+    /// <summary>Wspólne opcje JSON dla zapisu lokalnego, klienta HTTP i serwera (PascalCase, enumy jako stringi).</summary>
+    public static readonly JsonSerializerOptions Options = new()
     {
         WriteIndented = true,
+        PropertyNameCaseInsensitive = true,
         Converters = { new JsonStringEnumConverter() }
     };
 

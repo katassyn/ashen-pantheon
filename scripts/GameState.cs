@@ -65,7 +65,21 @@ public static class GameState
 
         var data = Repository?.Load();
         if (data == null) { EnsureDefaultLoadout(); return; }
+        Apply(data);
+    }
 
+    /// <summary>Przełączenie repozytorium (logowanie/wylogowanie). Jeśli nowe repo jest puste
+    /// (świeże konto) — wypycha OBECNĄ postać (migracja lokalnego zapisu na serwer).</summary>
+    public static void SwitchRepository(IGameStateRepository repo)
+    {
+        Repository = repo;
+        var data = repo.Load();
+        if (data == null) { Save(); return; }
+        Apply(data);
+    }
+
+    private static void Apply(SaveData data)
+    {
         Progress = new PlayerProgress { Level = data.Level, Xp = data.Xp, AttributePoints = data.AttributePoints, SkillPoints = data.SkillPoints };
         Spent = new Attributes { Strength = data.SpentStr, Dexterity = data.SpentDex, Intelligence = data.SpentInt };
         Wallet = new Wallet { Gold = data.Gold };
