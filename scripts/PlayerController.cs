@@ -34,8 +34,12 @@ public partial class PlayerController : CharacterBody2D
     private Vector2 _dashDir;
     public bool IsInvulnerable => _iFrameLeft > 0f;
 
-    // puppet: cel interpolacji pozycji z sieci
+    // puppet: interpolacja/ekstrapolacja stanu z sieci
     private Vector2 _netPos;
+    private Vector2 _netVel;
+    private float _netHpFrac = 1f;
+    // krótka pauza broadcastu po spawnie — peery zmieniają scenę w różnych klatkach (mniej zgubionych pakietów)
+    private float _syncWarmup = 0.5f;
 
     public override void _Ready()
     {
@@ -85,10 +89,28 @@ public partial class PlayerController : CharacterBody2D
         if (Health <= 0f)
         {
             Health = 0f;
-            _dead = true;
-            Velocity = Vector2.Zero;
+            SetDead(true);
             Net.NotifyPlayerDied();
         }
+    }
+
+    /// <summary>Odrodzenie (po oczyszczeniu pokoju przez drużynę).</summary>
+    public void Revive(float healthFraction)
+    {
+        if (!_dead) return;
+        SetDead(false);
+        Health = MaxHealth * healthFraction;
+    }
+
+    private void SetDead(bool dead)
+    {
+        _dead = dead;
+        Velocity = Vector2.Zero;
+        CollisionLayer = dead ? 0u : 1u; // trup nie blokuje wrogów/sojuszników
+        var sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+        if (sprite != null) sprite.Modulate = dead
+            ? new Color(0.4f, 0.4f, 0.4f, 0.6f)
+            : (IsMultiplayerAuthority() ? Colors.White : new Color(0.7f, 0.9f, 1f));
     }
 
     private void PayHealth(float amount) => Health = Mathf.Max(1f, Health - amount);
@@ -306,12 +328,29 @@ public partial class PlayerController : CharacterBody2D
         return v == Vector2.Zero ? Vector2.Zero : v.Normalized();
     }
 
-    // ── sync pozycji ──
+    // ── sync stanu gracza (pozycja + prędkość do ekstrapolacji + HP/śmierć dla pasków sojuszników) ──
 
     [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-    private void NetState(Vector2 pos)
+    private void NetState(Vector2 pos, Vector2 vel, float hpFrac, bool dead)
     {
         _netPos = pos;
+        _netVel = vel;
+        _netHpFrac = hpFrac;
+        if (dead != _dead) SetDead(dead);
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        if (IsMultiplayerAuthority()) return; // własne HP jest w HUD — pasek tylko nad sojusznikami
+        var size = new Vector2(40f, 5f);
+        var pos = new Vector2(-20f, -34f);
+        DrawRect(new Rect2(pos, size), new Color(0f, 0f, 0f, 0.7f));
+        DrawRect(new Rect2(pos, new Vector2(size.X * Mathf.Clamp(_netHpFrac, 0f, 1f), size.Y)),
+            new Color(0.25f, 0.8f, 0.35f));
+        if (_dead)
+            DrawString(ThemeDB.FallbackFont, new Vector2(-28f, -40f), "POKONANY",
+                HorizontalAlignment.Left, -1, 10, new Color(1f, 0.4f, 0.4f));
     }
 
     public override void _PhysicsProcess(double delta)
@@ -320,9 +359,17 @@ public partial class PlayerController : CharacterBody2D
 
         if (!IsMultiplayerAuthority())
         {
-            GlobalPosition = GlobalPosition.Lerp(_netPos, Mathf.Min(1f, 14f * dt));
+            // ekstrapolacja z prędkości + łagodna korekta do ostatniej znanej pozycji
+            GlobalPosition += _netVel * dt;
+            GlobalPosition = GlobalPosition.Lerp(_netPos, Mathf.Min(1f, 8f * dt));
             return;
         }
+
+        // broadcast stanu też po śmierci (sojusznicy widzą zgon i pasek HP)
+        if (_syncWarmup > 0f) _syncWarmup -= dt;
+        else if (Net.Online && Engine.GetPhysicsFrames() % 2 == 0)
+            Rpc(MethodName.NetState, GlobalPosition, Velocity,
+                MaxHealth > 0f ? Health / MaxHealth : 0f, _dead);
 
         if (_dead) { Velocity = Vector2.Zero; return; }
 
@@ -355,7 +402,5 @@ public partial class PlayerController : CharacterBody2D
             MoveAndSlide();
         }
 
-        if (Net.Online && Engine.GetPhysicsFrames() % 3 == 0)
-            Rpc(MethodName.NetState, GlobalPosition);
     }
 }

@@ -102,6 +102,12 @@ public partial class ArenaManager : Node
                     {
                         _state = State.RoomCleared;
                         _timer = 1.6f;
+                        // polegli wstają po oczyszczeniu pokoju (50% HP) — jak w Hero Siege
+                        if (_deadPlayers.Count > 0)
+                        {
+                            _deadPlayers.Clear();
+                            Net.ReviveAll(0.5f);
+                        }
                     }
                 }
                 break;

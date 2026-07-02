@@ -288,6 +288,12 @@ public partial class Net : Node
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void RpcHealLocal(float amount) => PlayerController.Local?.Heal(amount);
 
+    /// <summary>Odrodzenie poległych po oczyszczeniu pokoju (każda maszyna wskrzesza swojego gracza).</summary>
+    public static void ReviveAll(float healthFraction) => I.Rpc(MethodName.RpcRevive, healthFraction);
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcRevive(float healthFraction) => PlayerController.Local?.Revive(healthFraction);
+
     public static void GrantXpAll(long amount) => I.Rpc(MethodName.RpcGrantXp, amount);
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]

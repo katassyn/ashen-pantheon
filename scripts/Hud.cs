@@ -79,7 +79,12 @@ public partial class Hud : CanvasLayer
 		}
 
 		if (_center != null)
-			_center.Text = _arena != null ? _arena.CenterMessage : "";
+		{
+			string center = _arena != null ? _arena.CenterMessage : "";
+			if (string.IsNullOrEmpty(center) && _player is { Dead: true })
+				center = "POKONANY\nwstaniesz, gdy drużyna oczyści pokój";
+			_center.Text = center;
+		}
 
 		if (_player != null)
 		{

@@ -6,7 +6,10 @@ Pixelowy, top-down **loot ARPG** w klimacie dark-fantasy. Kilka klas + panteon b
 
 ## Status
 
-Wczesny development — **pełna pętla mechanik gry działa** (faza 2 ukończona):
+Wczesny development — **pełna pętla mechanik + CO-OP do 4 graczy** (fazy 2–3 ukończone):
+
+- **Co-op (host-authoritative):** hostuj z miasta / dołącz po IP (panel w hubie). Host = autorytet walki, klienci widzą puppety wrogów; loot **instancjonowany per-gracz**; wspólne XP; grupowa podróż portalem (host prowadzi); trudność skaluje się z liczbą graczy; polegli **wstają po oczyszczeniu pokoju** (50% HP); wipe = przegrana. Solo używa tych samych ścieżek kodu.
+- Testy dwóch instancji lokalnie: druga instancja `Godot...exe --path . -- --join` (osobny zapis `save_guest.json`).
 
 - **Klasa Ranger** (architektura pod N klas): zasób Koncentracja, mechanika Oznaczenia, **9 skilli**, każdy z **pełnym drzewkiem ulepszeń** (wykluczające się gałęzie, punkty z poziomów)
 - **Loadout**: pasek 5 slotów (LPM/PPM/Q/E/R), skille **przeciągane z panelu na pasek** (drag&drop)
