@@ -66,6 +66,7 @@ public partial class Hud : CanvasLayer
 		AddChild(new QuestJournal());   // J: dziennik questów
 		AddChild(new BuffBar());        // aktywne buffy gracza
 		AddChild(new ChatBox());        // czat co-op (Enter)
+		AddChild(new TradePanel());     // handel gracz-gracz (T)
 
 		// minimapa: stała rogowa + duża pod TAB (obie centrowane na graczu)
 		var corner = new MinimapView { WorldRadius = 1400f };
@@ -140,7 +141,7 @@ public partial class Hud : CanvasLayer
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
 				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C stats · I inventory · K skills · J journal · M map · TAB big map · E interact" +
+				"C stats · I inv · K skills · J journal · M map · TAB minimap · T trade · Enter chat" +
 				QuestTracker();
 		}
 

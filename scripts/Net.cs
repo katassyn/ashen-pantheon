@@ -129,6 +129,39 @@ public partial class Net : Node
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void RpcChat(long peer, string text) => ChatReceived?.Invoke($"{NameOf(peer)}: {text}");
 
+    /// <summary>Komunikat tylko lokalny (toasty systemowe w logu czatu).</summary>
+    public static void SendChatLocal(string text) => ChatReceived?.Invoke($"» {text}");
+
+    // ── handel gracz-gracz (P2P; escrow lokalny + dwustronny confirm) ──
+    // Uwaga: pełne anti-dupe wymaga meta-serwera; tu lobby prywatne (zaufani gracze).
+
+    public static event System.Action<long> TradeRequested;        // fromPeer
+    public static event System.Action<long> TradeAccepted;         // partner
+    public static event System.Action<long> TradeDeclined;         // partner
+    public static event System.Action<string, long> TradeOffer;    // partner offer: itemsJson, gold
+    public static event System.Action<bool> TradePartnerConfirm;
+    public static event System.Action TradeCancelled;
+
+    public static void TradeRequest(long partner) => I.RpcId(partner, MethodName.RpcTradeReq, MyId);
+    public static void TradeAccept(long partner) => I.RpcId(partner, MethodName.RpcTradeAcc, MyId);
+    public static void TradeDecline(long partner) => I.RpcId(partner, MethodName.RpcTradeDec, MyId);
+    public static void TradeSendOffer(long partner, string itemsJson, long gold) => I.RpcId(partner, MethodName.RpcTradeOffer, itemsJson, gold);
+    public static void TradeSendConfirm(long partner, bool on) => I.RpcId(partner, MethodName.RpcTradeConfirm, on);
+    public static void TradeSendCancel(long partner) => I.RpcId(partner, MethodName.RpcTradeCancel);
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcTradeReq(long from) => TradeRequested?.Invoke(from);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcTradeAcc(long from) => TradeAccepted?.Invoke(from);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcTradeDec(long from) => TradeDeclined?.Invoke(from);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcTradeOffer(string itemsJson, long gold) => TradeOffer?.Invoke(itemsJson, gold);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcTradeConfirm(bool on) => TradePartnerConfirm?.Invoke(on);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcTradeCancel() => TradeCancelled?.Invoke();
+
     private void OnServerDisconnected()
     {
         Status = "host disconnected";
