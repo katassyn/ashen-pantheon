@@ -1,0 +1,15 @@
+{
+  "id": "leechbeast",
+  "name": "Leechbeast",
+  "hp": 90,
+  "speed": 130,
+  "movement": "chase",
+  "scale": 0.85,
+  "tint": "#7a4a6a",
+  "xp": 30,
+  "lootTable": "common",
+  "attackInterval": 0.9,
+  "abilities": [
+    { "type": "melee", "damage": 9, "damageType": "Chaos", "windup": 0.3, "reach": 46 }
+  ]
+}

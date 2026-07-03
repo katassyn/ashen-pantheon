@@ -13,10 +13,16 @@ public static class TestData
         lock (Gate)
         {
             if (_loaded) return;
-            GameData.LoadFromDirectory(FindDataDir());
+            string data = FindDataDir();
+            GameData.LoadFromDirectory(data);
+            foreach (var f in SafeFiles(Path.Combine(data, "world"))) WorldMaps.Load(File.ReadAllText(f));
+            foreach (var f in SafeFiles(Path.Combine(data, "monsters"))) Bestiary.LoadMonster(File.ReadAllText(f));
             _loaded = true;
         }
     }
+
+    private static string[] SafeFiles(string dir) =>
+        Directory.Exists(dir) ? Directory.GetFiles(dir, "*.json") : Array.Empty<string>();
 
     private static string FindDataDir()
     {

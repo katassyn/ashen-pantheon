@@ -1,0 +1,31 @@
+{
+  "id": "silfmoor",
+  "name": "Silfmoor",
+  "levelMin": 11,
+  "levelMax": 15,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -160, "monsters": ["leechbeast", "leechbeast", "shade_crawler"], "respawnSeconds": 26 },
+    { "x": 660, "y": 160, "monsters": ["leechbeast", "leechbeast", "leechbeast", "shade_crawler"], "respawnSeconds": 30 },
+    { "x": 340, "y": 420, "monsters": ["bog_beast", "leechbeast", "leechbeast"], "respawnSeconds": 40 },
+    { "x": 980, "y": -80, "monsters": ["shade_crawler", "shade_crawler", "leechbeast"], "respawnSeconds": 38 },
+    { "x": 1220, "y": 240, "monsters": ["bog_beast", "shade_crawler", "leechbeast"], "respawnSeconds": 46 },
+    { "x": 1480, "y": 20, "monsters": ["bog_beast", "bog_beast", "shade_crawler", "leechbeast"], "respawnSeconds": 60, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "catacombs", "label": "The Catacombs (6-10)" }
+  ],
+  "markers": [
+    {
+      "id": "silfmoor_escort", "type": "escort", "x": 120, "y": -360,
+      "destX": 1300, "destY": -360, "label": "Wounded Scout",
+      "escortHp": 160, "escortSpeed": 66
+    },
+    {
+      "id": "silfmoor_defend", "type": "defend", "x": 700, "y": 620,
+      "label": "Sunken Altar", "waves": 3, "waveInterval": 14,
+      "waveMonsters": ["leechbeast", "leechbeast", "shade_crawler", "bog_beast"]
+    }
+  ]
+}

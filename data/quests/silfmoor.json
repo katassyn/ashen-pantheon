@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "silfmoor_01",
+      "name": "Into the Mire",
+      "description": "The mists of Silfmoor hide old horrors. Thin the swarm.",
+      "requiredLevel": 11,
+      "questGiver": "guildmaster",
+      "turnIn": "guildmaster",
+      "zone": "silfmoor",
+      "prerequisites": ["swerdfield_03"],
+      "objectives": [
+        { "id": "kill_leech", "type": "Kill", "target": "leechbeast", "amount": 12, "description": "Slay 12 Leechbeasts" },
+        { "id": "kill_shade", "type": "Kill", "target": "shade_crawler", "amount": 6, "description": "Slay 6 Shade Crawlers" }
+      ],
+      "dialogueStart": [
+        "Silfmoor swallowed a whole patrol last month.",
+        "Whatever breeds in that bog is spreading. Cut it back before it reaches the road."
+      ],
+      "dialogueCompletion": [
+        "Good. The swarm won't miss them.",
+        "But one of my scouts is still out there — wounded. Bring them home."
+      ],
+      "rewardXp": 420,
+      "rewardGold": 120,
+      "nextQuest": "silfmoor_02"
+    },
+    {
+      "id": "silfmoor_02",
+      "name": "The Wounded Scout",
+      "description": "Escort the wounded scout out of the bog. Keep the beasts off them.",
+      "requiredLevel": 12,
+      "questGiver": "guildmaster",
+      "turnIn": "guildmaster",
+      "zone": "silfmoor",
+      "prerequisites": ["silfmoor_01"],
+      "objectives": [
+        { "id": "escort_scout", "type": "Escort", "target": "silfmoor_escort", "amount": 1, "description": "Escort the Wounded Scout to safety (stay close — enemies nearby wound them)" }
+      ],
+      "dialogueStart": [
+        "The scout can barely walk. Stay near them — if the beasts swarm, they're finished.",
+        "Move them to the ridge on the far side of the marsh."
+      ],
+      "dialogueCompletion": [
+        "You brought them back alive. Not everyone would have.",
+        "The scout babbled about a sunken altar... and something waking beneath it."
+      ],
+      "rewardXp": 520,
+      "rewardGold": 160,
+      "nextQuest": "silfmoor_03"
+    },
+    {
+      "id": "silfmoor_03",
+      "name": "The Sunken Altar",
+      "description": "Hold the sunken altar against the bog's fury while the ritual seals it.",
+      "requiredLevel": 14,
+      "questGiver": "guildmaster",
+      "turnIn": "amuun",
+      "zone": "silfmoor",
+      "prerequisites": ["silfmoor_02"],
+      "objectives": [
+        { "id": "defend_altar", "type": "Defend", "target": "silfmoor_defend", "amount": 3, "description": "Repel 3 waves at the Sunken Altar" }
+      ],
+      "dialogueStart": [
+        "Amuun's seal needs time. The bog will throw everything at you.",
+        "Stand on the altar. Hold it through three assaults — no matter what crawls out."
+      ],
+      "dialogueCompletion": [
+        "The altar holds. The seal is set.",
+        "You've done more than most survive, {player}. Silfmoor is quiet again — for now."
+      ],
+      "rewardXp": 800,
+      "rewardGold": 260,
+      "nextQuest": ""
+    }
+  ]
+}

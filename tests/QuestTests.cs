@@ -59,6 +59,31 @@ public class QuestTests
     }
 
     [Fact]
+    public void SilfmoorChain_LoadsWithEscortAndDefend()
+    {
+        // realne dane kampanii: łańcuch kill -> escort -> defend
+        var escort = Q("silfmoor_02").Objectives.Single();
+        Assert.Equal(ObjectiveType.Escort, escort.Kind);
+        Assert.Equal("silfmoor_escort", escort.Target);
+
+        var defend = Q("silfmoor_03").Objectives.Single();
+        Assert.Equal(ObjectiveType.Defend, defend.Kind);
+        Assert.Equal(3, defend.Amount);
+
+        Assert.Contains("silfmoor_01", Q("silfmoor_02").Prerequisites);
+    }
+
+    [Fact]
+    public void SilfmoorZone_HasEscortAndDefendMarkers()
+    {
+        var zone = WorldMaps.Zone("silfmoor");
+        Assert.Contains(zone.Markers, m => m.Type == "escort" && m.Id == "silfmoor_escort");
+        var defend = zone.Markers.Single(m => m.Type == "defend");
+        Assert.Equal(3, defend.Waves);
+        Assert.NotEmpty(defend.WaveMonsters);
+    }
+
+    [Fact]
     public void Escort_FailureResetsProgress()
     {
         QuestCatalog.Load("""

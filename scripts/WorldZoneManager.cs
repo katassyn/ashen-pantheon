@@ -43,10 +43,24 @@ public partial class WorldZoneManager : Node
             GetParent().CallDeferred(Node.MethodName.AddChild, portal);
         }
 
-        // znaczniki questowe (Reach) — lokalne per gracz
+        // znaczniki: reach/interact = lokalne per gracz; escort/defend = obiekty host-authoritative (na wszystkich)
         foreach (var marker in _zone.Markers)
         {
-            var node = new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label };
+            Node2D node = marker.Type switch
+            {
+                "escort" => new EscortNpc
+                {
+                    MarkerId = marker.Id, LabelText = marker.Label,
+                    DestPos = new Vector2(marker.DestX, marker.DestY),
+                    MaxHp = marker.EscortHp, MoveSpeed = marker.EscortSpeed,
+                },
+                "defend" => new DefendZone
+                {
+                    MarkerId = marker.Id, LabelText = marker.Label,
+                    Waves = marker.Waves, WaveMonsters = marker.WaveMonsters, WaveInterval = marker.WaveInterval,
+                },
+                _ => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = marker.Type == "interact" },
+            };
             node.Position = new Vector2(marker.X, marker.Y);
             GetParent().CallDeferred(Node.MethodName.AddChild, node);
         }
@@ -84,33 +98,55 @@ public partial class WorldZoneManager : Node
         }
     }
 
-    /// <summary>Znacznik questowy: wejście lokalnego gracza zalicza cel Reach.</summary>
+    /// <summary>Znacznik questowy: Reach = wejście zalicza cel; Interact = wejście + E (dźwignia/ołtarz).</summary>
     private partial class QuestMarkerNode : Area2D
     {
         public string MarkerId = "";
         public string LabelText = "";
+        public bool Interact;
+
+        private bool _inside;
+        private Label _label;
 
         public override void _Ready()
         {
             CollisionLayer = 0;
             CollisionMask = 1;
             AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = 60f } });
-            AddChild(new Label
+            _label = new Label
             {
-                Text = $"◈ {LabelText}",
+                Text = LabelHint(),
                 Position = new Vector2(-70, -50),
                 Modulate = new Color(1f, 0.9f, 0.5f),
-            });
+            };
+            AddChild(_label);
             BodyEntered += b =>
             {
                 if (b is not PlayerController p || !p.IsMultiplayerAuthority()) return;
-                if (GameState.Quests.OnReach(MarkerId))
-                {
-                    GameState.Save();
-                    FloatingText.Spawn(GetParent(), GlobalPosition, "objective reached!", new Color(1f, 0.9f, 0.5f), 16);
-                }
+                _inside = true;
+                if (Interact) { _label.Text = $"◈ {LabelText} [E]"; return; }
+                Credit("objective reached!");
             };
+            BodyExited += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) { _inside = false; if (_label != null) _label.Text = LabelHint(); } };
         }
+
+        public override void _UnhandledInput(InputEvent @event)
+        {
+            if (!Interact || !_inside) return;
+            if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.E)
+            {
+                if (GameState.Quests.OnInteract(MarkerId)) { Credit("used!"); }
+                GetViewport().SetInputAsHandled();
+            }
+        }
+
+        private void Credit(string text)
+        {
+            GameState.Save();
+            FloatingText.Spawn(GetParent(), GlobalPosition, text, new Color(1f, 0.9f, 0.5f), 16);
+        }
+
+        private string LabelHint() => Interact ? $"◈ {LabelText} [E]" : $"◈ {LabelText}";
 
         public override void _Draw() =>
             DrawArc(Vector2.Zero, 60f, 0, Mathf.Tau, 40, new Color(1f, 0.9f, 0.5f, 0.5f), 2f);

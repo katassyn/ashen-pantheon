@@ -23,9 +23,22 @@ public sealed class WorldZoneDefinition
 public sealed class MarkerDefinition
 {
     public string Id { get; set; } = "";
+    /// <summary>reach | interact | escort | defend</summary>
+    public string Type { get; set; } = "reach";
     public float X { get; set; }
     public float Y { get; set; }
     public string Label { get; set; } = "";
+
+    // ── escort: NPC idzie z (X,Y) do (DestX,DestY) gdy gracz blisko; śmierć = reset ──
+    public float DestX { get; set; }
+    public float DestY { get; set; }
+    public float EscortHp { get; set; } = 120f;
+    public float EscortSpeed { get; set; } = 70f;
+
+    // ── defend: fale mobów szturmują punkt; przetrwaj/odeprzyj ──
+    public int Waves { get; set; } = 3;
+    public List<string> WaveMonsters { get; set; } = new();
+    public float WaveInterval { get; set; } = 12f;
 }
 
 /// <summary>Pack mobów: pozycja, skład (z bestiariusza), respawn co X s po wybiciu.</summary>

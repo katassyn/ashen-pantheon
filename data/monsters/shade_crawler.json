@@ -1,0 +1,18 @@
+{
+  "id": "shade_crawler",
+  "name": "Shade Crawler",
+  "hp": 120,
+  "evadeChance": 0.15,
+  "speed": 105,
+  "movement": "keep_distance",
+  "preferredRange": 260,
+  "scale": 1.0,
+  "tint": "#4a4a70",
+  "xp": 34,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "projectile", "damage": 14, "damageType": "Cold", "windup": 0.4, "speed": 340 },
+    { "type": "tele_line", "damage": 18, "damageType": "Cold", "length": 300, "halfWidth": 24, "windup": 0.8, "cooldown": 9 }
+  ]
+}

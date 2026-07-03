@@ -371,6 +371,52 @@ public partial class Net : Node
         if (GameState.Quests.OnClear(zoneId)) GameState.Save();
     }
 
+    public static void BroadcastEscortArrived(string markerId)
+    {
+        if (Online) I.Rpc(MethodName.RpcEscortArrived, markerId);
+        else { if (GameState.Quests.OnEscortArrived(markerId)) GameState.Save(); }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcEscortArrived(string markerId)
+    {
+        if (GameState.Quests.OnEscortArrived(markerId)) GameState.Save();
+    }
+
+    public static void BroadcastEscortFailed(string markerId)
+    {
+        if (Online) I.Rpc(MethodName.RpcEscortFailed, markerId);
+        else GameState.Quests.OnEscortFailed(markerId);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcEscortFailed(string markerId) => GameState.Quests.OnEscortFailed(markerId);
+
+    public static void BroadcastDefendWave(string markerId)
+    {
+        if (Online) I.Rpc(MethodName.RpcDefendWave, markerId);
+        else { if (GameState.Quests.OnDefendWave(markerId)) GameState.Save(); }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcDefendWave(string markerId)
+    {
+        if (GameState.Quests.OnDefendWave(markerId)) GameState.Save();
+    }
+
+    /// <summary>Pozycja+HP eskortowanego NPC (host → klienci; best-effort).</summary>
+    public static void SyncEscort(Vector2 pos, float hpFrac, bool moving)
+    {
+        if (Online) I.Rpc(MethodName.RpcEscortState, pos, hpFrac, moving);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+    private void RpcEscortState(Vector2 pos, float hpFrac, bool moving)
+    {
+        foreach (Node n in GetTree().GetNodesInGroup("escort"))
+            if (n is EscortNpc e) e.ApplyNetState(pos, hpFrac, moving);
+    }
+
     public static void GiveGold(int peer, long amount, Vector2 pos)
     {
         if (peer == MyId) I.SpawnGoldLocal(amount, pos);
