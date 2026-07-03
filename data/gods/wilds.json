@@ -1,7 +1,7 @@
 {
   "id": "wilds",
-  "name": "Dzikie Ostępy",
-  "passive": "+15% szybkości ruchu · oznaczenia trwają dłużej",
+  "name": "The Wilds",
+  "passive": "+15% move speed · Marks last longer",
   "moveSpeedMult": 1.15,
   "damageMult": 1.0,
   "skillPatches": {

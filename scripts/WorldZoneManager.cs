@@ -107,7 +107,7 @@ public partial class WorldZoneManager : Node
                 if (GameState.Quests.OnReach(MarkerId))
                 {
                     GameState.Save();
-                    FloatingText.Spawn(GetParent(), GlobalPosition, "cel osiągnięty!", new Color(1f, 0.9f, 0.5f), 16);
+                    FloatingText.Spawn(GetParent(), GlobalPosition, "objective reached!", new Color(1f, 0.9f, 0.5f), 16);
                 }
             };
         }

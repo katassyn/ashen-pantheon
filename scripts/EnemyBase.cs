@@ -167,7 +167,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         bool hit = CombatResolver.ApplyHitRolled(skill, Combatant, GD.Randf());
         if (!hit)
         {
-            FloatingText.Spawn(GetParent(), GlobalPosition, "unik", new Color(0.7f, 0.7f, 0.75f), 12);
+            FloatingText.Spawn(GetParent(), GlobalPosition, "dodge", new Color(0.7f, 0.7f, 0.75f), 12);
             return; // unik — brak obrażeń i lifestealu
         }
 

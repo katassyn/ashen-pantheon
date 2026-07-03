@@ -14,10 +14,10 @@
     { "x": 1340, "y": 20, "monsters": ["undead_knight", "undead_knight", "undead_villager", "undead_villager"], "respawnSeconds": 46, "aggroRange": 380 }
   ],
   "exits": [
-    { "x": -260, "y": 0, "target": "hub", "label": "Powrót do miasta" },
-    { "x": 1600, "y": 0, "target": "catacombs", "label": "Katakumby (6–10)" }
+    { "x": -260, "y": 0, "target": "hub", "label": "Back to town" },
+    { "x": 1600, "y": 0, "target": "catacombs", "label": "The Catacombs (6-10)" }
   ],
   "markers": [
-    { "id": "old_shrine", "x": 1120, "y": -260, "label": "Stara kapliczka" }
+    { "id": "old_shrine", "x": 1120, "y": -260, "label": "Old Shrine" }
   ]
 }

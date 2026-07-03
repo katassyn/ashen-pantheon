@@ -80,7 +80,7 @@ offset_top = -120.0
 offset_right = 220.0
 offset_bottom = -90.0
 horizontal_alignment = 1
-text = "Amuun, Mistyk [E]"
+text = "Amuun the Mystic [E]"
 
 [node name="GuildMark" type="Sprite2D" parent="."]
 position = Vector2(140, -260)
@@ -98,6 +98,6 @@ offset_top = -120.0
 offset_right = 220.0
 offset_bottom = -90.0
 horizontal_alignment = 1
-text = "Mistrz Gildii [E]"
+text = "Guildmaster [E]"
 
 [node name="Hud" parent="." instance=ExtResource("6_hud")]

@@ -1,7 +1,7 @@
 {
   "id": "blood",
-  "name": "Vharos, Bóg Krwi",
-  "passive": "+15% obrażeń · brakującą koncentrację płacisz zdrowiem",
+  "name": "Vharos, the Blood God",
+  "passive": "+15% damage · missing concentration is paid in health",
   "moveSpeedMult": 1.0,
   "damageMult": 1.15,
   "bloodCostHpPerPoint": 0.75,

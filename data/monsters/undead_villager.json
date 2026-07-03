@@ -1,6 +1,6 @@
 {
   "id": "undead_villager",
-  "name": "Nieumarły Wieśniak",
+  "name": "Undead Villager",
   "hp": 45,
   "speed": 80,
   "movement": "chase",

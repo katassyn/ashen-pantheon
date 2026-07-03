@@ -28,17 +28,17 @@ public static class UniqueCatalog
 {
     public static readonly List<Item> Items = new()
     {
-        new Item { UniqueId = "boots_pursuit", Name = "Buty Pościgu", Kind = ItemKind.Boots, Rarity = Rarity.Legendary, Effect = UniqueEffect.SwiftDash,
+        new Item { UniqueId = "boots_pursuit", Name = "Boots of Pursuit", Kind = ItemKind.Boots, Rarity = Rarity.Legendary, Effect = UniqueEffect.SwiftDash,
             Affixes = { new Affix { Stat = AffixStat.FlatEvasion, Value = 60 }, new Affix { Stat = AffixStat.Dexterity, Value = 8 } } },
-        new Item { UniqueId = "belt_colossus", Name = "Pas Kolosa", Kind = ItemKind.Belt, Rarity = Rarity.Legendary,
+        new Item { UniqueId = "belt_colossus", Name = "Colossus Belt", Kind = ItemKind.Belt, Rarity = Rarity.Legendary,
             Affixes = { new Affix { Stat = AffixStat.FlatLife, Value = 45 }, new Affix { Stat = AffixStat.Strength, Value = 10 }, new Affix { Stat = AffixStat.FlatArmour, Value = 40 } } },
-        new Item { UniqueId = "amulet_overcharge", Name = "Amulet Przeciążenia", Kind = ItemKind.Amulet, Rarity = Rarity.Unique, Effect = UniqueEffect.Overcharge,
+        new Item { UniqueId = "amulet_overcharge", Name = "Overcharge Amulet", Kind = ItemKind.Amulet, Rarity = Rarity.Unique, Effect = UniqueEffect.Overcharge,
             Affixes = { new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.30f }, new Affix { Stat = AffixStat.Intelligence, Value = 8 } } },
-        new Item { UniqueId = "ring_hunter", Name = "Sygnet Łowcy", Kind = ItemKind.Ring, Rarity = Rarity.Unique,
+        new Item { UniqueId = "ring_hunter", Name = "Hunter's Signet", Kind = ItemKind.Ring, Rarity = Rarity.Unique,
             Affixes = { new Affix { Stat = AffixStat.FlatHitChance, Value = 10 }, new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.15f }, new Affix { Stat = AffixStat.Dexterity, Value = 6 } } },
-        new Item { UniqueId = "bow_pantheon", Name = "Wola Panteonu", Kind = ItemKind.TwoHandWeapon, Rarity = Rarity.Mythic, Effect = UniqueEffect.MarkOnHit,
+        new Item { UniqueId = "bow_pantheon", Name = "Will of the Pantheon", Kind = ItemKind.TwoHandWeapon, Rarity = Rarity.Mythic, Effect = UniqueEffect.MarkOnHit,
             Affixes = { new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.45f }, new Affix { Stat = AffixStat.Strength, Value = 10 }, new Affix { Stat = AffixStat.Dexterity, Value = 10 } } },
-        new Item { UniqueId = "shroud_ashes", Name = "Całun Popiołów", Kind = ItemKind.BodyArmour, Rarity = Rarity.Mythic,
+        new Item { UniqueId = "shroud_ashes", Name = "Shroud of Ashes", Kind = ItemKind.BodyArmour, Rarity = Rarity.Mythic,
             Affixes = { new Affix { Stat = AffixStat.FlatEnergyShield, Value = 80 }, new Affix { Stat = AffixStat.FlatLife, Value = 30 }, new Affix { Stat = AffixStat.Intelligence, Value = 12 } } },
     };
 
@@ -114,16 +114,16 @@ public sealed class LootGenerator
             affixes.Add(new Affix { Stat = stat, Value = RollValue(stat) });
         }
 
-        string prefix = rarity switch { Rarity.Magic => "Magiczny ", Rarity.Rare => "Rzadki ", _ => "" };
+        string prefix = rarity switch { Rarity.Magic => "Magic ", Rarity.Rare => "Rare ", _ => "" };
         return new Item { Name = prefix + KindName(kind), Kind = kind, Rarity = rarity, Affixes = affixes };
     }
 
     public static string KindName(ItemKind kind) => kind switch
     {
-        ItemKind.Helmet => "Hełm", ItemKind.Shoulders => "Naramienniki", ItemKind.BodyArmour => "Zbroja",
-        ItemKind.Gloves => "Rękawice", ItemKind.Boots => "Buty", ItemKind.Belt => "Pas",
-        ItemKind.Amulet => "Amulet", ItemKind.Ring => "Pierścień",
-        ItemKind.OneHandWeapon => "Broń 1H", ItemKind.TwoHandWeapon => "Broń 2H", ItemKind.OffHand => "Tarcza",
+        ItemKind.Helmet => "Helmet", ItemKind.Shoulders => "Shoulders", ItemKind.BodyArmour => "Body Armour",
+        ItemKind.Gloves => "Gloves", ItemKind.Boots => "Boots", ItemKind.Belt => "Belt",
+        ItemKind.Amulet => "Amulet", ItemKind.Ring => "Ring",
+        ItemKind.OneHandWeapon => "One-Hand Weapon", ItemKind.TwoHandWeapon => "Two-Hand Weapon", ItemKind.OffHand => "Off-Hand",
         _ => kind.ToString()
     };
 

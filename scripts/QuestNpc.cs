@@ -46,15 +46,15 @@ public static class QuestNpc
         }
 
         // 3) cel Talk w aktywnych questach
-        if (log.OnTalk(npcId)) { GameState.Save(); Dialog(tree, NpcName(npcId), "Dobrze, że jesteś. Rób swoje."); return; }
+        if (log.OnTalk(npcId)) { GameState.Save(); Dialog(tree, NpcName(npcId), "Good that you came. Keep at it."); return; }
 
-        Dialog(tree, NpcName(npcId), "Nie mam teraz dla ciebie zadań. Wróć silniejszy.");
+        Dialog(tree, NpcName(npcId), "I have no tasks for you now. Return stronger.");
     }
 
     public static string NpcName(string npcId) => npcId switch
     {
-        "amuun" => "Amuun, Mistyk",
-        "guildmaster" => "Mistrz Gildii",
+        "amuun" => "Amuun the Mystic",
+        "guildmaster" => "Guildmaster",
         _ => npcId,
     };
 
