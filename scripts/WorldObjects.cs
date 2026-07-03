@@ -29,6 +29,7 @@ public partial class EscortNpc : Node2D
     public override void _Ready()
     {
         AddToGroup("escort");
+        AddToGroup("minimap_objective");
         _hp = MaxHp;
         StartPos = GlobalPosition;
         _netPos = GlobalPosition;
@@ -155,6 +156,7 @@ public partial class DefendZone : Node2D
     public override void _Ready()
     {
         AddToGroup("defend");
+        AddToGroup("minimap_objective");
         ZIndex = 4;
     }
 
@@ -254,6 +256,7 @@ public partial class SurviveZone : Node2D
     public override void _Ready()
     {
         AddToGroup("survive");
+        AddToGroup("minimap_objective");
         ZIndex = 4;
     }
 

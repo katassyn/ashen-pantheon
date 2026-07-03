@@ -63,6 +63,19 @@ public partial class Hud : CanvasLayer
 		AddChild(new PauseMenu());      // ESC: zamyka panele / otwiera pauzę
 		AddChild(new WorldMapPanel());  // M: mapa świata / fast-travel
 		AddChild(new PartyFrame());     // co-op: ramki drużyny (lewy górny)
+		AddChild(new QuestJournal());   // J: dziennik questów
+		AddChild(new BuffBar());        // aktywne buffy gracza
+
+		// minimapa: stała rogowa + duża pod TAB (obie centrowane na graczu)
+		var corner = new MinimapView { WorldRadius = 1400f };
+		corner.AnchorLeft = 1f; corner.AnchorRight = 1f;
+		corner.OffsetLeft = -206; corner.OffsetTop = 16; corner.OffsetRight = -16; corner.OffsetBottom = 206;
+		AddChild(corner);
+
+		var tab = new MinimapView { WorldRadius = 2600f, Toggleable = true };
+		tab.AnchorLeft = 0.5f; tab.AnchorRight = 0.5f; tab.AnchorTop = 0.5f; tab.AnchorBottom = 0.5f;
+		tab.OffsetLeft = -320; tab.OffsetTop = -320; tab.OffsetRight = 320; tab.OffsetBottom = 320;
+		AddChild(tab);
 	}
 
 	private static ProgressBar MakeBar(Color color)
@@ -126,7 +139,7 @@ public partial class Hud : CanvasLayer
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
 				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C stats · I inventory · K skills/talents · [E near town markers = interact]" +
+				"C stats · I inventory · K skills · J journal · M map · TAB big map · E interact" +
 				QuestTracker();
 		}
 
@@ -260,6 +273,23 @@ public partial class PauseMenu : CanvasLayer
 			on ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
 		vb.AddChild(_fullscreen);
 
+		// rozdzielczość okna
+		var resRow = new HBoxContainer();
+		resRow.AddChild(new Label { Text = "Resolution" });
+		var res = new OptionButton { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+		var sizes = new[] { new Vector2I(1280, 720), new Vector2I(1600, 900), new Vector2I(1920, 1080), new Vector2I(2560, 1440) };
+		foreach (var s in sizes) res.AddItem($"{s.X} x {s.Y}");
+		res.ItemSelected += i =>
+		{
+			DisplayServer.WindowSetMode(DisplayServer.WindowMode.Windowed);
+			DisplayServer.WindowSetSize(sizes[i]);
+			var screen = DisplayServer.ScreenGetSize();
+			DisplayServer.WindowSetPosition((screen - sizes[i]) / 2);
+			if (_fullscreen != null) _fullscreen.ButtonPressed = false;
+		};
+		resRow.AddChild(res);
+		vb.AddChild(resRow);
+
 		var volRow = new HBoxContainer();
 		volRow.AddChild(new Label { Text = "Volume" });
 		var vol = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05f, Value = 1, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
@@ -370,5 +400,49 @@ public partial class PartyRow : PanelContainer
 		_name.Text = (local ? "* " : "   ") + who + (p.Dead ? "  (down)" : "");
 		_name.Modulate = local ? new Color(0.7f, 0.9f, 1f) : Colors.White;
 		_hp.Value = p.Dead ? 0f : p.HealthFraction;
+	}
+}
+
+/// <summary>Active player buffs (chips above the skill bar): God pledge + Adrenaline w/ countdown.</summary>
+public partial class BuffBar : CanvasLayer
+{
+	private HBoxContainer _row;
+
+	public override void _Ready()
+	{
+		Layer = 3;
+		_row = new HBoxContainer
+		{
+			AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 1f, AnchorBottom = 1f,
+			OffsetLeft = -200, OffsetRight = 200, OffsetTop = -196, OffsetBottom = -168,
+			Alignment = BoxContainer.AlignmentMode.Center,
+		};
+		_row.AddThemeConstantOverride("separation", 6);
+		AddChild(_row);
+	}
+
+	public override void _Process(double delta)
+	{
+		foreach (Node c in _row.GetChildren()) c.QueueFree();
+		var p = PlayerController.Local;
+
+		if (GameState.PledgedGod != GodId.None)
+			AddChip(Gods.Name(GameState.PledgedGod), new Color(0.5f, 0.35f, 0.7f));
+
+		if (p != null && p.AdrenalineActive)
+			AddChip($"Adrenaline {p.AdrenalineTimeLeft:0.0}s", new Color(0.8f, 0.4f, 0.2f));
+	}
+
+	private void AddChip(string text, Color col)
+	{
+		var chip = new PanelContainer();
+		var style = new StyleBoxFlat { BgColor = new Color(col.R, col.G, col.B, 0.85f) };
+		style.SetContentMarginAll(4);
+		style.SetCornerRadiusAll(4);
+		chip.AddThemeStyleboxOverride("panel", style);
+		var lbl = new Label { Text = text };
+		lbl.AddThemeFontSizeOverride("font_size", 12);
+		chip.AddChild(lbl);
+		_row.AddChild(chip);
 	}
 }

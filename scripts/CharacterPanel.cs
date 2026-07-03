@@ -59,6 +59,36 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
         return sb.ToString();
     }
 
+    /// <summary>Opis + porównanie z aktualnie założonym itemem w pasującym slocie (hover w plecaku).</summary>
+    public static string DescribeWithComparison(Item item)
+    {
+        var sb = new StringBuilder(Describe(item));
+        foreach (var slot in SlotsFor(item.Kind))
+        {
+            var equipped = GameState.Equipment.Get(slot);
+            if (equipped == null) continue;
+            sb.AppendLine($"\n— Equipped ({slot}) —");
+            foreach (var a in equipped.Affixes) sb.Append($"  {a.Stat} +{a.Value:0.##}");
+            sb.Append($"\n  value: {Vendor.SellPrice(equipped)} gold");
+        }
+        return sb.ToString();
+    }
+
+    private static System.Collections.Generic.IEnumerable<EquipmentSlot> SlotsFor(ItemKind kind) => kind switch
+    {
+        ItemKind.Helmet => new[] { EquipmentSlot.Helmet },
+        ItemKind.Shoulders => new[] { EquipmentSlot.Shoulders },
+        ItemKind.BodyArmour => new[] { EquipmentSlot.BodyArmour },
+        ItemKind.Gloves => new[] { EquipmentSlot.Gloves },
+        ItemKind.Boots => new[] { EquipmentSlot.Boots },
+        ItemKind.Belt => new[] { EquipmentSlot.Belt },
+        ItemKind.Amulet => new[] { EquipmentSlot.Amulet },
+        ItemKind.Ring => new[] { EquipmentSlot.Ring1, EquipmentSlot.Ring2 },
+        ItemKind.OneHandWeapon or ItemKind.TwoHandWeapon => new[] { EquipmentSlot.Weapon },
+        ItemKind.OffHand => new[] { EquipmentSlot.OffHand },
+        _ => System.Array.Empty<EquipmentSlot>(),
+    };
+
     public void Refresh()
     {
         _player = PlayerController.Local;
@@ -95,7 +125,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
                 Position = new Vector2(placed.X * Cell, placed.Y * Cell),
                 Size = new Vector2(w * Cell - 2, h * Cell - 2),
                 Text = ShortName(placed.Item),
-                TooltipText = Describe(placed.Item) + "\nRMB = equip · drag onto slot/grid",
+                TooltipText = DescribeWithComparison(placed.Item) + "\nRMB = equip · drag onto slot/grid",
                 ClipText = true,
             };
             btn.Modulate = ItemPickup.RarityColor(placed.Item.Rarity);

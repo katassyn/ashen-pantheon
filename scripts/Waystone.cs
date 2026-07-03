@@ -7,6 +7,7 @@ public partial class Waystone : Area2D
 
     public override void _Ready()
     {
+        AddToGroup("minimap_waystone");
         CollisionLayer = 0;
         CollisionMask = 1;
         AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = 70f } });

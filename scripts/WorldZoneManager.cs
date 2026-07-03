@@ -120,6 +120,7 @@ public partial class WorldZoneManager : Node
 
         public override void _Ready()
         {
+            AddToGroup("minimap_objective");
             CollisionLayer = 0;
             CollisionMask = 1;
             AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = 60f } });

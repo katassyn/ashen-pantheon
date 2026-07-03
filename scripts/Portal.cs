@@ -11,6 +11,7 @@ public partial class Portal : Area2D
 
     public override void _Ready()
     {
+        AddToGroup("minimap_portal");
         BodyEntered += OnBodyEntered;
     }
 

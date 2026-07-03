@@ -36,6 +36,7 @@ public partial class PlayerController : CharacterBody2D
     private float _adrenalineTime;
     private float _adrenalineDmgBonus;
     public bool AdrenalineActive => _adrenalineTime > 0f;
+    public float AdrenalineTimeLeft => Mathf.Max(0f, _adrenalineTime);
 
     private float _dashTimeLeft, _iFrameLeft;
     private Vector2 _dashDir;
