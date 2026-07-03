@@ -71,7 +71,9 @@ skill_r={
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
+; Linear = gładkie UI/fonty przy każdym skalowaniu okna (125% DPI itd.).
+; Pixel-art dostanie Nearest per-sprite w ustawieniach importu, gdy wjedzie prawdziwa grafika.
+textures/canvas_textures/default_texture_filter=1
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
 environment/defaults/default_clear_color=Color(0.082, 0.075, 0.11, 1)
