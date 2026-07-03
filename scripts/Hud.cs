@@ -73,6 +73,26 @@ public partial class Hud : CanvasLayer
 		return bar;
 	}
 
+	/// <summary>Tracker aktywnego questa (pierwszy z dziennika) pod górnym infem.</summary>
+	private static string QuestTracker()
+	{
+		foreach (var questId in GameState.Quests.Active.Keys)
+		{
+			var q = QuestCatalog.Find(questId);
+			if (q == null) continue;
+			var lines = new System.Text.StringBuilder($"\n◆ {q.Name}");
+			foreach (var o in q.Objectives)
+			{
+				int cur = GameState.Quests.Progress(q.Id, o.Id);
+				lines.Append($"\n   {(cur >= o.Amount ? "✔" : "•")} {o.Description}  {cur}/{o.Amount}");
+			}
+			if (GameState.Quests.ReadyToTurnIn(q))
+				lines.Append($"\n   → oddaj u: {QuestNpc.NpcName(q.TurnIn)}");
+			return lines.ToString();
+		}
+		return "";
+	}
+
 	/// <summary>Liczba na środku paska ("123/456").</summary>
 	private static Label AddBarNumber(ProgressBar bar)
 	{
@@ -104,7 +124,8 @@ public partial class Hud : CanvasLayer
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
 				$"Lv {p.Level}   Bóg: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C staty · I ekwipunek · K skille/drzewka · [E przy znacznikach w mieście = interakcja]";
+				"C staty · I ekwipunek · K skille/drzewka · [E przy znacznikach w mieście = interakcja]" +
+				QuestTracker();
 		}
 
 		if (_center != null)

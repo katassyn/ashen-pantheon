@@ -31,7 +31,8 @@ public partial class HubZone : Area2D
         if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.E)
         {
             if (Kind == "vendor") VendorPanel.Toggle(GetTree());
-            else StashPanel.Toggle(GetTree());
+            else if (Kind == "stash") StashPanel.Toggle(GetTree());
+            else QuestNpc.Interact(Kind, GetTree()); // Kind = npcId (amuun/guildmaster/...)
             GetViewport().SetInputAsHandled();
         }
     }

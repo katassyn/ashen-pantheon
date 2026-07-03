@@ -219,6 +219,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         RemoveFromGroup("hittable");
 
         Net.GrantXpAll(XpReward);
+        Net.BroadcastQuestKill(ReplicationId); // cele Kill u wszystkich graczy (party-share)
 
         // loot z TABELI (data/loot/*.json), rolowany OSOBNO per gracz (instancjonowany)
         if (DropsLoot)

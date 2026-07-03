@@ -341,6 +341,36 @@ public partial class Net : Node
     }
 
     /// <summary>Złoto instancjonowane per-gracz (jak itemy).</summary>
+    // ── questy: zdarzenia świata liczone u KAŻDEGO gracza (party-share jak w DSO) ──
+
+    public static void BroadcastQuestKill(string monsterId)
+    {
+        if (Online) I.Rpc(MethodName.RpcQuestKill, monsterId);
+        else QuestKillLocal(monsterId);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcQuestKill(string monsterId) => QuestKillLocal(monsterId);
+
+    private static void QuestKillLocal(string monsterId)
+    {
+        if (GameState.Quests.OnKill(monsterId)) GameState.Save();
+    }
+
+    public static void BroadcastQuestClear(string zoneId)
+    {
+        if (Online) I.Rpc(MethodName.RpcQuestClear, zoneId);
+        else QuestClearLocal(zoneId);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcQuestClear(string zoneId) => QuestClearLocal(zoneId);
+
+    private static void QuestClearLocal(string zoneId)
+    {
+        if (GameState.Quests.OnClear(zoneId)) GameState.Save();
+    }
+
     public static void GiveGold(int peer, long amount, Vector2 pos)
     {
         if (peer == MyId) I.SpawnGoldLocal(amount, pos);

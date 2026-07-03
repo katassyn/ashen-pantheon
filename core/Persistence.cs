@@ -29,6 +29,10 @@ public sealed class SaveData
     public int Level { get; set; } = 1;
     /// <summary>Odblokowane pasywne węzły drzewa klasy (track między skillami).</summary>
     public List<string> PassiveNodes { get; set; } = new();
+
+    /// <summary>Questy: aktywne (questId → objectiveId → postęp) + ukończone.</summary>
+    public Dictionary<string, Dictionary<string, int>> QuestActive { get; set; } = new();
+    public List<string> QuestCompleted { get; set; } = new();
     public long Xp { get; set; }
     public int AttributePoints { get; set; }
     public int SkillPoints { get; set; }

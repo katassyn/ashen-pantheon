@@ -64,4 +64,40 @@ offset_bottom = 130.0
 horizontal_alignment = 1
 text = "Sprzedawca [E]"
 
+[node name="AmuunMark" type="Sprite2D" parent="."]
+position = Vector2(0, -260)
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.75, 0.55, 1, 1)
+texture = ExtResource("4_icon")
+
+[node name="AmuunZone" type="Area2D" parent="AmuunMark"]
+script = ExtResource("5_zones")
+Kind = "amuun"
+
+[node name="AmuunLabel" type="Label" parent="AmuunMark"]
+offset_left = -220.0
+offset_top = -120.0
+offset_right = 220.0
+offset_bottom = -90.0
+horizontal_alignment = 1
+text = "Amuun, Mistyk [E]"
+
+[node name="GuildMark" type="Sprite2D" parent="."]
+position = Vector2(140, -260)
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.8, 0.45, 1)
+texture = ExtResource("4_icon")
+
+[node name="GuildZone" type="Area2D" parent="GuildMark"]
+script = ExtResource("5_zones")
+Kind = "guildmaster"
+
+[node name="GuildLabel" type="Label" parent="GuildMark"]
+offset_left = -220.0
+offset_top = -120.0
+offset_right = 220.0
+offset_bottom = -90.0
+horizontal_alignment = 1
+text = "Mistrz Gildii [E]"
+
 [node name="Hud" parent="." instance=ExtResource("6_hud")]

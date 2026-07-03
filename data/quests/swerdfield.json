@@ -1,0 +1,78 @@
+{
+  "quests": [
+    {
+      "id": "swerdfield_01",
+      "name": "Wezwanie Mistyka",
+      "description": "Amuun cię wzywa. Mroczne siły budzą się w krainie.",
+      "requiredLevel": 1,
+      "questGiver": "amuun",
+      "turnIn": "guildmaster",
+      "zone": "ashen_outskirts",
+      "objectives": [
+        { "id": "talk_amuun", "type": "Talk", "target": "amuun", "amount": 1, "description": "Porozmawiaj z Amuunem" },
+        { "id": "kill_villagers", "type": "Kill", "target": "husk", "amount": 10, "description": "Pokonaj 10 Husków" }
+      ],
+      "dialogueStart": [
+        "Ach, to ty... Przepowiednie mówiły o twoim przybyciu.",
+        "Wielka ciemność zagraża krainie. Nieumarli powstają na Obrzeżach.",
+        "Udowodnij swoją wartość. Wybij ich, potem zamelduj się u Mistrza Gildii."
+      ],
+      "dialogueCompletion": [
+        "Więc to Amuun cię przysłał? Nieźle jak na rekruta.",
+        "Nieumarli się organizują. Ich strzelcy muszą paść."
+      ],
+      "rewardXp": 80,
+      "rewardGold": 40,
+      "nextQuest": "swerdfield_02"
+    },
+    {
+      "id": "swerdfield_02",
+      "name": "Upadli Strzelcy",
+      "description": "Rozbij plujące straże i zbierz dowód ich zepsucia.",
+      "requiredLevel": 2,
+      "questGiver": "guildmaster",
+      "turnIn": "guildmaster",
+      "zone": "ashen_outskirts",
+      "prerequisites": ["swerdfield_01"],
+      "objectives": [
+        { "id": "kill_spitters", "type": "Kill", "target": "spitter", "amount": 6, "description": "Pokonaj 6 Spitterów" },
+        { "id": "reach_shrine", "type": "Reach", "target": "old_shrine", "amount": 1, "description": "Dotrzyj do starej kapliczki" }
+      ],
+      "dialogueStart": [
+        "Te pluące bestie ostrzeliwują naszych zwiadowców z daleka.",
+        "Przetrzeb je i sprawdź starą kapliczkę na wschodzie — coś tam się lęgnie."
+      ],
+      "dialogueCompletion": [
+        "Kapliczka skażona... Tak jak się obawiałem.",
+        "To robota Strażnika. Czas się z nim rozprawić."
+      ],
+      "rewardXp": 140,
+      "rewardGold": 60,
+      "nextQuest": "swerdfield_03"
+    },
+    {
+      "id": "swerdfield_03",
+      "name": "Popielny Strażnik",
+      "description": "Wejdź do ruin i pokonaj Ashen Wardena.",
+      "requiredLevel": 3,
+      "questGiver": "guildmaster",
+      "turnIn": "amuun",
+      "zone": "ashen_outskirts",
+      "prerequisites": ["swerdfield_02"],
+      "objectives": [
+        { "id": "clear_ruins", "type": "Clear", "target": "ashen_wastes", "amount": 1, "description": "Ukończ run: Popielate Pustkowia (pokonaj Ashen Wardena)" }
+      ],
+      "dialogueStart": [
+        "Strażnik czeka w ruinach za portalem.",
+        "Zabierz drużynę albo idź sam — ale wróć żywy."
+      ],
+      "dialogueCompletion": [
+        "Strażnik pokonany... ale to dopiero pierwsza pieczęć.",
+        "Ta ciemność ma korzenie głębiej, niż sądziłem. Odpocznij — będziesz potrzebny."
+      ],
+      "rewardXp": 300,
+      "rewardGold": 150,
+      "nextQuest": ""
+    }
+  ]
+}

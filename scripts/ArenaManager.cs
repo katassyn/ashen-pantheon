@@ -95,6 +95,7 @@ public partial class ArenaManager : Node
                     {
                         _state = State.Won;
                         SetStatus("", "RUN UKOŃCZONY!\n[R u hosta] powrót do miasta");
+                        Net.BroadcastQuestClear(_zone.Id); // cel questowy Clear u wszystkich graczy
                         GameState.Save();
                     }
                     else
