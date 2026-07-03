@@ -55,12 +55,40 @@ public partial class VendorPanel : CanvasLayer
     public override void _Ready()
     {
         _root = UiKit.Window(this, "VENDOR — click = sell    [E/Esc] close");
+        var vb = _root.GetNode<VBoxContainer>("VB");
         _gold = new Label();
-        _root.GetNode<VBoxContainer>("VB").AddChild(_gold);
+        vb.AddChild(_gold);
+
+        var bulk = new HBoxContainer();
+        bulk.AddThemeConstantOverride("separation", 8);
+        var sellJunk = new Button { Text = "Sell all Normal + Magic" };
+        sellJunk.Pressed += () => SellWhere(i => i.Rarity <= Rarity.Magic);
+        var sellRare = new Button { Text = "Sell all up to Rare" };
+        sellRare.Pressed += () => SellWhere(i => i.Rarity <= Rarity.Rare);
+        bulk.AddChild(sellJunk);
+        bulk.AddChild(sellRare);
+        vb.AddChild(bulk);
+
         var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
-        _root.GetNode<VBoxContainer>("VB").AddChild(scroll);
+        vb.AddChild(scroll);
         _list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_list);
+        Refresh();
+    }
+
+    private void SellWhere(System.Func<Item, bool> match)
+    {
+        var toSell = new System.Collections.Generic.List<Item>();
+        foreach (var placed in GameState.Bag.Placed)
+            if (match(placed.Item)) toSell.Add(placed.Item);
+
+        long earned = 0;
+        foreach (var item in toSell)
+        {
+            earned += Vendor.SellPrice(item);
+            GameState.Bag.Remove(item);
+        }
+        if (earned > 0) { GameState.Wallet.Gold += earned; GameState.Save(); }
         Refresh();
     }
 

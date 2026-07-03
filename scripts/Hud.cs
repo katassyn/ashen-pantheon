@@ -65,6 +65,7 @@ public partial class Hud : CanvasLayer
 		AddChild(new PartyFrame());     // co-op: ramki drużyny (lewy górny)
 		AddChild(new QuestJournal());   // J: dziennik questów
 		AddChild(new BuffBar());        // aktywne buffy gracza
+		AddChild(new ChatBox());        // czat co-op (Enter)
 
 		// minimapa: stała rogowa + duża pod TAB (obie centrowane na graczu)
 		var corner = new MinimapView { WorldRadius = 1400f };
@@ -396,7 +397,7 @@ public partial class PartyRow : PanelContainer
 	public void Update(PlayerController p)
 	{
 		bool local = p.IsMultiplayerAuthority();
-		string who = local ? GameState.CharacterName : $"Ally #{p.GetMultiplayerAuthority()}";
+		string who = local ? GameState.CharacterName : Net.NameOf(p.GetMultiplayerAuthority());
 		_name.Text = (local ? "* " : "   ") + who + (p.Dead ? "  (down)" : "");
 		_name.Modulate = local ? new Color(0.7f, 0.9f, 1f) : Colors.White;
 		_hp.Value = p.Dead ? 0f : p.HealthFraction;

@@ -71,6 +71,7 @@ public partial class PlayerController : CharacterBody2D
         RecomputeSheet();
         _defense.ResetFull(_sheet);
         Resource = MaxResource;
+        Net.AnnounceName(); // social: rejestr nicków
     }
 
     public override void _ExitTree()

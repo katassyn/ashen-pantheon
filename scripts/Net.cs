@@ -91,10 +91,43 @@ public partial class Net : Node
     private void OnPeerConnected(long peer)
     {
         GD.Print($"[net] peer connected: {peer} (ja: {MyId})");
+        AnnounceName(); // nowy peer (i my) poznajemy nawzajem nicki
         // dołączanie tylko gdy host stoi w mieście — w trakcie runu odsyłamy
         if (Multiplayer.IsServer() && GetTree().CurrentScene?.Name != "Hub")
             RpcId(peer, MethodName.RpcKick, "Host is mid-run — try again in a moment.");
     }
+
+    // ── nicki graczy (social: party frame, czat, handel) ──
+
+    public static readonly Dictionary<long, string> PlayerNames = new();
+
+    public static string NameOf(long peer) =>
+        PlayerNames.TryGetValue(peer, out var n) ? n : $"Player #{peer}";
+
+    public static void AnnounceName()
+    {
+        PlayerNames[MyId] = GameState.CharacterName;
+        if (Online) I.Rpc(MethodName.RpcAnnounceName, MyId, GameState.CharacterName);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcAnnounceName(long peer, string name) => PlayerNames[peer] = name;
+
+    // ── czat co-op ──
+
+    public static event System.Action<string> ChatReceived;
+
+    public static void SendChat(string text)
+    {
+        text = text.Trim();
+        if (text.Length == 0) return;
+        if (text.Length > 200) text = text[..200];
+        if (Online) I.Rpc(MethodName.RpcChat, MyId, text);
+        else ChatReceived?.Invoke($"{GameState.CharacterName}: {text}");
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcChat(long peer, string text) => ChatReceived?.Invoke($"{NameOf(peer)}: {text}");
 
     private void OnServerDisconnected()
     {
