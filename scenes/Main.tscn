@@ -26,7 +26,7 @@ position = Vector2(340, 0)
 [node name="WorldPortal" parent="." instance=ExtResource("3_portal")]
 position = Vector2(340, -200)
 TargetScene = "res://scenes/WorldZone.tscn"
-TargetZone = "ashen_outskirts"
+TargetZone = "swerdfield"
 
 [node name="StashMark" type="Sprite2D" parent="."]
 position = Vector2(-320, -170)

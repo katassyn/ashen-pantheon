@@ -1,0 +1,19 @@
+{
+  "id": "catacombs",
+  "name": "Katakumby",
+  "levelMin": 6,
+  "levelMax": 10,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -160, "monsters": ["arisen_warrior", "arisen_warrior", "arisen_archer"], "respawnSeconds": 28 },
+    { "x": 640, "y": 160, "monsters": ["arisen_warrior", "arisen_archer", "arisen_archer"], "respawnSeconds": 32 },
+    { "x": 360, "y": 420, "monsters": ["arisen_warrior", "arisen_warrior", "arisen_warrior", "arisen_archer"], "respawnSeconds": 36 },
+    { "x": 900, "y": -60, "monsters": ["nefertari_priest", "arisen_warrior", "arisen_warrior"], "respawnSeconds": 42 },
+    { "x": 1140, "y": 260, "monsters": ["nefertari_priest", "arisen_archer", "arisen_archer"], "respawnSeconds": 44 },
+    { "x": 1400, "y": 40, "monsters": ["nefertari_snooper", "nefertari_priest", "arisen_warrior"], "respawnSeconds": 55, "aggroRange": 400 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "swerdfield", "label": "Swerdfield (1–5)" }
+  ]
+}

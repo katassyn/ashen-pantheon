@@ -27,7 +27,7 @@ public partial class WorldZoneManager : Node
         AddToGroup("arena"); // Hud czyta TopStatus z tej grupy
         DataLoader.LoadAll();
 
-        string zoneId = string.IsNullOrEmpty(Net.TravelZoneId) ? "ashen_outskirts" : Net.TravelZoneId;
+        string zoneId = string.IsNullOrEmpty(Net.TravelZoneId) ? "swerdfield" : Net.TravelZoneId;
         _zone = WorldMaps.Zone(zoneId);
         TopStatus = $"{_zone.Name}  (poziomy {_zone.LevelMin}–{_zone.LevelMax})";
 
@@ -41,6 +41,14 @@ public partial class WorldZoneManager : Node
             var label = portal.GetNodeOrNull<Label>("Label");
             if (label != null) label.Text = string.IsNullOrEmpty(exit.Label) ? exit.Target : exit.Label;
             GetParent().CallDeferred(Node.MethodName.AddChild, portal);
+        }
+
+        // znaczniki questowe (Reach) — lokalne per gracz
+        foreach (var marker in _zone.Markers)
+        {
+            var node = new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label };
+            node.Position = new Vector2(marker.X, marker.Y);
+            GetParent().CallDeferred(Node.MethodName.AddChild, node);
         }
 
         if (!Net.IsServer) return;
@@ -74,6 +82,38 @@ public partial class WorldZoneManager : Node
                 if (pack.RespawnTimer <= 0f) SpawnPack(pack);
             }
         }
+    }
+
+    /// <summary>Znacznik questowy: wejście lokalnego gracza zalicza cel Reach.</summary>
+    private partial class QuestMarkerNode : Area2D
+    {
+        public string MarkerId = "";
+        public string LabelText = "";
+
+        public override void _Ready()
+        {
+            CollisionLayer = 0;
+            CollisionMask = 1;
+            AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = 60f } });
+            AddChild(new Label
+            {
+                Text = $"◈ {LabelText}",
+                Position = new Vector2(-70, -50),
+                Modulate = new Color(1f, 0.9f, 0.5f),
+            });
+            BodyEntered += b =>
+            {
+                if (b is not PlayerController p || !p.IsMultiplayerAuthority()) return;
+                if (GameState.Quests.OnReach(MarkerId))
+                {
+                    GameState.Save();
+                    FloatingText.Spawn(GetParent(), GlobalPosition, "cel osiągnięty!", new Color(1f, 0.9f, 0.5f), 16);
+                }
+            };
+        }
+
+        public override void _Draw() =>
+            DrawArc(Vector2.Zero, 60f, 0, Mathf.Tau, 40, new Color(1f, 0.9f, 0.5f, 0.5f), 2f);
     }
 
     private void SpawnPack(PackState pack)

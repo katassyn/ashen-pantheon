@@ -1,0 +1,23 @@
+{
+  "id": "swerdfield",
+  "name": "Swerdfield",
+  "levelMin": 1,
+  "levelMax": 5,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["undead_villager", "undead_villager", "undead_villager"], "respawnSeconds": 22 },
+    { "x": 600, "y": 140, "monsters": ["undead_villager", "undead_villager", "undead_villager", "undead_villager"], "respawnSeconds": 26 },
+    { "x": 320, "y": 400, "monsters": ["undead_villager", "undead_villager", "undead_knight"], "respawnSeconds": 30 },
+    { "x": 860, "y": -80, "monsters": ["undead_knight", "undead_villager", "undead_villager"], "respawnSeconds": 34 },
+    { "x": 1080, "y": 220, "monsters": ["undead_knight", "undead_knight"], "respawnSeconds": 40 },
+    { "x": 1340, "y": 20, "monsters": ["undead_knight", "undead_knight", "undead_villager", "undead_villager"], "respawnSeconds": 46, "aggroRange": 380 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Powrót do miasta" },
+    { "x": 1600, "y": 0, "target": "catacombs", "label": "Katakumby (6–10)" }
+  ],
+  "markers": [
+    { "id": "old_shrine", "x": 1120, "y": -260, "label": "Stara kapliczka" }
+  ]
+}

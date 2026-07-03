@@ -1,0 +1,16 @@
+{
+  "id": "arisen_warrior",
+  "name": "Powstały Wojownik",
+  "hp": 95,
+  "armour": 15,
+  "speed": 95,
+  "movement": "chase",
+  "scale": 1.0,
+  "tint": "#7a8fa3",
+  "xp": 26,
+  "lootTable": "common",
+  "attackInterval": 1.1,
+  "abilities": [
+    { "type": "melee", "damage": 11, "windup": 0.45, "reach": 52 }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "undead_villager",
+  "name": "Nieumarły Wieśniak",
+  "hp": 45,
+  "speed": 80,
+  "movement": "chase",
+  "scale": 0.95,
+  "tint": "#9a7b5a",
+  "xp": 10,
+  "lootTable": "common",
+  "attackInterval": 1.2,
+  "abilities": [
+    { "type": "melee", "damage": 7, "windup": 0.5, "reach": 52 }
+  ]
+}

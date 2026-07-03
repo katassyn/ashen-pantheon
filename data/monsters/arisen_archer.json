@@ -1,0 +1,17 @@
+{
+  "id": "arisen_archer",
+  "name": "Powstały Łucznik",
+  "hp": 60,
+  "evadeChance": 0.1,
+  "speed": 100,
+  "movement": "keep_distance",
+  "preferredRange": 320,
+  "scale": 0.9,
+  "tint": "#5a9a6e",
+  "xp": 24,
+  "lootTable": "common",
+  "attackInterval": 1.8,
+  "abilities": [
+    { "type": "projectile", "damage": 13, "windup": 0.4, "speed": 380 }
+  ]
+}

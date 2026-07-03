@@ -1,0 +1,18 @@
+{
+  "id": "nefertari_priest",
+  "name": "Kapłan Nefertari",
+  "hp": 105,
+  "resChaos": 40,
+  "speed": 75,
+  "movement": "keep_distance",
+  "preferredRange": 280,
+  "scale": 1.0,
+  "tint": "#a05ad4",
+  "xp": 34,
+  "lootTable": "common",
+  "attackInterval": 2.0,
+  "abilities": [
+    { "type": "projectile", "damage": 12, "damageType": "Chaos", "windup": 0.5, "speed": 300 },
+    { "type": "summon", "monsterId": "arisen_warrior", "count": 1, "cooldown": 14 }
+  ]
+}

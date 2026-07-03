@@ -15,9 +15,9 @@ public class QuestTests
         Assert.False(log.CanAccept(Q("swerdfield_02"), 99)); // wymaga 01
         Assert.True(log.Accept(Q("swerdfield_01"), 1));
         log.OnTalk("amuun");
-        log.OnKill("husk"); // za mało — cel 10
+        log.OnKill("undead_villager"); // za mało — cel 10
         Assert.False(log.ReadyToTurnIn(Q("swerdfield_01")));
-        for (int i = 0; i < 9; i++) log.OnKill("husk");
+        for (int i = 0; i < 9; i++) log.OnKill("undead_villager");
         Assert.True(log.ReadyToTurnIn(Q("swerdfield_01")));
 
         var next = log.TurnIn(Q("swerdfield_01"));
@@ -33,7 +33,7 @@ public class QuestTests
         log.Accept(Q("swerdfield_01"), 1);
         log.OnKill("spitter"); // nie ten cel
         Assert.Equal(0, log.Progress("swerdfield_01", "kill_villagers"));
-        for (int i = 0; i < 15; i++) log.OnKill("husk");
+        for (int i = 0; i < 15; i++) log.OnKill("undead_villager");
         Assert.Equal(10, log.Progress("swerdfield_01", "kill_villagers")); // cap na amount
     }
 

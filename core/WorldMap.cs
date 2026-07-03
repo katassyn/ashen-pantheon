@@ -16,6 +16,16 @@ public sealed class WorldZoneDefinition
     public float SpawnY { get; set; }
     public List<MobPackDefinition> Packs { get; set; } = new();
     public List<ZoneExitDefinition> Exits { get; set; } = new();
+    /// <summary>Znaczniki questowe (cele Reach/Interact/Defend).</summary>
+    public List<MarkerDefinition> Markers { get; set; } = new();
+}
+
+public sealed class MarkerDefinition
+{
+    public string Id { get; set; } = "";
+    public float X { get; set; }
+    public float Y { get; set; }
+    public string Label { get; set; } = "";
 }
 
 /// <summary>Pack mobów: pozycja, skład (z bestiariusza), respawn co X s po wybiciu.</summary>

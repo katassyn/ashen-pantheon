@@ -1,0 +1,17 @@
+{
+  "id": "undead_knight",
+  "name": "Nieumarły Rycerz",
+  "hp": 110,
+  "armour": 25,
+  "speed": 70,
+  "movement": "chase",
+  "scale": 1.15,
+  "tint": "#c9b23c",
+  "xp": 22,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "melee", "damage": 10, "windup": 0.55, "reach": 56 },
+    { "type": "tele_cone", "damage": 16, "radius": 150, "halfAngleDeg": 45, "windup": 0.8, "cooldown": 6 }
+  ]
+}

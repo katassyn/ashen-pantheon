@@ -7,10 +7,10 @@
       "requiredLevel": 1,
       "questGiver": "amuun",
       "turnIn": "guildmaster",
-      "zone": "ashen_outskirts",
+      "zone": "swerdfield",
       "objectives": [
         { "id": "talk_amuun", "type": "Talk", "target": "amuun", "amount": 1, "description": "Porozmawiaj z Amuunem" },
-        { "id": "kill_villagers", "type": "Kill", "target": "husk", "amount": 10, "description": "Pokonaj 10 Husków" }
+        { "id": "kill_villagers", "type": "Kill", "target": "undead_villager", "amount": 10, "description": "Pokonaj 10 Nieumarłych Wieśniaków" }
       ],
       "dialogueStart": [
         "Ach, to ty... Przepowiednie mówiły o twoim przybyciu.",
@@ -27,20 +27,20 @@
     },
     {
       "id": "swerdfield_02",
-      "name": "Upadli Strzelcy",
-      "description": "Rozbij plujące straże i zbierz dowód ich zepsucia.",
+      "name": "Upadli Rycerze",
+      "description": "Rozbij nieumarłych rycerzy i sprawdź starą kapliczkę.",
       "requiredLevel": 2,
       "questGiver": "guildmaster",
       "turnIn": "guildmaster",
-      "zone": "ashen_outskirts",
+      "zone": "swerdfield",
       "prerequisites": ["swerdfield_01"],
       "objectives": [
-        { "id": "kill_spitters", "type": "Kill", "target": "spitter", "amount": 6, "description": "Pokonaj 6 Spitterów" },
+        { "id": "kill_knights", "type": "Kill", "target": "undead_knight", "amount": 6, "description": "Pokonaj 6 Nieumarłych Rycerzy" },
         { "id": "reach_shrine", "type": "Reach", "target": "old_shrine", "amount": 1, "description": "Dotrzyj do starej kapliczki" }
       ],
       "dialogueStart": [
-        "Te pluące bestie ostrzeliwują naszych zwiadowców z daleka.",
-        "Przetrzeb je i sprawdź starą kapliczkę na wschodzie — coś tam się lęgnie."
+        "Rycerze z dawnej straży powstali — organizują nieumarłych.",
+        "Przetrzeb ich i sprawdź starą kapliczkę na północnym wschodzie — coś tam się lęgnie."
       ],
       "dialogueCompletion": [
         "Kapliczka skażona... Tak jak się obawiałem.",
@@ -57,7 +57,7 @@
       "requiredLevel": 3,
       "questGiver": "guildmaster",
       "turnIn": "amuun",
-      "zone": "ashen_outskirts",
+      "zone": "swerdfield",
       "prerequisites": ["swerdfield_02"],
       "objectives": [
         { "id": "clear_ruins", "type": "Clear", "target": "ashen_wastes", "amount": 1, "description": "Ukończ run: Popielate Pustkowia (pokonaj Ashen Wardena)" }
