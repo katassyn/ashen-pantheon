@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "mystra_01",
+      "name": "The Wild Court",
+      "description": "Mystra's satyrs answer to older, wilder gods. Break their rites.",
+      "requiredLevel": 26,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "mystra",
+      "prerequisites": ["eternal_03"],
+      "objectives": [
+        { "id": "kill_satyrs", "type": "Kill", "target": "satyr_warrior", "amount": 14, "description": "Slay 14 Horned Satyr Warriors" },
+        { "id": "smash_totem", "type": "Interact", "target": "mystra_totem", "amount": 1, "description": "Shatter the satyr totem" }
+      ],
+      "dialogueStart": [
+        "The spirit spoke of Mystra — a wild court that feeds the temple its strength.",
+        "Cut down the satyrs and shatter the totem that channels their rites."
+      ],
+      "dialogueCompletion": [
+        "The totem is dust. Their frenzy will fade without it.",
+        "But their champion, the Cyclops, still stomps the grove. It carries an eye the temple covets."
+      ],
+      "rewardXp": 2700,
+      "rewardGold": 620,
+      "nextQuest": "mystra_02"
+    },
+    {
+      "id": "mystra_02",
+      "name": "The Cyclops' Eye",
+      "description": "Slay the Drunken Cyclopes and claim their eyes.",
+      "requiredLevel": 27,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "mystra",
+      "prerequisites": ["mystra_01"],
+      "objectives": [
+        { "id": "collect_eyes", "type": "Collect", "target": "cyclops_eye", "amount": 2, "description": "Collect 2 Cyclops Eyes" }
+      ],
+      "dialogueStart": [
+        "Two eyes will do. They see through the temple's wards, or so the spirit claimed.",
+        "The Cyclopes hit like falling walls. Watch their ground — that's where they're deadliest."
+      ],
+      "dialogueCompletion": [
+        "The eyes still weep. Unsettling... but they'll open the way south.",
+        "Hold the sacred grove one last time. The wild court will not forgive what you've done."
+      ],
+      "rewardXp": 3100,
+      "rewardGold": 780,
+      "nextQuest": "mystra_03"
+    },
+    {
+      "id": "mystra_03",
+      "name": "The Sacred Grove",
+      "description": "Hold the grove against the fury of the wild court.",
+      "requiredLevel": 29,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "mystra",
+      "prerequisites": ["mystra_02"],
+      "objectives": [
+        { "id": "defend_grove", "type": "Defend", "target": "mystra_defend", "amount": 4, "description": "Repel 4 waves at the Sacred Grove" }
+      ],
+      "dialogueStart": [
+        "This grove is the last knot binding Mystra to the temple. Sever it.",
+        "Everything they have left will come at you here. Four waves. Then it ends."
+      ],
+      "dialogueCompletion": [
+        "The wild court is broken. Mystra falls silent behind you.",
+        "The road to the Temple Sector lies open now. Whatever waits there... it has been waiting a long time."
+      ],
+      "rewardXp": 3800,
+      "rewardGold": 980,
+      "nextQuest": ""
+    }
+  ]
+}

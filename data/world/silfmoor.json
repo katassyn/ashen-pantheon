@@ -14,7 +14,8 @@
     { "x": 1480, "y": 20, "monsters": ["bog_beast", "bog_beast", "shade_crawler", "leechbeast"], "respawnSeconds": 60, "aggroRange": 420 }
   ],
   "exits": [
-    { "x": -260, "y": 0, "target": "catacombs", "label": "The Catacombs (6-10)" }
+    { "x": -260, "y": 0, "target": "catacombs", "label": "The Catacombs (6-10)" },
+    { "x": 1640, "y": 20, "target": "teganswall", "label": "Teganswall (16-20)" }
   ],
   "markers": [
     {

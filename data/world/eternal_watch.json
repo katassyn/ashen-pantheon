@@ -1,0 +1,31 @@
+{
+  "id": "eternal_watch",
+  "name": "Eternal Watch",
+  "levelMin": 21,
+  "levelMax": 25,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["watch_sentinel", "soul_wisp", "soul_wisp"], "respawnSeconds": 30 },
+    { "x": 680, "y": 150, "monsters": ["watch_sentinel", "watch_sentinel", "soul_wisp"], "respawnSeconds": 34 },
+    { "x": 340, "y": 430, "monsters": ["soul_wisp", "soul_wisp", "watch_sentinel"], "respawnSeconds": 32 },
+    { "x": 1000, "y": -80, "monsters": ["eternal_protector", "watch_sentinel", "soul_wisp"], "respawnSeconds": 52 },
+    { "x": 1260, "y": 250, "monsters": ["watch_sentinel", "watch_sentinel", "soul_wisp", "soul_wisp"], "respawnSeconds": 46 },
+    { "x": 1520, "y": 20, "monsters": ["eternal_protector", "watch_sentinel", "watch_sentinel"], "respawnSeconds": 70, "aggroRange": 440 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "teganswall", "label": "Teganswall (16-20)" }
+  ],
+  "markers": [
+    {
+      "id": "eternal_survive", "type": "survive", "x": 760, "y": -320,
+      "label": "Rift of Souls", "surviveSeconds": 40, "waveInterval": 7,
+      "waveMonsters": ["soul_wisp", "watch_sentinel"]
+    },
+    {
+      "id": "eternal_escort", "type": "escort", "x": 120, "y": 600,
+      "destX": 1300, "destY": 600, "label": "Bound Spirit",
+      "escortHp": 200, "escortSpeed": 70
+    }
+  ]
+}

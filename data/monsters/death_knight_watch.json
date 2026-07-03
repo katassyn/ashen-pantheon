@@ -1,0 +1,20 @@
+{
+  "id": "death_knight_watch",
+  "name": "Death Knight of the Watch",
+  "hp": 330,
+  "armour": 40,
+  "resCold": 30,
+  "speed": 84,
+  "movement": "chase",
+  "scale": 1.4,
+  "tint": "#5a6a8a",
+  "xp": 70,
+  "lootTable": "common",
+  "questItem": "watch_seal",
+  "questItemChance": 0.6,
+  "attackInterval": 1.7,
+  "abilities": [
+    { "type": "melee", "damage": 20, "windup": 0.5, "reach": 62 },
+    { "type": "tele_line", "damage": 28, "damageType": "Cold", "length": 360, "halfWidth": 30, "windup": 0.85, "cooldown": 7 }
+  ]
+}

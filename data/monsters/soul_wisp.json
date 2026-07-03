@@ -1,0 +1,17 @@
+{
+  "id": "soul_wisp",
+  "name": "Soul Wisp",
+  "hp": 110,
+  "evadeChance": 0.2,
+  "speed": 140,
+  "movement": "keep_distance",
+  "preferredRange": 300,
+  "scale": 0.8,
+  "tint": "#9a70d0",
+  "xp": 48,
+  "lootTable": "common",
+  "attackInterval": 1.3,
+  "abilities": [
+    { "type": "projectile", "damage": 16, "damageType": "Chaos", "windup": 0.35, "speed": 360 }
+  ]
+}

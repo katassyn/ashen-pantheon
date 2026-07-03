@@ -1,0 +1,17 @@
+{
+  "id": "longhelm_guard",
+  "name": "Longhelm Guard",
+  "hp": 200,
+  "armour": 45,
+  "speed": 72,
+  "movement": "chase",
+  "scale": 1.15,
+  "tint": "#8a8f9a",
+  "xp": 46,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "melee", "damage": 16, "windup": 0.55, "reach": 58 },
+    { "type": "tele_cone", "damage": 22, "radius": 160, "halfAngleDeg": 50, "windup": 0.8, "cooldown": 6 }
+  ]
+}

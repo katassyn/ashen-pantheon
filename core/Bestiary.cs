@@ -20,6 +20,10 @@ public sealed class MonsterDefinition
     public string Tint { get; set; } = "#d94d4d";
     public long Xp { get; set; } = 12;
     public string LootTable { get; set; } = "common";
+    /// <summary>Przedmiot questowy zrzucany przy śmierci (cel Collect). Pusty = brak.</summary>
+    public string QuestItem { get; set; } = "";
+    /// <summary>Szansa na zrzut przedmiotu questowego (0..1).</summary>
+    public float QuestItemChance { get; set; } = 0.5f;
 
     // obrona (typy obrażeń graczy mają znaczenie)
     public float Armour { get; set; }

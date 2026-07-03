@@ -1,0 +1,27 @@
+{
+  "id": "teganswall",
+  "name": "Teganswall",
+  "levelMin": 16,
+  "levelMax": 20,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["longhelm_guard", "watch_archer", "watch_archer"], "respawnSeconds": 28 },
+    { "x": 660, "y": 150, "monsters": ["longhelm_guard", "longhelm_guard", "watch_archer"], "respawnSeconds": 32 },
+    { "x": 340, "y": 420, "monsters": ["watch_archer", "watch_archer", "longhelm_guard"], "respawnSeconds": 34 },
+    { "x": 980, "y": -80, "monsters": ["death_knight_watch", "longhelm_guard", "watch_archer"], "respawnSeconds": 46 },
+    { "x": 1240, "y": 240, "monsters": ["longhelm_guard", "longhelm_guard", "watch_archer", "watch_archer"], "respawnSeconds": 44 },
+    { "x": 1500, "y": 20, "monsters": ["death_knight_watch", "death_knight_watch", "watch_archer"], "respawnSeconds": 64, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "silfmoor", "label": "Silfmoor (11-15)" }
+  ],
+  "markers": [
+    { "id": "teganswall_gate", "type": "interact", "x": 1120, "y": -300, "label": "Raise the Portcullis" },
+    {
+      "id": "teganswall_defend", "type": "defend", "x": 720, "y": 640,
+      "label": "The Breach", "waves": 4, "waveInterval": 13,
+      "waveMonsters": ["watch_archer", "longhelm_guard", "watch_archer", "death_knight_watch"]
+    }
+  ]
+}

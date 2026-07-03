@@ -1,0 +1,20 @@
+{
+  "id": "eternal_protector",
+  "name": "Protector of Life and Death",
+  "hp": 420,
+  "armour": 45,
+  "resFire": 25,
+  "resCold": 25,
+  "speed": 66,
+  "movement": "keep_distance",
+  "preferredRange": 200,
+  "scale": 1.5,
+  "tint": "#d0d0e0",
+  "xp": 100,
+  "lootTable": "common",
+  "attackInterval": 2.0,
+  "abilities": [
+    { "type": "tele_circle", "damage": 28, "damageType": "Lightning", "radius": 110, "windup": 0.9, "cooldown": 5 },
+    { "type": "summon", "monsterId": "soul_wisp", "count": 2, "cooldown": 12 }
+  ]
+}

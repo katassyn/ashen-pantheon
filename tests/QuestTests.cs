@@ -84,6 +84,62 @@ public class QuestTests
     }
 
     [Fact]
+    public void Collect_AccumulatesFromQuestItems()
+    {
+        var log = new QuestLog();
+        log.Completed.Add("teganswall_01");
+        log.Accept(Q("teganswall_02"), 17);
+        log.OnKill("longhelm_guard"); // wrong drop
+        Assert.Equal(0, log.Progress("teganswall_02", "collect_seals"));
+        log.OnCollect("watch_seal");
+        log.OnCollect("watch_seal");
+        log.OnCollect("watch_seal");
+        Assert.True(log.ReadyToTurnIn(Q("teganswall_02")));
+    }
+
+    [Fact]
+    public void Survive_AccumulatesSecondsToTarget()
+    {
+        var log = new QuestLog();
+        log.Completed.Add("eternal_01");
+        log.Accept(Q("eternal_02"), 22);
+        for (int s = 0; s < 40; s++) log.OnSurviveSeconds("eternal_survive", 1);
+        Assert.True(log.ReadyToTurnIn(Q("eternal_02")));
+    }
+
+    [Fact]
+    public void FullCampaignChain_LinksSwerdfieldToMystra()
+    {
+        // każdy quest wskazuje istniejący nextQuest / prereq — brak zerwanych ogniw
+        string[] chain =
+        {
+            "swerdfield_01","swerdfield_02","swerdfield_03",
+            "silfmoor_01","silfmoor_02","silfmoor_03",
+            "teganswall_01","teganswall_02","teganswall_03",
+            "eternal_01","eternal_02","eternal_03",
+            "mystra_01","mystra_02","mystra_03",
+        };
+        foreach (var id in chain)
+        {
+            var q = QuestCatalog.Find(id);
+            Assert.NotNull(q);
+            if (q!.NextQuest.Length > 0) Assert.NotNull(QuestCatalog.Find(q.NextQuest));
+            foreach (var pre in q.Prerequisites) Assert.NotNull(QuestCatalog.Find(pre));
+        }
+    }
+
+    [Fact]
+    public void AllQuestTargets_ResolveToRealMobsOrMarkers()
+    {
+        foreach (var q in QuestCatalog.Quests.Values)
+            foreach (var o in q.Objectives)
+            {
+                if (o.Kind == ObjectiveType.Kill && o.Target != "*")
+                    Assert.True(Bestiary.Monsters.ContainsKey(o.Target), $"{q.Id}/{o.Id}: brak moba {o.Target}");
+            }
+    }
+
+    [Fact]
     public void Escort_FailureResetsProgress()
     {
         QuestCatalog.Load("""

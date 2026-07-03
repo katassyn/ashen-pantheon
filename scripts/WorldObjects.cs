@@ -232,3 +232,88 @@ public partial class DefendZone : Node2D
             HorizontalAlignment.Left, -1, 13, new Color(1f, 0.9f, 0.6f));
     }
 }
+
+/// <summary>Strefa przetrwania (host-authoritative): wytrzymaj X sekund pod presją spawnów.
+/// Opuszczenie strefy pauzuje licznik — trzeba stać w środku.</summary>
+public partial class SurviveZone : Node2D
+{
+    public string MarkerId = "";
+    public string LabelText = "";
+    public int SurviveSeconds = 30;
+    public System.Collections.Generic.List<string> WaveMonsters = new();
+    public float WaveInterval = 8f;
+
+    private const float TriggerRadius = 200f;
+    private const float SpawnRadius = 340f;
+
+    private bool _done;
+    private float _elapsed;
+    private float _spawnTimer;
+    private int _credited;
+
+    public override void _Ready()
+    {
+        AddToGroup("survive");
+        ZIndex = 4;
+    }
+
+    public override void _Process(double delta)
+    {
+        QueueRedraw();
+        if (!Net.IsServer || _done) return;
+        float dt = (float)delta;
+
+        var p = NearestPlayerInside();
+        if (p == null) return; // poza strefą — licznik stoi
+
+        _elapsed += dt;
+        int whole = Mathf.FloorToInt(_elapsed);
+        if (whole > _credited)
+        {
+            for (int s = _credited + 1; s <= whole && s <= SurviveSeconds; s++)
+                Net.BroadcastSurviveSecond(MarkerId);
+            _credited = Mathf.Min(whole, SurviveSeconds);
+        }
+
+        if (_elapsed >= SurviveSeconds)
+        {
+            _done = true;
+            FloatingText.Spawn(GetParent(), GlobalPosition, "survived!", new Color(0.4f, 0.9f, 0.5f), 16);
+            return;
+        }
+
+        _spawnTimer -= dt;
+        if (_spawnTimer <= 0f && WaveMonsters.Count > 0)
+        {
+            _spawnTimer = WaveInterval;
+            int i = 0;
+            foreach (var monsterId in WaveMonsters)
+            {
+                var m = Monster.Create(monsterId);
+                m.HomePos = GlobalPosition;
+                m.AggroRange = 100000f;
+                m.Position = GlobalPosition + Vector2.Right.Rotated(Mathf.Tau * i / Mathf.Max(1, WaveMonsters.Count)) * SpawnRadius;
+                i++;
+                GetParent().AddChild(m);
+            }
+        }
+    }
+
+    private PlayerController NearestPlayerInside()
+    {
+        foreach (Node n in GetTree().GetNodesInGroup("players"))
+            if (n is PlayerController p && !p.Dead && GlobalPosition.DistanceTo(p.GlobalPosition) <= TriggerRadius)
+                return p;
+        return null;
+    }
+
+    public override void _Draw()
+    {
+        var col = _done ? new Color(0.4f, 0.9f, 0.5f) : new Color(0.9f, 0.7f, 0.3f);
+        DrawArc(Vector2.Zero, TriggerRadius, 0, Mathf.Tau, 48, new Color(col.R, col.G, col.B, 0.35f), 2f);
+        int left = Mathf.Max(0, SurviveSeconds - Mathf.FloorToInt(_elapsed));
+        string status = _done ? $"◈ {LabelText} — survived!" : $"◈ {LabelText} — {left}s (stay inside)";
+        DrawString(ThemeDB.FallbackFont, new Vector2(-70, -TriggerRadius - 8), status,
+            HorizontalAlignment.Left, -1, 13, new Color(1f, 0.9f, 0.6f));
+    }
+}

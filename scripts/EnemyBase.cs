@@ -28,6 +28,9 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     public virtual string ReplicationId => "husk";
     /// <summary>Tabela lootu (data-driven, patrz data/loot/).</summary>
     protected virtual string LootTableId => "common";
+    /// <summary>Przedmiot questowy (cel Collect) + szansa — z definicji potwora.</summary>
+    protected virtual string QuestItemId => "";
+    protected virtual float QuestItemChance => 0f;
 
     protected Combatant Combatant;
     protected Sprite2D Sprite;
@@ -220,6 +223,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
         Net.GrantXpAll(XpReward);
         Net.BroadcastQuestKill(ReplicationId); // cele Kill u wszystkich graczy (party-share)
+
+        // cel Collect: przedmiot questowy z szansą (rzut u hosta → broadcast do drużyny)
+        if (QuestItemId.Length > 0 && GD.Randf() < QuestItemChance)
+            Net.BroadcastQuestCollect(QuestItemId);
 
         // loot z TABELI (data/loot/*.json), rolowany OSOBNO per gracz (instancjonowany)
         if (DropsLoot)

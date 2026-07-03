@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "teganswall_01",
+      "name": "Hold the Line",
+      "description": "The old fortress still stands — barely. Break the garrison and open the way.",
+      "requiredLevel": 16,
+      "questGiver": "guildmaster",
+      "turnIn": "guildmaster",
+      "zone": "teganswall",
+      "prerequisites": ["silfmoor_03"],
+      "objectives": [
+        { "id": "kill_guards", "type": "Kill", "target": "longhelm_guard", "amount": 10, "description": "Slay 10 Longhelm Guards" },
+        { "id": "raise_gate", "type": "Interact", "target": "teganswall_gate", "amount": 1, "description": "Raise the portcullis" }
+      ],
+      "dialogueStart": [
+        "Teganswall was ours once. Now the dead man its walls.",
+        "Clear the guards and raise the inner gate — we need that passage open."
+      ],
+      "dialogueCompletion": [
+        "The gate is up. Good.",
+        "But their commanders still hold the keep. Bring me their seals."
+      ],
+      "rewardXp": 900,
+      "rewardGold": 260,
+      "nextQuest": "teganswall_02"
+    },
+    {
+      "id": "teganswall_02",
+      "name": "Broken Seals",
+      "description": "Hunt the Death Knights of the Watch and take their seals of office.",
+      "requiredLevel": 17,
+      "questGiver": "guildmaster",
+      "turnIn": "guildmaster",
+      "zone": "teganswall",
+      "prerequisites": ["teganswall_01"],
+      "objectives": [
+        { "id": "collect_seals", "type": "Collect", "target": "watch_seal", "amount": 3, "description": "Collect 3 Watch Seals from Death Knights" }
+      ],
+      "dialogueStart": [
+        "Three commanders, three seals. Each carries one.",
+        "They don't die easy — and their cold cuts deep. Be ready."
+      ],
+      "dialogueCompletion": [
+        "Their command is broken. The garrison will scatter now.",
+        "But you kicked a hornet's nest. They'll try to retake the breach."
+      ],
+      "rewardXp": 1100,
+      "rewardGold": 320,
+      "nextQuest": "teganswall_03"
+    },
+    {
+      "id": "teganswall_03",
+      "name": "The Breach",
+      "description": "Hold the breach in the wall against the counterattack.",
+      "requiredLevel": 19,
+      "questGiver": "guildmaster",
+      "turnIn": "amuun",
+      "zone": "teganswall",
+      "prerequisites": ["teganswall_02"],
+      "objectives": [
+        { "id": "defend_breach", "type": "Defend", "target": "teganswall_defend", "amount": 4, "description": "Repel 4 waves at the breach" }
+      ],
+      "dialogueStart": [
+        "They're massing at the southern breach. If it falls, the road falls with it.",
+        "Stand in the gap. Four assaults — hold every one."
+      ],
+      "dialogueCompletion": [
+        "The wall holds. Teganswall is ours again, for the first time in years.",
+        "Amuun will want to hear of this. The seals you took bear a symbol he'll recognize."
+      ],
+      "rewardXp": 1500,
+      "rewardGold": 460,
+      "nextQuest": ""
+    }
+  ]
+}

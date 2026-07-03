@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "eternal_01",
+      "name": "The Sleepless Sentinels",
+      "description": "Beyond Teganswall lies the Eternal Watch — where the dead never rest.",
+      "requiredLevel": 21,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "eternal_watch",
+      "prerequisites": ["teganswall_03"],
+      "objectives": [
+        { "id": "kill_sentinels", "type": "Kill", "target": "watch_sentinel", "amount": 12, "description": "Destroy 12 Watch Sentinels" },
+        { "id": "kill_wisps", "type": "Kill", "target": "soul_wisp", "amount": 10, "description": "Banish 10 Soul Wisps" }
+      ],
+      "dialogueStart": [
+        "The seals bore the mark of the Eternal Watch — a place I hoped was only legend.",
+        "Its sentinels guard a rift between life and death. Thin them, and I'll find the source."
+      ],
+      "dialogueCompletion": [
+        "The rift... it's real. And it's tearing wider.",
+        "Souls are pouring through. Someone must hold it while I work."
+      ],
+      "rewardXp": 1700,
+      "rewardGold": 420,
+      "nextQuest": "eternal_02"
+    },
+    {
+      "id": "eternal_02",
+      "name": "The Rift of Souls",
+      "description": "Hold your ground at the rift while Amuun's ritual takes hold.",
+      "requiredLevel": 22,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "eternal_watch",
+      "prerequisites": ["eternal_01"],
+      "objectives": [
+        { "id": "survive_rift", "type": "Survive", "target": "eternal_survive", "amount": 40, "description": "Survive 40 seconds at the Rift of Souls (stay inside)" }
+      ],
+      "dialogueStart": [
+        "Stand within the rift's circle. Do not leave it — the ritual anchors to your presence.",
+        "The dead will come without end for forty heartbeats. Endure."
+      ],
+      "dialogueCompletion": [
+        "The rift is anchored. You held longer than any watchman ever did.",
+        "One spirit broke free in the chaos — bound, confused. Lead it out before it's lost."
+      ],
+      "rewardXp": 2000,
+      "rewardGold": 520,
+      "nextQuest": "eternal_03"
+    },
+    {
+      "id": "eternal_03",
+      "name": "The Bound Spirit",
+      "description": "Escort the bound spirit out of the Watch before the rift reclaims it.",
+      "requiredLevel": 24,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "eternal_watch",
+      "prerequisites": ["eternal_02"],
+      "objectives": [
+        { "id": "escort_spirit", "type": "Escort", "target": "eternal_escort", "amount": 1, "description": "Escort the Bound Spirit to the gate (keep enemies away)" }
+      ],
+      "dialogueStart": [
+        "The spirit remembers something — a name, a place. It must reach the living world.",
+        "Guide it to the eastern gate. If the sentinels swarm it, it unravels."
+      ],
+      "dialogueCompletion": [
+        "It's free. And what it whispered... a temple, to the south. Gorgons guard it.",
+        "Rest, {player}. The road only darkens from here."
+      ],
+      "rewardXp": 2400,
+      "rewardGold": 640,
+      "nextQuest": ""
+    }
+  ]
+}

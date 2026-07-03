@@ -1,0 +1,20 @@
+{
+  "id": "drunken_cyclops",
+  "name": "Drunken Cyclops",
+  "hp": 560,
+  "armour": 40,
+  "speed": 58,
+  "movement": "chase",
+  "scale": 1.8,
+  "tint": "#8a5a3a",
+  "xp": 130,
+  "lootTable": "common",
+  "questItem": "cyclops_eye",
+  "questItemChance": 1.0,
+  "attackInterval": 2.2,
+  "abilities": [
+    { "type": "melee", "damage": 26, "windup": 0.7, "reach": 74 },
+    { "type": "tele_circle", "damage": 34, "radius": 150, "windup": 1.0, "cooldown": 6 },
+    { "type": "tele_line", "damage": 30, "length": 420, "halfWidth": 40, "windup": 0.9, "cooldown": 9 }
+  ]
+}

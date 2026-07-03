@@ -1,0 +1,18 @@
+{
+  "id": "satyr_shaman",
+  "name": "Horned Satyr Shaman",
+  "hp": 190,
+  "resFire": 40,
+  "speed": 88,
+  "movement": "keep_distance",
+  "preferredRange": 320,
+  "scale": 1.0,
+  "tint": "#d06a30",
+  "xp": 62,
+  "lootTable": "common",
+  "attackInterval": 1.7,
+  "abilities": [
+    { "type": "projectile", "damage": 20, "damageType": "Fire", "windup": 0.45, "speed": 320 },
+    { "type": "tele_circle", "damage": 26, "damageType": "Fire", "radius": 95, "windup": 0.9, "cooldown": 8 }
+  ]
+}

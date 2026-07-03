@@ -1,0 +1,17 @@
+{
+  "id": "watch_archer",
+  "name": "Watch Archer",
+  "hp": 130,
+  "evadeChance": 0.1,
+  "speed": 105,
+  "movement": "keep_distance",
+  "preferredRange": 340,
+  "scale": 0.95,
+  "tint": "#b0a060",
+  "xp": 42,
+  "lootTable": "common",
+  "attackInterval": 1.5,
+  "abilities": [
+    { "type": "projectile", "damage": 17, "windup": 0.4, "speed": 400 }
+  ]
+}

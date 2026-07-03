@@ -357,6 +357,20 @@ public partial class Net : Node
         if (GameState.Quests.OnKill(monsterId)) GameState.Save();
     }
 
+    public static void BroadcastQuestCollect(string itemId)
+    {
+        if (Online) I.Rpc(MethodName.RpcQuestCollect, itemId);
+        else QuestCollectLocal(itemId);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcQuestCollect(string itemId) => QuestCollectLocal(itemId);
+
+    private static void QuestCollectLocal(string itemId)
+    {
+        if (GameState.Quests.OnCollect(itemId)) GameState.Save();
+    }
+
     public static void BroadcastQuestClear(string zoneId)
     {
         if (Online) I.Rpc(MethodName.RpcQuestClear, zoneId);
@@ -403,6 +417,15 @@ public partial class Net : Node
     {
         if (GameState.Quests.OnDefendWave(markerId)) GameState.Save();
     }
+
+    public static void BroadcastSurviveSecond(string markerId)
+    {
+        if (Online) I.Rpc(MethodName.RpcSurviveSecond, markerId);
+        else GameState.Quests.OnSurviveSeconds(markerId, 1);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcSurviveSecond(string markerId) => GameState.Quests.OnSurviveSeconds(markerId, 1);
 
     /// <summary>Pozycja+HP eskortowanego NPC (host → klienci; best-effort).</summary>
     public static void SyncEscort(Vector2 pos, float hpFrac, bool moving)

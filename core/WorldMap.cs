@@ -39,6 +39,9 @@ public sealed class MarkerDefinition
     public int Waves { get; set; } = 3;
     public List<string> WaveMonsters { get; set; } = new();
     public float WaveInterval { get; set; } = 12f;
+
+    // ── survive: wytrzymaj X sekund pod presją spawnów (WaveMonsters co WaveInterval) ──
+    public int SurviveSeconds { get; set; } = 30;
 }
 
 /// <summary>Pack mobów: pozycja, skład (z bestiariusza), respawn co X s po wybiciu.</summary>

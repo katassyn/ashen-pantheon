@@ -1,0 +1,27 @@
+{
+  "id": "mystra",
+  "name": "Mystra",
+  "levelMin": 26,
+  "levelMax": 30,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["satyr_warrior", "satyr_warrior", "satyr_shaman"], "respawnSeconds": 30 },
+    { "x": 680, "y": 150, "monsters": ["satyr_warrior", "satyr_shaman", "satyr_shaman"], "respawnSeconds": 34 },
+    { "x": 340, "y": 430, "monsters": ["satyr_warrior", "satyr_warrior", "satyr_warrior", "satyr_shaman"], "respawnSeconds": 36 },
+    { "x": 1000, "y": -80, "monsters": ["satyr_warrior", "satyr_shaman", "satyr_warrior"], "respawnSeconds": 40 },
+    { "x": 1280, "y": 250, "monsters": ["drunken_cyclops", "satyr_warrior", "satyr_shaman"], "respawnSeconds": 75 },
+    { "x": 1540, "y": 20, "monsters": ["drunken_cyclops", "satyr_warrior", "satyr_warrior", "satyr_shaman"], "respawnSeconds": 95, "aggroRange": 460 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "eternal_watch", "label": "Eternal Watch (21-25)" }
+  ],
+  "markers": [
+    { "id": "mystra_totem", "type": "interact", "x": 700, "y": -340, "label": "Shatter the Totem" },
+    {
+      "id": "mystra_defend", "type": "defend", "x": 780, "y": 620,
+      "label": "Sacred Grove", "waves": 4, "waveInterval": 14,
+      "waveMonsters": ["satyr_warrior", "satyr_warrior", "satyr_shaman", "drunken_cyclops"]
+    }
+  ]
+}

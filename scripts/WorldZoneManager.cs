@@ -59,6 +59,11 @@ public partial class WorldZoneManager : Node
                     MarkerId = marker.Id, LabelText = marker.Label,
                     Waves = marker.Waves, WaveMonsters = marker.WaveMonsters, WaveInterval = marker.WaveInterval,
                 },
+                "survive" => new SurviveZone
+                {
+                    MarkerId = marker.Id, LabelText = marker.Label,
+                    SurviveSeconds = marker.SurviveSeconds, WaveMonsters = marker.WaveMonsters, WaveInterval = marker.WaveInterval,
+                },
                 _ => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = marker.Type == "interact" },
             };
             node.Position = new Vector2(marker.X, marker.Y);

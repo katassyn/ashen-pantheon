@@ -1,0 +1,16 @@
+{
+  "id": "satyr_warrior",
+  "name": "Horned Satyr Warrior",
+  "hp": 260,
+  "armour": 25,
+  "speed": 120,
+  "movement": "chase",
+  "scale": 1.05,
+  "tint": "#a06a40",
+  "xp": 64,
+  "lootTable": "common",
+  "attackInterval": 1.2,
+  "abilities": [
+    { "type": "melee", "damage": 22, "windup": 0.4, "reach": 58 }
+  ]
+}

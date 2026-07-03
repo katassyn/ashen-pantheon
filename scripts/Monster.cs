@@ -20,6 +20,8 @@ public partial class Monster : EnemyBase
     protected override Color BaseTint => Color.FromString(_def?.Tint ?? "#d94d4d", new Color(0.85f, 0.3f, 0.3f));
     public override string ReplicationId => MonsterId;
     protected override string LootTableId => _def?.LootTable ?? "common";
+    protected override string QuestItemId => _def?.QuestItem ?? "";
+    protected override float QuestItemChance => _def?.QuestItemChance ?? 0f;
 
     public static Monster Create(string monsterId)
     {
