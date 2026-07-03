@@ -20,7 +20,7 @@ public partial class Waystone : Area2D
     public override void _UnhandledInput(InputEvent @event)
     {
         if (!_inside) return;
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.E)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "interact"))
         {
             WorldMapPanel.Toggle(GetTree());
             GetViewport().SetInputAsHandled();

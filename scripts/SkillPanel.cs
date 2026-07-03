@@ -84,7 +84,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.K)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "skills"))
         {
             if (_root.Visible) { _root.Visible = false; }
             else

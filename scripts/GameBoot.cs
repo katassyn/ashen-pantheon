@@ -8,6 +8,8 @@ public partial class GameBoot : Node
     public override void _Ready()
     {
         DataLoader.LoadAll(); // bestiariusz/strefy/tabele lootu przed czymkolwiek
+        Keybinds.Load();      // klawisze + ustawienia audio/wideo
+        Keybinds.ApplyVideoAudio();
 
         var args = OS.GetCmdlineUserArgs();
         bool join = args.Contains("--join");

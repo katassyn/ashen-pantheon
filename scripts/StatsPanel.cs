@@ -69,7 +69,7 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.C)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "stats"))
         {
             if (_root.Visible) { _root.Visible = false; }
             else

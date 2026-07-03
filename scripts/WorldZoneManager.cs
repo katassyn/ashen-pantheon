@@ -145,7 +145,7 @@ public partial class WorldZoneManager : Node
         public override void _UnhandledInput(InputEvent @event)
         {
             if (!Interact || !_inside) return;
-            if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.E)
+            if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "interact"))
             {
                 if (GameState.Quests.OnInteract(MarkerId)) { Credit("used!"); }
                 GetViewport().SetInputAsHandled();

@@ -270,9 +270,12 @@ public partial class PauseMenu : CanvasLayer
 		resume.Pressed += () => _root.Visible = false;
 		vb.AddChild(resume);
 
-		_fullscreen = new CheckBox { Text = "Fullscreen" };
-		_fullscreen.Toggled += on => DisplayServer.WindowSetMode(
-			on ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
+		_fullscreen = new CheckBox { Text = "Fullscreen", ButtonPressed = Keybinds.Fullscreen };
+		_fullscreen.Toggled += on =>
+		{
+			DisplayServer.WindowSetMode(on ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
+			Keybinds.Fullscreen = on; Keybinds.Save();
+		};
 		vb.AddChild(_fullscreen);
 
 		// rozdzielczość okna
@@ -281,6 +284,7 @@ public partial class PauseMenu : CanvasLayer
 		var res = new OptionButton { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 		var sizes = new[] { new Vector2I(1280, 720), new Vector2I(1600, 900), new Vector2I(1920, 1080), new Vector2I(2560, 1440) };
 		foreach (var s in sizes) res.AddItem($"{s.X} x {s.Y}");
+		res.Selected = Mathf.Clamp(Keybinds.ResolutionIndex, 0, sizes.Length - 1);
 		res.ItemSelected += i =>
 		{
 			DisplayServer.WindowSetMode(DisplayServer.WindowMode.Windowed);
@@ -288,16 +292,29 @@ public partial class PauseMenu : CanvasLayer
 			var screen = DisplayServer.ScreenGetSize();
 			DisplayServer.WindowSetPosition((screen - sizes[i]) / 2);
 			if (_fullscreen != null) _fullscreen.ButtonPressed = false;
+			Keybinds.ResolutionIndex = (int)i; Keybinds.Fullscreen = false; Keybinds.Save();
 		};
 		resRow.AddChild(res);
 		vb.AddChild(resRow);
 
 		var volRow = new HBoxContainer();
 		volRow.AddChild(new Label { Text = "Volume" });
-		var vol = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05f, Value = 1, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-		vol.ValueChanged += v => AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb((float)v));
+		var vol = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05f, Value = Keybinds.Volume, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+		vol.ValueChanged += v =>
+		{
+			AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb((float)v));
+			Keybinds.Volume = (float)v; Keybinds.Save();
+		};
 		volRow.AddChild(vol);
 		vb.AddChild(volRow);
+
+		// ── controls (rebind klawiszy) ──
+		vb.AddChild(new Label { Text = "— Controls (click to rebind) —" });
+		foreach (var (id, label, _) in Keybinds.Actions)
+			vb.AddChild(new RebindRow { ActionId = id, ActionLabel = label });
+		var resetKeys = new Button { Text = "Reset controls to default" };
+		resetKeys.Pressed += () => { Keybinds.ResetDefaults(); foreach (Node n in vb.GetChildren()) if (n is RebindRow r) r.RefreshLabel(); };
+		vb.AddChild(resetKeys);
 
 		var toMenu = new Button { Text = "Main menu" };
 		toMenu.Pressed += () =>
@@ -515,5 +532,35 @@ public partial class BuffBar : CanvasLayer
 		lbl.AddThemeFontSizeOverride("font_size", 12);
 		chip.AddChild(lbl);
 		_row.AddChild(chip);
+	}
+}
+
+/// <summary>Wiersz przypisania klawisza: klik → nasłuch następnego klawisza → rebind.</summary>
+public partial class RebindRow : HBoxContainer
+{
+	public string ActionId = "";
+	public string ActionLabel = "";
+	private Button _btn;
+	private bool _listening;
+
+	public override void _Ready()
+	{
+		AddThemeConstantOverride("separation", 8);
+		AddChild(new Label { Text = ActionLabel, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+		_btn = new Button { CustomMinimumSize = new Vector2(120, 0) };
+		_btn.Pressed += () => { _listening = true; _btn.Text = "press a key…"; };
+		AddChild(_btn);
+		RefreshLabel();
+	}
+
+	public void RefreshLabel() { if (_btn != null) _btn.Text = Keybinds.KeyName(ActionId); }
+
+	public override void _Input(InputEvent @event)
+	{
+		if (!_listening || @event is not InputEventKey k || !k.Pressed || k.Echo) return;
+		_listening = false;
+		if (k.PhysicalKeycode != Key.Escape) Keybinds.Rebind(ActionId, k.PhysicalKeycode);
+		RefreshLabel();
+		GetViewport().SetInputAsHandled();
 	}
 }

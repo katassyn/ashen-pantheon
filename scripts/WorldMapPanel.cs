@@ -47,12 +47,12 @@ public partial class WorldMapPanel : CanvasLayer
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode is Key.M or Key.Escape && _root.Visible)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && (Keybinds.Matches(k, "map") || k.PhysicalKeycode == Key.Escape) && _root.Visible)
         {
             _root.Visible = false;
             GetViewport().SetInputAsHandled();
         }
-        else if (@event is InputEventKey k2 && k2.Pressed && !k2.Echo && k2.PhysicalKeycode == Key.M && !_root.Visible)
+        else if (@event is InputEventKey k2 && k2.Pressed && !k2.Echo && Keybinds.Matches(k2, "map") && !_root.Visible)
         {
             SetOpen(true);
             GetViewport().SetInputAsHandled();

@@ -35,7 +35,7 @@ public partial class QuestJournal : CanvasLayer
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is not InputEventKey k || !k.Pressed || k.Echo) return;
-        if (k.PhysicalKeycode == Key.J)
+        if (Keybinds.Matches(k, "journal"))
         {
             if (_root.Visible) { _root.Visible = false; }
             else { UiPanels.CloseAllExcept(GetTree(), null); _root.Visible = true; Rebuild(); }

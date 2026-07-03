@@ -28,7 +28,7 @@ public partial class HubZone : Area2D
     public override void _UnhandledInput(InputEvent @event)
     {
         if (!_playerInside) return;
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.E)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "interact"))
         {
             if (Kind == "vendor") VendorPanel.Toggle(GetTree());
             else if (Kind == "stash") StashPanel.Toggle(GetTree());
