@@ -210,12 +210,9 @@ public partial class PlayerController : CharacterBody2D
 
         if (@event is InputEventKey k && k.Pressed && !k.Echo)
         {
-            switch (k.PhysicalKeycode)
-            {
-                case Key.Q: CastSlot(2); break;
-                case Key.E: CastSlot(3); break;
-                case Key.R: CastSlot(4); break;
-            }
+            if (Keybinds.Matches(k, "slot_q")) CastSlot(2);
+            else if (Keybinds.Matches(k, "slot_e")) CastSlot(3);
+            else if (Keybinds.Matches(k, "slot_r")) CastSlot(4);
         }
     }
 
@@ -356,10 +353,10 @@ public partial class PlayerController : CharacterBody2D
     private static Vector2 ReadMoveInput()
     {
         Vector2 v = Vector2.Zero;
-        if (Input.IsPhysicalKeyPressed(Key.W)) v.Y -= 1f;
-        if (Input.IsPhysicalKeyPressed(Key.S)) v.Y += 1f;
-        if (Input.IsPhysicalKeyPressed(Key.A)) v.X -= 1f;
-        if (Input.IsPhysicalKeyPressed(Key.D)) v.X += 1f;
+        if (Input.IsPhysicalKeyPressed(Keybinds.Get("move_up"))) v.Y -= 1f;
+        if (Input.IsPhysicalKeyPressed(Keybinds.Get("move_down"))) v.Y += 1f;
+        if (Input.IsPhysicalKeyPressed(Keybinds.Get("move_left"))) v.X -= 1f;
+        if (Input.IsPhysicalKeyPressed(Keybinds.Get("move_right"))) v.X += 1f;
         return v == Vector2.Zero ? Vector2.Zero : v.Normalized();
     }
 

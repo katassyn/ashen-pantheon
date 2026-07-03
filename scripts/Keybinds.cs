@@ -11,6 +11,13 @@ public static class Keybinds
     /// <summary>Akcje rebindowalne w kolejności wyświetlania: id → (etykieta, domyślny klawisz).</summary>
     public static readonly (string id, string label, Key def)[] Actions =
     {
+        ("move_up", "Move Up", Key.W),
+        ("move_down", "Move Down", Key.S),
+        ("move_left", "Move Left", Key.A),
+        ("move_right", "Move Right", Key.D),
+        ("slot_q", "Skill 3", Key.Q),
+        ("slot_e", "Skill 4", Key.E),
+        ("slot_r", "Skill 5", Key.R),
         ("stats", "Stats", Key.C),
         ("inventory", "Inventory", Key.I),
         ("skills", "Skills / Talents", Key.K),
@@ -41,6 +48,14 @@ public static class Keybinds
     public static string KeyName(string action) => OS.GetKeycodeString(Get(action));
 
     public static bool Matches(InputEventKey e, string action) => e.PhysicalKeycode == Get(action);
+
+    /// <summary>Etykieta klawisza slotu paska skilli (0=LMB,1=RMB,2..4=rebindowalne).</summary>
+    public static string SlotKeyName(int slot) => slot switch
+    {
+        0 => "LMB", 1 => "RMB",
+        2 => KeyName("slot_q"), 3 => KeyName("slot_e"), 4 => KeyName("slot_r"),
+        _ => "?"
+    };
 
     public static void Rebind(string action, Key key)
     {

@@ -134,7 +134,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
             var drag = new SkillDragSource
             {
                 SkillId = spec.Id,
-                Text = $"≡ {spec.Name}{(locked ? $" 🔒{spec.RequiredLevel}" : "")}{(slot.HasValue ? $" [{Loadout.SlotKeys[slot.Value]}]" : "")}",
+                Text = $"≡ {spec.Name}{(locked ? $" 🔒{spec.RequiredLevel}" : "")}{(slot.HasValue ? $" [{Keybinds.SlotKeyName(slot.Value)}]" : "")}",
                 Disabled = locked,
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 TooltipText = locked ? $"Unlocks at level {spec.RequiredLevel}" : "Click = open tree · drag onto the bar",

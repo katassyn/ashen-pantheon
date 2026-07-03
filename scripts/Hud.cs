@@ -211,7 +211,7 @@ public partial class SkillSlotUi : PanelContainer
 
 	public void Refresh(PlayerController player)
 	{
-		string key = Loadout.SlotKeys[SlotIndex];
+		string key = Keybinds.SlotKeyName(SlotIndex);
 		string skillId = GameState.Loadout.Slots[SlotIndex];
 		if (skillId == null)
 		{
@@ -254,15 +254,17 @@ public partial class PauseMenu : CanvasLayer
 		_root = new Panel
 		{
 			AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
-			OffsetLeft = -170, OffsetTop = -160, OffsetRight = 170, OffsetBottom = 160,
+			OffsetLeft = -220, OffsetTop = -300, OffsetRight = 220, OffsetBottom = 300,
 			Visible = false,
 		};
 		UiPanels.Solidify(_root);
 		AddChild(_root);
 
-		var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 20, OffsetTop = 16, OffsetRight = -20, OffsetBottom = -16 };
+		var scroll = new ScrollContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 20, OffsetTop = 16, OffsetRight = -20, OffsetBottom = -16 };
+		_root.AddChild(scroll);
+		var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 		vb.AddThemeConstantOverride("separation", 10);
-		_root.AddChild(vb);
+		scroll.AddChild(vb);
 
 		vb.AddChild(new Label { Text = "PAUSED", HorizontalAlignment = HorizontalAlignment.Center });
 
