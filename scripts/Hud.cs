@@ -66,7 +66,8 @@ public partial class Hud : CanvasLayer
 		AddChild(new QuestJournal());   // J: dziennik questów
 		AddChild(new BuffBar());        // aktywne buffy gracza
 		AddChild(new ChatBox());        // czat co-op (Enter)
-		AddChild(new TradePanel());     // handel gracz-gracz (T)
+		AddChild(new TradePanel());     // handel gracz-gracz (PPM na nicku)
+		AddChild(new SocialPanel());    // O: znajomi / guildia (online)
 
 		// minimapa: stała rogowa + duża pod TAB (obie centrowane na graczu)
 		var corner = new MinimapView { WorldRadius = 1400f };
@@ -141,7 +142,7 @@ public partial class Hud : CanvasLayer
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
 				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C stats · I inv · K skills · J journal · M map · TAB minimap · Enter chat · RMB party name = trade/whisper" +
+				"C stats · I inv · K skills · J journal · M map · O friends/guild · TAB minimap · Enter chat · RMB name = trade" +
 				QuestTracker();
 		}
 
@@ -456,7 +457,7 @@ public partial class PartyRow : PanelContainer
 				WhisperDialog.Open(this, _peer);
 				break;
 			case 2: // Guild
-				Net.SendChatLocal("Guilds arrive with online realms (persistent across sessions).");
+				Net.SendChatLocal("Open Friends/Guild (O) to invite by account name (online realm).");
 				break;
 		}
 	}

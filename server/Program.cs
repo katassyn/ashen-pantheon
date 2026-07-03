@@ -76,6 +76,92 @@ app.MapPut("/character", async (HttpRequest req) =>
     return Results.Ok();
 });
 
+// ── znajomi ──
+
+app.MapGet("/friends", (HttpRequest req) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (friends, requests) = db.FriendsView(me.Value);
+    return Results.Json(new { Friends = friends, Requests = requests });
+});
+
+app.MapPost("/friends/request", (HttpRequest req, NameBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.SendFriendRequest(me.Value, b.Username);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/friends/accept", (HttpRequest req, NameBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.AcceptFriend(me.Value, b.Username);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/friends/remove", (HttpRequest req, NameBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    db.RemoveFriend(me.Value, b.Username);
+    return Results.Ok();
+});
+
+// ── guildie ──
+
+app.MapGet("/guild", (HttpRequest req) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var v = db.GuildView(me.Value);
+    return Results.Json(new
+    {
+        Guild = v.Name == null ? null : new
+        {
+            v.Name, v.IsLeader,
+            Members = v.Members.Select(m => new { m.Name, m.Leader }),
+        },
+        Invites = v.Invites.Select(i => new { i.Id, i.Name }),
+    });
+});
+
+app.MapPost("/guild/create", (HttpRequest req, NameBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.CreateGuild(me.Value, b.Username);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/guild/invite", (HttpRequest req, NameBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.InviteToGuild(me.Value, b.Username);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/guild/accept", (HttpRequest req, GuildBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.AcceptGuildInvite(me.Value, b.GuildId);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/guild/leave", (HttpRequest req) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    db.LeaveGuild(me.Value);
+    return Results.Ok();
+});
+
 app.Run("http://0.0.0.0:8080");
 
 record Creds(string Username, string Password);
+record NameBody(string Username);
+record GuildBody(long GuildId);

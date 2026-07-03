@@ -23,6 +23,7 @@ public static class Keybinds
         ("skills", "Skills / Talents", Key.K),
         ("journal", "Quest Journal", Key.J),
         ("map", "World Map", Key.M),
+        ("social", "Friends / Guild", Key.O),
         ("interact", "Interact", Key.E),
     };
 

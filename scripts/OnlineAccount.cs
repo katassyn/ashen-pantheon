@@ -48,6 +48,50 @@ public static class AccountClient
     }
 
     private static string Short(string s) => s.Length > 60 ? s[..60] : s;
+
+    // ── social: znajomi + guildie (wymaga zalogowania online) ──
+
+    private static HttpRequestMessage Authed(HttpMethod m, string path, object? body = null)
+    {
+        var req = new HttpRequestMessage(m, $"{AccountSession.ServerUrl}{path}");
+        req.Headers.Add("Authorization", $"Bearer {AccountSession.Token}");
+        if (body != null) req.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+        return req;
+    }
+
+    /// <summary>POST z ciałem {Username} lub {GuildId}; zwraca (ok, komunikat błędu/"" ).</summary>
+    public static (bool Ok, string Error) Post(string path, object body)
+    {
+        if (!AccountSession.LoggedIn) return (false, "not logged in");
+        try
+        {
+            return Task.Run(async () =>
+            {
+                var resp = await Http.SendAsync(Authed(HttpMethod.Post, path, body));
+                if (resp.IsSuccessStatusCode) return (true, "");
+                string text = await resp.Content.ReadAsStringAsync();
+                string err = text;
+                try { using var d = JsonDocument.Parse(text); err = d.RootElement.GetProperty("Error").GetString() ?? text; } catch { }
+                return (false, err);
+            }).Result;
+        }
+        catch (Exception e) { return (false, $"server unavailable ({Short(e.Message)})"); }
+    }
+
+    /// <summary>GET zwracający surowy JSON (parsowany przez panel).</summary>
+    public static string? GetJson(string path)
+    {
+        if (!AccountSession.LoggedIn) return null;
+        try
+        {
+            return Task.Run(async () =>
+            {
+                var resp = await Http.SendAsync(Authed(HttpMethod.Get, path));
+                return resp.IsSuccessStatusCode ? await resp.Content.ReadAsStringAsync() : null;
+            }).Result;
+        }
+        catch { return null; }
+    }
 }
 
 /// <summary>Repozytorium postaci na meta-serwerze. Load blokujący (moment logowania);
