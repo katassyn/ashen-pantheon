@@ -54,7 +54,7 @@ public partial class VendorPanel : CanvasLayer
 
     public override void _Ready()
     {
-        _root = UiKit.Window(this, "SPRZEDAWCA — klik = sprzedaj    [E/Esc] zamknij");
+        _root = UiKit.Window(this, "VENDOR — click = sell    [E/Esc] close");
         _gold = new Label();
         _root.GetNode<VBoxContainer>("VB").AddChild(_gold);
         var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
@@ -75,13 +75,13 @@ public partial class VendorPanel : CanvasLayer
 
     private void Refresh()
     {
-        _gold.Text = $"Twoje złoto: {GameState.Wallet.Gold}";
+        _gold.Text = $"Your gold: {GameState.Wallet.Gold}";
         foreach (Node c in _list.GetChildren()) c.QueueFree();
         foreach (var placed in GameState.Bag.Placed)
         {
             var item = placed.Item;
             long price = Vendor.SellPrice(item);
-            var b = new Button { Text = $"{item.Name}  [{item.Rarity}]  —  {price} złota", TooltipText = CharacterPanel.Describe(item) };
+            var b = new Button { Text = $"{item.Name}  [{item.Rarity}]  —  {price} gold", TooltipText = CharacterPanel.Describe(item) };
             b.Modulate = ItemPickup.RarityColor(item.Rarity);
             b.Pressed += () =>
             {
@@ -110,13 +110,13 @@ public partial class StashPanel : CanvasLayer
 
     public override void _Ready()
     {
-        _root = UiKit.Window(this, "SKRYTKA — klik przenosi item    [E/Esc] zamknij");
+        _root = UiKit.Window(this, "STASH — click moves an item    [E/Esc] close");
         var hb = new HBoxContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         hb.AddThemeConstantOverride("separation", 24);
         _root.GetNode<VBoxContainer>("VB").AddChild(hb);
 
-        _bagList = MakeColumn(hb, "PLECAK");
-        _stashList = MakeColumn(hb, "SKRYTKA");
+        _bagList = MakeColumn(hb, "BAG");
+        _stashList = MakeColumn(hb, "STASH");
         Refresh();
     }
 

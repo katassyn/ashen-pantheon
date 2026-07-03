@@ -33,7 +33,7 @@ public static class AccountClient
                 var resp = await Http.PostAsync($"{AccountSession.ServerUrl}{endpoint}", body);
                 string text = await resp.Content.ReadAsStringAsync();
                 if (!resp.IsSuccessStatusCode)
-                    return (false, $"błąd: {(int)resp.StatusCode} {Short(text)}");
+                    return (false, $"error: {(int)resp.StatusCode} {Short(text)}");
 
                 using var doc = JsonDocument.Parse(text);
                 AccountSession.Token = doc.RootElement.GetProperty("Token").GetString();
@@ -43,7 +43,7 @@ public static class AccountClient
         }
         catch (Exception e)
         {
-            return (false, $"serwer niedostępny ({Short(e.InnerException?.Message ?? e.Message)})");
+            return (false, $"server unavailable ({Short(e.InnerException?.Message ?? e.Message)})");
         }
     }
 

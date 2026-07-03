@@ -55,7 +55,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
         sb.AppendLine($"{item.Name}  [{item.Rarity}]");
         foreach (var a in item.Affixes) sb.AppendLine($"  {a.Stat} +{a.Value:0.##}");
         if (item.Effect != UniqueEffect.None) sb.AppendLine($"  ✦ {item.Effect}");
-        sb.Append($"  wartość: {Vendor.SellPrice(item)} złota");
+        sb.Append($"  value: {Vendor.SellPrice(item)} gold");
         return sb.ToString();
     }
 
@@ -72,7 +72,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
             {
                 Slot = slot, Panel = this,
                 Text = item == null ? $"{slot}: —" : $"{slot}: {item.Name}",
-                TooltipText = item == null ? "Upuść tu pasujący item" : Describe(item),
+                TooltipText = item == null ? "Drop a matching item here" : Describe(item),
             };
             if (item != null) b.Modulate = ItemPickup.RarityColor(item.Rarity);
             _slots.AddChild(b);
@@ -95,7 +95,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
                 Position = new Vector2(placed.X * Cell, placed.Y * Cell),
                 Size = new Vector2(w * Cell - 2, h * Cell - 2),
                 Text = ShortName(placed.Item),
-                TooltipText = Describe(placed.Item) + "\nPPM = załóż · przeciągnij na slot/siatkę",
+                TooltipText = Describe(placed.Item) + "\nRMB = equip · drag onto slot/grid",
                 ClipText = true,
             };
             btn.Modulate = ItemPickup.RarityColor(placed.Item.Rarity);
@@ -109,9 +109,9 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
     {
         string letter = item.Kind switch
         {
-            ItemKind.Helmet => "HEŁM", ItemKind.Shoulders => "NAR", ItemKind.BodyArmour => "ZBR",
-            ItemKind.Gloves => "RĘK", ItemKind.Boots => "BUT", ItemKind.Belt => "PAS",
-            ItemKind.Amulet => "AMU", ItemKind.Ring => "PIER", ItemKind.OneHandWeapon => "1H",
+            ItemKind.Helmet => "HELM", ItemKind.Shoulders => "SHLD", ItemKind.BodyArmour => "BODY",
+            ItemKind.Gloves => "GLV", ItemKind.Boots => "BOOT", ItemKind.Belt => "BELT",
+            ItemKind.Amulet => "AMU", ItemKind.Ring => "RING", ItemKind.OneHandWeapon => "1H",
             ItemKind.TwoHandWeapon => "2H", ItemKind.OffHand => "OFF", _ => "?"
         };
         return item.Rarity >= Rarity.Legendary ? $"★{letter}" : letter;

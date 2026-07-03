@@ -29,7 +29,7 @@ public partial class WorldZoneManager : Node
 
         string zoneId = string.IsNullOrEmpty(Net.TravelZoneId) ? "swerdfield" : Net.TravelZoneId;
         _zone = WorldMaps.Zone(zoneId);
-        TopStatus = $"{_zone.Name}  (poziomy {_zone.LevelMin}–{_zone.LevelMax})";
+        TopStatus = $"{_zone.Name}  (levels {_zone.LevelMin}-{_zone.LevelMax})";
 
         // wyjścia — widoczne u wszystkich (deterministyczne z definicji)
         foreach (var exit in _zone.Exits)

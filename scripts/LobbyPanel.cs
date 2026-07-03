@@ -27,19 +27,19 @@ public partial class LobbyPanel : CanvasLayer
         _status = new Label { Text = Net.Status };
         vb.AddChild(_status);
 
-        _host = new Button { Text = "Hostuj grę" };
+        _host = new Button { Text = "Host game" };
         _host.Pressed += () => Net.HostGame();
         vb.AddChild(_host);
 
         var hb = new HBoxContainer();
         _ip = new LineEdit { Text = "127.0.0.1", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        _join = new Button { Text = "Dołącz" };
+        _join = new Button { Text = "Join" };
         _join.Pressed += () => Net.JoinGame(_ip.Text.StripEdges());
         hb.AddChild(_ip);
         hb.AddChild(_join);
         vb.AddChild(hb);
 
-        _leave = new Button { Text = "Rozłącz" };
+        _leave = new Button { Text = "Disconnect" };
         _leave.Pressed += () => Net.Leave();
         vb.AddChild(_leave);
     }

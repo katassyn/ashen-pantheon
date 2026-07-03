@@ -87,7 +87,7 @@ public partial class Hud : CanvasLayer
 				lines.Append($"\n   {(cur >= o.Amount ? "✔" : "•")} {o.Description}  {cur}/{o.Amount}");
 			}
 			if (GameState.Quests.ReadyToTurnIn(q))
-				lines.Append($"\n   → oddaj u: {QuestNpc.NpcName(q.TurnIn)}");
+				lines.Append($"\n   → turn in at: {QuestNpc.NpcName(q.TurnIn)}");
 			return lines.ToString();
 		}
 		return "";
@@ -123,8 +123,8 @@ public partial class Hud : CanvasLayer
 			var p = GameState.Progress;
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
-				$"Lv {p.Level}   Bóg: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C staty · I ekwipunek · K skille/drzewka · [E przy znacznikach w mieście = interakcja]" +
+				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
+				"C stats · I inventory · K skills/talents · [E near town markers = interact]" +
 				QuestTracker();
 		}
 
@@ -132,7 +132,7 @@ public partial class Hud : CanvasLayer
 		{
 			string center = _arena != null ? _arena.CenterMessage : "";
 			if (string.IsNullOrEmpty(center) && _player is { Dead: true })
-				center = "POKONANY\nwstaniesz, gdy drużyna oczyści pokój";
+				center = "DEFEATED\nyou will rise when your party clears the room";
 			_center.Text = center;
 		}
 
@@ -158,7 +158,7 @@ public partial class Hud : CanvasLayer
 		_xpBar.MaxValue = PlayerProgress.XpToNext(prog.Level);
 		_xpBar.Value = prog.Xp;
 		_xpNum.Text = $"{prog.Xp} / {PlayerProgress.XpToNext(prog.Level)}";
-		_goldLabel.Text = $"Złoto: {GameState.Wallet.Gold}    XP: {prog.Xp}/{PlayerProgress.XpToNext(prog.Level)}    pkt atrybutów: {prog.AttributePoints}   pkt skilli: {prog.SkillPoints}";
+		_goldLabel.Text = $"Gold: {GameState.Wallet.Gold}    XP: {prog.Xp}/{PlayerProgress.XpToNext(prog.Level)}    attribute pts: {prog.AttributePoints}   skill pts: {prog.SkillPoints}";
 
 		foreach (var slot in _slots) slot.Refresh(_player);
 	}
@@ -204,7 +204,7 @@ public partial class SkillSlotUi : PanelContainer
 		int reqLvl = GameState.ClassSpec.Skill(skillId)?.RequiredLevel ?? 1;
 		bool locked = reqLvl > GameState.Progress.Level;
 		_label.Text = locked
-			? $"[{key}] {info?.Name}\n🔒 poz.{reqLvl}"
+			? $"[{key}] {info?.Name}\n🔒 lvl {reqLvl}"
 			: cd > 0f
 				? $"[{key}] {info?.Name}\n{cd:0.0}s"
 				: $"[{key}] {info?.Name}{(god ? " ✦" : "")}";
@@ -243,25 +243,25 @@ public partial class PauseMenu : CanvasLayer
 		vb.AddThemeConstantOverride("separation", 10);
 		_root.AddChild(vb);
 
-		vb.AddChild(new Label { Text = "PAUZA", HorizontalAlignment = HorizontalAlignment.Center });
+		vb.AddChild(new Label { Text = "PAUSED", HorizontalAlignment = HorizontalAlignment.Center });
 
-		var resume = new Button { Text = "Wznów" };
+		var resume = new Button { Text = "Resume" };
 		resume.Pressed += () => _root.Visible = false;
 		vb.AddChild(resume);
 
-		_fullscreen = new CheckBox { Text = "Pełny ekran" };
+		_fullscreen = new CheckBox { Text = "Fullscreen" };
 		_fullscreen.Toggled += on => DisplayServer.WindowSetMode(
 			on ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
 		vb.AddChild(_fullscreen);
 
 		var volRow = new HBoxContainer();
-		volRow.AddChild(new Label { Text = "Głośność" });
+		volRow.AddChild(new Label { Text = "Volume" });
 		var vol = new HSlider { MinValue = 0, MaxValue = 1, Step = 0.05f, Value = 1, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 		vol.ValueChanged += v => AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb((float)v));
 		volRow.AddChild(vol);
 		vb.AddChild(volRow);
 
-		var toMenu = new Button { Text = "Menu główne" };
+		var toMenu = new Button { Text = "Main menu" };
 		toMenu.Pressed += () =>
 		{
 			GameState.Save();
@@ -270,7 +270,7 @@ public partial class PauseMenu : CanvasLayer
 		};
 		vb.AddChild(toMenu);
 
-		var quit = new Button { Text = "Wyjdź z gry" };
+		var quit = new Button { Text = "Quit game" };
 		quit.Pressed += () =>
 		{
 			GameState.Save();

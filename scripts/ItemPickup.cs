@@ -50,7 +50,7 @@ public partial class ItemPickup : Area2D
         if (_taken || body is not PlayerController player || !player.IsMultiplayerAuthority()) return;
         if (!GameState.Bag.TryAutoPlace(Item))
         {
-            GD.Print("Plecak pełny!");
+            GD.Print("Bag full!");
             return; // item zostaje na ziemi
         }
         _taken = true;

@@ -33,8 +33,8 @@ public partial class Net : Node
         EnsureOffline();
         Multiplayer.PeerConnected += OnPeerConnected;
         Multiplayer.PeerDisconnected += _ => { };
-        Multiplayer.ConnectedToServer += () => { Status = "połączono z hostem"; SessionChanged?.Invoke(); };
-        Multiplayer.ConnectionFailed += () => { Status = "połączenie nieudane"; EnsureOffline(); SessionChanged?.Invoke(); };
+        Multiplayer.ConnectedToServer += () => { Status = "connected to host"; SessionChanged?.Invoke(); };
+        Multiplayer.ConnectionFailed += () => { Status = "connection failed"; EnsureOffline(); SessionChanged?.Invoke(); };
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
 
@@ -62,7 +62,7 @@ public partial class Net : Node
     public static bool HostGame()
     {
         var peer = new ENetMultiplayerPeer();
-        if (peer.CreateServer(DefaultPort, MaxClients) != Error.Ok) { Status = "nie można otworzyć portu"; return false; }
+        if (peer.CreateServer(DefaultPort, MaxClients) != Error.Ok) { Status = "cannot open port"; return false; }
         I.Multiplayer.MultiplayerPeer = peer;
         Status = $"HOST (port {DefaultPort})";
         return true;
@@ -71,9 +71,9 @@ public partial class Net : Node
     public static bool JoinGame(string ip)
     {
         var peer = new ENetMultiplayerPeer();
-        if (peer.CreateClient(ip, DefaultPort) != Error.Ok) { Status = "błędny adres"; return false; }
+        if (peer.CreateClient(ip, DefaultPort) != Error.Ok) { Status = "invalid address"; return false; }
         I.Multiplayer.MultiplayerPeer = peer;
-        Status = $"łączenie z {ip}...";
+        Status = $"connecting to {ip}...";
         return true;
     }
 
@@ -93,12 +93,12 @@ public partial class Net : Node
         GD.Print($"[net] peer connected: {peer} (ja: {MyId})");
         // dołączanie tylko gdy host stoi w mieście — w trakcie runu odsyłamy
         if (Multiplayer.IsServer() && GetTree().CurrentScene?.Name != "Hub")
-            RpcId(peer, MethodName.RpcKick, "Host jest w trakcie runu — spróbuj za chwilę.");
+            RpcId(peer, MethodName.RpcKick, "Host is mid-run — try again in a moment.");
     }
 
     private void OnServerDisconnected()
     {
-        Status = "host się rozłączył";
+        Status = "host disconnected";
         EnsureOffline();
         EnemiesById.Clear();
         SessionChanged?.Invoke();

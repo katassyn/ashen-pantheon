@@ -37,7 +37,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         vb.AddThemeConstantOverride("separation", 8);
         _root.AddChild(vb);
 
-        vb.AddChild(new Label { Text = "SKILLE I DRZEWKA    [K] zamknij    ≡ przeciągnij skill na pasek na dole" });
+        vb.AddChild(new Label { Text = "SKILLS & TALENTS    [K] close    ≡ drag a skill onto the bottom bar" });
         _header = new Label();
         vb.AddChild(_header);
 
@@ -65,7 +65,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         right.AddThemeConstantOverride("separation", 8);
         hb.AddChild(right);
 
-        _backBtn = new Button { Text = "← wróć do drzewa klasy", Visible = false };
+        _backBtn = new Button { Text = "← back to class tree", Visible = false };
         _backBtn.Pressed += () => { _mode = "class"; Refresh(); };
         right.AddChild(_backBtn);
 
@@ -102,15 +102,15 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         var prog = GameState.Progress;
         int treeCost = (int)Respec.SkillTreeCost(GameState.Trees.SpentPoints);
         _header.Text = $"Pledge: {Gods.Name(GameState.PledgedGod)} — {Gods.Passive(GameState.PledgedGod)}\n" +
-                       $"Poziom: {prog.Level}   Punkty skilli: {prog.SkillPoints}   Złoto: {GameState.Wallet.Gold}" +
-                       (GameState.Trees.SpentPoints > 0 ? $"   (reset drzewek: {treeCost} złota)" : "");
+                       $"Level: {prog.Level}   Skill points: {prog.SkillPoints}   Gold: {GameState.Wallet.Gold}" +
+                       (GameState.Trees.SpentPoints > 0 ? $"   (tree reset: {treeCost} gold)" : "");
 
         // lista skilli klasy
         foreach (Node c in _skillList.GetChildren()) c.QueueFree();
 
         if (GameState.Trees.SpentPoints > 0)
         {
-            var respec = new Button { Text = $"Reset drzewek ({treeCost}g)" };
+            var respec = new Button { Text = $"Reset trees ({treeCost}g)" };
             respec.Pressed += () =>
             {
                 if (GameState.Wallet.Gold < treeCost) return;
@@ -137,7 +137,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
                 Text = $"≡ {spec.Name}{(locked ? $" 🔒{spec.RequiredLevel}" : "")}{(slot.HasValue ? $" [{Loadout.SlotKeys[slot.Value]}]" : "")}",
                 Disabled = locked,
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-                TooltipText = locked ? $"Odblokowanie na poziomie {spec.RequiredLevel}" : "Kliknij = pokaż drzewko · przeciągnij na pasek",
+                TooltipText = locked ? $"Unlocks at level {spec.RequiredLevel}" : "Click = open tree · drag onto the bar",
             };
             var sid = spec.Id;
             drag.Pressed += () => OpenSkillTree(sid);
@@ -147,7 +147,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
             var toggle = new Button
             {
                 Text = godOn ? "✦" : "—",
-                TooltipText = godOn ? "Wersja BOGA (kliknij: baza)" : "Wersja BAZOWA (kliknij: bóg)",
+                TooltipText = godOn ? "GOD version (click: base)" : "BASE version (click: god)",
                 Disabled = GameState.PledgedGod == GodId.None,
                 CustomMinimumSize = new Vector2(34, 0),
             };
@@ -173,7 +173,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         else
         {
             _classCanvas.Rebuild();
-            _details.Text = "[b]Drzewo klasy[/b] — skille odblokowują się z poziomem; pasywki na trackach kupujesz punktami skilli.\nKliknij SKILL, aby otworzyć jego mini-drzewko ulepszeń.";
+            _details.Text = "[b]Class tree[/b] — skills unlock by level; passives on the tracks are bought with skill points.\nClick a SKILL to open its upgrade mini-tree.";
         }
     }
 
@@ -205,17 +205,17 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
     public void ShowPassiveDetails(ClassTreeNode node, string reason)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"[b]{node.Name}[/b]  [pasywka · koszt {node.Cost} pkt{(node.RequiredLevel > 0 ? $" · wym. poziom {node.RequiredLevel}" : "")}]");
+        sb.AppendLine($"[b]{node.Name}[/b]  [passive · cost {node.Cost} pt{(node.RequiredLevel > 0 ? $" · req. level {node.RequiredLevel}" : "")}]");
         sb.AppendLine(node.Description);
         if (node.ExclusiveGroup != null)
         {
             var siblings = ClassTree.Trees[GameState.ClassId]
                 .Where(n => n.ExclusiveGroup == node.ExclusiveGroup && n.Id != node.Id).Select(n => n.Name);
-            sb.AppendLine($"[color=#d47070]Wyklucza się z: {string.Join(", ", siblings)}[/color]");
+            sb.AppendLine($"[color=#d47070]Mutually exclusive with: {string.Join(", ", siblings)}[/color]");
         }
-        sb.AppendLine(GameState.PassiveNodes.Contains(node.Id) ? "[color=#8fd48f]✔ KUPIONA[/color]"
+        sb.AppendLine(GameState.PassiveNodes.Contains(node.Id) ? "[color=#8fd48f]✔ OWNED[/color]"
             : reason != null ? $"[color=#d4a050]🔒 {reason}[/color]"
-            : "[color=#f0e080]Kliknij, aby kupić[/color]");
+            : "[color=#f0e080]Click to buy[/color]");
         _details.Text = sb.ToString();
     }
 
@@ -228,31 +228,31 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         var s = PlayerController.Local?.BuildSkill(skillId);
 
         var sb = new StringBuilder();
-        sb.Append($"[b]{spec.Name}[/b]  (wym. poziom {spec.RequiredLevel})   ");
+        sb.Append($"[b]{spec.Name}[/b]  (req. level {spec.RequiredLevel})   ");
         sb.AppendLine(GameState.GodSkills.Contains(skillId) && GameState.PledgedGod != GodId.None
-            ? $"[color=#c9a0ff]wersja: {Gods.Name(GameState.PledgedGod)} ✦[/color]" : "wersja: bazowa");
+            ? $"[color=#c9a0ff]version: {Gods.Name(GameState.PledgedGod)} ✦[/color]" : "version: base");
         sb.AppendLine(spec.Description);
 
         if (s != null)
         {
-            sb.Append($"[color=#f0c060]Obrażenia: {s.Damage:0.#} ({s.DamageType})[/color]");
-            if (spec.WeaponScaling > 0) sb.Append($"   [color=#9a9a9a](baza {spec.BaseDamage:0.#} + {spec.WeaponScaling:P0} obrażeń broni)[/color]");
+            sb.Append($"[color=#f0c060]Damage: {s.Damage:0.#} ({s.DamageType})[/color]");
+            if (spec.WeaponScaling > 0) sb.Append($"   [color=#9a9a9a](base {spec.BaseDamage:0.#} + {spec.WeaponScaling:P0} weapon damage)[/color]");
             sb.AppendLine();
-            sb.Append($"Koszt: {s.ConcentrationCost * s.CostMult:0.#} {GameState.Class.ResourceName}");
+            sb.Append($"Cost: {s.ConcentrationCost * s.CostMult:0.#} {GameState.Class.ResourceName}");
             sb.Append($"   CD: {spec.Cooldown * s.CdMult:0.##}s");
-            sb.AppendLine($"   Czas rzucenia: {s.CastTime:0.##}s ({(spec.UsesAttackSpeed ? "atk" : "cast")} speed)");
+            sb.AppendLine($"   Cast time: {s.CastTime:0.##}s ({(spec.UsesAttackSpeed ? "atk" : "cast")} speed)");
 
             var extras = new List<string>();
-            if (s.AppliesMark) extras.Add($"oznacza ({s.MarkDuration:0.#}s)");
-            if (s.MarkedMultiplier > 1f) extras.Add($"×{s.MarkedMultiplier:0.##} na oznaczonych");
-            if (s.Pierces) extras.Add("przebija");
-            if (s.PierceMarkedOnly) extras.Add("przebija oznaczonych");
-            if (s.Explodes) extras.Add("eksploduje");
-            if (s.ExtraProjectiles > 0) extras.Add($"+{s.ExtraProjectiles} pociski");
-            if (s.OnHitStatus != StatusType.None) extras.Add($"{s.OnHitStatus} {s.StatusDps:0.#}/s przez {s.StatusDuration:0.#}s");
+            if (s.AppliesMark) extras.Add($"marks ({s.MarkDuration:0.#}s)");
+            if (s.MarkedMultiplier > 1f) extras.Add($"x{s.MarkedMultiplier:0.##} vs Marked");
+            if (s.Pierces) extras.Add("pierces");
+            if (s.PierceMarkedOnly) extras.Add("pierces Marked");
+            if (s.Explodes) extras.Add("explodes");
+            if (s.ExtraProjectiles > 0) extras.Add($"+{s.ExtraProjectiles} projectiles");
+            if (s.OnHitStatus != StatusType.None) extras.Add($"{s.OnHitStatus} {s.StatusDps:0.#}/s for {s.StatusDuration:0.#}s");
             if (s.StunDuration > 0) extras.Add($"stun {s.StunDuration:0.#}s");
-            if (s.HealOnHit > 0) extras.Add($"leczy {s.HealOnHit:0.#} za trafienie");
-            if (s.AoeMult != 1f) extras.Add($"obszar ×{s.AoeMult:0.##}");
+            if (s.HealOnHit > 0) extras.Add($"heals {s.HealOnHit:0.#} per hit");
+            if (s.AoeMult != 1f) extras.Add($"area x{s.AoeMult:0.##}");
             if (extras.Count > 0) sb.AppendLine("[color=#8fd48f]" + string.Join(" · ", extras) + "[/color]");
         }
 
@@ -266,18 +266,18 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         bool allocated = GameState.Trees.IsAllocated(skillId, node.Id);
 
         var sb = new StringBuilder();
-        sb.AppendLine($"[b]{node.Name}[/b]  [koszt: {node.Cost} pkt{(node.RequiredLevel > 0 ? $" · wym. poziom {node.RequiredLevel}" : "")}]");
+        sb.AppendLine($"[b]{node.Name}[/b]  [cost: {node.Cost} pt{(node.RequiredLevel > 0 ? $" · req. level {node.RequiredLevel}" : "")}]");
         sb.AppendLine(node.Description);
         if (node.Requires != null)
-            sb.AppendLine($"[color=#9a9a9a]Wymaga węzła: {GameData.FindNode(skillId, node.Requires)?.Name}[/color]");
+            sb.AppendLine($"[color=#9a9a9a]Requires node: {GameData.FindNode(skillId, node.Requires)?.Name}[/color]");
         if (node.ExclusiveGroup != null)
         {
             var siblings = GameData.Trees[skillId].Where(n => n.ExclusiveGroup == node.ExclusiveGroup && n.Id != node.Id).Select(n => n.Name);
-            sb.AppendLine($"[color=#d47070]Wyklucza się z: {string.Join(", ", siblings)}[/color]");
+            sb.AppendLine($"[color=#d47070]Mutually exclusive with: {string.Join(", ", siblings)}[/color]");
         }
-        sb.AppendLine(allocated ? "[color=#8fd48f]✔ ODBLOKOWANY[/color]"
+        sb.AppendLine(allocated ? "[color=#8fd48f]✔ ALLOCATED[/color]"
             : reason != null ? $"[color=#d4a050]🔒 {reason}[/color]"
-            : "[color=#f0e080]Kliknij ponownie, aby odblokować[/color]");
+            : "[color=#f0e080]Click again to allocate[/color]");
         _details.Text = sb.ToString();
     }
 
@@ -333,7 +333,7 @@ public partial class SkillGraphCanvas : Control
 
                 var btn = new Button
                 {
-                    Text = $"{node.Name}\n[{node.Cost} pkt{(node.RequiredLevel > 0 ? $" · poz.{node.RequiredLevel}" : "")}]",
+                    Text = $"{node.Name}\n[{node.Cost} pt{(node.RequiredLevel > 0 ? $" · lvl {node.RequiredLevel}" : "")}]",
                     Position = new Vector2(Pad + tier.Key * TierW, Pad + row * RowH),
                     Size = new Vector2(NodeW, NodeH),
                     ClipText = true,
@@ -393,7 +393,7 @@ public partial class SkillGraphCanvas : Control
                 var a = members[i].Position + new Vector2(NodeW / 2f, NodeH);
                 var b = members[i + 1].Position + new Vector2(NodeW / 2f, 0);
                 DrawDashedLine(a, b, new Color(0.9f, 0.35f, 0.35f, 0.8f), 2f, 6f);
-                DrawString(ThemeDB.FallbackFont, (a + b) / 2f + new Vector2(6, 4), "ALBO",
+                DrawString(ThemeDB.FallbackFont, (a + b) / 2f + new Vector2(6, 4), "OR",
                     HorizontalAlignment.Left, -1, 11, new Color(0.9f, 0.45f, 0.45f));
             }
         }
@@ -444,8 +444,8 @@ public partial class ClassTreeCanvas : Control
                     Size = isSkill || isStart ? new Vector2(SkillW, SkillH) : new Vector2(PassW, PassH),
                     ClipText = true,
                     Text = isStart ? "★ START"
-                        : isSkill ? $"{spec?.Name ?? node.SkillId}\n{(satisfied ? "▶ drzewko ulepszeń" : $"🔒 poziom {spec?.RequiredLevel}")}"
-                        : $"◈ {node.Name}\n[{node.Cost} pkt{(node.RequiredLevel > 0 ? $" · poz.{node.RequiredLevel}" : "")}]",
+                        : isSkill ? $"{spec?.Name ?? node.SkillId}\n{(satisfied ? "▶ upgrade tree" : $"🔒 level {spec?.RequiredLevel}")}"
+                        : $"◈ {node.Name}\n[{node.Cost} pt{(node.RequiredLevel > 0 ? $" · lvl {node.RequiredLevel}" : "")}]",
                 };
 
                 var style = new StyleBoxFlat();
@@ -513,7 +513,7 @@ public partial class ClassTreeCanvas : Control
                 var a = members[i].Position + new Vector2(members[i].Size.X, members[i].Size.Y / 2f);
                 var b = members[i + 1].Position + new Vector2(0, members[i + 1].Size.Y / 2f);
                 DrawDashedLine(a, b, new Color(0.9f, 0.35f, 0.35f, 0.8f), 2f, 6f);
-                DrawString(ThemeDB.FallbackFont, (a + b) / 2f + new Vector2(-16, -6), "ALBO",
+                DrawString(ThemeDB.FallbackFont, (a + b) / 2f + new Vector2(-16, -6), "OR",
                     HorizontalAlignment.Left, -1, 11, new Color(0.9f, 0.45f, 0.45f));
             }
         }

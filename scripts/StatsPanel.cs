@@ -27,11 +27,11 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
         _buttons.GrowVertical = Control.GrowDirection.Begin;
         _root.AddChild(_buttons);
 
-        AddAttrButton("+ Siła", () => GameState.Spent.Strength++);
+        AddAttrButton("+ Str", () => GameState.Spent.Strength++);
         AddAttrButton("+ Dex", () => GameState.Spent.Dexterity++);
         AddAttrButton("+ Int", () => GameState.Spent.Intelligence++);
 
-        var respec = new Button { Text = "Respec atrybutów" };
+        var respec = new Button { Text = "Respec attributes" };
         respec.Pressed += () =>
         {
             int spent = GameState.Spent.Strength + GameState.Spent.Dexterity + GameState.Spent.Intelligence;
@@ -88,24 +88,24 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
         var p = GameState.Progress;
         int spentAttr = GameState.Spent.Strength + GameState.Spent.Dexterity + GameState.Spent.Intelligence;
         _text.Text =
-            "STATYSTYKI    [C] zamknij\n\n" +
-            $"Poziom: {p.Level}    XP: {p.Xp}/{PlayerProgress.XpToNext(p.Level)}    Złoto: {GameState.Wallet.Gold}\n" +
-            $"Punkty atrybutów: {p.AttributePoints}    Punkty skilli: {p.SkillPoints}\n\n" +
-            $"Życie:            {s.MaxLife:0}\n" +
+            "STATS    [C] close\n\n" +
+            $"Level: {p.Level}    XP: {p.Xp}/{PlayerProgress.XpToNext(p.Level)}    Gold: {GameState.Wallet.Gold}\n" +
+            $"Attribute points: {p.AttributePoints}    Skill points: {p.SkillPoints}\n\n" +
+            $"Life:             {s.MaxLife:0}\n" +
             $"Mana:             {s.MaxMana:0}\n" +
             $"Energy Shield:    {s.MaxEnergyShield:0}\n" +
             $"Armour:           {s.Armour:0}\n" +
             $"Evasion:          {s.EvasionRating:0}\n" +
             $"Hit chance:       {s.HitChance:0}%\n" +
-            $"Krytyk:           {s.CritChance * 100f:0}%  ×{s.CritMultiplier:0.00}\n" +
-            $"Attack dmg:       ×{s.AttackDamageMultiplier:0.00}\n\n" +
-            $"Siła {s.Attributes.Strength} (wydane {GameState.Spent.Strength})   " +
-            $"Dex {s.Attributes.Dexterity} (wydane {GameState.Spent.Dexterity})   " +
-            $"Int {s.Attributes.Intelligence} (wydane {GameState.Spent.Intelligence})\n\n" +
-            $"Resisty: Fire {s.Resistances.Effective(DamageType.Fire, s.Level):0}%  " +
+            $"Crit:             {s.CritChance * 100f:0}%  x{s.CritMultiplier:0.00}\n" +
+            $"Attack dmg:       x{s.AttackDamageMultiplier:0.00}\n\n" +
+            $"Str {s.Attributes.Strength} (spent {GameState.Spent.Strength})   " +
+            $"Dex {s.Attributes.Dexterity} (spent {GameState.Spent.Dexterity})   " +
+            $"Int {s.Attributes.Intelligence} (spent {GameState.Spent.Intelligence})\n\n" +
+            $"Resists: Fire {s.Resistances.Effective(DamageType.Fire, s.Level):0}%  " +
             $"Cold {s.Resistances.Effective(DamageType.Cold, s.Level):0}%  " +
             $"Lightning {s.Resistances.Effective(DamageType.Lightning, s.Level):0}%  " +
             $"Chaos {s.Resistances.Effective(DamageType.Chaos, s.Level):0}%\n" +
-            $"Respec atrybutów kosztuje: {Respec.AttributeCost(spentAttr)} złota";
+            $"Attribute respec costs: {Respec.AttributeCost(spentAttr)} gold";
     }
 }

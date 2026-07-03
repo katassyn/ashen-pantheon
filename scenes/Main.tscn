@@ -44,7 +44,7 @@ offset_top = -120.0
 offset_right = 220.0
 offset_bottom = -90.0
 horizontal_alignment = 1
-text = "Skrytka [E]"
+text = "Stash [E]"
 
 [node name="VendorMark" type="Sprite2D" parent="."]
 position = Vector2(-320, 170)
@@ -62,7 +62,7 @@ offset_top = 100.0
 offset_right = 220.0
 offset_bottom = 130.0
 horizontal_alignment = 1
-text = "Sprzedawca [E]"
+text = "Vendor [E]"
 
 [node name="AmuunMark" type="Sprite2D" parent="."]
 position = Vector2(0, -260)

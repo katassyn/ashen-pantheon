@@ -23,11 +23,11 @@ public static class QuestNpc
             GameState.Save();
             PlayerController.Local?.Refresh();
             string text = string.Join("\n", ready.DialogueCompletion)
-                + $"\n\n✔ Ukończono: {ready.Name}   (+{ready.RewardXp} XP, +{ready.RewardGold} złota)";
+                + $"\n\n✔ Completed: {ready.Name}   (+{ready.RewardXp} XP, +{ready.RewardGold} gold)";
             if (next != null && log.Accept(next, level))
             {
                 GameState.Save();
-                text += $"\n\n▶ Nowy quest: {next.Name}\n" + string.Join("\n", next.DialogueStart);
+                text += $"\n\n▶ New quest: {next.Name}\n" + string.Join("\n", next.DialogueStart);
             }
             Dialog(tree, NpcName(npcId), text);
             return;
@@ -41,7 +41,7 @@ public static class QuestNpc
             log.Accept(offered, level);
             log.OnTalk(npcId); // rozmowa u questgivera zalicza cel Talk
             GameState.Save();
-            Dialog(tree, NpcName(npcId), string.Join("\n", offered.DialogueStart) + $"\n\n▶ Przyjęto: {offered.Name}");
+            Dialog(tree, NpcName(npcId), string.Join("\n", offered.DialogueStart) + $"\n\n▶ Accepted: {offered.Name}");
             return;
         }
 
@@ -78,7 +78,7 @@ public static class QuestNpc
         title.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.5f));
         vb.AddChild(title);
         vb.AddChild(new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart, SizeFlagsVertical = Control.SizeFlags.ExpandFill });
-        var close = new Button { Text = "Zamknij [E/Esc]" };
+        var close = new Button { Text = "Close [E/Esc]" };
         close.Pressed += () => layer.QueueFree();
         vb.AddChild(close);
 

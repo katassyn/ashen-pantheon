@@ -38,13 +38,13 @@ public partial class MainMenu : Control
         realmRow.AddThemeConstantOverride("separation", 8);
         realmRow.AddChild(new Label { Text = "Realm:" });
         _realm = new OptionButton();
-        _realm.AddItem("Ashen (lokalny)");
-        _realm.AddItem("— online (konto Steam) wkrótce —");
+        _realm.AddItem("Ashen (local)");
+        _realm.AddItem("— online (Steam account) coming soon —");
         _realm.SetItemDisabled(1, true);
         realmRow.AddChild(_realm);
         center.AddChild(realmRow);
 
-        center.AddChild(new Label { Text = "Postacie:" });
+        center.AddChild(new Label { Text = "Characters:" });
         var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         _slotList = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_slotList);
@@ -53,18 +53,18 @@ public partial class MainMenu : Control
         // kreator (pokazywany po wybraniu pustego slotu)
         _creator = new VBoxContainer { Visible = false };
         _creator.AddThemeConstantOverride("separation", 8);
-        _creator.AddChild(new Label { Text = "NOWA POSTAĆ" });
-        _nick = new LineEdit { PlaceholderText = "nick (3–16 znaków)", MaxLength = 16 };
+        _creator.AddChild(new Label { Text = "NEW CHARACTER" });
+        _nick = new LineEdit { PlaceholderText = "name (3-16 characters)", MaxLength = 16 };
         _creator.AddChild(_nick);
         var classRow = new HBoxContainer();
         classRow.AddThemeConstantOverride("separation", 8);
-        classRow.AddChild(new Button { Text = "🏹 Ranger", Disabled = false, TooltipText = "Łowca — Koncentracja, Oznaczenie" });
-        var dk = new Button { Text = "Dragonknight (wkrótce)", Disabled = true };
-        var sw = new Button { Text = "Spellweaver (wkrótce)", Disabled = true };
+        classRow.AddChild(new Button { Text = "🏹 Ranger", Disabled = false, TooltipText = "Hunter — Concentration, Mark" });
+        var dk = new Button { Text = "Dragonknight (soon)", Disabled = true };
+        var sw = new Button { Text = "Spellweaver (soon)", Disabled = true };
         classRow.AddChild(dk);
         classRow.AddChild(sw);
         _creator.AddChild(classRow);
-        var create = new Button { Text = "Stwórz i graj" };
+        var create = new Button { Text = "Create & play" };
         create.Pressed += CreateAndPlay;
         _creator.AddChild(create);
         center.AddChild(_creator);
@@ -89,8 +89,8 @@ public partial class MainMenu : Control
             {
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 Text = meta == null
-                    ? $"{i + 1}.  — pusty slot —"
-                    : $"{i + 1}.  {meta.Name}   ({ClassName(meta.ClassId)}, poziom {meta.Level})",
+                    ? $"{i + 1}.  — empty slot —"
+                    : $"{i + 1}.  {meta.Name}   ({ClassName(meta.ClassId)}, level {meta.Level})",
             };
             int slot = i;
             main.Pressed += () => SelectSlot(slot, meta != null);
@@ -98,11 +98,11 @@ public partial class MainMenu : Control
 
             if (meta != null)
             {
-                var del = new Button { Text = "Usuń", TooltipText = "Usuwa postać bezpowrotnie" };
+                var del = new Button { Text = "Delete", TooltipText = "Deletes the character permanently" };
                 del.Pressed += () =>
                 {
                     File.Delete(SlotPath(slot));
-                    _status.Text = $"Usunięto postać ze slotu {slot + 1}.";
+                    _status.Text = $"Character in slot {slot + 1} deleted.";
                     RefreshSlots();
                 };
                 row.AddChild(del);
@@ -126,14 +126,14 @@ public partial class MainMenu : Control
         else
         {
             _creator.Visible = true;
-            _status.Text = $"Tworzysz postać w slocie {slot + 1}.";
+            _status.Text = $"Creating a character in slot {slot + 1}.";
         }
     }
 
     private void CreateAndPlay()
     {
         string nick = _nick.Text.StripEdges();
-        if (nick.Length < 3) { _status.Text = "Nick musi mieć min. 3 znaki."; return; }
+        if (nick.Length < 3) { _status.Text = "Name must be at least 3 characters."; return; }
         if (_selectedSlot < 0) return;
 
         GameState.NewCharacter(nick, "ranger", new JsonGameStateRepository(SlotPath(_selectedSlot)));

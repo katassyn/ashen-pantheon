@@ -67,23 +67,23 @@ public static class ClassTree
     public static string? BlockReason(string classId, string nodeId, int playerLevel, int points, HashSet<string> passives)
     {
         var node = Find(classId, nodeId);
-        if (node == null) return "nieznany węzeł";
-        if (node.Type != "passive") return "to nie pasywka";
+        if (node == null) return "unknown node";
+        if (node.Type != "passive") return "not a passive";
         if (passives.Contains(nodeId)) return null;
-        if (node.RequiredLevel > playerLevel) return $"wymaga poziomu {node.RequiredLevel}";
+        if (node.RequiredLevel > playerLevel) return $"requires level {node.RequiredLevel}";
         if (node.Requires != null)
         {
             var req = Find(classId, node.Requires);
             if (req == null || !NodeSatisfied(classId, req, playerLevel, passives))
-                return $"wymaga: {req?.Name ?? node.Requires}";
+                return $"requires: {req?.Name ?? node.Requires}";
         }
         if (node.ExclusiveGroup != null)
         {
             var taken = Trees[classId].FirstOrDefault(n =>
                 n.ExclusiveGroup == node.ExclusiveGroup && n.Id != nodeId && passives.Contains(n.Id));
-            if (taken != null) return $"wyklucza się z: {taken.Name}";
+            if (taken != null) return $"mutually exclusive with: {taken.Name}";
         }
-        if (points < node.Cost) return $"brak punktów (koszt {node.Cost})";
+        if (points < node.Cost) return $"not enough points (cost {node.Cost})";
         return null;
     }
 

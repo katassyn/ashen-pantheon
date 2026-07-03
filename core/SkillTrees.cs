@@ -38,18 +38,18 @@ public sealed class SkillTreeState
     public string? BlockReason(string skillId, string nodeId, int playerLevel, int availablePoints)
     {
         var node = GameData.FindNode(skillId, nodeId);
-        if (node is null) return "nieznany węzeł";
+        if (node is null) return "unknown node";
         if (IsAllocated(skillId, nodeId)) return null;
-        if (node.RequiredLevel > playerLevel) return $"wymaga poziomu {node.RequiredLevel}";
+        if (node.RequiredLevel > playerLevel) return $"requires level {node.RequiredLevel}";
         if (node.Requires != null && !IsAllocated(skillId, node.Requires))
-            return $"wymaga: {GameData.FindNode(skillId, node.Requires)?.Name ?? node.Requires}";
+            return $"requires: {GameData.FindNode(skillId, node.Requires)?.Name ?? node.Requires}";
         if (node.ExclusiveGroup != null)
         {
             var taken = GameData.Trees[skillId]
                 .FirstOrDefault(n => n.ExclusiveGroup == node.ExclusiveGroup && n.Id != nodeId && IsAllocated(skillId, n.Id));
-            if (taken != null) return $"wyklucza się z: {taken.Name}";
+            if (taken != null) return $"mutually exclusive with: {taken.Name}";
         }
-        if (availablePoints < node.Cost) return $"brak punktów (koszt {node.Cost})";
+        if (availablePoints < node.Cost) return $"not enough points (cost {node.Cost})";
         return null;
     }
 

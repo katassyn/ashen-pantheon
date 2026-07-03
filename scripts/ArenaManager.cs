@@ -55,7 +55,7 @@ public partial class ArenaManager : Node
         if (_deadPlayers.Count >= Net.PlayerCount())
         {
             _state = State.Lost;
-            SetStatus("", "DRUŻYNA POKONANA\n[R u hosta] powrót do miasta");
+            SetStatus("", "PARTY DEFEATED\n[R on host] return to town");
             GameState.Save();
         }
     }
@@ -80,7 +80,7 @@ public partial class ArenaManager : Node
         switch (_state)
         {
             case State.Starting:
-                SetStatus("Przygotuj się...", "");
+                SetStatus("Get ready...", "");
                 _timer -= dt;
                 if (_timer <= 0f) StartRoom(0);
                 break;
@@ -88,13 +88,12 @@ public partial class ArenaManager : Node
             case State.Fighting:
                 int alive = GetTree().GetNodesInGroup("enemies").Count;
                 var room = _plan[_room];
-                SetStatus($"Pokój {_room + 1}/{_plan.Count}{(room.Boss ? " [BOSS]" : "")}   wrogów: {alive}   graczy: {Net.PlayerCount() - _deadPlayers.Count}", "");
+                SetStatus($"Room {_room + 1}/{_plan.Count}{(room.Boss ? " [BOSS]" : "")}   enemies: {alive}   players: {Net.PlayerCount() - _deadPlayers.Count}", "");
                 if (alive == 0)
                 {
                     if (_room + 1 >= _plan.Count)
                     {
-                        _state = State.Won;
-                        SetStatus("", "RUN UKOŃCZONY!\n[R u hosta] powrót do miasta");
+                        SetStatus("", "RUN COMPLETE!\n[R on host] return to town");
                         Net.BroadcastQuestClear(_zone.Id); // cel questowy Clear u wszystkich graczy
                         GameState.Save();
                     }
@@ -113,7 +112,7 @@ public partial class ArenaManager : Node
                 break;
 
             case State.RoomCleared:
-                SetStatus("Pokój oczyszczony — kolejny nadchodzi...", "");
+                SetStatus("Room cleared — next one incoming...", "");
                 _timer -= dt;
                 if (_timer <= 0f) StartRoom(_room + 1);
                 break;

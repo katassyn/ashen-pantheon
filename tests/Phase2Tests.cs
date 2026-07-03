@@ -160,7 +160,7 @@ public class SkillTreeTests
         // basic_pierce wymaga poziomu 5
         Assert.False(state.CanAllocate("basic", "basic_pierce", playerLevel: 4));
         Assert.True(state.CanAllocate("basic", "basic_pierce", playerLevel: 5));
-        Assert.Contains("poziomu", state.BlockReason("basic", "basic_pierce", 4, 10));
+        Assert.Contains("level", state.BlockReason("basic", "basic_pierce", 4, 10));
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public class SkillTreeTests
         var state = new SkillTreeState();
         state.Allocate("basic", "basic_dmg");
         state.Allocate("basic", "basic_pierce");
-        Assert.Contains("wyklucza", state.BlockReason("basic", "basic_twin", 99, 10));
+        Assert.Contains("exclusive", state.BlockReason("basic", "basic_twin", 99, 10));
     }
 }
 
