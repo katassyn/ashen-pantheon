@@ -141,7 +141,7 @@ public partial class Hud : CanvasLayer
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
 				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C stats · I inv · K skills · J journal · M map · TAB minimap · T trade · Enter chat" +
+				"C stats · I inv · K skills · J journal · M map · TAB minimap · Enter chat · RMB party name = trade/whisper" +
 				QuestTracker();
 		}
 
@@ -377,6 +377,9 @@ public partial class PartyRow : PanelContainer
 {
 	private Label _name;
 	private ProgressBar _hp;
+	private PopupMenu _menu;
+	private long _peer;
+	private bool _local;
 
 	public override void _Ready()
 	{
@@ -393,15 +396,81 @@ public partial class PartyRow : PanelContainer
 		_hp.AddThemeStyleboxOverride("fill", new StyleBoxFlat { BgColor = new Color(0.75f, 0.2f, 0.2f) });
 		_hp.AddThemeStyleboxOverride("background", new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0.6f) });
 		vb.AddChild(_hp);
+
+		_menu = new PopupMenu();
+		_menu.AddItem("Trade", 0);
+		_menu.AddItem("Whisper", 1);
+		_menu.AddItem("Invite to Guild", 2);
+		_menu.IdPressed += OnMenu;
+		AddChild(_menu);
 	}
 
 	public void Update(PlayerController p)
 	{
-		bool local = p.IsMultiplayerAuthority();
-		string who = local ? GameState.CharacterName : Net.NameOf(p.GetMultiplayerAuthority());
-		_name.Text = (local ? "* " : "   ") + who + (p.Dead ? "  (down)" : "");
-		_name.Modulate = local ? new Color(0.7f, 0.9f, 1f) : Colors.White;
+		_local = p.IsMultiplayerAuthority();
+		_peer = p.GetMultiplayerAuthority();
+		string who = _local ? GameState.CharacterName : Net.NameOf(_peer);
+		_name.Text = (_local ? "* " : "   ") + who + (p.Dead ? "  (down)" : "");
+		_name.Modulate = _local ? new Color(0.7f, 0.9f, 1f) : Colors.White;
 		_hp.Value = p.Dead ? 0f : p.HealthFraction;
+	}
+
+	public override void _GuiInput(InputEvent @event)
+	{
+		// PPM na nicku innego gracza (ten sam lobby) → menu interakcji
+		if (!_local && @event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Right)
+		{
+			_menu.Position = (Vector2I)GetGlobalMousePosition();
+			_menu.Popup();
+			AcceptEvent();
+		}
+	}
+
+	private void OnMenu(long id)
+	{
+		switch (id)
+		{
+			case 0: // Trade
+				if (GetTree().GetFirstNodeInGroup("trade") is TradePanel tp) tp.RequestTradeWith(_peer);
+				break;
+			case 1: // Whisper
+				WhisperDialog.Open(this, _peer);
+				break;
+			case 2: // Guild
+				Net.SendChatLocal("Guilds arrive with online realms (persistent across sessions).");
+				break;
+		}
+	}
+}
+
+/// <summary>Małe okno szeptu do wybranego gracza.</summary>
+public partial class WhisperDialog : CanvasLayer
+{
+	public static void Open(Node parent, long target)
+	{
+		var d = new WhisperDialog { _target = target, Layer = 14 };
+		parent.GetTree().Root.AddChild(d);
+	}
+
+	private long _target;
+
+	public override void _Ready()
+	{
+		var panel = new Panel { AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f, OffsetLeft = -200, OffsetTop = -50, OffsetRight = 200, OffsetBottom = 50 };
+		UiPanels.Solidify(panel);
+		AddChild(panel);
+		var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 12, OffsetTop = 10, OffsetRight = -12, OffsetBottom = -10 };
+		panel.AddChild(vb);
+		vb.AddChild(new Label { Text = $"Whisper to {Net.NameOf(_target)}:" });
+		var input = new LineEdit { MaxLength = 200 };
+		input.TextSubmitted += t => { Net.SendWhisper(_target, t); QueueFree(); };
+		vb.AddChild(input);
+		input.GrabFocus();
+	}
+
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (@event is InputEventKey k && k.Pressed && k.PhysicalKeycode == Key.Escape) QueueFree();
 	}
 }
 

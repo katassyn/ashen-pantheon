@@ -132,6 +132,155 @@ public partial class Net : Node
     /// <summary>Komunikat tylko lokalny (toasty systemowe w logu czatu).</summary>
     public static void SendChatLocal(string text) => ChatReceived?.Invoke($"» {text}");
 
+    /// <summary>Szept (prywatna wiadomość do gracza z lobby).</summary>
+    public static void SendWhisper(long target, string text)
+    {
+        text = text.Trim();
+        if (text.Length == 0 || !Online || target == MyId) return;
+        if (text.Length > 200) text = text[..200];
+        I.RpcId(target, MethodName.RpcWhisper, MyId, text);
+        ChatReceived?.Invoke($"[to {NameOf(target)}] {text}"); // echo lokalne
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcWhisper(long from, string text) => ChatReceived?.Invoke($"[from {NameOf(from)}] {text}");
+
+    // ── dom aukcyjny co-op (rynek; host = autorytet księgi ofert) ──
+    // Dostęp WYŁĄCZNIE przez blok AH w mieście. Pełny cross-lobby rynek = przyszły meta-serwer.
+
+    public sealed class MarketListing
+    {
+        public long Id { get; set; }
+        public long Seller { get; set; }
+        public string SellerName { get; set; } = "";
+        public string ItemJson { get; set; } = "";
+        public long Price { get; set; }
+    }
+
+    public static event System.Action MarketChanged;
+    public static readonly List<MarketListing> Market = new();
+    private static long _marketNextId = 1;
+
+    /// <summary>Wystaw item (już wyjęty z plecaka przez AuctionPanel — escrow).</summary>
+    public static void MarketPost(string itemJson, long price)
+    {
+        if (IsServer) HostAddListing(MyId, NameOf(MyId), itemJson, price);
+        else I.RpcId(1, MethodName.RpcMarketPost, itemJson, price);
+    }
+
+    public static void MarketBuy(long id)
+    {
+        if (IsServer) HostBuy(MyId, id);
+        else I.RpcId(1, MethodName.RpcMarketBuy, id);
+    }
+
+    public static void MarketCancel(long id)
+    {
+        if (IsServer) HostCancel(MyId, id);
+        else I.RpcId(1, MethodName.RpcMarketCancel, id);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketPost(string itemJson, long price) => HostAddListing(Multiplayer.GetRemoteSenderId(), NameOf(Multiplayer.GetRemoteSenderId()), itemJson, price);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketBuy(long id) => HostBuy(Multiplayer.GetRemoteSenderId(), id);
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketCancel(long id) => HostCancel(Multiplayer.GetRemoteSenderId(), id);
+
+    // host-side (autorytet)
+    private static void HostAddListing(long seller, string sellerName, string itemJson, long price)
+    {
+        Market.Add(new MarketListing { Id = _marketNextId++, Seller = seller, SellerName = sellerName, ItemJson = itemJson, Price = System.Math.Max(1, price) });
+        BroadcastMarket();
+    }
+
+    private static void HostBuy(long buyer, long id)
+    {
+        var listing = Market.Find(l => l.Id == id);
+        if (listing == null)
+        {
+            if (buyer == MyId) SendChatLocal("Purchase failed: listing no longer available");
+            else I.RpcId(buyer, MethodName.RpcMarketFailed, "listing no longer available");
+            return;
+        }
+        if (listing.Seller == buyer) return; // nie kupuj własnego
+        Market.Remove(listing);
+        if (buyer == MyId) ApplyBought(listing.ItemJson, listing.Price);
+        else I.RpcId(buyer, MethodName.RpcMarketBought, listing.ItemJson, listing.Price);
+        if (listing.Seller == MyId) ApplySold(listing.Price);
+        else I.RpcId(listing.Seller, MethodName.RpcMarketSold, listing.Price);
+        BroadcastMarket();
+    }
+
+    private static void HostCancel(long seller, long id)
+    {
+        var listing = Market.Find(l => l.Id == id && l.Seller == seller);
+        if (listing == null) return;
+        Market.Remove(listing);
+        if (seller == MyId) ApplyReturned(listing.ItemJson);
+        else I.RpcId(seller, MethodName.RpcMarketReturned, listing.ItemJson);
+        BroadcastMarket();
+    }
+
+    private static void GiveItemJson(string itemJson)
+    {
+        var dto = System.Text.Json.JsonSerializer.Deserialize<ItemDto>(itemJson);
+        if (dto == null) return;
+        var item = ItemMapper.FromDto(dto);
+        if (!GameState.Bag.TryAutoPlace(item) && I.GetTree().CurrentScene != null && PlayerController.Local != null)
+            ItemPickup.Spawn(I.GetTree().CurrentScene, PlayerController.Local.GlobalPosition, item);
+    }
+
+    private static void ApplyBought(string itemJson, long price)
+    {
+        GameState.Wallet.Gold -= price;
+        GiveItemJson(itemJson);
+        GameState.Save();
+        SendChatLocal($"Bought an item for {price} gold.");
+    }
+
+    private static void ApplySold(long price)
+    {
+        GameState.Wallet.Gold += price;
+        GameState.Save();
+        SendChatLocal($"Your auction sold for {price} gold.");
+    }
+
+    private static void ApplyReturned(string itemJson)
+    {
+        GiveItemJson(itemJson);
+        GameState.Save();
+        SendChatLocal("Auction cancelled — item returned.");
+    }
+
+    private static void BroadcastMarket()
+    {
+        string json = System.Text.Json.JsonSerializer.Serialize(Market);
+        if (Online) I.Rpc(MethodName.RpcMarketSync, json);
+        else MarketChanged?.Invoke();
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketSync(string json)
+    {
+        Market.Clear();
+        var book = System.Text.Json.JsonSerializer.Deserialize<List<MarketListing>>(json);
+        if (book != null) Market.AddRange(book);
+        MarketChanged?.Invoke();
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketBought(string itemJson, long price) => ApplyBought(itemJson, price);
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketSold(long price) => ApplySold(price);
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketReturned(string itemJson) => ApplyReturned(itemJson);
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcMarketFailed(string reason) => SendChatLocal($"Purchase failed: {reason}");
+
     // ── handel gracz-gracz (P2P; escrow lokalny + dwustronny confirm) ──
     // Uwaga: pełne anti-dupe wymaga meta-serwera; tu lobby prywatne (zaufani gracze).
 

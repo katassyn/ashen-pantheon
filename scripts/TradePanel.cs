@@ -26,6 +26,7 @@ public partial class TradePanel : CanvasLayer
     public override void _Ready()
     {
         Layer = 12;
+        AddToGroup("trade");
         // WYŁĄCZNIE nazwane handlery — lambdy na statycznych eventach wyciekłyby między scenami
         Net.TradeRequested += OnRequested;
         Net.TradeAccepted += OnAccepted;
@@ -53,33 +54,16 @@ public partial class TradePanel : CanvasLayer
     private void OnCancelled() => CloseTrade(theyCancelled: true);
     private void OnSession() { if (_partner >= 0) { ReturnEscrow(); Reset(); } }
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.T && _partner < 0)
-        {
-            TryRequestNearby();
-            GetViewport().SetInputAsHandled();
-        }
-    }
+    // ── inicjacja (z menu kontekstowego PPM na nicku gracza) ──
 
-    // ── inicjacja ──
-
-    private void TryRequestNearby()
+    /// <summary>Rozpocznij handel z graczem z tego samego lobby (PPM na nicku → Trade).</summary>
+    public void RequestTradeWith(long partner)
     {
-        if (!Net.Online) { Toast("Trading needs another player (co-op)."); return; }
-        var me = PlayerController.Local;
-        if (me == null) return;
-        PlayerController best = null; float bd = 260f;
-        foreach (Node n in GetTree().GetNodesInGroup("players"))
-            if (n is PlayerController p && p != me)
-            {
-                float d = me.GlobalPosition.DistanceTo(p.GlobalPosition);
-                if (d < bd) { bd = d; best = p; }
-            }
-        if (best == null) { Toast("No player nearby to trade with."); return; }
-        _pendingTo = best.GetMultiplayerAuthority();
-        Net.TradeRequest(_pendingTo);
-        Toast($"Trade request sent to {Net.NameOf(_pendingTo)}…");
+        if (!Net.Online || partner == Net.MyId) { Toast("Trading needs another player in your lobby."); return; }
+        if (_partner >= 0) { Toast("You're already in a trade."); return; }
+        _pendingTo = partner;
+        Net.TradeRequest(partner);
+        Toast($"Trade request sent to {Net.NameOf(partner)}…");
     }
 
     private void OnRequested(long from)

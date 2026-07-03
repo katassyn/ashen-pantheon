@@ -32,6 +32,7 @@ public partial class HubZone : Area2D
         {
             if (Kind == "vendor") VendorPanel.Toggle(GetTree());
             else if (Kind == "stash") StashPanel.Toggle(GetTree());
+            else if (Kind == "ah") AuctionPanel.Toggle(GetTree());
             else QuestNpc.Interact(Kind, GetTree()); // Kind = npcId (amuun/guildmaster/...)
             GetViewport().SetInputAsHandled();
         }
