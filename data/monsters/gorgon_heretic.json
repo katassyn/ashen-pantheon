@@ -1,0 +1,18 @@
+{
+  "id": "gorgon_heretic",
+  "name": "Gorgon Heretic",
+  "hp": 300,
+  "resLightning": 40,
+  "speed": 72,
+  "movement": "keep_distance",
+  "preferredRange": 300,
+  "scale": 1.1,
+  "tint": "#8a6ac0",
+  "xp": 96,
+  "lootTable": "common",
+  "attackInterval": 1.8,
+  "abilities": [
+    { "type": "projectile", "damage": 22, "damageType": "Lightning", "windup": 0.4, "speed": 360 },
+    { "type": "summon", "monsterId": "serpent_fighter", "count": 2, "cooldown": 13 }
+  ]
+}

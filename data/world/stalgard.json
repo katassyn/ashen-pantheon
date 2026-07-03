@@ -1,0 +1,31 @@
+{
+  "id": "stalgard",
+  "name": "Stalgard",
+  "levelMin": 36,
+  "levelMax": 40,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["frost_paw", "frost_paw", "frost_catcher"], "respawnSeconds": 30 },
+    { "x": 680, "y": 150, "monsters": ["cold_skeleton", "frost_paw", "frost_catcher"], "respawnSeconds": 36 },
+    { "x": 340, "y": 430, "monsters": ["frost_paw", "frost_paw", "cold_skeleton"], "respawnSeconds": 38 },
+    { "x": 1000, "y": -80, "monsters": ["cold_skeleton", "frost_catcher", "frost_catcher"], "respawnSeconds": 46 },
+    { "x": 1300, "y": 250, "monsters": ["jotun_warden", "frost_paw", "frost_catcher"], "respawnSeconds": 85 },
+    { "x": 1560, "y": 20, "monsters": ["jotun_warden", "cold_skeleton", "frost_paw", "frost_catcher"], "respawnSeconds": 110, "aggroRange": 480 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "temple_sector", "label": "Temple Sector (31-35)" }
+  ],
+  "markers": [
+    {
+      "id": "stalgard_survive", "type": "survive", "x": 760, "y": -340,
+      "label": "Frozen Beacon", "surviveSeconds": 45, "waveInterval": 7,
+      "waveMonsters": ["frost_paw", "frost_catcher"]
+    },
+    {
+      "id": "stalgard_defend", "type": "defend", "x": 780, "y": 620,
+      "label": "The Last Hall", "waves": 4, "waveInterval": 14,
+      "waveMonsters": ["frost_paw", "cold_skeleton", "frost_catcher", "jotun_warden"]
+    }
+  ]
+}

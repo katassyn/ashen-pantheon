@@ -1,0 +1,46 @@
+{
+  "id": "pharaoh_nefertari",
+  "name": "Pharaoh Nefertari",
+  "hp": 3200,
+  "armour": 60,
+  "resFire": 40,
+  "resChaos": 40,
+  "speed": 60,
+  "movement": "keep_distance",
+  "preferredRange": 160,
+  "scale": 2.2,
+  "tint": "#e0b040",
+  "xp": 1200,
+  "lootTable": "boss",
+  "attackInterval": 2.0,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 2.0,
+      "abilities": [
+        { "type": "tele_circle", "damage": 40, "damageType": "Fire", "radius": 120, "windup": 0.9 },
+        { "type": "tele_cone", "damage": 38, "damageType": "Chaos", "radius": 260, "halfAngleDeg": 38, "windup": 0.9 },
+        { "type": "tele_line", "damage": 42, "damageType": "Fire", "length": 460, "halfWidth": 34, "windup": 0.9 }
+      ]
+    },
+    {
+      "hpBelow": 0.66,
+      "attackInterval": 1.6,
+      "abilities": [
+        { "type": "tele_circle", "damage": 46, "damageType": "Fire", "radius": 140, "windup": 0.75 },
+        { "type": "tele_line", "damage": 46, "damageType": "Chaos", "length": 500, "halfWidth": 38, "windup": 0.75 },
+        { "type": "summon", "monsterId": "sand_conjurer", "count": 1, "cooldown": 16 }
+      ]
+    },
+    {
+      "hpBelow": 0.33,
+      "attackInterval": 1.2,
+      "abilities": [
+        { "type": "tele_circle", "damage": 52, "damageType": "Fire", "radius": 160, "windup": 0.65 },
+        { "type": "tele_cone", "damage": 48, "damageType": "Chaos", "radius": 300, "halfAngleDeg": 46, "windup": 0.7 },
+        { "type": "summon", "monsterId": "desert_marauder", "count": 3, "cooldown": 12 }
+      ]
+    }
+  ]
+}

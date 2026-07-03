@@ -1,0 +1,78 @@
+{
+  "quests": [
+    {
+      "id": "temple_01",
+      "name": "The Petrified Halls",
+      "description": "The Temple Sector answers to the gorgons now. Break their guard.",
+      "requiredLevel": 31,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "temple_sector",
+      "prerequisites": ["mystra_03"],
+      "objectives": [
+        { "id": "kill_soldiers", "type": "Kill", "target": "gorgon_soldier", "amount": 12, "description": "Slay 12 Gorgon Soldiers" },
+        { "id": "kill_serpents", "type": "Kill", "target": "serpent_fighter", "amount": 14, "description": "Slay 14 Serpent Fighters" }
+      ],
+      "dialogueStart": [
+        "The spirit's temple is real, and the gorgons have made it a nest.",
+        "Their soldiers turn men to stone with a glance. Break the guard so I can reach the inner sanctum."
+      ],
+      "dialogueCompletion": [
+        "The halls are quieter. Good.",
+        "They've taken an acolyte of the old order captive — one who knows the temple's secrets. Free them."
+      ],
+      "rewardXp": 4200,
+      "rewardGold": 1100,
+      "nextQuest": "temple_02"
+    },
+    {
+      "id": "temple_02",
+      "name": "The Captured Acolyte",
+      "description": "Desecrate the gorgon altar, then escort the freed acolyte to safety.",
+      "requiredLevel": 32,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "temple_sector",
+      "prerequisites": ["temple_01"],
+      "objectives": [
+        { "id": "desecrate", "type": "Interact", "target": "temple_altar", "amount": 1, "description": "Desecrate the gorgon altar" },
+        { "id": "escort_acolyte", "type": "Escort", "target": "temple_escort", "amount": 1, "description": "Escort the captured acolyte to safety" }
+      ],
+      "dialogueStart": [
+        "Foul the altar first — it feeds their power. Then the acolyte's cage will weaken.",
+        "Get them out alive. They are worth more than a hundred soldiers."
+      ],
+      "dialogueCompletion": [
+        "The acolyte lives, and speaks of a heretic who leads the gorgons.",
+        "Cut off the head. Find the Heretic and end it."
+      ],
+      "rewardXp": 5000,
+      "rewardGold": 1300,
+      "nextQuest": "temple_03"
+    },
+    {
+      "id": "temple_03",
+      "name": "The Gorgon Heretic",
+      "description": "Hunt the Gorgon Heretics who command the temple.",
+      "requiredLevel": 34,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "temple_sector",
+      "prerequisites": ["temple_02"],
+      "objectives": [
+        { "id": "kill_heretics", "type": "Kill", "target": "gorgon_heretic", "amount": 5, "description": "Slay 5 Gorgon Heretics" }
+      ],
+      "dialogueStart": [
+        "The heretics summon serpents without end — strike them before their broods overwhelm you.",
+        "Five of them lead the sect. All must fall."
+      ],
+      "dialogueCompletion": [
+        "The temple is broken. The gorgons scatter into the wastes.",
+        "North now — to Stalgard, where the cold has swallowed an entire people."
+      ],
+      "rewardXp": 6200,
+      "rewardGold": 1600,
+      "nextQuest": ""
+    }
+  ]
+}

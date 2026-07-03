@@ -1,0 +1,18 @@
+{
+  "id": "toltec_shaman",
+  "name": "Obstinate Toltec Shaman",
+  "hp": 360,
+  "resFire": 50,
+  "speed": 84,
+  "movement": "keep_distance",
+  "preferredRange": 310,
+  "scale": 1.05,
+  "tint": "#d07030",
+  "xp": 108,
+  "lootTable": "common",
+  "attackInterval": 1.7,
+  "abilities": [
+    { "type": "projectile", "damage": 26, "damageType": "Fire", "windup": 0.45, "speed": 330 },
+    { "type": "summon", "monsterId": "toltec_warrior", "count": 1, "cooldown": 12 }
+  ]
+}

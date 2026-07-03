@@ -1,0 +1,16 @@
+{
+  "id": "toltec_warrior",
+  "name": "Obstinate Toltec Warrior",
+  "hp": 460,
+  "armour": 40,
+  "speed": 118,
+  "movement": "chase",
+  "scale": 1.1,
+  "tint": "#b08040",
+  "xp": 104,
+  "lootTable": "common",
+  "attackInterval": 1.2,
+  "abilities": [
+    { "type": "melee", "damage": 28, "windup": 0.4, "reach": 58 }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "gorgon_soldier",
+  "name": "Gorgon Soldier",
+  "hp": 340,
+  "armour": 50,
+  "resFire": 25,
+  "speed": 82,
+  "movement": "chase",
+  "scale": 1.2,
+  "tint": "#6a9a6a",
+  "xp": 78,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "melee", "damage": 24, "windup": 0.55, "reach": 60 },
+    { "type": "tele_cone", "damage": 30, "radius": 190, "halfAngleDeg": 46, "windup": 0.85, "cooldown": 6 }
+  ]
+}

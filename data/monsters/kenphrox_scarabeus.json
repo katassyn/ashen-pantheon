@@ -1,0 +1,21 @@
+{
+  "id": "kenphrox_scarabeus",
+  "name": "Kenphrox Scarabeus",
+  "hp": 900,
+  "armour": 70,
+  "resChaos": 40,
+  "speed": 70,
+  "movement": "chase",
+  "scale": 1.7,
+  "tint": "#7a6a30",
+  "xp": 200,
+  "lootTable": "common",
+  "questItem": "scarab_shell",
+  "questItemChance": 1.0,
+  "attackInterval": 2.0,
+  "abilities": [
+    { "type": "melee", "damage": 30, "windup": 0.6, "reach": 70 },
+    { "type": "tele_circle", "damage": 38, "damageType": "Chaos", "radius": 150, "windup": 0.95, "cooldown": 6 },
+    { "type": "tele_cone", "damage": 34, "damageType": "Chaos", "radius": 240, "halfAngleDeg": 40, "windup": 0.9, "cooldown": 9 }
+  ]
+}

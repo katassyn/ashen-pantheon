@@ -26,7 +26,9 @@ public partial class ArenaManager : Node
     {
         AddToGroup("arena");
         DataLoader.LoadAll();
-        _zone = Bestiary.Zone("ashen_wastes");
+        // strefa runu z TravelZoneId (finałowe dungeony), fallback: ashen_wastes
+        string zoneId = Bestiary.Zones.ContainsKey(Net.TravelZoneId) ? Net.TravelZoneId : "ashen_wastes";
+        _zone = Bestiary.Zone(zoneId);
 
         int seed = Net.RunSeed != 0 ? Net.RunSeed : (int)(GD.Randi() % int.MaxValue);
         _plan = RunGenerator.Generate(seed, GameState.Progress.Level, _zone);

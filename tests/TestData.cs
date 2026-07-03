@@ -17,6 +17,8 @@ public static class TestData
             GameData.LoadFromDirectory(data);
             foreach (var f in SafeFiles(Path.Combine(data, "world"))) WorldMaps.Load(File.ReadAllText(f));
             foreach (var f in SafeFiles(Path.Combine(data, "monsters"))) Bestiary.LoadMonster(File.ReadAllText(f));
+            foreach (var f in SafeFiles(Path.Combine(data, "zones"))) Bestiary.LoadZone(File.ReadAllText(f));
+            foreach (var f in SafeFiles(Path.Combine(data, "loot"))) LootTables.Load(File.ReadAllText(f));
             _loaded = true;
         }
     }

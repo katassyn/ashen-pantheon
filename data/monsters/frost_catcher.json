@@ -1,0 +1,18 @@
+{
+  "id": "frost_catcher",
+  "name": "Frost Catcher",
+  "hp": 220,
+  "resCold": 50,
+  "speed": 92,
+  "movement": "keep_distance",
+  "preferredRange": 330,
+  "scale": 1.0,
+  "tint": "#b0d0f0",
+  "xp": 88,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "projectile", "damage": 24, "damageType": "Cold", "windup": 0.4, "speed": 340 },
+    { "type": "tele_circle", "damage": 30, "damageType": "Cold", "radius": 100, "windup": 0.9, "cooldown": 8 }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "serpent_fighter",
+  "name": "Serpent Fighter",
+  "hp": 200,
+  "speed": 135,
+  "movement": "chase",
+  "scale": 0.95,
+  "tint": "#4a8a5a",
+  "xp": 70,
+  "lootTable": "common",
+  "attackInterval": 1.0,
+  "abilities": [
+    { "type": "melee", "damage": 20, "damageType": "Chaos", "windup": 0.35, "reach": 52 }
+  ]
+}

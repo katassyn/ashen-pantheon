@@ -1,0 +1,17 @@
+{
+  "id": "desert_marauder",
+  "name": "Desert Marauder",
+  "hp": 560,
+  "armour": 40,
+  "resFire": 30,
+  "speed": 128,
+  "movement": "chase",
+  "scale": 1.1,
+  "tint": "#c09050",
+  "xp": 124,
+  "lootTable": "common",
+  "attackInterval": 1.1,
+  "abilities": [
+    { "type": "melee", "damage": 32, "windup": 0.38, "reach": 58 }
+  ]
+}

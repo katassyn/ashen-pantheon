@@ -36,7 +36,8 @@ public partial class WorldZoneManager : Node
         foreach (var exit in _zone.Exits)
         {
             var portal = GD.Load<PackedScene>("res://scenes/Portal.tscn").Instantiate<Portal>();
-            portal.TargetScene = exit.Target == "hub" ? "res://scenes/Main.tscn" : "res://scenes/WorldZone.tscn";
+            portal.TargetScene = exit.Scene.Length > 0 ? exit.Scene
+                : exit.Target == "hub" ? "res://scenes/Main.tscn" : "res://scenes/WorldZone.tscn";
             portal.TargetZone = exit.Target == "hub" ? "" : exit.Target;
             portal.Position = new Vector2(exit.X, exit.Y);
             var label = portal.GetNodeOrNull<Label>("Label");

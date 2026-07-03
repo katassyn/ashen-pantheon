@@ -62,9 +62,11 @@ public sealed class ZoneExitDefinition
 {
     public float X { get; set; }
     public float Y { get; set; }
-    /// <summary>"hub" albo id innej strefy świata.</summary>
+    /// <summary>"hub"/id strefy świata; przy Scene=Arena — id strefy bestiariusza (dungeon).</summary>
     public string Target { get; set; } = "hub";
     public string Label { get; set; } = "";
+    /// <summary>Opcjonalna scena docelowa (np. "res://scenes/Arena.tscn" dla dungeonu). Puste = auto.</summary>
+    public string Scene { get; set; } = "";
 }
 
 public static class WorldMaps

@@ -1,0 +1,20 @@
+{
+  "id": "sand_conjurer",
+  "name": "Sand Conjurer",
+  "hp": 440,
+  "resFire": 40,
+  "resChaos": 30,
+  "speed": 82,
+  "movement": "keep_distance",
+  "preferredRange": 320,
+  "scale": 1.05,
+  "tint": "#d0a840",
+  "xp": 128,
+  "lootTable": "common",
+  "attackInterval": 1.7,
+  "abilities": [
+    { "type": "projectile", "damage": 28, "damageType": "Fire", "windup": 0.42, "speed": 340 },
+    { "type": "tele_circle", "damage": 34, "damageType": "Chaos", "radius": 110, "windup": 0.9, "cooldown": 7 },
+    { "type": "summon", "monsterId": "desert_marauder", "count": 2, "cooldown": 14 }
+  ]
+}

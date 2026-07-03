@@ -1,0 +1,27 @@
+{
+  "id": "nahuatlan",
+  "name": "Nahuatlan",
+  "levelMin": 41,
+  "levelMax": 45,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["toltec_warrior", "toltec_warrior", "toltec_shaman"], "respawnSeconds": 32 },
+    { "x": 680, "y": 150, "monsters": ["toltec_warrior", "toltec_shaman", "toltec_shaman"], "respawnSeconds": 36 },
+    { "x": 340, "y": 430, "monsters": ["toltec_warrior", "toltec_warrior", "toltec_warrior", "toltec_shaman"], "respawnSeconds": 38 },
+    { "x": 1000, "y": -80, "monsters": ["toltec_shaman", "toltec_warrior", "toltec_warrior"], "respawnSeconds": 44 },
+    { "x": 1320, "y": 250, "monsters": ["kenphrox_scarabeus", "toltec_warrior", "toltec_shaman"], "respawnSeconds": 95 },
+    { "x": 1580, "y": 20, "monsters": ["kenphrox_scarabeus", "toltec_warrior", "toltec_warrior", "toltec_shaman"], "respawnSeconds": 120, "aggroRange": 500 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "stalgard", "label": "Stalgard (36-40)" }
+  ],
+  "markers": [
+    { "id": "nahuatlan_idol", "type": "interact", "x": 720, "y": -340, "label": "Topple the Sun Idol" },
+    {
+      "id": "nahuatlan_defend", "type": "defend", "x": 780, "y": 620,
+      "label": "The Blood Pyramid", "waves": 5, "waveInterval": 13,
+      "waveMonsters": ["toltec_warrior", "toltec_warrior", "toltec_shaman", "kenphrox_scarabeus"]
+    }
+  ]
+}

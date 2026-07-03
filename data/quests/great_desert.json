@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "desert_01",
+      "name": "Into the Sands",
+      "description": "The Great Desert buries the road to the tomb. Clear a path and save who you can.",
+      "requiredLevel": 46,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "great_desert",
+      "prerequisites": ["nahuatlan_03"],
+      "objectives": [
+        { "id": "kill_marauders", "type": "Kill", "target": "desert_marauder", "amount": 20, "description": "Slay 20 Desert Marauders" },
+        { "id": "escort_caravan", "type": "Escort", "target": "desert_escort", "amount": 1, "description": "Escort the lost caravan to safety" }
+      ],
+      "dialogueStart": [
+        "The tomb lies beneath the deep dunes. Marauders pick at anyone who nears it.",
+        "A caravan is stranded out there. Clear the marauders and lead the survivors back."
+      ],
+      "dialogueCompletion": [
+        "The caravan is safe, and they've mapped the dunes to the tomb.",
+        "Sand conjurers guard the entrance. Break them, and the tomb opens."
+      ],
+      "rewardXp": 16000,
+      "rewardGold": 4200,
+      "nextQuest": "desert_02"
+    },
+    {
+      "id": "desert_02",
+      "name": "The Tomb's Wards",
+      "description": "Destroy the sand conjurers holding the tomb's wards shut.",
+      "requiredLevel": 48,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "great_desert",
+      "prerequisites": ["desert_01"],
+      "objectives": [
+        { "id": "kill_conjurers", "type": "Kill", "target": "sand_conjurer", "amount": 10, "description": "Destroy 10 Sand Conjurers" }
+      ],
+      "dialogueStart": [
+        "The conjurers weave the wards that seal the tomb. Unravel them.",
+        "They call marauders from the sand — end them fast, before you're buried."
+      ],
+      "dialogueCompletion": [
+        "The wards fall. The Tomb of Nefertari stands open.",
+        "This is where it began — and where it ends. Go down, {player}. Face the Pharaoh."
+      ],
+      "rewardXp": 19000,
+      "rewardGold": 5000,
+      "nextQuest": "desert_03"
+    },
+    {
+      "id": "desert_03",
+      "name": "The Pharaoh's Tomb",
+      "description": "Descend into the tomb and destroy Pharaoh Nefertari — the source of the rising dark.",
+      "requiredLevel": 50,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "great_desert",
+      "prerequisites": ["desert_02"],
+      "objectives": [
+        { "id": "clear_tomb", "type": "Clear", "target": "desert_tomb", "amount": 1, "description": "Complete the run: Tomb of Nefertari (defeat the Pharaoh)" }
+      ],
+      "dialogueStart": [
+        "Everything led here. The seals, the temples, the frost, the sun — all of it fed the Pharaoh's return.",
+        "Take a party or go alone. But end her, and end this."
+      ],
+      "dialogueCompletion": [
+        "The Pharaoh is dust. The dark that gathered across the realm loosens its grip.",
+        "You've done what no watchman, no order, no god could. The campaign is won, {player} — but the deepest tombs are only now waking. The endgame begins."
+      ],
+      "rewardXp": 40000,
+      "rewardGold": 12000,
+      "nextQuest": ""
+    }
+  ]
+}

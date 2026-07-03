@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "nahuatlan_01",
+      "name": "The Sun's Hunger",
+      "description": "Nahuatlan's toltecs feed a sun-god with blood. Break the rite.",
+      "requiredLevel": 41,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "nahuatlan",
+      "prerequisites": ["stalgard_03"],
+      "objectives": [
+        { "id": "kill_warriors", "type": "Kill", "target": "toltec_warrior", "amount": 18, "description": "Slay 18 Toltec Warriors" },
+        { "id": "topple_idol", "type": "Interact", "target": "nahuatlan_idol", "amount": 1, "description": "Topple the Sun Idol" }
+      ],
+      "dialogueStart": [
+        "The toltecs bleed captives to a starving sun. Every drop makes the temple south of here stronger.",
+        "Cut down their warriors and topple the idol that drinks the blood."
+      ],
+      "dialogueCompletion": [
+        "The idol lies shattered. The sun-god goes hungry tonight.",
+        "Their champion, the Scarabeus, still guards the pyramid. Its shell wards against the desert's curse — I need it."
+      ],
+      "rewardXp": 10500,
+      "rewardGold": 2800,
+      "nextQuest": "nahuatlan_02"
+    },
+    {
+      "id": "nahuatlan_02",
+      "name": "The Scarab's Shell",
+      "description": "Slay the Kenphrox Scarabeus and claim its shell.",
+      "requiredLevel": 42,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "nahuatlan",
+      "prerequisites": ["nahuatlan_01"],
+      "objectives": [
+        { "id": "collect_shell", "type": "Collect", "target": "scarab_shell", "amount": 2, "description": "Collect 2 Scarab Shells" }
+      ],
+      "dialogueStart": [
+        "Two shells will armour us against the tomb's curse. The Scarabeus will not give them freely.",
+        "Beware its sweep — it clears the ground around it. Strike from range when it winds up."
+      ],
+      "dialogueCompletion": [
+        "The shells hold the curse at bay. We are almost ready for the desert.",
+        "One rite remains — the toltecs will spend everything to stop us at their blood pyramid."
+      ],
+      "rewardXp": 12000,
+      "rewardGold": 3200,
+      "nextQuest": "nahuatlan_03"
+    },
+    {
+      "id": "nahuatlan_03",
+      "name": "The Blood Pyramid",
+      "description": "Hold the blood pyramid against the toltecs' last stand.",
+      "requiredLevel": 44,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "nahuatlan",
+      "prerequisites": ["nahuatlan_02"],
+      "objectives": [
+        { "id": "defend_pyramid", "type": "Defend", "target": "nahuatlan_defend", "amount": 5, "description": "Repel 5 waves at the Blood Pyramid" }
+      ],
+      "dialogueStart": [
+        "The pyramid is the last thread feeding the desert temple. Sever it.",
+        "Five waves — everything they have. Hold, and the road to the Great Desert opens."
+      ],
+      "dialogueCompletion": [
+        "Nahuatlan falls silent. The sun-god starves at last.",
+        "Only the desert remains — and beneath it, the tomb where all of this began."
+      ],
+      "rewardXp": 14000,
+      "rewardGold": 3800,
+      "nextQuest": ""
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "cold_skeleton",
+  "name": "Cold Skeleton Warrior",
+  "hp": 400,
+  "armour": 45,
+  "resCold": 60,
+  "speed": 78,
+  "movement": "chase",
+  "scale": 1.2,
+  "tint": "#7aa0c0",
+  "xp": 92,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "melee", "damage": 26, "damageType": "Cold", "windup": 0.5, "reach": 60 },
+    { "type": "tele_line", "damage": 32, "damageType": "Cold", "length": 340, "halfWidth": 30, "windup": 0.85, "cooldown": 7 }
+  ]
+}

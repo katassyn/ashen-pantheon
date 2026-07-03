@@ -118,6 +118,10 @@ public class QuestTests
             "teganswall_01","teganswall_02","teganswall_03",
             "eternal_01","eternal_02","eternal_03",
             "mystra_01","mystra_02","mystra_03",
+            "temple_01","temple_02","temple_03",
+            "stalgard_01","stalgard_02","stalgard_03",
+            "nahuatlan_01","nahuatlan_02","nahuatlan_03",
+            "desert_01","desert_02","desert_03",
         };
         foreach (var id in chain)
         {
@@ -136,7 +140,22 @@ public class QuestTests
             {
                 if (o.Kind == ObjectiveType.Kill && o.Target != "*")
                     Assert.True(Bestiary.Monsters.ContainsKey(o.Target), $"{q.Id}/{o.Id}: brak moba {o.Target}");
+                if (o.Kind == ObjectiveType.Clear)
+                    Assert.True(Bestiary.Zones.ContainsKey(o.Target), $"{q.Id}/{o.Id}: brak strefy bossa {o.Target}");
             }
+    }
+
+    [Fact]
+    public void BossZones_HaveValidBossAndMonsters()
+    {
+        foreach (var zoneId in new[] { "ashen_wastes", "desert_tomb" })
+        {
+            var z = Bestiary.Zone(zoneId);
+            Assert.True(Bestiary.Monsters.ContainsKey(z.Boss), $"{zoneId}: brak bossa {z.Boss}");
+            Assert.True(Bestiary.Monster(z.Boss).IsBoss, $"{z.Boss} nie ma faz");
+            foreach (var sw in z.Monsters)
+                Assert.True(Bestiary.Monsters.ContainsKey(sw.Id), $"{zoneId}: brak moba {sw.Id}");
+        }
     }
 
     [Fact]

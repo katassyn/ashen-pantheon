@@ -1,0 +1,16 @@
+{
+  "id": "frost_paw",
+  "name": "Frost Paw",
+  "hp": 240,
+  "resCold": 40,
+  "speed": 150,
+  "movement": "chase",
+  "scale": 1.0,
+  "tint": "#9ac0e0",
+  "xp": 84,
+  "lootTable": "common",
+  "attackInterval": 0.9,
+  "abilities": [
+    { "type": "melee", "damage": 22, "damageType": "Cold", "windup": 0.3, "reach": 54 }
+  ]
+}

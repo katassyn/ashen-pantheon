@@ -1,0 +1,27 @@
+{
+  "id": "great_desert",
+  "name": "The Great Desert",
+  "levelMin": 46,
+  "levelMax": 50,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["desert_marauder", "desert_marauder", "sand_conjurer"], "respawnSeconds": 32 },
+    { "x": 680, "y": 150, "monsters": ["desert_marauder", "sand_conjurer", "sand_conjurer"], "respawnSeconds": 36 },
+    { "x": 340, "y": 430, "monsters": ["desert_marauder", "desert_marauder", "desert_marauder", "sand_conjurer"], "respawnSeconds": 38 },
+    { "x": 1020, "y": -80, "monsters": ["sand_conjurer", "desert_marauder", "desert_marauder"], "respawnSeconds": 46 },
+    { "x": 1320, "y": 250, "monsters": ["sand_conjurer", "sand_conjurer", "desert_marauder"], "respawnSeconds": 50 },
+    { "x": 1600, "y": 20, "monsters": ["sand_conjurer", "desert_marauder", "desert_marauder", "sand_conjurer"], "respawnSeconds": 70, "aggroRange": 500 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "nahuatlan", "label": "Nahuatlan (41-45)" },
+    { "x": 900, "y": -420, "target": "desert_tomb", "scene": "res://scenes/Arena.tscn", "label": "Tomb of Nefertari (boss)" }
+  ],
+  "markers": [
+    {
+      "id": "desert_escort", "type": "escort", "x": 120, "y": 560,
+      "destX": 1360, "destY": 560, "label": "Lost Caravan",
+      "escortHp": 280, "escortSpeed": 74
+    }
+  ]
+}

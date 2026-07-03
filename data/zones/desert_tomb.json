@@ -1,0 +1,13 @@
+{
+  "id": "desert_tomb",
+  "name": "Tomb of Nefertari",
+  "monsters": [
+    { "id": "desert_marauder", "weight": 3 },
+    { "id": "sand_conjurer", "weight": 2 }
+  ],
+  "boss": "pharaoh_nefertari",
+  "roomsMin": 5,
+  "roomsMax": 6,
+  "baseSpawnCount": 5,
+  "spawnCountPerRoom": 2
+}

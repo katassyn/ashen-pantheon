@@ -1,6 +1,6 @@
 {
   "id": "ashen_wastes",
-  "name": "Popielate Pustkowia",
+  "name": "Ashen Wastes",
   "monsters": [
     { "id": "husk", "weight": 3 },
     { "id": "spitter", "weight": 2 }

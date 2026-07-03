@@ -1,0 +1,77 @@
+{
+  "quests": [
+    {
+      "id": "stalgard_01",
+      "name": "The Frozen People",
+      "description": "Stalgard lies under eternal frost. Cull the beasts and claim a Jotun's heart.",
+      "requiredLevel": 36,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "stalgard",
+      "prerequisites": ["temple_03"],
+      "objectives": [
+        { "id": "kill_paws", "type": "Kill", "target": "frost_paw", "amount": 16, "description": "Slay 16 Frost Paws" },
+        { "id": "collect_heart", "type": "Collect", "target": "jotun_heart", "amount": 1, "description": "Collect a Jotun Heart from a Jotun Warden" }
+      ],
+      "dialogueStart": [
+        "Stalgard froze in a single night, they say. Its people never woke.",
+        "The Jotun Wardens keep the cold. Take one's heart — I can read the frost's origin in it."
+      ],
+      "dialogueCompletion": [
+        "The heart still beats cold in my hands. This frost is no accident — it was summoned.",
+        "There is a beacon that anchors it. Hold there while I unravel the binding."
+      ],
+      "rewardXp": 7000,
+      "rewardGold": 1800,
+      "nextQuest": "stalgard_02"
+    },
+    {
+      "id": "stalgard_02",
+      "name": "The Frozen Beacon",
+      "description": "Survive at the frozen beacon while Amuun unbinds the frost.",
+      "requiredLevel": 37,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "stalgard",
+      "prerequisites": ["stalgard_01"],
+      "objectives": [
+        { "id": "survive_beacon", "type": "Survive", "target": "stalgard_survive", "amount": 45, "description": "Survive 45 seconds at the Frozen Beacon (stay inside)" }
+      ],
+      "dialogueStart": [
+        "Stand in the beacon's light. The cold will hurl its beasts at you without pause.",
+        "Forty-five heartbeats. Do not step out, or the binding snaps back."
+      ],
+      "dialogueCompletion": [
+        "The beacon breaks. Warmth returns to Stalgard's air, if not yet its people.",
+        "One last hall remains sealed — and something in it does not want the thaw."
+      ],
+      "rewardXp": 7800,
+      "rewardGold": 2000,
+      "nextQuest": "stalgard_03"
+    },
+    {
+      "id": "stalgard_03",
+      "name": "The Last Hall",
+      "description": "Hold the last hall against the frost's final fury.",
+      "requiredLevel": 39,
+      "questGiver": "amuun",
+      "turnIn": "amuun",
+      "zone": "stalgard",
+      "prerequisites": ["stalgard_02"],
+      "objectives": [
+        { "id": "defend_hall", "type": "Defend", "target": "stalgard_defend", "amount": 4, "description": "Repel 4 waves at the Last Hall" }
+      ],
+      "dialogueStart": [
+        "The last hall holds the hearth-stone. Break the seal and the frost dies — but the Jotun will come.",
+        "Four assaults. Hold, and Stalgard is free."
+      ],
+      "dialogueCompletion": [
+        "The hearth burns again. Stalgard will remember your name.",
+        "South and east now — to the jungles of Nahuatlan, where an older worship still draws blood."
+      ],
+      "rewardXp": 9000,
+      "rewardGold": 2400,
+      "nextQuest": ""
+    }
+  ]
+}

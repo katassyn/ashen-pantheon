@@ -1,0 +1,27 @@
+{
+  "id": "temple_sector",
+  "name": "Temple Sector",
+  "levelMin": 31,
+  "levelMax": 35,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 400, "y": -150, "monsters": ["serpent_fighter", "serpent_fighter", "gorgon_soldier"], "respawnSeconds": 30 },
+    { "x": 680, "y": 150, "monsters": ["gorgon_soldier", "serpent_fighter", "serpent_fighter"], "respawnSeconds": 34 },
+    { "x": 340, "y": 430, "monsters": ["serpent_fighter", "serpent_fighter", "serpent_fighter", "gorgon_soldier"], "respawnSeconds": 36 },
+    { "x": 1000, "y": -80, "monsters": ["gorgon_heretic", "gorgon_soldier", "serpent_fighter"], "respawnSeconds": 48 },
+    { "x": 1280, "y": 250, "monsters": ["gorgon_soldier", "gorgon_soldier", "gorgon_heretic"], "respawnSeconds": 50 },
+    { "x": 1540, "y": 20, "monsters": ["gorgon_heretic", "gorgon_soldier", "serpent_fighter", "serpent_fighter"], "respawnSeconds": 72, "aggroRange": 460 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "mystra", "label": "Mystra (26-30)" }
+  ],
+  "markers": [
+    { "id": "temple_altar", "type": "interact", "x": 720, "y": -340, "label": "Desecrate the Altar" },
+    {
+      "id": "temple_escort", "type": "escort", "x": 120, "y": 600,
+      "destX": 1320, "destY": 600, "label": "Captured Acolyte",
+      "escortHp": 240, "escortSpeed": 72
+    }
+  ]
+}
