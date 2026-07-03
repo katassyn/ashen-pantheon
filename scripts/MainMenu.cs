@@ -39,16 +39,22 @@ public partial class MainMenu : Control
         realmRow.AddChild(new Label { Text = "Realm:" });
         _realm = new OptionButton();
         _realm.AddItem("Ashen (local)");
-        _realm.AddItem("— online (Steam account) coming soon —");
-        _realm.SetItemDisabled(1, true);
+        _realm.AddItem("Online (meta-server)");
+        _realm.ItemSelected += _ => RefreshRealmView();
         realmRow.AddChild(_realm);
         center.AddChild(realmRow);
 
-        center.AddChild(new Label { Text = "Characters:" });
+        // ── realm lokalny: sloty postaci ──
+        _localView = new VBoxContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        _localView.AddChild(new Label { Text = "Characters:" });
         var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         _slotList = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_slotList);
-        center.AddChild(scroll);
+        _localView.AddChild(scroll);
+        center.AddChild(_localView);
+
+        // ── realm online: logowanie/rejestracja ──
+        BuildOnlineView(center);
 
         // kreator (pokazywany po wybraniu pustego slotu)
         _creator = new VBoxContainer { Visible = false };
@@ -73,6 +79,71 @@ public partial class MainMenu : Control
         center.AddChild(_status);
 
         RefreshSlots();
+        RefreshRealmView();
+    }
+
+    private VBoxContainer _localView, _onlineView;
+    private LineEdit _srv, _user, _pass;
+
+    private void BuildOnlineView(VBoxContainer parent)
+    {
+        _onlineView = new VBoxContainer { Visible = false };
+        _onlineView.AddThemeConstantOverride("separation", 8);
+        _onlineView.AddChild(new Label { Text = "Log in to the online realm (server-backed character):" });
+
+        _srv = new LineEdit { Text = AccountSession.ServerUrl, PlaceholderText = "server url" };
+        _user = new LineEdit { PlaceholderText = "username (3-24)", MaxLength = 24 };
+        _pass = new LineEdit { PlaceholderText = "password (min 6)", Secret = true, MaxLength = 64 };
+        _onlineView.AddChild(new Label { Text = "Server:" });
+        _onlineView.AddChild(_srv);
+        _onlineView.AddChild(_user);
+        _onlineView.AddChild(_pass);
+
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", 8);
+        var login = new Button { Text = "Log in", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        login.Pressed += () => OnlineAuth("/auth/login");
+        var register = new Button { Text = "Register", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        register.Pressed += () => OnlineAuth("/auth/register");
+        row.AddChild(login);
+        row.AddChild(register);
+        _onlineView.AddChild(row);
+        parent.AddChild(_onlineView);
+    }
+
+    private void RefreshRealmView()
+    {
+        bool online = _realm.Selected == 1;
+        _localView.Visible = !online;
+        _onlineView.Visible = online;
+        _creator.Visible = false;
+    }
+
+    private void OnlineAuth(string endpoint)
+    {
+        if (_user.Text.StripEdges().Length < 3 || _pass.Text.Length < 6)
+        { _status.Text = "Username min 3, password min 6."; return; }
+
+        AccountSession.ServerUrl = _srv.Text.StripEdges().TrimEnd('/');
+        _status.Text = "Connecting…";
+        var (ok, msg) = AccountClient.RegisterOrLogin(endpoint, _user.Text.StripEdges(), _pass.Text);
+        if (!ok) { _status.Text = msg; return; }
+
+        var repo = new HttpGameStateRepository();
+        var existing = repo.Load();
+        if (existing != null)
+        {
+            GameState.SwitchRepository(repo); // wczytaj postać z serwera
+            EnterGame();
+        }
+        else
+        {
+            // brak postaci na koncie → kreator (nick + klasa), zapis PUT na serwer
+            _onlineView.Visible = false;
+            _selectedSlot = -2; // sygnał: online creator
+            _creator.Visible = true;
+            _status.Text = "New account — create your character.";
+        }
     }
 
     private void RefreshSlots()
@@ -134,9 +205,13 @@ public partial class MainMenu : Control
     {
         string nick = _nick.Text.StripEdges();
         if (nick.Length < 3) { _status.Text = "Name must be at least 3 characters."; return; }
-        if (_selectedSlot < 0) return;
 
-        GameState.NewCharacter(nick, "ranger", new JsonGameStateRepository(SlotPath(_selectedSlot)));
+        IGameStateRepository repo = _selectedSlot == -2
+            ? new HttpGameStateRepository()                 // online realm (server-backed)
+            : _selectedSlot >= 0 ? new JsonGameStateRepository(SlotPath(_selectedSlot)) : null;
+        if (repo == null) return;
+
+        GameState.NewCharacter(nick, "ranger", repo);
         EnterGame();
     }
 
