@@ -39,7 +39,7 @@ public partial class MainMenu : Control
         realmRow.AddChild(new Label { Text = "Realm:" });
         _realm = new OptionButton();
         _realm.AddItem("Ashen (lokalny)");
-        _realm.AddItem("— online wkrótce —");
+        _realm.AddItem("— online (konto Steam) wkrótce —");
         _realm.SetItemDisabled(1, true);
         realmRow.AddChild(_realm);
         center.AddChild(realmRow);

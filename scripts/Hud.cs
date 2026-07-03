@@ -25,7 +25,7 @@ public partial class Hud : CanvasLayer
 		var root = new VBoxContainer
 		{
 			AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 1f, AnchorBottom = 1f,
-			OffsetLeft = -320f, OffsetRight = 320f, OffsetTop = -132f, OffsetBottom = -10f,
+			OffsetLeft = -440f, OffsetRight = 440f, OffsetTop = -150f, OffsetBottom = -10f,
 		};
 		root.AddThemeConstantOverride("separation", 4);
 		AddChild(root);
@@ -50,7 +50,7 @@ public partial class Hud : CanvasLayer
 
 		for (int i = 0; i < Loadout.SlotCount; i++)
 		{
-			var slot = new SkillSlotUi { SlotIndex = i, CustomMinimumSize = new Vector2(110, 52) };
+			var slot = new SkillSlotUi { SlotIndex = i, CustomMinimumSize = new Vector2(150, 58) };
 			_slots[i] = slot;
 			slotRow.AddChild(slot);
 		}
