@@ -22,6 +22,10 @@ public partial class PlayerController : CharacterBody2D
     public float EnergyShield => _defense.EnergyShield;
     private bool _dead;
     public bool Dead => _dead;
+    /// <summary>Ułamek HP: lokalny = realny, puppet = z sieci (party frame).</summary>
+    public float HealthFraction => IsMultiplayerAuthority()
+        ? (MaxHealth > 0f ? Mathf.Clamp(Health / MaxHealth, 0f, 1f) : 0f)
+        : Mathf.Clamp(_netHpFrac, 0f, 1f);
 
     public float MaxResource => GameState.Class.ResourceMax;
     public float Resource { get; private set; }

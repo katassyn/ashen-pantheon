@@ -27,6 +27,16 @@ public static class GameState
 
     public static string CharacterName = "Bezimienny";
     public static QuestLog Quests = new();
+    /// <summary>Odkryte strefy świata (waystone fast-travel).</summary>
+    public static System.Collections.Generic.HashSet<string> DiscoveredZones = new();
+
+    /// <summary>Oznacz strefę jako odkrytą (wejście przez portal). Zwraca true jeśli nowa.</summary>
+    public static bool DiscoverZone(string zoneId)
+    {
+        if (string.IsNullOrEmpty(zoneId) || !DiscoveredZones.Add(zoneId)) return false;
+        Save();
+        return true;
+    }
     /// <summary>Kupione pasywki z GŁÓWNEGO drzewa klasy (track między skillami).</summary>
     public static System.Collections.Generic.HashSet<string> PassiveNodes = new();
 
@@ -68,6 +78,7 @@ public static class GameState
         Trees = new SkillTreeState();
         PassiveNodes = new();
         Quests = new QuestLog();
+        DiscoveredZones = new();
         GodSkills = new();
         PledgedGod = GodId.None;
         Loadout = new Loadout();
@@ -120,6 +131,7 @@ public static class GameState
             Quests.Active[qid] = new System.Collections.Generic.Dictionary<string, int>(prog);
         }
         foreach (var id in data.QuestCompleted) Quests.Completed.Add(id);
+        DiscoveredZones = new System.Collections.Generic.HashSet<string>(data.DiscoveredZones);
         ClassId = string.IsNullOrEmpty(data.ClassId) ? "ranger" : data.ClassId;
         _classDef = null;
         PassiveNodes = new System.Collections.Generic.HashSet<string>(data.PassiveNodes);
@@ -173,6 +185,7 @@ public static class GameState
             PassiveNodes = PassiveNodes.ToList(),
             QuestActive = Quests.Active.ToDictionary(kv => kv.Key, kv => new System.Collections.Generic.Dictionary<string, int>(kv.Value)),
             QuestCompleted = Quests.Completed.ToList(),
+            DiscoveredZones = DiscoveredZones.ToList(),
             PledgedGod = PledgedGod.ToString(),
             GodSkills = GodSkills.ToList(),
             Loadout = Loadout.Slots.ToList(),

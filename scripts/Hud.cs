@@ -60,7 +60,9 @@ public partial class Hud : CanvasLayer
 		_goldLabel = new Label { HorizontalAlignment = HorizontalAlignment.Center };
 		root.AddChild(_goldLabel);
 
-		AddChild(new PauseMenu()); // ESC: zamyka panele / otwiera pauzę
+		AddChild(new PauseMenu());      // ESC: zamyka panele / otwiera pauzę
+		AddChild(new WorldMapPanel());  // M: mapa świata / fast-travel
+		AddChild(new PartyFrame());     // co-op: ramki drużyny (lewy górny)
 	}
 
 	private static ProgressBar MakeBar(Color color)
@@ -155,10 +157,14 @@ public partial class Hud : CanvasLayer
 		}
 
 		var prog = GameState.Progress;
-		_xpBar.MaxValue = PlayerProgress.XpToNext(prog.Level);
+		long need = PlayerProgress.XpToNext(prog.Level);
+		long toGo = System.Math.Max(0, need - prog.Xp);
+		float pct = need > 0 ? prog.Xp / (float)need * 100f : 0f;
+		_xpBar.MaxValue = need;
 		_xpBar.Value = prog.Xp;
-		_xpNum.Text = $"{prog.Xp} / {PlayerProgress.XpToNext(prog.Level)}";
-		_goldLabel.Text = $"Gold: {GameState.Wallet.Gold}    XP: {prog.Xp}/{PlayerProgress.XpToNext(prog.Level)}    attribute pts: {prog.AttributePoints}   skill pts: {prog.SkillPoints}";
+		_xpNum.Text = $"Lv {prog.Level}   {prog.Xp} / {need} XP   ({pct:0.#}%)   {toGo} to level {prog.Level + 1}";
+		_xpBar.TooltipText = $"{toGo} XP to reach level {prog.Level + 1}";
+		_goldLabel.Text = $"Gold: {GameState.Wallet.Gold}    attribute pts: {prog.AttributePoints}    skill pts: {prog.SkillPoints}";
 
 		foreach (var slot in _slots) slot.Refresh(_player);
 	}
@@ -297,5 +303,72 @@ public partial class PauseMenu : CanvasLayer
 			_root.Visible = true;
 		}
 		GetViewport().SetInputAsHandled();
+	}
+}
+
+/// <summary>Party frames (co-op): list of players with HP; hidden in solo.</summary>
+public partial class PartyFrame : CanvasLayer
+{
+	private VBoxContainer _list;
+
+	public override void _Ready()
+	{
+		Layer = 3;
+		_list = new VBoxContainer { AnchorLeft = 0f, AnchorTop = 0f, OffsetLeft = 12, OffsetTop = 96 };
+		_list.AddThemeConstantOverride("separation", 4);
+		AddChild(_list);
+	}
+
+	public override void _Process(double delta)
+	{
+		var players = new System.Collections.Generic.List<PlayerController>();
+		foreach (Node n in GetTree().GetNodesInGroup("players"))
+			if (n is PlayerController p) players.Add(p);
+
+		bool show = Net.Online && players.Count > 1;
+		_list.Visible = show;
+		if (!show) { if (_list.GetChildCount() > 0) foreach (Node c in _list.GetChildren()) c.QueueFree(); return; }
+
+		if (_list.GetChildCount() != players.Count)
+		{
+			foreach (Node c in _list.GetChildren()) c.QueueFree();
+			foreach (var _ in players) _list.AddChild(new PartyRow());
+		}
+
+		players.Sort((a, b) => a.GetMultiplayerAuthority().CompareTo(b.GetMultiplayerAuthority()));
+		for (int i = 0; i < players.Count && i < _list.GetChildCount(); i++)
+			if (_list.GetChild(i) is PartyRow row) row.Update(players[i]);
+	}
+}
+
+public partial class PartyRow : PanelContainer
+{
+	private Label _name;
+	private ProgressBar _hp;
+
+	public override void _Ready()
+	{
+		CustomMinimumSize = new Vector2(190, 0);
+		var style = new StyleBoxFlat { BgColor = new Color(0.05f, 0.05f, 0.08f, 0.7f) };
+		style.SetContentMarginAll(4);
+		AddThemeStyleboxOverride("panel", style);
+		var vb = new VBoxContainer();
+		AddChild(vb);
+		_name = new Label();
+		_name.AddThemeFontSizeOverride("font_size", 12);
+		vb.AddChild(_name);
+		_hp = new ProgressBar { MinValue = 0, MaxValue = 1, ShowPercentage = false, CustomMinimumSize = new Vector2(0, 8) };
+		_hp.AddThemeStyleboxOverride("fill", new StyleBoxFlat { BgColor = new Color(0.75f, 0.2f, 0.2f) });
+		_hp.AddThemeStyleboxOverride("background", new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0.6f) });
+		vb.AddChild(_hp);
+	}
+
+	public void Update(PlayerController p)
+	{
+		bool local = p.IsMultiplayerAuthority();
+		string who = local ? GameState.CharacterName : $"Ally #{p.GetMultiplayerAuthority()}";
+		_name.Text = (local ? "* " : "   ") + who + (p.Dead ? "  (down)" : "");
+		_name.Modulate = local ? new Color(0.7f, 0.9f, 1f) : Colors.White;
+		_hp.Value = p.Dead ? 0f : p.HealthFraction;
 	}
 }

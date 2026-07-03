@@ -33,6 +33,9 @@ public sealed class SaveData
     /// <summary>Questy: aktywne (questId → objectiveId → postęp) + ukończone.</summary>
     public Dictionary<string, Dictionary<string, int>> QuestActive { get; set; } = new();
     public List<string> QuestCompleted { get; set; } = new();
+
+    /// <summary>Odkryte strefy świata (waystone fast-travel odblokowany).</summary>
+    public List<string> DiscoveredZones { get; set; } = new();
     public long Xp { get; set; }
     public int AttributePoints { get; set; }
     public int SkillPoints { get; set; }

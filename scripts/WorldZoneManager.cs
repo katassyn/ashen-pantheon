@@ -29,6 +29,7 @@ public partial class WorldZoneManager : Node
 
         string zoneId = string.IsNullOrEmpty(Net.TravelZoneId) ? "swerdfield" : Net.TravelZoneId;
         _zone = WorldMaps.Zone(zoneId);
+        GameState.DiscoverZone(zoneId); // waystone fast-travel odblokowany
         TopStatus = $"{_zone.Name}  (levels {_zone.LevelMin}-{_zone.LevelMax})";
 
         // wyjścia — widoczne u wszystkich (deterministyczne z definicji)
@@ -69,6 +70,10 @@ public partial class WorldZoneManager : Node
             node.Position = new Vector2(marker.X, marker.Y);
             GetParent().CallDeferred(Node.MethodName.AddChild, node);
         }
+
+        // waystone przy wejściu do strefy (fast-travel)
+        var waystone = new Waystone { Position = new Vector2(_zone.SpawnX - 120f, _zone.SpawnY - 120f) };
+        GetParent().CallDeferred(Node.MethodName.AddChild, waystone);
 
         if (!Net.IsServer) return;
         foreach (var packDef in _zone.Packs)

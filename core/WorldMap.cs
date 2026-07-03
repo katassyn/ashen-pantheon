@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 namespace AshenPantheon.Core;
@@ -81,4 +82,8 @@ public static class WorldMaps
 
     public static WorldZoneDefinition Zone(string id) =>
         Zones.TryGetValue(id, out var d) ? d : throw new KeyNotFoundException($"brak strefy świata: {id}");
+
+    /// <summary>Strefy uporządkowane wg poziomu (mapa świata / waystone).</summary>
+    public static IEnumerable<WorldZoneDefinition> Ordered() =>
+        Zones.Values.OrderBy(z => z.LevelMin).ThenBy(z => z.Name);
 }

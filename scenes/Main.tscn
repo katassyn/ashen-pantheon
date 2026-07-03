@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/ArenaGrid.cs" id="2_grid"]
 [ext_resource type="PackedScene" path="res://scenes/Portal.tscn" id="3_portal"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/Hud.tscn" id="6_hud"]
 [ext_resource type="Script" path="res://scripts/NetPlayers.cs" id="7_players"]
 [ext_resource type="Script" path="res://scripts/LobbyPanel.cs" id="8_lobby"]
+[ext_resource type="Script" path="res://scripts/Waystone.cs" id="10_way"]
 
 [node name="Hub" type="Node2D"]
 
@@ -27,6 +28,10 @@ position = Vector2(340, 0)
 position = Vector2(340, -200)
 TargetScene = "res://scenes/WorldZone.tscn"
 TargetZone = "swerdfield"
+
+[node name="Waystone" type="Area2D" parent="."]
+position = Vector2(180, 200)
+script = ExtResource("10_way")
 
 [node name="StashMark" type="Sprite2D" parent="."]
 position = Vector2(-320, -170)
