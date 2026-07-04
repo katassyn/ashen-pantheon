@@ -534,7 +534,12 @@ public partial class Net : Node
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void RpcGrantXp(long amount)
     {
-        GameState.Progress.GainXp(amount);
+        if (GameState.Progress.GainXp(amount) > 0)
+        {
+            SendChatLocal($"Level up! You are now level {GameState.Progress.Level}.");
+            GameState.AutoAssignUnlockedSkills();
+            PlayerController.Local?.Refresh();
+        }
     }
 
     /// <summary>Loot instancjonowany: pickup istnieje tylko na maszynie obdarowanego gracza.</summary>
@@ -567,8 +572,12 @@ public partial class Net : Node
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void RpcQuestKill(string monsterId) => QuestKillLocal(monsterId);
 
+    /// <summary>Każdy kill drużyny (party-share) — flaska ładuje się z killi.</summary>
+    public static event System.Action KillCredited;
+
     private static void QuestKillLocal(string monsterId)
     {
+        KillCredited?.Invoke();
         if (GameState.Quests.OnKill(monsterId)) GameState.Save();
     }
 

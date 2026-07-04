@@ -42,6 +42,14 @@ public partial class PlayerController : CharacterBody2D
     private Vector2 _dashDir;
     public bool IsInvulnerable => _iFrameLeft > 0f;
 
+    // ── flaska HP (podstawowy sustain ARPG): ładunki z killi, pełna w mieście ──
+    public const int FlaskMaxCharges = 3;
+    private const int KillsPerCharge = 10;
+    public int FlaskCharges { get; private set; } = FlaskMaxCharges;
+    private int _flaskKills;
+    private float _flaskRegenLeft;   // czas pozostały heala
+    private float _flaskRegenPerSec; // hp/s podczas picia
+
     private EnemyAnimator _animator;
 
     // puppet: interpolacja/ekstrapolacja stanu z sieci
@@ -72,11 +80,32 @@ public partial class PlayerController : CharacterBody2D
         _defense.ResetFull(_sheet);
         Resource = MaxResource;
         Net.AnnounceName(); // social: rejestr nicków
+        Net.KillCredited += OnKillCredited; // ładowanie flaski z killi (nazwany handler!)
+        if (GetTree().CurrentScene?.Name == "Hub") FlaskCharges = FlaskMaxCharges; // miasto = pełna flaska
     }
 
     public override void _ExitTree()
     {
         if (Local == this) Local = null;
+        if (IsMultiplayerAuthority()) Net.KillCredited -= OnKillCredited;
+    }
+
+    private void OnKillCredited()
+    {
+        if (FlaskCharges >= FlaskMaxCharges) return;
+        if (++_flaskKills < KillsPerCharge) return;
+        _flaskKills = 0;
+        FlaskCharges++;
+        FloatingText.Spawn(GetParent(), GlobalPosition, "+flask charge", new Color(0.9f, 0.4f, 0.4f), 13);
+    }
+
+    private void DrinkFlask()
+    {
+        if (_dead || FlaskCharges <= 0 || Health >= MaxHealth - 0.5f || _flaskRegenLeft > 0f) return;
+        FlaskCharges--;
+        _flaskRegenLeft = 2f;
+        _flaskRegenPerSec = MaxHealth * 0.40f / 2f; // 40% maks. HP przez 2 s
+        FloatingText.Spawn(GetParent(), GlobalPosition, "glug…", new Color(0.9f, 0.5f, 0.5f), 13);
     }
 
     private void RecomputeSheet()
@@ -213,6 +242,7 @@ public partial class PlayerController : CharacterBody2D
             if (Keybinds.Matches(k, "slot_q")) CastSlot(2);
             else if (Keybinds.Matches(k, "slot_e")) CastSlot(3);
             else if (Keybinds.Matches(k, "slot_r")) CastSlot(4);
+            else if (Keybinds.Matches(k, "flask")) DrinkFlask();
         }
     }
 
@@ -433,6 +463,13 @@ public partial class PlayerController : CharacterBody2D
             Resource = Mathf.Min(MaxResource, Resource + GameState.Class.ResourceRegen * dt);
 
         if (_sheet != null) _defense.Tick(dt, _sheet); // ES recharge po 3 s + life regen
+
+        if (_flaskRegenLeft > 0f) // picie flaski: heal rozłożony w czasie
+        {
+            float tick = Mathf.Min(dt, _flaskRegenLeft);
+            Heal(_flaskRegenPerSec * tick);
+            _flaskRegenLeft -= dt;
+        }
 
         if (_dashTimeLeft > 0f)
         {

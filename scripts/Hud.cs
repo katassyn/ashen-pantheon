@@ -180,7 +180,10 @@ public partial class Hud : CanvasLayer
 		_xpBar.Value = prog.Xp;
 		_xpNum.Text = $"Lv {prog.Level}   {prog.Xp} / {need} XP   ({pct:0.#}%)   {toGo} to level {prog.Level + 1}";
 		_xpBar.TooltipText = $"{toGo} XP to reach level {prog.Level + 1}";
-		_goldLabel.Text = $"Gold: {GameState.Wallet.Gold}    attribute pts: {prog.AttributePoints}    skill pts: {prog.SkillPoints}";
+		string flask = _player != null
+			? $"Flask {new string('●', _player.FlaskCharges)}{new string('○', PlayerController.FlaskMaxCharges - _player.FlaskCharges)} [{Keybinds.KeyName("flask")}]    "
+			: "";
+		_goldLabel.Text = $"{flask}Gold: {GameState.Wallet.Gold}    attribute pts: {prog.AttributePoints}    skill pts: {prog.SkillPoints}";
 
 		foreach (var slot in _slots) slot.Refresh(_player);
 	}

@@ -83,6 +83,31 @@ public static class GameState
         PledgedGod = GodId.None;
         Loadout = new Loadout();
         EnsureDefaultLoadout();
+
+        // starter kit: bez broni skille biją śladowo — gra ma być grywalna od 1. minuty
+        Equipment.Equip(new Item
+        {
+            Name = "Worn Bow", Kind = ItemKind.TwoHandWeapon, Rarity = Rarity.Normal, ItemLevel = 1,
+            Affixes = { new Affix { Stat = AffixStat.WeaponDamage, Value = 8f } },
+        }, EquipmentSlot.Weapon);
+
+        Save();
+    }
+
+    /// <summary>Po awansie: świeżo odblokowane skille wskakują w wolne sloty paska (onboarding).</summary>
+    public static void AutoAssignUnlockedSkills()
+    {
+        foreach (var spec in ClassSpec.Skills)
+        {
+            if (spec.RequiredLevel > Progress.Level) continue;
+            if (Loadout.SlotOf(spec.Id) != null) continue;
+            int free = -1;
+            for (int i = 0; i < Loadout.SlotCount; i++)
+                if (Loadout.Slots[i] == null) { free = i; break; }
+            if (free < 0) return;
+            Loadout.Assign(free, spec.Id);
+            Net.SendChatLocal($"New skill unlocked: {spec.Name} — assigned to [{Keybinds.SlotKeyName(free)}]");
+        }
         Save();
     }
 

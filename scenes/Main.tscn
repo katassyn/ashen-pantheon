@@ -24,10 +24,16 @@ script = ExtResource("8_lobby")
 [node name="Portal" parent="." instance=ExtResource("3_portal")]
 position = Vector2(340, 0)
 
+[node name="Label" parent="Portal" index="0"]
+text = "DUNGEON: Ashen Wastes (lvl 3+)"
+
 [node name="WorldPortal" parent="." instance=ExtResource("3_portal")]
 position = Vector2(340, -200)
 TargetScene = "res://scenes/WorldZone.tscn"
 TargetZone = "swerdfield"
+
+[node name="Label" parent="WorldPortal" index="0"]
+text = "WORLD: Swerdfield (lvl 1-5)"
 
 [node name="Waystone" type="Area2D" parent="."]
 position = Vector2(180, 200)

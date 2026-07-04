@@ -18,6 +18,7 @@ public static class Keybinds
         ("slot_q", "Skill 3", Key.Q),
         ("slot_e", "Skill 4", Key.E),
         ("slot_r", "Skill 5", Key.R),
+        ("flask", "Health Flask", Key.Space),
         ("stats", "Stats", Key.C),
         ("inventory", "Inventory", Key.I),
         ("skills", "Skills / Talents", Key.K),
