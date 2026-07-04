@@ -60,7 +60,7 @@ public partial class AuctionPanel : CanvasLayer
     private void Refresh()
     {
         if (_gold == null || !IsInstanceValid(_gold)) return;
-        _gold.Text = $"Your gold: {GameState.Wallet.Gold}" + (Net.Online ? "" : "    (solo — market is empty; play co-op to trade)");
+        _gold.Text = $"Your gold: {GameState.Wallet.Gold}" + (Net.Online ? "" : "    (market is local to this lobby)");
 
         // oferty
         foreach (Node c in _listings.GetChildren()) c.QueueFree();
@@ -100,8 +100,7 @@ public partial class AuctionPanel : CanvasLayer
             row.AddChild(name);
             var price = new SpinBox { MinValue = 1, MaxValue = 9999999, Value = System.Math.Max(1, Vendor.SellPrice(item) * 3), CustomMinimumSize = new Vector2(110, 0) };
             row.AddChild(price);
-            var post = new Button { Text = "Post", Disabled = !Net.Online };
-            post.TooltipText = Net.Online ? "" : "Auctions need a co-op lobby";
+            var post = new Button { Text = "Post" }; // działa też solo (rynek lokalny hosta)
             post.Pressed += () =>
             {
                 GameState.Bag.Remove(item); // escrow

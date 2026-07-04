@@ -109,7 +109,8 @@ public partial class WorldZoneManager : Node
         }
     }
 
-    /// <summary>Znacznik questowy: Reach = wejście zalicza cel; Interact = wejście + E (dźwignia/ołtarz).</summary>
+    /// <summary>Znacznik questowy: Reach = wejście zalicza cel; Interact = wejście + E.
+    /// WIDOCZNY tylko, gdy jego cel jest AKTYWNY i nieukończony (bez mylących popupów).</summary>
     private partial class QuestMarkerNode : Area2D
     {
         public string MarkerId = "";
@@ -118,6 +119,7 @@ public partial class WorldZoneManager : Node
 
         private bool _inside;
         private Label _label;
+        private float _visCheck;
 
         public override void _Ready()
         {
@@ -132,22 +134,52 @@ public partial class WorldZoneManager : Node
                 Modulate = new Color(1f, 0.9f, 0.5f),
             };
             AddChild(_label);
+            UpdateVisibility();
             BodyEntered += b =>
             {
                 if (b is not PlayerController p || !p.IsMultiplayerAuthority()) return;
                 _inside = true;
-                if (Interact) { _label.Text = $"◈ {LabelText} [E]"; return; }
-                Credit("objective reached!");
+                if (Interact) return;
+                if (GameState.Quests.OnReach(MarkerId)) Credit("objective reached!"); // popup TYLKO przy zaliczeniu
             };
-            BodyExited += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) { _inside = false; if (_label != null) _label.Text = LabelHint(); } };
+            BodyExited += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) _inside = false; };
+        }
+
+        public override void _Process(double delta)
+        {
+            _visCheck -= (float)delta;
+            if (_visCheck > 0f) return;
+            _visCheck = 0.5f;
+            UpdateVisibility();
+        }
+
+        /// <summary>Cel z tym targetem jest w aktywnym quescie i nieukończony?</summary>
+        private bool ObjectiveActive()
+        {
+            foreach (var questId in GameState.Quests.Active.Keys)
+            {
+                var q = QuestCatalog.Find(questId);
+                if (q == null) continue;
+                foreach (var o in q.Objectives)
+                    if (o.Target == MarkerId && !GameState.Quests.ObjectiveDone(q, o))
+                        return true;
+            }
+            return false;
+        }
+
+        private void UpdateVisibility()
+        {
+            bool active = ObjectiveActive();
+            Visible = active;
+            SetDeferred(Area2D.PropertyName.Monitoring, active);
         }
 
         public override void _UnhandledInput(InputEvent @event)
         {
-            if (!Interact || !_inside) return;
+            if (!Interact || !_inside || !Visible) return;
             if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "interact"))
             {
-                if (GameState.Quests.OnInteract(MarkerId)) { Credit("used!"); }
+                if (GameState.Quests.OnInteract(MarkerId)) Credit("used!");
                 GetViewport().SetInputAsHandled();
             }
         }

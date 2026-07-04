@@ -11,6 +11,10 @@ public partial class GameBoot : Node
         Keybinds.Load();      // klawisze + ustawienia audio/wideo
         Keybinds.ApplyVideoAudio();
 
+        // GUI zawsze 1:1 w pikselach (stretch wyłączony) + czytelny bazowy font + min. rozmiar okna
+        ThemeDB.FallbackFontSize = 17;
+        DisplayServer.WindowSetMinSize(new Vector2I(1280, 720));
+
         var args = OS.GetCmdlineUserArgs();
         bool join = args.Contains("--join");
 

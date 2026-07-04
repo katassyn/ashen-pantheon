@@ -66,8 +66,8 @@ public static class QuestNpc
         var layer = new CanvasLayer { Name = "QuestDialog", Layer = 15 };
         var panel = new Panel
         {
-            AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 1f, AnchorBottom = 1f,
-            OffsetLeft = -420, OffsetRight = 420, OffsetTop = -330, OffsetBottom = -170,
+            AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0.5f, AnchorBottom = 0.5f,
+            OffsetLeft = -420, OffsetRight = 420, OffsetTop = -140, OffsetBottom = 140,
         };
         UiPanels.Solidify(panel);
         layer.AddChild(panel);

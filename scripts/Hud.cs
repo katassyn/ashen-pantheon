@@ -11,6 +11,7 @@ public partial class Hud : CanvasLayer
 	private ProgressBar _hpBar, _resBar, _xpBar, _esBar;
 	private Label _hpNum, _resNum, _xpNum, _esNum;
 	private Label _goldLabel;
+	private Label _zoneLabel, _questLabel; // prawa kolumna pod minimapą
 	private readonly SkillSlotUi[] _slots = new SkillSlotUi[Loadout.SlotCount];
 
 	public override void _Ready()
@@ -33,7 +34,7 @@ public partial class Hud : CanvasLayer
 		_esBar = MakeBar(new Color(0.35f, 0.75f, 0.95f)); // Energy Shield nad HP (absorbuje pierwszy)
 		_esBar.CustomMinimumSize = new Vector2(0, 7);
 		_hpBar = MakeBar(new Color(0.75f, 0.2f, 0.2f));
-		_resBar = MakeBar(new Color(0.25f, 0.55f, 0.85f));
+		_resBar = MakeBar(new Color(0.25f, 0.75f, 0.35f)); // koncentracja = zielona
 		_xpBar = MakeBar(new Color(0.7f, 0.6f, 0.2f));
 		_xpBar.CustomMinimumSize = new Vector2(0, 8);
 		root.AddChild(_esBar);
@@ -69,16 +70,34 @@ public partial class Hud : CanvasLayer
 		AddChild(new TradePanel());     // handel gracz-gracz (PPM na nicku)
 		AddChild(new SocialPanel());    // O: znajomi / guildia (online)
 
-		// minimapa: stała rogowa + duża pod TAB (obie centrowane na graczu)
+		// minimapa: stała rogowa; TAB przełącza na dużą (rogowa wtedy znika — nigdy dwie naraz)
 		var corner = new MinimapView { WorldRadius = 1400f };
 		corner.AnchorLeft = 1f; corner.AnchorRight = 1f;
 		corner.OffsetLeft = -206; corner.OffsetTop = 16; corner.OffsetRight = -16; corner.OffsetBottom = 206;
 		AddChild(corner);
 
-		var tab = new MinimapView { WorldRadius = 2600f, Toggleable = true };
+		var tab = new MinimapView { WorldRadius = 2600f, Toggleable = true, Corner = corner };
 		tab.AnchorLeft = 0.5f; tab.AnchorRight = 0.5f; tab.AnchorTop = 0.5f; tab.AnchorBottom = 0.5f;
 		tab.OffsetLeft = -320; tab.OffsetTop = -320; tab.OffsetRight = 320; tab.OffsetBottom = 320;
 		AddChild(tab);
+
+		// prawa kolumna POD minimapą: nazwa strefy + tracker questów
+		var right = new VBoxContainer
+		{
+			AnchorLeft = 1f, AnchorRight = 1f,
+			OffsetLeft = -336, OffsetTop = 216, OffsetRight = -16, OffsetBottom = 620,
+		};
+		right.AddThemeConstantOverride("separation", 4);
+		AddChild(right);
+		_zoneLabel = new Label { HorizontalAlignment = HorizontalAlignment.Right };
+		_zoneLabel.AddThemeColorOverride("font_color", new Color(1f, 0.9f, 0.6f));
+		_zoneLabel.AddThemeConstantOverride("outline_size", 4);
+		_zoneLabel.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.9f));
+		right.AddChild(_zoneLabel);
+		_questLabel = new Label { HorizontalAlignment = HorizontalAlignment.Right, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+		_questLabel.AddThemeConstantOverride("outline_size", 4);
+		_questLabel.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.9f));
+		right.AddChild(_questLabel);
 	}
 
 	private static ProgressBar MakeBar(Color color)
@@ -121,7 +140,7 @@ public partial class Hud : CanvasLayer
 			AnchorRight = 1f, AnchorBottom = 1f,
 			MouseFilter = Control.MouseFilterEnum.Ignore,
 		};
-		label.AddThemeFontSizeOverride("font_size", 11);
+		label.AddThemeFontSizeOverride("font_size", 14);
 		label.AddThemeColorOverride("font_color", Colors.White);
 		label.AddThemeConstantOverride("outline_size", 3);
 		label.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.9f));
@@ -137,13 +156,18 @@ public partial class Hud : CanvasLayer
 
 		if (_info != null && _player != null)
 		{
-			string wave = _arena?.TopStatus ?? worldZone?.TopStatus ?? "";
 			var p = GameState.Progress;
 			string net = Net.Online ? $"   [{Net.Status} · {Net.PlayerCount()}/4]" : "";
 			_info.Text =
-				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}   {wave}{net}\n" +
-				"C stats · I inv · K skills · J journal · M map · O friends/guild · TAB minimap · Enter chat · RMB name = trade" +
-				QuestTracker();
+				$"Lv {p.Level}   God: {Gods.Name(GameState.PledgedGod)}{net}\n" +
+				"C stats · I inv · K skills · J journal · M map · O social · TAB map · Enter chat";
+		}
+
+		// prawa kolumna pod minimapą: strefa + questy
+		if (_zoneLabel != null)
+		{
+			_zoneLabel.Text = _arena?.TopStatus ?? worldZone?.TopStatus ?? "Town";
+			_questLabel.Text = QuestTracker();
 		}
 
 		if (_center != null)

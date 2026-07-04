@@ -3,7 +3,7 @@
   "name": "Ranger",
   "resourceName": "Concentration",
   "resourceMax": 100,
-  "resourceRegen": 30,
+  "resourceRegen": 7,
   "weaponKinds": ["OneHandWeapon", "TwoHandWeapon", "OffHand"],
   "skills": [
     {

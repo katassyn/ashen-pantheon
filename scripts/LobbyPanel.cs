@@ -11,8 +11,8 @@ public partial class LobbyPanel : CanvasLayer
     {
         var box = new PanelContainer
         {
-            AnchorLeft = 1f, AnchorRight = 1f, AnchorTop = 0f, AnchorBottom = 0f,
-            OffsetLeft = -270f, OffsetRight = -10f, OffsetTop = 10f, OffsetBottom = 150f,
+            AnchorLeft = 1f, AnchorRight = 1f, AnchorTop = 1f, AnchorBottom = 1f,
+            OffsetLeft = -270f, OffsetRight = -10f, OffsetTop = -320f, OffsetBottom = -180f,
         };
         var style = new StyleBoxFlat { BgColor = new Color(0.08f, 0.07f, 0.12f, 0.95f), BorderColor = new Color(0.4f, 0.35f, 0.55f) };
         style.SetBorderWidthAll(2);

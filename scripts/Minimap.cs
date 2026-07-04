@@ -6,8 +6,10 @@ public partial class MinimapView : Control
 {
     /// <summary>Ile jednostek świata od środka do krawędzi radaru.</summary>
     public float WorldRadius = 1400f;
-    /// <summary>Duża mapa pod TAB (przełączana), false = stała rogowa.</summary>
+    /// <summary>Duża mapa pod TAB (toggle), false = stała rogowa.</summary>
     public bool Toggleable;
+    /// <summary>Rogowa minimapa — chowana, gdy duża jest otwarta (nigdy dwie naraz).</summary>
+    public MinimapView Corner;
 
     public override void _Ready()
     {
@@ -20,10 +22,10 @@ public partial class MinimapView : Control
     public override void _UnhandledInput(InputEvent @event)
     {
         if (!Toggleable) return;
-        if (@event is InputEventKey k && !k.Echo && k.PhysicalKeycode == Key.Tab)
+        if (@event is InputEventKey k && k.Pressed && !k.Echo && k.PhysicalKeycode == Key.Tab)
         {
-            // trzymaj = pokaż (jak w wielu ARPG); puść = schowaj
-            Visible = k.Pressed;
+            Visible = !Visible;                             // TAB = toggle
+            if (Corner != null) Corner.Visible = !Visible;  // duża zastępuje rogową
             GetViewport().SetInputAsHandled();
         }
     }

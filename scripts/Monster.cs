@@ -73,18 +73,19 @@ public partial class Monster : EnemyBase
             if (_windupLeft <= 0f)
             {
                 Animator?.Play("attack");
-                if (dist <= _pendingMelee.Reach && CurrentTarget != null)
+                // bufor 1.25× — kolizja ciał trzyma dystans ~35px, cios nie może whiffować na styku
+                if (dist <= _pendingMelee.Reach * 1.25f && CurrentTarget != null)
                     Net.DamagePlayer(CurrentTarget, _pendingMelee.Damage * DmgMult, System.Enum.TryParse<DamageType>(_pendingMelee.DamageType, true, out var mt) ? mt : DamageType.Physical);
                 _pendingMelee = null;
             }
             return;
         }
 
-        // ruch wg definicji
+        // ruch wg definicji — melee prze na gracza (kolizja go zatrzyma), inaczej whiffuje ataki
         var (abilities, interval) = _def.ActiveSet(HpFrac);
         bool wantMelee = abilities.Exists(a => a.Type == "melee");
         float stopAt = _def.Movement == "keep_distance" ? _def.PreferredRange
-            : wantMelee ? 44f : 30f;
+            : wantMelee ? 20f : 30f;
 
         if (dist > stopAt + 15f)
         {
