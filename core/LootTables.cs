@@ -17,7 +17,7 @@ public sealed class LootTableDefinition
 
 public sealed class LootEntry
 {
-    /// <summary>nothing | gold | item | table</summary>
+    /// <summary>nothing | gold | item | jewel | table</summary>
     public string Type { get; set; } = "nothing";
     public int Weight { get; set; } = 1;
     public int GoldMin { get; set; }
@@ -48,8 +48,9 @@ public static class LootTables
         Tables[def.Id] = def;
     }
 
-    /// <summary>Losuje dropy z tabeli (rekurencyjnie po zagnieżdżeniach). Deterministyczne dla danego rng.</summary>
-    public static List<LootDrop> Roll(string tableId, Random rng, LootGenerator gen, int depth = 0)
+    /// <summary>Losuje dropy z tabeli (rekurencyjnie po zagnieżdżeniach). Deterministyczne dla danego rng.
+    /// itemLevel = poziom potwora/strefy — skaluje affixy dropów.</summary>
+    public static List<LootDrop> Roll(string tableId, Random rng, LootGenerator gen, int itemLevel = 50, int depth = 0)
     {
         var drops = new List<LootDrop>();
         if (depth > 8 || !Tables.TryGetValue(tableId, out var table)) return drops;
@@ -66,12 +67,16 @@ public static class LootTables
                     break;
                 case "item":
                     var item = string.IsNullOrEmpty(entry.Rarity) || !Enum.TryParse<Rarity>(entry.Rarity, out var r)
-                        ? gen.Generate()
-                        : gen.Generate(r);
+                        ? gen.Generate(gen.RollRarity(), itemLevel)
+                        : gen.Generate(r, itemLevel);
                     drops.Add(new LootDrop { Item = item });
                     break;
+                case "jewel":
+                    if (JewelCatalog.Jewels.Count > 0)
+                        drops.Add(new LootDrop { Item = JewelCatalog.Roll(rng, itemLevel) });
+                    break;
                 case "table":
-                    drops.AddRange(Roll(entry.Table, rng, gen, depth + 1));
+                    drops.AddRange(Roll(entry.Table, rng, gen, itemLevel, depth + 1));
                     break;
                 // "nothing" → nic
             }

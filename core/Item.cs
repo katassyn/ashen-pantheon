@@ -12,7 +12,9 @@ public enum EquipmentSlot
 public enum ItemKind
 {
     Helmet, Shoulders, BodyArmour, Gloves, Boots, Belt,
-    Amulet, Ring, OneHandWeapon, TwoHandWeapon, OffHand
+    Amulet, Ring, OneHandWeapon, TwoHandWeapon, OffHand,
+    /// <summary>Klejnot do socketa (DsoCraft: Emberfang, Windstep, ...). 1×1, nie zakładany bezpośrednio.</summary>
+    Jewel
 }
 
 /// <summary>Staty, które może dawać affix na itemie.</summary>
@@ -23,6 +25,8 @@ public enum AffixStat
     IncreasedAttackDamage,
     FireResist, ColdResist, LightningResist, ChaosResist,
     LifeRegen, ManaRegen, CritChance, CritMultiplier, AttackSpeed, CastSpeed,
+    /// <summary>Bonus szybkości ruchu (Windstep Sapphire itd.).</summary>
+    MoveSpeed,
     /// <summary>Implicit broni: średnie obrażenia broni (skalują skille przez WeaponScaling).</summary>
     WeaponDamage,
     /// <summary>Implicit broni: bonus szybkości ataku.</summary>
@@ -51,6 +55,37 @@ public sealed class Item
     public string? UniqueId { get; init; }
     public List<Affix> Affixes { get; init; } = new();
 
+    /// <summary>Poziom itemu (= poziom potwora/strefy dropu) — skaluje wartości affixów. 0 w starych zapisach = 50.</summary>
+    public int ItemLevel { get; set; } = 1;
+    /// <summary>Liczba socketów (rollowana przy dropie wg rodzaju i ilvl).</summary>
+    public int Sockets { get; set; }
+    /// <summary>Klejnoty w socketach (permanentne po włożeniu — jak Diablo 2).</summary>
+    public List<Item> SocketedJewels { get; } = new();
+
+    /// <summary>Id z JewelCatalog (dla Kind == Jewel).</summary>
+    public string? JewelId { get; init; }
+
+    /// <summary>Wolne sockety.</summary>
+    public int FreeSockets => Sockets - SocketedJewels.Count;
+
+    /// <summary>Wsadza klejnot (permanentnie — jak Diablo 2). false gdy brak wolnego socketa / to nie jewel.
+    /// UWAGA: design jeweli może się zmienić (właściciel) — trzymać logikę tylko tutaj.</summary>
+    public bool TrySocket(Item jewel)
+    {
+        if (jewel.Kind != ItemKind.Jewel || FreeSockets <= 0) return false;
+        SocketedJewels.Add(jewel);
+        return true;
+    }
+
+    /// <summary>Maks. socketów dla rodzaju (broń 2H/zbroja: 3, 1H/hełm: 2, reszta zbroi: 1, biżuteria/jewel: 0).</summary>
+    public static int MaxSocketsFor(ItemKind kind) => kind switch
+    {
+        ItemKind.TwoHandWeapon or ItemKind.BodyArmour => 3,
+        ItemKind.OneHandWeapon or ItemKind.Helmet => 2,
+        ItemKind.Shoulders or ItemKind.Gloves or ItemKind.Boots or ItemKind.Belt or ItemKind.OffHand => 1,
+        _ => 0
+    };
+
     /// <summary>Rozmiar w komórkach plecaka (tetris jak PoE).</summary>
     public (int W, int H) Size => SizeFor(Kind);
 
@@ -67,6 +102,7 @@ public sealed class Item
         ItemKind.OneHandWeapon => (1, 3),
         ItemKind.TwoHandWeapon => (2, 4),
         ItemKind.OffHand => (2, 2),
+        ItemKind.Jewel => (1, 1),
         _ => (1, 1)
     };
 

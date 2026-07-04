@@ -16,6 +16,7 @@ public static class DataLoader
         foreach (var json in ReadDir("res://data/trees")) GameData.LoadTrees(json);
         foreach (var json in ReadDir("res://data/classtrees")) ClassTree.Load(json);
         foreach (var json in ReadDir("res://data/quests")) QuestCatalog.Load(json);
+        foreach (var json in ReadDir("res://data/jewels")) JewelCatalog.Load(json);
         foreach (var json in ReadDir("res://data/loot")) LootTables.Load(json);
         foreach (var json in ReadDir("res://data/monsters")) Bestiary.LoadMonster(json);
         foreach (var json in ReadDir("res://data/zones")) Bestiary.LoadZone(json);

@@ -74,8 +74,20 @@ public static class SaveValidator
 
     public static (bool Ok, string? Error) ValidateItem(ItemDto dto)
     {
-        if (!Enum.TryParse<ItemKind>(dto.Kind, out _)) return (false, $"nieznany typ itemu: {dto.Kind}");
+        if (!Enum.TryParse<ItemKind>(dto.Kind, out var kind)) return (false, $"nieznany typ itemu: {dto.Kind}");
         if (!Enum.TryParse<Rarity>(dto.Rarity, out var rarity)) return (false, $"nieznana rzadkość: {dto.Rarity}");
+
+        int ilvl = dto.ItemLevel <= 0 ? 50 : dto.ItemLevel; // legacy zapisy bez ilvl = pełna skala
+        if (ilvl > 100) return (false, $"item {dto.Name}: ilvl {ilvl} poza zakresem");
+
+        // klejnot: jeden affix zgodny z katalogiem (gdy katalog załadowany — serwer/testy TAK)
+        if (kind == ItemKind.Jewel)
+        {
+            if (JewelCatalog.Jewels.Count == 0) return (true, null); // katalog niedostępny → pomiń (lokalne edge-case'y)
+            bool okJewel = JewelCatalog.Validate(dto.JewelId,
+                dto.Affixes.Select(a => (a.Stat, a.Value)).ToList(), ilvl);
+            return okJewel ? (true, null) : (false, $"jewel {dto.Name}: niezgodny z katalogiem");
+        }
 
         // hand-authored tiery muszą pochodzić z katalogu (dane itemu i tak odtwarzamy z katalogu po UniqueId)
         if (rarity is Rarity.Legendary or Rarity.Unique or Rarity.Mythic)
@@ -98,8 +110,21 @@ public static class SaveValidator
         {
             if (!Enum.TryParse<AffixStat>(a.Stat, out var stat))
                 return (false, $"item {dto.Name}: nieznany affix {a.Stat}");
-            if (!AffixRanges.InRange(stat, a.Value))
-                return (false, $"item {dto.Name}: affix {a.Stat}={a.Value} poza zakresem generatora");
+            if (!AffixRanges.InRange(stat, a.Value, ilvl))
+                return (false, $"item {dto.Name}: affix {a.Stat}={a.Value} poza zakresem dla ilvl {ilvl}");
+        }
+
+        // sockety + klejnoty w środku
+        if (dto.Sockets < 0 || dto.Sockets > Item.MaxSocketsFor(kind))
+            return (false, $"item {dto.Name}: {dto.Sockets} socketów > cap dla {kind}");
+        if (dto.Jewels.Count > dto.Sockets)
+            return (false, $"item {dto.Name}: więcej jeweli ({dto.Jewels.Count}) niż socketów ({dto.Sockets})");
+        foreach (var j in dto.Jewels)
+        {
+            if (!string.Equals(j.Kind, "Jewel", StringComparison.OrdinalIgnoreCase))
+                return (false, $"item {dto.Name}: w sockecie nie-jewel");
+            var (jok, jerr) = ValidateItem(j);
+            if (!jok) return (false, jerr);
         }
 
         return (true, null);

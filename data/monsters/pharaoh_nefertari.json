@@ -10,6 +10,7 @@
   "preferredRange": 160,
   "scale": 2.2,
   "tint": "#e0b040",
+  "level": 50,
   "xp": 1200,
   "lootTable": "boss",
   "attackInterval": 2.0,

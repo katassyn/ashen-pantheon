@@ -18,6 +18,13 @@ public sealed class ItemDto
     public string Rarity { get; set; } = "Normal";
     public string? UniqueId { get; set; }
     public List<AffixDto> Affixes { get; set; } = new();
+
+    /// <summary>Poziom itemu (0 w starych zapisach = traktowany jako 50).</summary>
+    public int ItemLevel { get; set; }
+    public int Sockets { get; set; }
+    public string? JewelId { get; set; }
+    /// <summary>Klejnoty w socketach (zagnieżdżone ItemDto typu Jewel).</summary>
+    public List<ItemDto> Jewels { get; set; } = new();
 }
 
 public sealed class PlacedItemDto { public ItemDto Item { get; set; } = new(); public int X { get; set; } public int Y { get; set; } }
@@ -103,6 +110,10 @@ public static class ItemMapper
         Rarity = item.Rarity.ToString(),
         UniqueId = item.UniqueId,
         Affixes = item.Affixes.Select(a => new AffixDto { Stat = a.Stat.ToString(), Value = a.Value }).ToList(),
+        ItemLevel = item.ItemLevel,
+        Sockets = item.Sockets,
+        JewelId = item.JewelId,
+        Jewels = item.SocketedJewels.Select(ToDto).ToList(),
     };
 
     public static Item FromDto(ItemDto dto)
@@ -112,15 +123,20 @@ public static class ItemMapper
             var unique = UniqueCatalog.ById(dto.UniqueId);
             if (unique != null) return unique;
         }
-        return new Item
+        var item = new Item
         {
             Name = dto.Name,
             Kind = Enum.TryParse<ItemKind>(dto.Kind, out var k) ? k : ItemKind.Ring,
             Rarity = Enum.TryParse<Rarity>(dto.Rarity, out var r) ? r : Rarity.Normal,
+            JewelId = dto.JewelId,
             Affixes = dto.Affixes
                 .Where(a => Enum.TryParse<AffixStat>(a.Stat, out _))
                 .Select(a => new Affix { Stat = Enum.Parse<AffixStat>(a.Stat), Value = a.Value })
                 .ToList(),
+            ItemLevel = dto.ItemLevel <= 0 ? 50 : dto.ItemLevel, // legacy zapisy = pełna skala
+            Sockets = dto.Sockets,
         };
+        foreach (var j in dto.Jewels) item.SocketedJewels.Add(FromDto(j));
+        return item;
     }
 }

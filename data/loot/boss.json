@@ -5,6 +5,7 @@
     { "type": "gold", "weight": 30, "goldMin": 25, "goldMax": 60 },
     { "type": "item", "weight": 40 },
     { "type": "item", "weight": 8, "rarity": "Rare" },
-    { "type": "table", "weight": 22, "table": "common" }
+    { "type": "jewel", "weight": 8 },
+    { "type": "table", "weight": 14, "table": "common" }
   ]
 }

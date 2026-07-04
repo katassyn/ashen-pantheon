@@ -8,6 +8,7 @@
   "movement": "chase",
   "scale": 1.4,
   "tint": "#5a6a8a",
+  "level": 19,
   "xp": 70,
   "lootTable": "common",
   "questItem": "watch_seal",

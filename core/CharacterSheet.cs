@@ -34,6 +34,8 @@ public sealed class CharacterSheet
     public float CastSpeed { get; set; } = 1.0f;      // casty/s
     /// <summary>Średnie obrażenia założonej broni (skille skalują przez WeaponScaling).</summary>
     public float WeaponDamage { get; set; }
+    /// <summary>Mnożnik szybkości ruchu z gearu/jeweli (1 = baza).</summary>
+    public float MoveSpeedMult { get; set; } = 1f;
 
     // --- Staty pochodne ---
 

@@ -4,6 +4,7 @@
   "entries": [
     { "type": "nothing", "weight": 45 },
     { "type": "gold", "weight": 30, "goldMin": 3, "goldMax": 14 },
-    { "type": "item", "weight": 25 }
+    { "type": "item", "weight": 23 },
+    { "type": "jewel", "weight": 2 }
   ]
 }

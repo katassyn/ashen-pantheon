@@ -7,6 +7,7 @@
   "movement": "chase",
   "scale": 1.35,
   "tint": "#5c7a4a",
+  "level": 14,
   "xp": 40,
   "lootTable": "common",
   "attackInterval": 1.7,

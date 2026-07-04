@@ -1,0 +1,10 @@
+{
+  "jewels": [
+    { "id": "emberfang", "name": "Emberfang Jewel", "stat": "IncreasedAttackDamage", "min": 0.04, "max": 0.12, "tint": "#e06030" },
+    { "id": "windstep", "name": "Windstep Sapphire", "stat": "MoveSpeed", "min": 0.02, "max": 0.06, "tint": "#5090e0" },
+    { "id": "whirlwind", "name": "Whirlwind Opal", "stat": "AttackSpeed", "min": 0.03, "max": 0.08, "tint": "#c0d0e0" },
+    { "id": "heartroot", "name": "Heartroot Ruby", "stat": "FlatLife", "min": 8, "max": 25, "tint": "#d03050" },
+    { "id": "stonehide", "name": "Stonehide Garnet", "stat": "FlatArmour", "min": 12, "max": 45, "tint": "#a08050" },
+    { "id": "lasting_healing", "name": "Lasting Healing Jewel", "stat": "LifeRegen", "min": 0.8, "max": 3, "tint": "#50c070" }
+  ]
+}

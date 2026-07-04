@@ -135,6 +135,7 @@ public static class GameData
         foreach (var f in SafeFiles(Path.Combine(dataDir, "trees"))) LoadTrees(File.ReadAllText(f));
         foreach (var f in SafeFiles(Path.Combine(dataDir, "classtrees"))) ClassTree.Load(File.ReadAllText(f));
         foreach (var f in SafeFiles(Path.Combine(dataDir, "quests"))) QuestCatalog.Load(File.ReadAllText(f));
+        foreach (var f in SafeFiles(Path.Combine(dataDir, "jewels"))) JewelCatalog.Load(File.ReadAllText(f));
     }
 
     private static IEnumerable<string> SafeFiles(string dir) =>

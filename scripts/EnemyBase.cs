@@ -31,6 +31,8 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     /// <summary>Przedmiot questowy (cel Collect) + szansa — z definicji potwora.</summary>
     protected virtual string QuestItemId => "";
     protected virtual float QuestItemChance => 0f;
+    /// <summary>Poziom potwora (= poziom dropu / skala affixów).</summary>
+    protected virtual int MonsterLevel => 1;
 
     protected Combatant Combatant;
     protected Sprite2D Sprite;
@@ -232,7 +234,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         if (DropsLoot)
             foreach (int peer in Net.AllPeers())
             {
-                var drops = LootTables.Roll(LootTableId, LootRng, Loot);
+                var drops = LootTables.Roll(LootTableId, LootRng, Loot, MonsterLevel);
                 int i = 0;
                 foreach (var drop in drops)
                 {

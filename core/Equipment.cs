@@ -81,10 +81,11 @@ public sealed class Equipment
 
         float flatLife = 0, flatMana = 0, flatES = 0, flatArmour = 0, flatEvasion = 0, flatHit = 0;
         float incAtk = 0, lifeRegen = 0, manaRegen = 0, critC = 0, critM = 0, atkSpd = 0, castSpd = 0;
-        float weaponDmg = 0;
+        float weaponDmg = 0, moveSpd = 0;
 
-        // gear + dodatkowe źródła (pasywki z drzewa klasy — ten sam pipeline)
-        var allAffixes = EquippedItems().SelectMany(i => i.Affixes);
+        // gear (+ klejnoty w socketach) + dodatkowe źródła (pasywki z drzewa klasy) — jeden pipeline
+        var allAffixes = EquippedItems()
+            .SelectMany(i => i.Affixes.Concat(i.SocketedJewels.SelectMany(j => j.Affixes)));
         if (extraAffixes != null) allAffixes = allAffixes.Concat(extraAffixes);
 
         foreach (var a in allAffixes)
@@ -110,6 +111,7 @@ public sealed class Equipment
                     case AffixStat.CritMultiplier: critM += a.Value; break;
                     case AffixStat.AttackSpeed: atkSpd += a.Value; break;
                     case AffixStat.CastSpeed: castSpd += a.Value; break;
+                    case AffixStat.MoveSpeed: moveSpd += a.Value; break;
                     case AffixStat.WeaponDamage: weaponDmg += a.Value; break;
                     case AffixStat.WeaponAttackSpeed: atkSpd += a.Value; break;
                 }
@@ -134,6 +136,7 @@ public sealed class Equipment
         sheet.AttackSpeed += atkSpd;
         sheet.CastSpeed += castSpd;
         sheet.WeaponDamage = weaponDmg;
+        sheet.MoveSpeedMult = 1f + moveSpd;
         return sheet;
     }
 }

@@ -20,6 +20,8 @@ public sealed class MonsterDefinition
     public string Tint { get; set; } = "#d94d4d";
     public long Xp { get; set; } = 12;
     public string LootTable { get; set; } = "common";
+    /// <summary>Poziom potwora — poziom dropionych itemów (skalowanie affixów) i przyszłe formuły.</summary>
+    public int Level { get; set; } = 1;
     /// <summary>Przedmiot questowy zrzucany przy śmierci (cel Collect). Pusty = brak.</summary>
     public string QuestItem { get; set; } = "";
     /// <summary>Szansa na zrzut przedmiotu questowego (0..1).</summary>

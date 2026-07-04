@@ -52,9 +52,16 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
     public static string Describe(Item item)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"{item.Name}  [{item.Rarity}]");
+        sb.AppendLine($"{item.Name}  [{item.Rarity}]  ilvl {item.ItemLevel}");
         foreach (var a in item.Affixes) sb.AppendLine($"  {a.Stat} +{a.Value:0.##}");
         if (item.Effect != UniqueEffect.None) sb.AppendLine($"  ✦ {item.Effect}");
+        if (item.Sockets > 0)
+        {
+            sb.AppendLine($"  Sockets: {item.SocketedJewels.Count}/{item.Sockets}" +
+                          (item.FreeSockets > 0 ? "   (drag a jewel here)" : ""));
+            foreach (var j in item.SocketedJewels)
+                sb.AppendLine($"    ◆ {j.Name}: {j.Affixes[0].Stat} +{j.Affixes[0].Value:0.##}");
+        }
         sb.Append($"  value: {Vendor.SellPrice(item)} gold");
         return sb.ToString();
     }
@@ -142,7 +149,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
             ItemKind.Helmet => "HELM", ItemKind.Shoulders => "SHLD", ItemKind.BodyArmour => "BODY",
             ItemKind.Gloves => "GLV", ItemKind.Boots => "BOOT", ItemKind.Belt => "BELT",
             ItemKind.Amulet => "AMU", ItemKind.Ring => "RING", ItemKind.OneHandWeapon => "1H",
-            ItemKind.TwoHandWeapon => "2H", ItemKind.OffHand => "OFF", _ => "?"
+            ItemKind.TwoHandWeapon => "2H", ItemKind.OffHand => "OFF", ItemKind.Jewel => "◆JWL", _ => "?"
         };
         return item.Rarity >= Rarity.Legendary ? $"★{letter}" : letter;
     }
@@ -165,6 +172,17 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
         GameState.Bag.Remove(item);
         var removed = GameState.Equipment.Equip(item, slot);
         foreach (var r in removed) GameState.Bag.TryAutoPlace(r);
+        GameState.Save();
+        Refresh();
+    }
+
+    /// <summary>Wsadza klejnot z plecaka w założony item (permanentnie — jak D2).
+    /// Design jeweli może się zmienić — cała logika w core Item.TrySocket.</summary>
+    public void SocketJewel(Item jewel, EquipmentSlot slot)
+    {
+        var target = GameState.Equipment.Get(slot);
+        if (target == null || !target.TrySocket(jewel)) return;
+        GameState.Bag.Remove(jewel);
         GameState.Save();
         Refresh();
     }
@@ -250,13 +268,20 @@ public partial class EquipSlotButton : Button
 
     public override void _Pressed() => Panel.UnequipToBag(Slot);
 
-    public override bool _CanDropData(Vector2 atPosition, Variant data) =>
-        data.As<GodotObject>() is GodotObjectRef dragRef && GameState.Equipment.CanEquip(dragRef.Item, Slot);
+    public override bool _CanDropData(Vector2 atPosition, Variant data)
+    {
+        if (data.As<GodotObject>() is not GodotObjectRef dragRef) return false;
+        // jewel → socketowanie w założony item; inaczej normalne zakładanie
+        if (dragRef.Item.Kind == ItemKind.Jewel)
+            return GameState.Equipment.Get(Slot) is { FreeSockets: > 0 };
+        return GameState.Equipment.CanEquip(dragRef.Item, Slot);
+    }
 
     public override void _DropData(Vector2 atPosition, Variant data)
     {
-        if (data.As<GodotObject>() is GodotObjectRef dragRef)
-            Panel.EquipToSlot(dragRef.Item, Slot);
+        if (data.As<GodotObject>() is not GodotObjectRef dragRef) return;
+        if (dragRef.Item.Kind == ItemKind.Jewel) Panel.SocketJewel(dragRef.Item, Slot);
+        else Panel.EquipToSlot(dragRef.Item, Slot);
     }
 }
 

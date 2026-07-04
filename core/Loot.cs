@@ -19,7 +19,10 @@ public static class Vendor
             Rarity.Normal => 5, Rarity.Magic => 15, Rarity.Rare => 40,
             Rarity.Legendary => 150, Rarity.Unique => 300, Rarity.Mythic => 800, _ => 5
         };
-        return baseP + 4L * item.Affixes.Count;
+        long price = baseP + 4L * item.Affixes.Count + 6L * item.Sockets;
+        // cena rośnie z poziomem itemu (ekonomia progresji); hand-authored tiery = pełna skala
+        float scale = item.Rarity >= Rarity.Legendary ? 1f : AffixRanges.ScaleFor(item.ItemLevel);
+        return (long)(price * (0.5f + scale));
     }
 }
 
@@ -78,10 +81,14 @@ public sealed class LootGenerator
         return Rarity.Mythic;
     }
 
-    public Item Generate() => Generate(RollRarity());
+    public Item Generate() => Generate(RollRarity(), 50);
+    public Item Generate(Rarity rarity) => Generate(rarity, 50);
 
-    public Item Generate(Rarity rarity)
+    /// <summary>Drop skalowany poziomem itemu (= poziom potwora/strefy): wartości affixów, sockety, obrażenia broni.</summary>
+    public Item Generate(Rarity rarity, int itemLevel)
     {
+        itemLevel = Math.Clamp(itemLevel <= 0 ? 50 : itemLevel, 1, 100);
+
         if (rarity is Rarity.Legendary or Rarity.Unique or Rarity.Mythic)
         {
             var pool = UniqueCatalog.ByRarity(rarity);
@@ -98,24 +105,35 @@ public sealed class LootGenerator
         };
 
         var affixes = new List<Affix>();
+        float f = AffixRanges.ScaleFor(itemLevel);
 
         // implicity broni: broń MUSI mieć obrażenia (bazy itemów) — skille skalują się nimi
         if (kind == ItemKind.OneHandWeapon)
-            affixes.Add(new Affix { Stat = AffixStat.WeaponDamage, Value = 6f + (float)_rng.NextDouble() * 8f });
+            affixes.Add(new Affix { Stat = AffixStat.WeaponDamage, Value = (6f + (float)_rng.NextDouble() * 8f) * f });
         else if (kind == ItemKind.TwoHandWeapon)
         {
-            affixes.Add(new Affix { Stat = AffixStat.WeaponDamage, Value = 12f + (float)_rng.NextDouble() * 14f });
-            affixes.Add(new Affix { Stat = AffixStat.WeaponAttackSpeed, Value = -0f + (float)_rng.NextDouble() * 0.1f });
+            affixes.Add(new Affix { Stat = AffixStat.WeaponDamage, Value = (12f + (float)_rng.NextDouble() * 14f) * f });
+            affixes.Add(new Affix { Stat = AffixStat.WeaponAttackSpeed, Value = (float)_rng.NextDouble() * 0.1f * f });
         }
 
         for (int i = 0; i < affixCount; i++)
         {
             var stat = Pool[_rng.Next(Pool.Length)];
-            affixes.Add(new Affix { Stat = stat, Value = RollValue(stat) });
+            affixes.Add(new Affix { Stat = stat, Value = RollValue(stat, itemLevel) });
         }
 
+        // sockety: szansa rośnie z ilvl; cap wg rodzaju
+        int maxSockets = Item.MaxSocketsFor(kind);
+        int sockets = 0;
+        for (int s = 0; s < maxSockets; s++)
+            if (_rng.NextDouble() < 0.25 + 0.35 * Math.Min(1f, itemLevel / 50f)) sockets++;
+
         string prefix = rarity switch { Rarity.Magic => "Magic ", Rarity.Rare => "Rare ", _ => "" };
-        return new Item { Name = prefix + KindName(kind), Kind = kind, Rarity = rarity, Affixes = affixes };
+        return new Item
+        {
+            Name = prefix + KindName(kind), Kind = kind, Rarity = rarity, Affixes = affixes,
+            ItemLevel = itemLevel, Sockets = sockets,
+        };
     }
 
     public static string KindName(ItemKind kind) => kind switch
@@ -127,10 +145,11 @@ public sealed class LootGenerator
         _ => kind.ToString()
     };
 
-    private float RollValue(AffixStat stat)
+    private float RollValue(AffixStat stat, int itemLevel)
     {
-        // wartości zawsze w AffixRanges — walidator serwera używa tych samych granic
-        if (!AffixRanges.Bounds.TryGetValue(stat, out var b)) return 5f;
-        return b.Min + (float)_rng.NextDouble() * (b.Max - b.Min);
+        // wartości zawsze w AffixRanges·f(ilvl) — walidator serwera używa tych samych granic
+        if (!AffixRanges.Bounds.TryGetValue(stat, out _)) return 5f;
+        var (min, max) = AffixRanges.ScaledBounds(stat, itemLevel);
+        return min + (float)_rng.NextDouble() * (max - min);
     }
 }

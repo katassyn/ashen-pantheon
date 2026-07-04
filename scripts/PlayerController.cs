@@ -444,6 +444,7 @@ public partial class PlayerController : CharacterBody2D
         {
             float speed = Speed;
             speed *= GameData.God(GameState.PledgedGod)?.MoveSpeedMult ?? 1f;
+            speed *= _sheet?.MoveSpeedMult ?? 1f; // gear/jewele (Windstep Sapphire)
             if (_adrenalineTime > 0f) speed *= 1.4f;
 
             // feel ruchu: przyspieszenie/hamowanie zamiast natychmiastowej prędkości

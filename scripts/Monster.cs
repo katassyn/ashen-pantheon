@@ -22,6 +22,7 @@ public partial class Monster : EnemyBase
     protected override string LootTableId => _def?.LootTable ?? "common";
     protected override string QuestItemId => _def?.QuestItem ?? "";
     protected override float QuestItemChance => _def?.QuestItemChance ?? 0f;
+    protected override int MonsterLevel => _def?.Level ?? 1;
 
     public static Monster Create(string monsterId)
     {

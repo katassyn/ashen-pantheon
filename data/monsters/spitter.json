@@ -7,6 +7,7 @@
   "preferredRange": 300,
   "scale": 0.85,
   "tint": "#8f5fd4",
+  "level": 3,
   "xp": 16,
   "lootTable": "common",
   "attackInterval": 1.7,
