@@ -26,6 +26,8 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
     /// <summary>Id do replikacji (klient odtwarza puppet z bestiariusza).</summary>
     public virtual string ReplicationId => "husk";
+    /// <summary>Nazwa do UI (death recap, boss bar) — Monster nadpisuje nazwą z bestiariusza.</summary>
+    public virtual string DisplayName => ReplicationId;
     /// <summary>Tabela lootu (data-driven, patrz data/loot/).</summary>
     protected virtual string LootTableId => "common";
     /// <summary>Przedmiot questowy (cel Collect) + szansa — z definicji potwora.</summary>
@@ -142,7 +144,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
             if (ContactRange > 0f && toPlayer.Length() <= ContactRange && _contactCd <= 0f)
             {
                 _contactCd = ContactCooldown;
-                Net.DamagePlayer(CurrentTarget, ContactDamage);
+                Net.DamagePlayer(CurrentTarget, ContactDamage, DamageType.Physical, DisplayName);
             }
         }
 

@@ -122,26 +122,47 @@ public partial class PlayerController : CharacterBody2D
         Health = Mathf.Min(MaxHealth, Health + amount);
     }
 
-    public void TakeDamage(float amount, DamageType type = DamageType.Physical)
+    /// <summary>Wpis do death-recapu: kto, ile, jakim typem obrażeń.</summary>
+    public readonly record struct HitRecord(ulong TimeMs, string Source, float Amount, DamageType Type);
+
+    private readonly List<HitRecord> _recentHits = new();
+    public IReadOnlyList<HitRecord> RecentHits => _recentHits;
+    public string KillerText { get; private set; } = "";
+
+    public void TakeDamage(float amount, DamageType type = DamageType.Physical, string source = "")
     {
         if (_dead || IsInvulnerable) return;
         float mitigated = _sheet != null ? _sheet.MitigatedDamage(type, amount) : amount;
         _defense.Absorb(mitigated, type); // ES przed HP (chaos przebija ES)
         if (mitigated > 0.5f)
+        {
             FloatingText.Spawn(GetParent(), GlobalPosition, $"-{mitigated:0}", new Color(1f, 0.35f, 0.3f), 15);
+            _recentHits.Add(new HitRecord(Time.GetTicksMsec(), string.IsNullOrEmpty(source) ? "Unknown" : source, mitigated, type));
+            if (_recentHits.Count > 10) _recentHits.RemoveAt(0);
+        }
         _animator?.Flash("hit");
         if (Health <= 0f)
         {
             Health = 0f;
+            var last = _recentHits.Count > 0 ? _recentHits[^1] : default;
+            KillerText = _recentHits.Count > 0 ? $"Slain by {last.Source}   ({last.Amount:0} {last.Type})" : "Slain";
             SetDead(true);
             Net.NotifyPlayerDied();
-            // mapa świata: brak wipe'u — samo-odrodzenie u wejścia strefy po 3 s
+            // mapa świata: BEZ KARY — ekran śmierci z recapem, respawn na klik (arena: logika wipe bez zmian)
             if (GetTree().GetFirstNodeInGroup("arena") is WorldZoneManager)
-                _worldRespawn = 3f;
+                DeathScreen.Open(GetTree(), this);
         }
     }
 
-    private float _worldRespawn;
+    /// <summary>Respawn na klik (ekran śmierci): pełne HP, wejście strefy, zero kary.</summary>
+    public void RespawnAtZoneSpawn()
+    {
+        if (!_dead) return;
+        if (GetTree().GetFirstNodeInGroup("arena") is WorldZoneManager zone)
+            GlobalPosition = zone.SpawnPoint;
+        _recentHits.Clear();
+        Revive(1f);
+    }
 
     /// <summary>Odrodzenie (po oczyszczeniu pokoju przez drużynę).</summary>
     public void Revive(float healthFraction)
@@ -435,16 +456,7 @@ public partial class PlayerController : CharacterBody2D
 
         if (_dead)
         {
-            Velocity = Vector2.Zero;
-            if (_worldRespawn > 0f)
-            {
-                _worldRespawn -= dt;
-                if (_worldRespawn <= 0f && GetTree().GetFirstNodeInGroup("arena") is WorldZoneManager zone)
-                {
-                    GlobalPosition = zone.SpawnPoint;
-                    Revive(0.5f);
-                }
-            }
+            Velocity = Vector2.Zero; // respawn = klik w DeathScreen (świat) albo logika areny
             return;
         }
 

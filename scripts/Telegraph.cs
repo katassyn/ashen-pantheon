@@ -12,6 +12,7 @@ public partial class Telegraph : Node2D
     public float Windup = 0.9f;
     public float Damage = 24f;
     public AshenPantheon.Core.DamageType DamageType = AshenPantheon.Core.DamageType.Physical;
+    public string SourceName = ""; // death recap: czyj atak
 
     private float _t;
     private bool _resolved;
@@ -38,7 +39,7 @@ public partial class Telegraph : Node2D
 
         Vector2 local = ToLocal(player.GlobalPosition);
         if (HitsLocal(local))
-            player.TakeDamage(Damage, DamageType);
+            player.TakeDamage(Damage, DamageType, SourceName);
     }
 
     private bool HitsLocal(Vector2 p)

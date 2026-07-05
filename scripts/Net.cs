@@ -371,17 +371,17 @@ public partial class Net : Node
     }
 
     /// <summary>Pocisk wroga: replikowany wszędzie, każda maszyna trafia tylko SWOJEGO gracza.</summary>
-    public static void SpawnEnemyProjectile(Vector2 pos, Vector2 dir, float speed, float damage, DamageType type = DamageType.Physical)
+    public static void SpawnEnemyProjectile(Vector2 pos, Vector2 dir, float speed, float damage, DamageType type = DamageType.Physical, string source = "")
     {
-        I.Rpc(MethodName.RpcEnemyProjectile, pos, dir, speed, damage, (int)type);
+        I.Rpc(MethodName.RpcEnemyProjectile, pos, dir, speed, damage, (int)type, source);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RpcEnemyProjectile(Vector2 pos, Vector2 dir, float speed, float damage, int type)
+    private void RpcEnemyProjectile(Vector2 pos, Vector2 dir, float speed, float damage, int type, string source)
     {
         var scene = GetTree().CurrentScene;
         if (scene == null) return;
-        var proj = new EnemyProjectile { Direction = dir, Speed = speed, Damage = damage, DamageType = (DamageType)type };
+        var proj = new EnemyProjectile { Direction = dir, Speed = speed, Damage = damage, DamageType = (DamageType)type, SourceName = source };
         scene.AddChild(proj);
         proj.GlobalPosition = pos;
     }
@@ -483,13 +483,13 @@ public partial class Net : Node
     }
 
     /// <summary>Telegraf bossa: każda maszyna symuluje go dla SWOJEGO gracza (obrażenia lokalne).</summary>
-    public static void SpawnTelegraph(int shape, float radius, float halfAngleDeg, float halfWidth, float damage, Vector2 pos, float rot, DamageType type = DamageType.Physical)
+    public static void SpawnTelegraph(int shape, float radius, float halfAngleDeg, float halfWidth, float damage, Vector2 pos, float rot, DamageType type = DamageType.Physical, string source = "")
     {
-        I.Rpc(MethodName.RpcSpawnTelegraph, shape, radius, halfAngleDeg, halfWidth, damage, pos, rot, (int)type);
+        I.Rpc(MethodName.RpcSpawnTelegraph, shape, radius, halfAngleDeg, halfWidth, damage, pos, rot, (int)type, source);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RpcSpawnTelegraph(int shape, float radius, float halfAngleDeg, float halfWidth, float damage, Vector2 pos, float rot, int type)
+    private void RpcSpawnTelegraph(int shape, float radius, float halfAngleDeg, float halfWidth, float damage, Vector2 pos, float rot, int type, string source)
     {
         var scene = GetTree().CurrentScene;
         if (scene == null) return;
@@ -497,7 +497,7 @@ public partial class Net : Node
         {
             Shape = (TelegraphShape)shape, Radius = radius,
             HalfAngleDeg = halfAngleDeg, HalfWidth = halfWidth, Damage = damage,
-            DamageType = (DamageType)type,
+            DamageType = (DamageType)type, SourceName = source,
         };
         scene.AddChild(tg);
         tg.GlobalPosition = pos;
@@ -506,16 +506,16 @@ public partial class Net : Node
 
     // ── gracze: obrażenia / heale / śmierć / XP / loot ──
 
-    public static void DamagePlayer(PlayerController target, float amount, DamageType type = DamageType.Physical)
+    public static void DamagePlayer(PlayerController target, float amount, DamageType type = DamageType.Physical, string source = "")
     {
         int owner = target.GetMultiplayerAuthority();
-        if (owner == MyId) target.TakeDamage(amount, type);
-        else I.RpcId(owner, MethodName.RpcDamageLocal, amount, (int)type);
+        if (owner == MyId) target.TakeDamage(amount, type, source);
+        else I.RpcId(owner, MethodName.RpcDamageLocal, amount, (int)type, source);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RpcDamageLocal(float amount, int type) =>
-        PlayerController.Local?.TakeDamage(amount, (DamageType)type);
+    private void RpcDamageLocal(float amount, int type, string source) =>
+        PlayerController.Local?.TakeDamage(amount, (DamageType)type, source);
 
     public static void HealCaster(int casterPeer, float amount)
     {

@@ -23,7 +23,7 @@ public partial class Monster : EnemyBase
     protected override string QuestItemId => _def?.QuestItem ?? "";
     protected override float QuestItemChance => _def?.QuestItemChance ?? 0f;
     protected override int MonsterLevel => _def?.Level ?? 1;
-    public string DisplayName => _def?.Name is { Length: > 0 } n ? n : MonsterId;
+    public override string DisplayName => _def?.Name is { Length: > 0 } n ? n : MonsterId;
     public int Level => _def?.Level ?? 1;
 
     public static Monster Create(string monsterId)
@@ -78,7 +78,7 @@ public partial class Monster : EnemyBase
                 Animator?.Play("attack");
                 // bufor 1.25× — kolizja ciał trzyma dystans ~35px, cios nie może whiffować na styku
                 if (dist <= _pendingMelee.Reach * 1.25f && CurrentTarget != null)
-                    Net.DamagePlayer(CurrentTarget, _pendingMelee.Damage * DmgMult, System.Enum.TryParse<DamageType>(_pendingMelee.DamageType, true, out var mt) ? mt : DamageType.Physical);
+                    Net.DamagePlayer(CurrentTarget, _pendingMelee.Damage * DmgMult, System.Enum.TryParse<DamageType>(_pendingMelee.DamageType, true, out var mt) ? mt : DamageType.Physical, DisplayName);
                 _pendingMelee = null;
             }
             return;
@@ -136,22 +136,22 @@ public partial class Monster : EnemyBase
             case "projectile":
                 Animator?.Play("windup");
                 Net.SpawnEnemyProjectile(GlobalPosition + toPlayer.Normalized() * 20f,
-                    toPlayer.Normalized(), a.Speed, dmg, dmgType);
+                    toPlayer.Normalized(), a.Speed, dmg, dmgType, DisplayName);
                 break;
 
             case "tele_circle":
                 Net.SpawnTelegraph((int)TelegraphShape.Circle, a.Radius, 0f, 0f, dmg,
-                    CurrentTarget?.GlobalPosition ?? GlobalPosition, 0f, dmgType);
+                    CurrentTarget?.GlobalPosition ?? GlobalPosition, 0f, dmgType, DisplayName);
                 break;
 
             case "tele_cone":
                 Net.SpawnTelegraph((int)TelegraphShape.Cone, a.Radius, a.HalfAngleDeg, 0f, dmg,
-                    GlobalPosition, toPlayer.Angle(), dmgType);
+                    GlobalPosition, toPlayer.Angle(), dmgType, DisplayName);
                 break;
 
             case "tele_line":
                 Net.SpawnTelegraph((int)TelegraphShape.Line, a.Length, 0f, a.HalfWidth, dmg,
-                    GlobalPosition, toPlayer.Angle(), dmgType);
+                    GlobalPosition, toPlayer.Angle(), dmgType, DisplayName);
                 break;
 
             case "summon":

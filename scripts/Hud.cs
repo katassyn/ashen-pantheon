@@ -646,6 +646,85 @@ public partial class BossBar : CanvasLayer
 	}
 }
 
+/// <summary>Ekran śmierci (mapa świata): BEZ KARY — recap obrażeń (kto/ile/typ) + przycisk Respawn.
+/// Arena zachowuje logikę wipe/odrodzenia drużynowego (ekran się tam nie pokazuje).</summary>
+public partial class DeathScreen : CanvasLayer
+{
+	private PlayerController _player;
+
+	public static void Open(SceneTree tree, PlayerController player)
+	{
+		if (tree.Root.GetNodeOrNull<DeathScreen>("DeathScreen") != null) return;
+		tree.Root.AddChild(new DeathScreen { Name = "DeathScreen", Layer = 25, _player = player });
+	}
+
+	public override void _Ready()
+	{
+		var dim = new ColorRect
+		{
+			Color = new Color(0.06f, 0f, 0f, 0.75f),
+			AnchorRight = 1f, AnchorBottom = 1f,
+			MouseFilter = Control.MouseFilterEnum.Stop, // blokuje klikanie w świat pod spodem
+		};
+		AddChild(dim);
+
+		var vb = new VBoxContainer
+		{
+			AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0.5f, AnchorBottom = 0.5f,
+			OffsetLeft = -280, OffsetRight = 280, OffsetTop = -220, OffsetBottom = 220,
+			Alignment = BoxContainer.AlignmentMode.Center,
+		};
+		vb.AddThemeConstantOverride("separation", 10);
+		dim.AddChild(vb);
+
+		var title = new Label { Text = "YOU DIED", HorizontalAlignment = HorizontalAlignment.Center };
+		title.AddThemeFontSizeOverride("font_size", 44);
+		title.AddThemeColorOverride("font_color", new Color(0.9f, 0.2f, 0.2f));
+		vb.AddChild(title);
+
+		var killer = new Label { Text = _player?.KillerText ?? "", HorizontalAlignment = HorizontalAlignment.Center };
+		killer.AddThemeFontSizeOverride("font_size", 19);
+		killer.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.5f));
+		vb.AddChild(killer);
+
+		// recap: ostatnie trafienia (≤12 s przed śmiercią), od najnowszego
+		if (_player != null && _player.RecentHits.Count > 0)
+		{
+			var header = new Label { Text = "— damage taken —", HorizontalAlignment = HorizontalAlignment.Center };
+			header.Modulate = new Color(0.75f, 0.75f, 0.8f);
+			vb.AddChild(header);
+
+			ulong now = Time.GetTicksMsec();
+			for (int i = _player.RecentHits.Count - 1; i >= 0; i--)
+			{
+				var hit = _player.RecentHits[i];
+				if (now - hit.TimeMs > 12000) break;
+				var line = new Label
+				{
+					Text = $"{hit.Source}   —   {hit.Amount:0}  {hit.Type}",
+					HorizontalAlignment = HorizontalAlignment.Center,
+				};
+				line.AddThemeFontSizeOverride("font_size", 15);
+				line.Modulate = i == _player.RecentHits.Count - 1
+					? new Color(1f, 0.55f, 0.5f)          // cios śmiertelny
+					: new Color(0.8f, 0.8f, 0.85f);
+				vb.AddChild(line);
+			}
+		}
+
+		var respawn = new Button { Text = "Respawn", CustomMinimumSize = new Vector2(240, 48) };
+		respawn.AddThemeFontSizeOverride("font_size", 20);
+		respawn.Pressed += () =>
+		{
+			_player?.RespawnAtZoneSpawn();
+			QueueFree();
+		};
+		var btnRow = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+		btnRow.AddChild(respawn);
+		vb.AddChild(btnRow);
+	}
+}
+
 /// <summary>Wiersz przypisania klawisza: klik → nasłuch następnego klawisza → rebind.</summary>
 public partial class RebindRow : HBoxContainer
 {
