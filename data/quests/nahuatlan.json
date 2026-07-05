@@ -46,6 +46,7 @@
         "One rite remains — the toltecs will spend everything to stop us at their blood pyramid."
       ],
       "rewardXp": 12000,
+      "rewardItem": "magic",
       "rewardGold": 3200,
       "nextQuest": "nahuatlan_03"
     },
@@ -70,6 +71,7 @@
         "Only the desert remains — and beneath it, the tomb where all of this began."
       ],
       "rewardXp": 14000,
+      "rewardItem": "rare",
       "rewardGold": 3800,
       "nextQuest": ""
     }

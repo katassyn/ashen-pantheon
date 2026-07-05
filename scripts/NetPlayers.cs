@@ -51,7 +51,83 @@ public partial class NetPlayers : Node2D
         p.SetMultiplayerAuthority(peer);
         p.CombatEnabled = CombatEnabled;
         p.Position = new Vector2(60f * GetChildCount(), 40f * GetChildCount());
+        p.AddChild(new Nameplate { Peer = peer, LocalPlayer = peer == Net.MyId });
         AddChild(p);
         GD.Print($"[net] spawn gracza: peer {peer}{(peer == Net.MyId ? " (lokalny)" : " (puppet)")}");
+    }
+}
+
+/// <summary>Nick nad głową gracza (MMO nameplate). U INNYCH graczy PPM na nicku = menu
+/// Trade/Whisper/Invite to Guild — ten sam wzorzec co party frame (decyzja: interakcje przez PPM na nicku).</summary>
+public partial class Nameplate : Label
+{
+    public long Peer;
+    public bool LocalPlayer;
+
+    private PopupMenu _menu;
+    private float _timer;
+
+    public override void _Ready()
+    {
+        ZIndex = 30;
+        HorizontalAlignment = HorizontalAlignment.Center;
+        MouseFilter = LocalPlayer ? MouseFilterEnum.Ignore : MouseFilterEnum.Stop;
+        AddThemeFontSizeOverride("font_size", 13);
+        AddThemeColorOverride("font_color", LocalPlayer ? new Color(0.72f, 0.9f, 1f) : new Color(1f, 1f, 0.85f));
+        AddThemeColorOverride("font_outline_color", Colors.Black);
+        AddThemeConstantOverride("outline_size", 4);
+
+        if (!LocalPlayer)
+        {
+            TooltipText = "RMB: Trade / Whisper / Guild";
+            _menu = new PopupMenu();
+            _menu.AddItem("Trade", 0);
+            _menu.AddItem("Whisper", 1);
+            _menu.AddItem("Invite to Guild", 2);
+            _menu.IdPressed += OnMenu;
+            AddChild(_menu);
+        }
+        Refresh();
+    }
+
+    public override void _Process(double delta)
+    {
+        _timer -= (float)delta;
+        if (_timer > 0f) return;
+        _timer = 0.5f; // nicki spływają asynchronicznie (AnnounceName)
+        Refresh();
+    }
+
+    private void Refresh()
+    {
+        Text = LocalPlayer ? GameState.CharacterName : Net.NameOf(Peer);
+        Position = new Vector2(-Size.X / 2f, -66f);
+    }
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Right)
+        {
+            // pozycja ekranowa (viewport), nie światowa — PopupMenu żyje w screen space
+            _menu.Position = (Vector2I)GetViewport().GetMousePosition();
+            _menu.Popup();
+            AcceptEvent();
+        }
+    }
+
+    private void OnMenu(long id)
+    {
+        switch (id)
+        {
+            case 0:
+                if (GetTree().GetFirstNodeInGroup("trade") is TradePanel tp) tp.RequestTradeWith(Peer);
+                break;
+            case 1:
+                WhisperDialog.Open(this, Peer);
+                break;
+            case 2:
+                Net.SendChatLocal("Open Friends/Guild (O) to invite by account name (online realm).");
+                break;
+        }
     }
 }

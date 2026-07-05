@@ -38,6 +38,15 @@ public class QuestTests
     }
 
     [Fact]
+    public void RewardItem_ParsesAndCampaignFinalGivesLegendary()
+    {
+        Assert.Equal("legendary", Q("desert_03").RewardItem);
+        Assert.Equal("rare", Q("swerdfield_03").RewardItem);
+        Assert.Equal("magic", Q("swerdfield_02").RewardItem);
+        Assert.Equal("", Q("swerdfield_01").RewardItem); // starter bez itemu
+    }
+
+    [Fact]
     public void Abandon_DropsProgressAndAllowsReaccept()
     {
         var log = new QuestLog();

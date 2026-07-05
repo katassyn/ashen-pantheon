@@ -46,6 +46,7 @@
         "The scout babbled about a sunken altar... and something waking beneath it."
       ],
       "rewardXp": 520,
+      "rewardItem": "magic",
       "rewardGold": 160,
       "nextQuest": "silfmoor_03"
     },
@@ -70,6 +71,7 @@
         "You've done more than most survive, {player}. Silfmoor is quiet again — for now."
       ],
       "rewardXp": 800,
+      "rewardItem": "rare",
       "rewardGold": 260,
       "nextQuest": ""
     }

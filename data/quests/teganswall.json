@@ -46,6 +46,7 @@
         "But you kicked a hornet's nest. They'll try to retake the breach."
       ],
       "rewardXp": 1100,
+      "rewardItem": "magic",
       "rewardGold": 320,
       "nextQuest": "teganswall_03"
     },
@@ -70,6 +71,7 @@
         "Amuun will want to hear of this. The seals you took bear a symbol he'll recognize."
       ],
       "rewardXp": 1500,
+      "rewardItem": "rare",
       "rewardGold": 460,
       "nextQuest": ""
     }

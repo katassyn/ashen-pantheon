@@ -24,7 +24,7 @@ public static class QuestNpc
         {
             string text = string.Join("\n", ready.DialogueCompletion)
                 + $"\n\n✔ {ready.Name} — all objectives done."
-                + $"\nRewards: +{ready.RewardXp} XP, +{ready.RewardGold} gold";
+                + $"\nRewards: +{ready.RewardXp} XP, +{ready.RewardGold} gold{RewardItemText(ready)}";
             Dialog(tree, npcId, text,
                 ("Complete quest", () => CompleteQuest(ready, npcId, tree)),
                 ("Close", null));
@@ -69,7 +69,7 @@ public static class QuestNpc
         sb.AppendLine("Objectives:");
         foreach (var o in q.Objectives)
             sb.AppendLine($"   • {o.Description}" + (o.Amount > 1 ? $"  (x{o.Amount})" : ""));
-        sb.Append($"Rewards: +{q.RewardXp} XP, +{q.RewardGold} gold");
+        sb.Append($"Rewards: +{q.RewardXp} XP, +{q.RewardGold} gold{RewardItemText(q)}");
 
         Dialog(tree, npcId, sb.ToString(),
             ("Accept quest", () =>
@@ -90,6 +90,7 @@ public static class QuestNpc
         var next = log.TurnIn(q);
         GameState.Progress.GainXp(q.RewardXp);
         GameState.Wallet.Gold += q.RewardGold;
+        GiveRewardItem(q);
         GameState.Save();
         PlayerController.Local?.Refresh();
         Net.SendChatLocal($"Quest completed: {q.Name}  (+{q.RewardXp} XP, +{q.RewardGold} gold)");
@@ -99,6 +100,26 @@ public static class QuestNpc
             OfferDialog(tree, npcId, next, summary + "\n\n"); // łańcuch: od razu oferta następnego
         else
             Dialog(tree, npcId, summary, ("Close", null));
+    }
+
+    private static string RewardItemText(QuestDefinition q) =>
+        string.IsNullOrEmpty(q.RewardItem) ? "" : $", +{char.ToUpper(q.RewardItem[0]) + q.RewardItem[1..]} item";
+
+    /// <summary>Nagroda itemowa questa: roll na poziomie questa (te same widełki co loot — walidator przepuszcza).
+    /// Pełny plecak = item ląduje pod nogami.</summary>
+    private static void GiveRewardItem(QuestDefinition q)
+    {
+        if (string.IsNullOrEmpty(q.RewardItem) || !System.Enum.TryParse<Rarity>(q.RewardItem, true, out var rarity)) return;
+        var reward = new LootGenerator().Generate(rarity, q.RequiredLevel);
+        if (GameState.Bag.TryAutoPlace(reward))
+        {
+            Net.SendChatLocal($"Quest reward: {reward.Name} [{reward.Rarity}]");
+        }
+        else if (PlayerController.Local is { } pl)
+        {
+            ItemPickup.Spawn(pl.GetParent(), pl.GlobalPosition, reward);
+            Net.SendChatLocal($"Bag full — quest reward ({reward.Name}) dropped at your feet.");
+        }
     }
 
     /// <summary>Wskaźnik nad NPC: '?' = quest do oddania, '!' = quest do wzięcia, null = nic.</summary>

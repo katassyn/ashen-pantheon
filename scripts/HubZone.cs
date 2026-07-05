@@ -62,12 +62,20 @@ public partial class HubZone : Area2D
     }
 }
 
-/// <summary>Sprzedaż do NPC: klik = sprzedaj za złoto (ekonomia gotowa pod przyszły AH).</summary>
+/// <summary>Vendor MMO: zakładki SELL (sprzedaż z plecaka) / BUY (asortyment rolowany na poziom gracza)
+/// / BUYBACK (odkup pomyłkowo sprzedanych — ta sesja).</summary>
 public partial class VendorPanel : CanvasLayer
 {
     private Panel _root;
     private VBoxContainer _list;
     private Label _gold;
+    private HBoxContainer _bulk;
+    private string _mode = "sell"; // sell | buy | buyback
+
+    // asortyment/odkup wspólne dla sesji (statyczne — panel jest tworzony na nowo przy każdym otwarciu)
+    private static readonly System.Collections.Generic.List<Item> Stock = new();
+    private static int _stockLevel = -1;
+    private static readonly System.Collections.Generic.List<Item> Buyback = new();
 
     public static void Toggle(SceneTree tree)
     {
@@ -78,26 +86,64 @@ public partial class VendorPanel : CanvasLayer
 
     public override void _Ready()
     {
-        _root = UiKit.Window(this, "VENDOR — click = sell    [E/Esc] close");
+        _root = UiKit.Window(this, "VENDOR    [E/Esc] close");
         var vb = _root.GetNode<VBoxContainer>("VB");
         _gold = new Label();
         vb.AddChild(_gold);
 
-        var bulk = new HBoxContainer();
-        bulk.AddThemeConstantOverride("separation", 8);
+        var tabs = new HBoxContainer();
+        tabs.AddThemeConstantOverride("separation", 8);
+        foreach (var (label, mode) in new[] { ("Sell", "sell"), ("Buy", "buy"), ("Buyback", "buyback") })
+        {
+            var t = new Button { Text = label, CustomMinimumSize = new Vector2(120, 0) };
+            string captured = mode;
+            t.Pressed += () => { _mode = captured; Refresh(); };
+            tabs.AddChild(t);
+        }
+        vb.AddChild(tabs);
+
+        _bulk = new HBoxContainer();
+        _bulk.AddThemeConstantOverride("separation", 8);
         var sellJunk = new Button { Text = "Sell all Normal + Magic" };
         sellJunk.Pressed += () => SellWhere(i => i.Rarity <= Rarity.Magic);
         var sellRare = new Button { Text = "Sell all up to Rare" };
         sellRare.Pressed += () => SellWhere(i => i.Rarity <= Rarity.Rare);
-        bulk.AddChild(sellJunk);
-        bulk.AddChild(sellRare);
-        vb.AddChild(bulk);
+        _bulk.AddChild(sellJunk);
+        _bulk.AddChild(sellRare);
+        vb.AddChild(_bulk);
 
         var scroll = UiKit.VScroll();
         vb.AddChild(scroll);
         _list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_list);
         Refresh();
+    }
+
+    private static long BuyPrice(Item i) => System.Math.Max(10, Vendor.SellPrice(i) * 5);
+
+    /// <summary>Asortyment na poziom gracza (przeroluje się po wbiciu poziomu).</summary>
+    private static void EnsureStock()
+    {
+        int lvl = GameState.Progress.Level;
+        if (_stockLevel == lvl && Stock.Count > 0) return;
+        RollStock(lvl);
+    }
+
+    private static void RollStock(int lvl)
+    {
+        _stockLevel = lvl;
+        Stock.Clear();
+        var g = new LootGenerator();
+        for (int i = 0; i < 3; i++) Stock.Add(g.Generate(Rarity.Normal, lvl));
+        for (int i = 0; i < 4; i++) Stock.Add(g.Generate(Rarity.Magic, lvl));
+        Stock.Add(g.Generate(Rarity.Rare, lvl));
+    }
+
+    /// <summary>Każda sprzedaż trafia do odkupu (ochrona przed pomyłką) — ostatnie 12 sztuk.</summary>
+    private static void NoteSold(Item item)
+    {
+        Buyback.Add(item);
+        if (Buyback.Count > 12) Buyback.RemoveAt(0);
     }
 
     private void SellWhere(System.Func<Item, bool> match)
@@ -111,6 +157,7 @@ public partial class VendorPanel : CanvasLayer
         {
             earned += Vendor.SellPrice(item);
             GameState.Bag.Remove(item);
+            NoteSold(item);
         }
         if (earned > 0) { GameState.Wallet.Gold += earned; GameState.Save(); }
         Refresh();
@@ -128,17 +175,95 @@ public partial class VendorPanel : CanvasLayer
     private void Refresh()
     {
         _gold.Text = $"Your gold: {GameState.Wallet.Gold}";
+        _bulk.Visible = _mode == "sell";
         foreach (Node c in _list.GetChildren()) c.QueueFree();
+        switch (_mode)
+        {
+            case "buy": RefreshBuy(); break;
+            case "buyback": RefreshBuyback(); break;
+            default: RefreshSell(); break;
+        }
+    }
+
+    private void RefreshSell()
+    {
+        _list.AddChild(new Label { Text = "Click an item to sell it:" });
         foreach (var placed in GameState.Bag.Placed)
         {
             var item = placed.Item;
             long price = Vendor.SellPrice(item);
-            var b = new Button { Text = $"{item.Name}  [{item.Rarity}]  —  {price} gold", TooltipText = CharacterPanel.Describe(item) };
+            var b = new Button { Text = $"{item.Name}  [{item.Rarity}]  —  sell for {price} gold", TooltipText = CharacterPanel.Describe(item) };
             b.Modulate = ItemPickup.RarityColor(item.Rarity);
             b.Pressed += () =>
             {
                 GameState.Bag.Remove(item);
                 GameState.Wallet.Gold += price;
+                NoteSold(item);
+                GameState.Save();
+                Refresh();
+            };
+            _list.AddChild(b);
+        }
+    }
+
+    private void RefreshBuy()
+    {
+        EnsureStock();
+        _list.AddChild(new Label { Text = $"Wares for level {_stockLevel}:" });
+        foreach (var item in new System.Collections.Generic.List<Item>(Stock))
+        {
+            long price = BuyPrice(item);
+            var b = new Button
+            {
+                Text = $"{item.Name}  [{item.Rarity}]  —  buy for {price} gold",
+                TooltipText = CharacterPanel.Describe(item),
+                Disabled = GameState.Wallet.Gold < price,
+            };
+            b.Modulate = ItemPickup.RarityColor(item.Rarity);
+            b.Pressed += () =>
+            {
+                if (GameState.Wallet.Gold < price) return;
+                if (!GameState.Bag.TryAutoPlace(item)) { Net.SendChatLocal("Bag is full."); return; }
+                GameState.Wallet.Gold -= price;
+                Stock.Remove(item);
+                GameState.Save();
+                Refresh();
+            };
+            _list.AddChild(b);
+        }
+
+        var restock = new Button { Text = "New stock — 25 gold", Disabled = GameState.Wallet.Gold < 25 };
+        restock.Pressed += () =>
+        {
+            if (GameState.Wallet.Gold < 25) return;
+            GameState.Wallet.Gold -= 25;
+            RollStock(GameState.Progress.Level);
+            GameState.Save();
+            Refresh();
+        };
+        _list.AddChild(restock);
+    }
+
+    private void RefreshBuyback()
+    {
+        _list.AddChild(new Label { Text = "Recently sold (this session) — buy back at the price you got:" });
+        if (Buyback.Count == 0) _list.AddChild(new Label { Text = "  Nothing sold yet." });
+        foreach (var item in new System.Collections.Generic.List<Item>(Buyback))
+        {
+            long price = Vendor.SellPrice(item);
+            var b = new Button
+            {
+                Text = $"{item.Name}  [{item.Rarity}]  —  buy back for {price} gold",
+                TooltipText = CharacterPanel.Describe(item),
+                Disabled = GameState.Wallet.Gold < price,
+            };
+            b.Modulate = ItemPickup.RarityColor(item.Rarity);
+            b.Pressed += () =>
+            {
+                if (GameState.Wallet.Gold < price) return;
+                if (!GameState.Bag.TryAutoPlace(item)) { Net.SendChatLocal("Bag is full."); return; }
+                GameState.Wallet.Gold -= price;
+                Buyback.Remove(item);
                 GameState.Save();
                 Refresh();
             };

@@ -46,6 +46,7 @@
         "One spirit broke free in the chaos — bound, confused. Lead it out before it's lost."
       ],
       "rewardXp": 2000,
+      "rewardItem": "magic",
       "rewardGold": 520,
       "nextQuest": "eternal_03"
     },
@@ -70,6 +71,7 @@
         "Rest, {player}. The road only darkens from here."
       ],
       "rewardXp": 2400,
+      "rewardItem": "rare",
       "rewardGold": 640,
       "nextQuest": ""
     }

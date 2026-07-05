@@ -46,6 +46,7 @@
         "Hold the sacred grove one last time. The wild court will not forgive what you've done."
       ],
       "rewardXp": 3100,
+      "rewardItem": "magic",
       "rewardGold": 780,
       "nextQuest": "mystra_03"
     },
@@ -70,6 +71,7 @@
         "The road to the Temple Sector lies open now. Whatever waits there... it has been waiting a long time."
       ],
       "rewardXp": 3800,
+      "rewardItem": "rare",
       "rewardGold": 980,
       "nextQuest": ""
     }

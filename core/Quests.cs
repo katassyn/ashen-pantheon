@@ -45,6 +45,8 @@ public sealed class QuestDefinition
     public List<string> DialogueCompletion { get; set; } = new();
     public long RewardXp { get; set; }
     public long RewardGold { get; set; }
+    /// <summary>Nagroda itemowa: rzadkość ("magic"/"rare"/"legendary"...) rolowana na RequiredLevel questa.</summary>
+    public string RewardItem { get; set; } = "";
     public string NextQuest { get; set; } = "";
     /// <summary>Strefa mapy świata, w której toczy się quest (tracker/markery).</summary>
     public string Zone { get; set; } = "";

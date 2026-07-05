@@ -47,6 +47,7 @@
         "Cut off the head. Find the Heretic and end it."
       ],
       "rewardXp": 5000,
+      "rewardItem": "magic",
       "rewardGold": 1300,
       "nextQuest": "temple_03"
     },
@@ -71,6 +72,7 @@
         "North now — to Stalgard, where the cold has swallowed an entire people."
       ],
       "rewardXp": 6200,
+      "rewardItem": "rare",
       "rewardGold": 1600,
       "nextQuest": ""
     }

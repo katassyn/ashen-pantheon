@@ -46,6 +46,7 @@
         "One last hall remains sealed — and something in it does not want the thaw."
       ],
       "rewardXp": 7800,
+      "rewardItem": "magic",
       "rewardGold": 2000,
       "nextQuest": "stalgard_03"
     },
@@ -70,6 +71,7 @@
         "South and east now — to the jungles of Nahuatlan, where an older worship still draws blood."
       ],
       "rewardXp": 9000,
+      "rewardItem": "rare",
       "rewardGold": 2400,
       "nextQuest": ""
     }

@@ -66,6 +66,7 @@ public partial class Hud : CanvasLayer
 		AddChild(new PartyFrame());     // co-op: ramki drużyny (lewy górny)
 		AddChild(new QuestJournal());   // J: dziennik questów
 		AddChild(new BuffBar());        // aktywne buffy gracza
+		AddChild(new BossBar());        // pasek HP bossa (góra-środek, gdy boss żyje w scenie)
 		AddChild(new ChatBox());        // czat co-op (Enter)
 		AddChild(new TradePanel());     // handel gracz-gracz (PPM na nicku)
 		AddChild(new SocialPanel());    // O: znajomi / guildia (online)
@@ -592,6 +593,56 @@ public partial class BuffBar : CanvasLayer
 		lbl.AddThemeFontSizeOverride("font_size", 12);
 		chip.AddChild(lbl);
 		_row.AddChild(chip);
+	}
+}
+
+/// <summary>Duży pasek HP bossa (góra-środek) — pojawia się, gdy w scenie żyje potwór z fazami (IsBoss).
+/// Działa u hosta i klientów (puppet synchronizuje HP).</summary>
+public partial class BossBar : CanvasLayer
+{
+	private Control _root;
+	private Label _name;
+	private ProgressBar _hp;
+
+	public override void _Ready()
+	{
+		Layer = 4;
+		_root = new Control
+		{
+			AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0f, AnchorBottom = 0f,
+			OffsetLeft = -320, OffsetRight = 320, OffsetTop = 46, OffsetBottom = 96,
+			Visible = false,
+			MouseFilter = Control.MouseFilterEnum.Ignore,
+		};
+		AddChild(_root);
+
+		var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f };
+		vb.AddThemeConstantOverride("separation", 2);
+		_root.AddChild(vb);
+
+		_name = new Label { HorizontalAlignment = HorizontalAlignment.Center };
+		_name.AddThemeFontSizeOverride("font_size", 18);
+		_name.AddThemeColorOverride("font_color", new Color(1f, 0.75f, 0.35f));
+		_name.AddThemeColorOverride("font_outline_color", Colors.Black);
+		_name.AddThemeConstantOverride("outline_size", 5);
+		vb.AddChild(_name);
+
+		_hp = new ProgressBar { MinValue = 0, MaxValue = 1, ShowPercentage = false, CustomMinimumSize = new Vector2(0, 16) };
+		_hp.AddThemeStyleboxOverride("fill", new StyleBoxFlat { BgColor = new Color(0.7f, 0.15f, 0.15f) });
+		_hp.AddThemeStyleboxOverride("background", new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0.65f) });
+		vb.AddChild(_hp);
+	}
+
+	public override void _Process(double delta)
+	{
+		Monster boss = null;
+		foreach (Node n in GetTree().GetNodesInGroup("boss_enemy"))
+			if (n is Monster m && IsInstanceValid(m) && m.HpFrac > 0f) { boss = m; break; }
+
+		_root.Visible = boss != null;
+		if (boss == null) return;
+		_name.Text = $"{boss.DisplayName}   (Lv {boss.Level})";
+		_hp.Value = boss.HpFrac;
 	}
 }
 

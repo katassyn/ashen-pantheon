@@ -46,6 +46,7 @@
         "This is where it began — and where it ends. Go down, {player}. Face the Pharaoh."
       ],
       "rewardXp": 19000,
+      "rewardItem": "magic",
       "rewardGold": 5000,
       "nextQuest": "desert_03"
     },
@@ -70,6 +71,7 @@
         "You've done what no watchman, no order, no god could. The campaign is won, {player} — but the deepest tombs are only now waking. The endgame begins."
       ],
       "rewardXp": 40000,
+      "rewardItem": "legendary",
       "rewardGold": 12000,
       "nextQuest": ""
     }

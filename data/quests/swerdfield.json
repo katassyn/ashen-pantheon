@@ -47,6 +47,7 @@
         "This is the Warden's doing. It is time to end him."
       ],
       "rewardXp": 140,
+      "rewardItem": "magic",
       "rewardGold": 60,
       "nextQuest": "swerdfield_03"
     },
@@ -71,6 +72,7 @@
         "This darkness runs deeper than I thought. Rest now — you will be needed."
       ],
       "rewardXp": 300,
+      "rewardItem": "rare",
       "rewardGold": 150,
       "nextQuest": ""
     }
