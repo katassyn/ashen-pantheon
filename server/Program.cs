@@ -23,7 +23,21 @@ long? Auth(HttpRequest req)
 {
     string? h = req.Headers.Authorization.FirstOrDefault();
     if (h == null || !h.StartsWith("Bearer ")) return null;
-    return db.ResolveToken(h["Bearer ".Length..].Trim());
+    long? id = db.ResolveToken(h["Bearer ".Length..].Trim());
+    if (id != null) db.Touch(id.Value); // presence za darmo przy każdym żądaniu
+    return id;
+}
+
+// walidacja itemu z załącznika/ogłoszenia — te same reguły co zapis postaci (anty-fabrykacja)
+(bool Ok, string Error) CheckItemJson(string? itemJson)
+{
+    if (string.IsNullOrEmpty(itemJson)) return (true, "");
+    ItemDto? dto;
+    try { dto = JsonSerializer.Deserialize<ItemDto>(itemJson, JsonGameStateRepository.Options); }
+    catch (JsonException) { return (false, "malformed item"); }
+    if (dto == null) return (false, "malformed item");
+    var (ok, err) = SaveValidator.ValidateItem(dto);
+    return ok ? (true, "") : (false, err ?? "invalid item");
 }
 
 app.MapGet("/health", () => Results.Text("ok"));
@@ -83,7 +97,11 @@ app.MapGet("/friends", (HttpRequest req) =>
     long? me = Auth(req);
     if (me == null) return Results.Unauthorized();
     var (friends, requests) = db.FriendsView(me.Value);
-    return Results.Json(new { Friends = friends, Requests = requests });
+    return Results.Json(new
+    {
+        Friends = friends.Select(f => new { f.Name, f.Online }), // krotki nie serializują się same
+        Requests = requests,
+    });
 });
 
 app.MapPost("/friends/request", (HttpRequest req, NameBody b) =>
@@ -160,8 +178,117 @@ app.MapPost("/guild/leave", (HttpRequest req) =>
     return Results.Ok();
 });
 
+// ── presence (heartbeat dla bezczynnych klientów; Auth i tak robi Touch) ──
+
+app.MapPost("/presence/ping", (HttpRequest req) =>
+    Auth(req) == null ? Results.Unauthorized() : Results.Ok());
+
+// ── poczta ──
+
+app.MapGet("/mail", (HttpRequest req) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var inbox = db.Inbox(me.Value);
+    return Results.Json(new
+    {
+        Mail = inbox.Select(m => new { m.Id, m.From, m.Body, m.Gold, m.HasItem, m.Claimed, m.Created }),
+    });
+});
+
+app.MapPost("/mail/send", (HttpRequest req, MailBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (iok, ierr) = CheckItemJson(b.ItemJson);
+    if (!iok) return Results.BadRequest(new { Error = ierr });
+    var (ok, err) = db.SendMail(me.Value, b.To ?? "", b.Body ?? "", b.Gold, b.ItemJson);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/mail/claim", (HttpRequest req, IdBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err, gold, item) = db.ClaimMail(me.Value, b.Id);
+    return ok ? Results.Json(new { Gold = gold, ItemJson = item }) : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/mail/delete", (HttpRequest req, IdBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.DeleteMail(me.Value, b.Id);
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
+// ── globalny rynek (cross-lobby AH): escrow w ogłoszeniu, wpływy pocztą ──
+
+app.MapGet("/market", (HttpRequest req) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var listings = db.MarketActive();
+    return Results.Json(new
+    {
+        Me = me.Value,
+        Listings = listings.Select(l => new { l.Id, l.SellerId, l.Seller, l.ItemJson, l.Price }),
+    });
+});
+
+app.MapPost("/market/list", (HttpRequest req, MarketBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    if (string.IsNullOrEmpty(b.ItemJson)) return Results.BadRequest(new { Error = "no item" });
+    var (iok, ierr) = CheckItemJson(b.ItemJson);
+    if (!iok) return Results.BadRequest(new { Error = ierr });
+    string name = db.UsernameOf(me.Value) ?? "?";
+    var (ok, err, id) = db.MarketList(me.Value, name, b.ItemJson, b.Price);
+    return ok ? Results.Json(new { Id = id }) : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/market/buy", (HttpRequest req, IdBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    string name = db.UsernameOf(me.Value) ?? "?";
+    var (ok, err, item, price) = db.MarketBuy(me.Value, name, b.Id);
+    return ok ? Results.Json(new { ItemJson = item, Price = price }) : Results.BadRequest(new { Error = err });
+});
+
+app.MapPost("/market/cancel", (HttpRequest req, IdBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err, item) = db.MarketCancel(me.Value, b.Id);
+    return ok ? Results.Json(new { ItemJson = item }) : Results.BadRequest(new { Error = err });
+});
+
+// ── czat gildii (poll) ──
+
+app.MapGet("/guild/chat", (HttpRequest req, long sinceId) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var msgs = db.GuildChatSince(me.Value, sinceId);
+    return Results.Json(new { Messages = msgs.Select(m => new { m.Id, m.From, m.Text }) });
+});
+
+app.MapPost("/guild/chat", (HttpRequest req, TextBody b) =>
+{
+    long? me = Auth(req);
+    if (me == null) return Results.Unauthorized();
+    var (ok, err) = db.GuildChatPost(me.Value, b.Text ?? "");
+    return ok ? Results.Ok() : Results.BadRequest(new { Error = err });
+});
+
 app.Run("http://0.0.0.0:8080");
 
 record Creds(string Username, string Password);
 record NameBody(string Username);
 record GuildBody(long GuildId);
+record MailBody(string? To, string? Body, long Gold, string? ItemJson);
+record IdBody(long Id);
+record MarketBody(string? ItemJson, long Price);
+record TextBody(string? Text);

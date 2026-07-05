@@ -78,6 +78,25 @@ public static class AccountClient
         catch (Exception e) { return (false, $"server unavailable ({Short(e.Message)})"); }
     }
 
+    /// <summary>POST zwracający JSON odpowiedzi (mail/claim, market/buy...); (null, error) przy błędzie.</summary>
+    public static (string? Json, string Error) PostJson(string path, object body)
+    {
+        if (!AccountSession.LoggedIn) return (null, "not logged in");
+        try
+        {
+            return Task.Run(async () =>
+            {
+                var resp = await Http.SendAsync(Authed(HttpMethod.Post, path, body));
+                string text = await resp.Content.ReadAsStringAsync();
+                if (resp.IsSuccessStatusCode) return ((string?)text, "");
+                string err = text;
+                try { using var d = JsonDocument.Parse(text); err = d.RootElement.GetProperty("Error").GetString() ?? text; } catch { }
+                return ((string?)null, err);
+            }).Result;
+        }
+        catch (Exception e) { return (null, $"server unavailable ({Short(e.Message)})"); }
+    }
+
     /// <summary>GET zwracający surowy JSON (parsowany przez panel).</summary>
     public static string? GetJson(string path)
     {

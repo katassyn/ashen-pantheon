@@ -46,7 +46,33 @@ public sealed class Db
             CREATE TABLE IF NOT EXISTS guild_invites(
                 guild_id INTEGER NOT NULL, account_id INTEGER NOT NULL,
                 PRIMARY KEY(guild_id, account_id));
+            CREATE TABLE IF NOT EXISTS mail(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                from_name TEXT NOT NULL,
+                to_id INTEGER NOT NULL,
+                body TEXT NOT NULL DEFAULT '',
+                gold INTEGER NOT NULL DEFAULT 0,
+                item_json TEXT,
+                claimed INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')));
+            CREATE TABLE IF NOT EXISTS market(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                seller_id INTEGER NOT NULL,
+                seller_name TEXT NOT NULL,
+                item_json TEXT NOT NULL,
+                price INTEGER NOT NULL,
+                status TEXT NOT NULL DEFAULT 'active',
+                created_at TEXT NOT NULL DEFAULT (datetime('now')));
+            CREATE TABLE IF NOT EXISTS guild_chat(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                guild_id INTEGER NOT NULL,
+                from_name TEXT NOT NULL,
+                text TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')));
             """);
+        // presence: kolumna dokładana do istniejących baz (ALTER jest idempotentny przez try/catch)
+        try { Exec(c, "ALTER TABLE accounts ADD COLUMN last_seen TEXT"); }
+        catch (SqliteException) { /* kolumna już jest */ }
     }
 
     // ── pomocnicze ──
@@ -70,6 +96,190 @@ public sealed class Db
         return list;
     }
 
+    private string? NameById(SqliteConnection c, long id)
+    {
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "SELECT username FROM accounts WHERE id=$i";
+        cmd.Parameters.AddWithValue("$i", id);
+        return cmd.ExecuteScalar() as string;
+    }
+
+    public string? UsernameOf(long accountId)
+    {
+        using var c = Open();
+        return NameById(c, accountId);
+    }
+
+    // ── presence: last_seen odświeżany przy KAŻDYM uwierzytelnionym żądaniu (+ ping z klienta) ──
+
+    public void Touch(long accountId)
+    {
+        using var c = Open();
+        Exec(c, "UPDATE accounts SET last_seen=datetime('now') WHERE id=$a", ("$a", accountId));
+    }
+
+    // ── poczta (załączniki: złoto + item; odbiór = claim, żeby nic nie przepadło) ──
+
+    public (bool Ok, string Error) SendMail(long fromId, string toName, string body, long gold, string? itemJson)
+    {
+        if (gold < 0) return (false, "negative gold");
+        if (body.Length > 300) return (false, "message too long (max 300)");
+        using var c = Open();
+        var toId = IdByName(c, toName);
+        if (toId == null) return (false, "no such player");
+        if (toId == fromId) return (false, "that's you");
+        string from = NameById(c, fromId) ?? "?";
+        Exec(c, "INSERT INTO mail(from_name,to_id,body,gold,item_json) VALUES($f,$t,$b,$g,$i)",
+            ("$f", from), ("$t", toId.Value), ("$b", body), ("$g", gold), ("$i", (object?)itemJson ?? DBNull.Value));
+        return (true, "");
+    }
+
+    /// <summary>Poczta systemowa (np. wpływy z AH) — bez konta nadawcy.</summary>
+    public void SendSystemMail(long toId, string fromName, string body, long gold, string? itemJson = null)
+    {
+        using var c = Open();
+        Exec(c, "INSERT INTO mail(from_name,to_id,body,gold,item_json) VALUES($f,$t,$b,$g,$i)",
+            ("$f", fromName), ("$t", toId), ("$b", body), ("$g", gold), ("$i", (object?)itemJson ?? DBNull.Value));
+    }
+
+    public List<(long Id, string From, string Body, long Gold, bool HasItem, bool Claimed, string Created)> Inbox(long meId)
+    {
+        using var c = Open();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "SELECT id, from_name, body, gold, item_json IS NOT NULL, claimed, created_at FROM mail WHERE to_id=$m ORDER BY id DESC LIMIT 50";
+        cmd.Parameters.AddWithValue("$m", meId);
+        var list = new List<(long, string, string, long, bool, bool, string)>();
+        using var r = cmd.ExecuteReader();
+        while (r.Read())
+            list.Add((r.GetInt64(0), r.GetString(1), r.GetString(2), r.GetInt64(3), r.GetInt64(4) != 0, r.GetInt64(5) != 0, r.GetString(6)));
+        return list;
+    }
+
+    public (bool Ok, string Error, long Gold, string? ItemJson) ClaimMail(long meId, long mailId)
+    {
+        using var c = Open();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "SELECT gold, item_json FROM mail WHERE id=$i AND to_id=$m AND claimed=0";
+        cmd.Parameters.AddWithValue("$i", mailId);
+        cmd.Parameters.AddWithValue("$m", meId);
+        long gold; string? item;
+        using (var r = cmd.ExecuteReader())
+        {
+            if (!r.Read()) return (false, "nothing to claim", 0, null);
+            gold = r.GetInt64(0);
+            item = r.IsDBNull(1) ? null : r.GetString(1);
+        }
+        Exec(c, "UPDATE mail SET claimed=1 WHERE id=$i", ("$i", mailId));
+        return (true, "", gold, item);
+    }
+
+    public (bool Ok, string Error) DeleteMail(long meId, long mailId)
+    {
+        using var c = Open();
+        using var cmd = c.CreateCommand();
+        // list z nieodebranym załącznikiem nie da się skasować — najpierw claim
+        cmd.CommandText = "DELETE FROM mail WHERE id=$i AND to_id=$m AND (claimed=1 OR (gold=0 AND item_json IS NULL))";
+        cmd.Parameters.AddWithValue("$i", mailId);
+        cmd.Parameters.AddWithValue("$m", meId);
+        return cmd.ExecuteNonQuery() > 0 ? (true, "") : (false, "claim attachments first");
+    }
+
+    // ── globalny rynek (cross-lobby AH): escrow itemu w ogłoszeniu, wpływy pocztą ──
+
+    public (bool Ok, string Error, long Id) MarketList(long sellerId, string sellerName, string itemJson, long price)
+    {
+        if (price is < 1 or > 99_999_999) return (false, "price 1 - 99999999", 0);
+        using var c = Open();
+        Exec(c, "INSERT INTO market(seller_id,seller_name,item_json,price) VALUES($s,$n,$i,$p)",
+            ("$s", sellerId), ("$n", sellerName), ("$i", itemJson), ("$p", price));
+        using var idc = c.CreateCommand();
+        idc.CommandText = "SELECT last_insert_rowid()";
+        return (true, "", (long)idc.ExecuteScalar()!);
+    }
+
+    public List<(long Id, long SellerId, string Seller, string ItemJson, long Price)> MarketActive(int limit = 100)
+    {
+        using var c = Open();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "SELECT id, seller_id, seller_name, item_json, price FROM market WHERE status='active' ORDER BY id DESC LIMIT $l";
+        cmd.Parameters.AddWithValue("$l", limit);
+        var list = new List<(long, long, string, string, long)>();
+        using var r = cmd.ExecuteReader();
+        while (r.Read()) list.Add((r.GetInt64(0), r.GetInt64(1), r.GetString(2), r.GetString(3), r.GetInt64(4)));
+        return list;
+    }
+
+    public (bool Ok, string Error, string ItemJson, long Price) MarketBuy(long buyerId, string buyerName, long listingId)
+    {
+        using var c = Open();
+        // atomowo: tylko aktywne i nie własne (SQLite = pojedynczy writer, brak wyścigu)
+        using (var upd = c.CreateCommand())
+        {
+            upd.CommandText = "UPDATE market SET status='sold' WHERE id=$i AND status='active' AND seller_id<>$b";
+            upd.Parameters.AddWithValue("$i", listingId);
+            upd.Parameters.AddWithValue("$b", buyerId);
+            if (upd.ExecuteNonQuery() == 0) return (false, "listing not available (or it's yours — cancel instead)", "", 0);
+        }
+        long sellerId, price; string itemJson;
+        using (var q = c.CreateCommand())
+        {
+            q.CommandText = "SELECT seller_id, item_json, price FROM market WHERE id=$i";
+            q.Parameters.AddWithValue("$i", listingId);
+            using var r = q.ExecuteReader();
+            r.Read();
+            sellerId = r.GetInt64(0); itemJson = r.GetString(1); price = r.GetInt64(2);
+        }
+        // wpływy do sprzedawcy POCZTĄ (klasyka MMO) — odbierze przy dowolnym logowaniu
+        Exec(c, "INSERT INTO mail(from_name,to_id,body,gold) VALUES('Auction House',$t,$b,$g)",
+            ("$t", sellerId), ("$b", $"Your item sold to {buyerName} for {price} gold."), ("$g", price));
+        return (true, "", itemJson, price);
+    }
+
+    public (bool Ok, string Error, string ItemJson) MarketCancel(long sellerId, long listingId)
+    {
+        using var c = Open();
+        using (var upd = c.CreateCommand())
+        {
+            upd.CommandText = "UPDATE market SET status='cancelled' WHERE id=$i AND seller_id=$s AND status='active'";
+            upd.Parameters.AddWithValue("$i", listingId);
+            upd.Parameters.AddWithValue("$s", sellerId);
+            if (upd.ExecuteNonQuery() == 0) return (false, "listing not available", "");
+        }
+        using var q = c.CreateCommand();
+        q.CommandText = "SELECT item_json FROM market WHERE id=$i";
+        q.Parameters.AddWithValue("$i", listingId);
+        return (true, "", (string)q.ExecuteScalar()!);
+    }
+
+    // ── czat gildii (poll HTTP — realtime websocket to przyszłość) ──
+
+    public (bool Ok, string Error) GuildChatPost(long meId, string text)
+    {
+        text = text.Trim();
+        if (text.Length is < 1 or > 200) return (false, "message 1-200 chars");
+        using var c = Open();
+        var gid = GuildIdOf(c, meId);
+        if (gid == null) return (false, "you're not in a guild");
+        Exec(c, "INSERT INTO guild_chat(guild_id,from_name,text) VALUES($g,$f,$t)",
+            ("$g", gid.Value), ("$f", NameById(c, meId) ?? "?"), ("$t", text));
+        return (true, "");
+    }
+
+    public List<(long Id, string From, string Text)> GuildChatSince(long meId, long sinceId)
+    {
+        using var c = Open();
+        var gid = GuildIdOf(c, meId);
+        var list = new List<(long, string, string)>();
+        if (gid == null) return list;
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "SELECT id, from_name, text FROM guild_chat WHERE guild_id=$g AND id>$s ORDER BY id LIMIT 50";
+        cmd.Parameters.AddWithValue("$g", gid.Value);
+        cmd.Parameters.AddWithValue("$s", sinceId);
+        using var r = cmd.ExecuteReader();
+        while (r.Read()) list.Add((r.GetInt64(0), r.GetString(1), r.GetString(2)));
+        return list;
+    }
+
     // ── znajomi (wzajemni, z zaproszeniami) ──
 
     public (bool Ok, string Error) SendFriendRequest(long fromId, string toName)
@@ -86,10 +296,19 @@ public sealed class Db
         return (true, "");
     }
 
-    public (List<string> Friends, List<string> Requests) FriendsView(long meId)
+    public (List<(string Name, bool Online)> Friends, List<string> Requests) FriendsView(long meId)
     {
         using var c = Open();
-        var friends = Names(c, "SELECT username FROM accounts JOIN friendships ON b_id=id WHERE a_id=$m ORDER BY username", ("$m", meId));
+        var friends = new List<(string, bool)>();
+        using (var cmd = c.CreateCommand())
+        {
+            // online = widziany w ciągu 120 s (Touch przy każdym żądaniu + ping klienta)
+            cmd.CommandText = "SELECT username, CASE WHEN last_seen > datetime('now','-120 seconds') THEN 1 ELSE 0 END " +
+                              "FROM accounts JOIN friendships ON b_id=id WHERE a_id=$m ORDER BY username";
+            cmd.Parameters.AddWithValue("$m", meId);
+            using var r = cmd.ExecuteReader();
+            while (r.Read()) friends.Add((r.GetString(0), r.GetInt64(1) != 0));
+        }
         var requests = Names(c, "SELECT username FROM accounts JOIN friend_requests ON from_id=id WHERE to_id=$m ORDER BY username", ("$m", meId));
         return (friends, requests);
     }

@@ -24,7 +24,7 @@ public partial class ChatBox : CanvasLayer
         _log.AddThemeConstantOverride("separation", 1);
         root.AddChild(_log);
 
-        _input = new LineEdit { PlaceholderText = "say something…  (Enter to send, Esc to cancel)", Visible = false, MaxLength = 200 };
+        _input = new LineEdit { PlaceholderText = "say something…  (/g = guild chat)  (Enter to send, Esc to cancel)", Visible = false, MaxLength = 200 };
         _input.TextSubmitted += OnSubmit;
         root.AddChild(_input);
 
@@ -32,6 +32,43 @@ public partial class ChatBox : CanvasLayer
     }
 
     public override void _ExitTree() => Net.ChatReceived -= OnChat;
+
+    // ── czat gildii (online realm): poll HTTP w tle co 8 s, "/g tekst" wysyła ──
+
+    private float _guildPoll;
+    private long _guildLastId;
+    private bool _guildPrimed; // pierwszy poll tylko ustawia kursor (bez wylewania historii)
+    private bool _pollBusy;
+
+    private void PollGuildChat()
+    {
+        _pollBusy = true;
+        long since = _guildLastId;
+        System.Threading.Tasks.Task.Run(() =>
+        {
+            string json = AccountClient.GetJson($"/guild/chat?sinceId={since}") ?? "";
+            CallDeferred(nameof(OnGuildPoll), json);
+        });
+    }
+
+    private void OnGuildPoll(string json)
+    {
+        _pollBusy = false;
+        if (json.Length == 0) return;
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            foreach (var m in doc.RootElement.GetProperty("Messages").EnumerateArray())
+            {
+                long id = m.GetProperty("Id").GetInt64();
+                if (id > _guildLastId) _guildLastId = id;
+                if (_guildPrimed)
+                    OnChat($"[G] {m.GetProperty("From").GetString()}: {m.GetProperty("Text").GetString()}");
+            }
+        }
+        catch { /* uszkodzona odpowiedź — następny poll */ }
+        _guildPrimed = true;
+    }
 
     private void OnChat(string line)
     {
@@ -64,6 +101,20 @@ public partial class ChatBox : CanvasLayer
 
     private void OnSubmit(string text)
     {
+        if (text.StartsWith("/g "))
+        {
+            string msg = text[3..].Trim();
+            if (!AccountSession.LoggedIn) OnChat("[G] Log in to the online realm to use guild chat.");
+            else if (msg.Length > 0)
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    var (ok, err) = AccountClient.Post("/guild/chat", new { Text = msg });
+                    if (!ok) CallDeferred(nameof(OnChat), $"[G] {err}");
+                });
+            _guildPoll = 0.7f; // szybki poll — zaraz zobaczysz własną wiadomość
+            CloseInput();
+            return;
+        }
         Net.SendChat(text);
         CloseInput();
     }
@@ -79,6 +130,17 @@ public partial class ChatBox : CanvasLayer
     public override void _Process(double delta)
     {
         float dt = (float)delta;
+
+        // guild chat poll (pełni też rolę heartbeatu presence — serwer robi Touch przy każdym żądaniu)
+        if (AccountSession.LoggedIn)
+        {
+            _guildPoll -= dt;
+            if (_guildPoll <= 0f && !_pollBusy)
+            {
+                _guildPoll = 8f;
+                PollGuildChat();
+            }
+        }
         for (int i = 0; i < _lines.Count; i++)
         {
             var (label, age) = _lines[i];

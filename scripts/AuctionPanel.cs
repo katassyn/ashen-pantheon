@@ -60,7 +60,8 @@ public partial class AuctionPanel : CanvasLayer
     private void Refresh()
     {
         if (_gold == null || !IsInstanceValid(_gold)) return;
-        _gold.Text = $"Your gold: {GameState.Wallet.Gold}" + (Net.Online ? "" : "    (market is local to this lobby)");
+        if (AccountSession.LoggedIn) { RefreshGlobal(); return; } // online realm = GLOBALNY rynek serwera
+        _gold.Text = $"Your gold: {GameState.Wallet.Gold}" + (Net.Online ? "" : "    (market is local to this lobby — log in for the global market)");
 
         // oferty
         foreach (Node c in _listings.GetChildren()) c.QueueFree();
@@ -110,6 +111,132 @@ public partial class AuctionPanel : CanvasLayer
             };
             row.AddChild(post);
             _bag.AddChild(row);
+        }
+    }
+
+    // ── GLOBALNY rynek (meta-serwer): escrow itemu w ogłoszeniu, wpływy sprzedawcy POCZTĄ ──
+
+    private void RefreshGlobal()
+    {
+        _gold.Text = $"GLOBAL MARKET (online realm)    Your gold: {GameState.Wallet.Gold}";
+        foreach (Node c in _listings.GetChildren()) c.QueueFree();
+        foreach (Node c in _bag.GetChildren()) c.QueueFree();
+
+        var refreshBtn = new Button { Text = "↻ Refresh listings" };
+        refreshBtn.Pressed += Refresh;
+        _listings.AddChild(refreshBtn);
+
+        var json = AccountClient.GetJson("/market");
+        if (json == null) { _listings.AddChild(new Label { Text = "  (server unavailable)" }); return; }
+        using var doc = JsonDocument.Parse(json);
+        long me = doc.RootElement.GetProperty("Me").GetInt64();
+        var arr = doc.RootElement.GetProperty("Listings");
+        if (arr.GetArrayLength() == 0) _listings.AddChild(new Label { Text = "  No active listings." });
+        foreach (var l in arr.EnumerateArray())
+        {
+            long id = l.GetProperty("Id").GetInt64();
+            long sellerId = l.GetProperty("SellerId").GetInt64();
+            string seller = l.GetProperty("Seller").GetString() ?? "?";
+            long price = l.GetProperty("Price").GetInt64();
+            var dto = JsonSerializer.Deserialize<ItemDto>(l.GetProperty("ItemJson").GetString() ?? "{}", JsonGameStateRepository.Options);
+            if (dto == null) continue;
+            var item = ItemMapper.FromDto(dto);
+
+            var row = new HBoxContainer();
+            var name = new Label
+            {
+                Text = $"{item.Name} [{item.Rarity}]  —  {price}g  ({seller})",
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                TooltipText = CharacterPanel.Describe(item),
+                MouseFilter = Control.MouseFilterEnum.Stop,
+            };
+            name.Modulate = ItemPickup.RarityColor(item.Rarity);
+            row.AddChild(name);
+            if (sellerId == me)
+            {
+                var cancel = new Button { Text = "Cancel" };
+                cancel.Pressed += () => GlobalCancel(id);
+                row.AddChild(cancel);
+            }
+            else
+            {
+                var buy = new Button { Text = "Buy", Disabled = GameState.Wallet.Gold < price };
+                buy.Pressed += () => GlobalBuy(id, price);
+                row.AddChild(buy);
+            }
+            _listings.AddChild(row);
+        }
+
+        // plecak → wystaw globalnie
+        foreach (var placed in GameState.Bag.Placed)
+        {
+            var item = placed.Item;
+            var row = new HBoxContainer();
+            var name = new Label { Text = $"{item.Name} [{item.Rarity}]", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+            name.Modulate = ItemPickup.RarityColor(item.Rarity);
+            row.AddChild(name);
+            var price = new SpinBox { MinValue = 1, MaxValue = 99_999_999, Value = System.Math.Max(1, Vendor.SellPrice(item) * 3), CustomMinimumSize = new Vector2(110, 0) };
+            row.AddChild(price);
+            var post = new Button { Text = "Post" };
+            post.Pressed += () => GlobalPost(item, (long)price.Value);
+            row.AddChild(post);
+            _bag.AddChild(row);
+        }
+    }
+
+    private void GlobalPost(Item item, long price)
+    {
+        GameState.Bag.Remove(item); // escrow lokalny — wraca przy błędzie serwera
+        var (json, err) = AccountClient.PostJson("/market/list", new
+        {
+            ItemJson = JsonSerializer.Serialize(ItemMapper.ToDto(item), JsonGameStateRepository.Options),
+            Price = price,
+        });
+        if (json == null)
+        {
+            GameState.Bag.TryAutoPlace(item);
+            Net.SendChatLocal($"AH: {err}");
+        }
+        else Net.SendChatLocal($"Listed {item.Name} for {price} gold.");
+        GameState.Save();
+        Refresh();
+    }
+
+    private void GlobalBuy(long id, long price)
+    {
+        if (GameState.Wallet.Gold < price) return;
+        var (json, err) = AccountClient.PostJson("/market/buy", new { Id = id });
+        if (json == null) { Net.SendChatLocal($"AH: {err}"); Refresh(); return; }
+        using var doc = JsonDocument.Parse(json);
+        long paid = doc.RootElement.GetProperty("Price").GetInt64();
+        var dto = JsonSerializer.Deserialize<ItemDto>(doc.RootElement.GetProperty("ItemJson").GetString() ?? "{}", JsonGameStateRepository.Options);
+        GameState.Wallet.Gold -= paid;
+        if (dto != null) GiveOrDrop(ItemMapper.FromDto(dto));
+        GameState.Save();
+        Refresh();
+    }
+
+    private void GlobalCancel(long id)
+    {
+        var (json, err) = AccountClient.PostJson("/market/cancel", new { Id = id });
+        if (json == null) { Net.SendChatLocal($"AH: {err}"); Refresh(); return; }
+        using var doc = JsonDocument.Parse(json);
+        var dto = JsonSerializer.Deserialize<ItemDto>(doc.RootElement.GetProperty("ItemJson").GetString() ?? "{}", JsonGameStateRepository.Options);
+        if (dto != null) GiveOrDrop(ItemMapper.FromDto(dto));
+        GameState.Save();
+        Refresh();
+    }
+
+    private void GiveOrDrop(Item item)
+    {
+        if (GameState.Bag.TryAutoPlace(item))
+        {
+            Net.SendChatLocal($"Received: {item.Name} [{item.Rarity}]");
+        }
+        else if (PlayerController.Local is { } pl)
+        {
+            ItemPickup.Spawn(pl.GetParent(), pl.GlobalPosition, item);
+            Net.SendChatLocal($"Bag full — {item.Name} dropped at your feet.");
         }
     }
 }
