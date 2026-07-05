@@ -1,6 +1,6 @@
 # Faza 4 — meta-serwer (konta + postacie online): notatki implementacyjne
 
-Data: 2026-07-02. Realizacja fazy 4 z `roadmap-to-online-arpg.md`.
+Data: 2026-07-02. Realizacja fazy 4 dawnej roadmapy (zastąpionej przez `docs/ROADMAP.md`).
 
 ## Architektura
 

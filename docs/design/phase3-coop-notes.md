@@ -1,6 +1,6 @@
 # Faza 3 — co-op host-authoritative: notatki implementacyjne
 
-Data: 2026-07-02. Realizacja fazy 3 z `roadmap-to-online-arpg.md`.
+Data: 2026-07-02. Realizacja fazy 3 dawnej roadmapy (zastąpionej przez `docs/ROADMAP.md`).
 
 ## Architektura
 

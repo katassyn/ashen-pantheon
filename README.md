@@ -1,40 +1,51 @@
 # Ashen Pantheon
 
-Pixelowy, top-down **loot ARPG** w klimacie dark-fantasy. Kilka klas + panteon bogów, którzy przekształcają działanie skilli i definiują buildy. Trudna, skilowa walka. Solo/duo focus, party do 4.
+Pixelowy, top-down **loot ARPG/MMO** w klimacie dark-fantasy. Kilka klas + panteon bogów, którzy
+przekształcają działanie skilli i definiują buildy. Trudna, skilowa walka. Solo/duo focus, party do 4
+(instancja u gracza), wspólny meta-serwer (konta, ekonomia, social).
 
-**Silnik:** Godot 4.7 (.NET) + C# · **IDE:** Rider
+**Silnik:** Godot 4.7 (.NET) + C# · **IDE:** Rider · **Serwer:** ASP.NET Core + SQLite
 
-## Status
+## Status (2026-07-05)
 
-Wczesny development — **pełna pętla mechanik + CO-OP do 4 graczy** (fazy 2–3 ukończone):
+**Kampania 1-50 kompletna i grywalna; warstwa MMO działa lokalnie i online.**
 
-- **Co-op (host-authoritative):** hostuj z miasta / dołącz po IP (panel w hubie). Host = autorytet walki, klienci widzą puppety wrogów; loot **instancjonowany per-gracz**; wspólne XP; grupowa podróż portalem (host prowadzi); trudność skaluje się z liczbą graczy; polegli **wstają po oczyszczeniu pokoju** (50% HP); wipe = przegrana. Solo używa tych samych ścieżek kodu.
-- Testy dwóch instancji lokalnie: druga instancja `Godot...exe --path . -- --join` (osobny zapis `save_guest.json`).
-- **Konta online (meta-serwer, faza 4):** `dotnet run --project server` (ASP.NET + SQLite) → w hubie panel „Konto online": rejestracja/logowanie, postać przenosi się na serwer (lokalna migruje przy pierwszym logowaniu). Serwer **waliduje zapisy** (zakresy affixów, uniki z katalogu, punkty vs poziom) — fundament pod przyszły AH. Bez logowania gra działa w pełni offline.
+- **Walka:** typy obrażeń w obie strony, multi-status (Burn/Chill/Poison/Bleed), ES/armour/resisty,
+  telegrafy, bossowie fazowi + boss bar, death recap (kto/ile/czym) + respawn na klik (bez kary).
+- **Build system:** Ranger (9 skilli + drzewka ulepszeń + drzewo klasowe), 2 bogów z wariantem
+  każdego skilla, itemizacja z ilvl-scalingiem, sockety, uniki, loadout 5 slotów, pełny rebind.
+- **Kampania:** 11 stref (hub→Swerdfield→…→Great Desert→grobowiec Nefertari), 27-questowy łańcuch,
+  9 typów celów (Kill/Escort/Defend/Survive…), interaktywne dialogi (Accept/Decline/Complete),
+  nagrody itemowe, wskaźniki !/? i strzałka do celu.
+- **MMO w lobby (max 4):** co-op host-authoritative (solo = te same ścieżki kodu), party frames,
+  nameplaty z menu PPM (Trade/Whisper/Guild/Inspect), czat, handel P2P z escrow, mapa świata + waystony.
+- **Miasto:** vendor (Sell/Buy/Buyback), skrytka, blok AH, NPC questowi.
+- **Online realm (meta-serwer):** konta + postać na serwerze z walidatorem anty-cheat, znajomi
+  z presence, guildie + guild chat (/g), **poczta z załącznikami**, **globalny rynek AH**
+  (wpływy ze sprzedaży przychodzą pocztą).
+- Logika w `core/` bez zależności od Godota — **98 testów xUnit** 🟢 · content w `data/*.json`
+  (nowy mob/quest/strefa/bóg = plik JSON, zero kodu).
 
-- **Klasa Ranger** (architektura pod N klas): zasób Koncentracja, mechanika Oznaczenia, **9 skilli**, każdy z **pełnym drzewkiem ulepszeń** (wykluczające się gałęzie, punkty z poziomów)
-- **Loadout**: pasek 5 slotów (LPM/PPM/Q/E/R), skille **przeciągane z panelu na pasek** (drag&drop)
-- **Bogowie**: pledge + wybór **per-skill** baza/bóg. Dwóch pełnych bogów (wariant każdego z 9 skilli + pasywka): **Dzikie Ostępy** (3 jastrzębie-pety, bomba kolców bez CD, ślad za dashem...) i **Vharos, Bóg Krwi** (koszty HP, lifesteal, krwawy deszcz...)
-- **Progresja**: XP z zabójstw → poziomy (cap 100) → punkty atrybutów (+2) i skilli (+1); **respec za złoto**
-- **Itemizacja**: rzadkości Normal→Mythic, hand-authored uniki z efektami mechanicznymi, **plecak-tetris jak PoE** (drag&drop, tooltips), 11 slotów EQ, staty z PDF-ów (armour/evasion/ES/resisty z karami 50/75/100)
-- **Ekonomia**: złoto + sprzedaż do NPC; **skrytka** w mieście
-- **Runy proceduralne**: seedowany plan pokoi (4–5 + boss), przeszkody, skalowanie trudności/XP
-- **Husk = wzorcowy wróg-szablon**: maszyna stanów + prawdziwy `AnimationPlayer` (idle/walk/windup/attack/hit/death), telegrafowany atak
-- **Persystencja server-ready**: `IGameStateRepository` → lokalny JSON (`user://save.json`); zapis automatyczny
-- Logika w `core/` bez zależności od Godota — **41 testów xUnit** 🟢
+## Uruchomienie
 
-## Sterowanie
+- Gra: otwórz projekt w Godot 4.7 mono i graj (menu → realm lokalny → postać).
+- Meta-serwer (opcjonalny): `dotnet run --project server` → w menu wybierz realm „Online",
+  zarejestruj konto. Bez serwera gra działa w pełni offline.
+- Druga instancja do testów co-op: `Godot...exe --path . -- --join` (host: przycisk w menu pauzy).
 
-WASD ruch · mysz celowanie · **LPM/PPM/Q/E/R** = sloty paska · **C** staty · **I** ekwipunek · **K** skille+drzewka · **E** interakcja w mieście
+## Sterowanie (domyślne, wszystko rebindowalne w ESC)
+
+WASD ruch · mysz celowanie · **LPM/PPM/Q/E/R** sloty skilli · **Space** flaska HP ·
+**C** staty · **I** ekwipunek · **K** skille · **J** dziennik · **M** mapa świata · **TAB** duża minimapa ·
+**O** social (znajomi/gildia/poczta) · **E** interakcja · **Enter** czat (`/g` = gildia) · **ESC** pauza
 
 ## Dokumentacja
 
-- Brief fazy 2: [`docs/design/fable5-next-phase-brief.md`](docs/design/fable5-next-phase-brief.md)
-- Decyzje fazy 2: [`docs/design/phase2-implementation-notes.md`](docs/design/phase2-implementation-notes.md)
-- Kit Rangera: [`docs/design/ranger-class.md`](docs/design/ranger-class.md)
-- Staty i EQ: [`docs/design/stats-and-equipment.md`](docs/design/stats-and-equipment.md)
-
-## Roadmapa
-
-- ~~M0 — rdzeń walki~~ ✅ · ~~M1 — hub + loot~~ ✅ · ~~M2 — głębia (progresja, drzewka, bogowie, itemizacja)~~ ✅
-- **Dalej:** prawdziwy art (podmiana placeholderów 1:1), balans/juice, druga klasa, serwer + co-op (party do 4), AH gracz-gracz → demo na Steam
+- **PLAN (jedyny aktualny):** [`docs/ROADMAP.md`](docs/ROADMAP.md)
+- Architektura co-op: [`docs/design/phase3-coop-notes.md`](docs/design/phase3-coop-notes.md)
+- Architektura meta-serwera: [`docs/design/phase4-meta-server-notes.md`](docs/design/phase4-meta-server-notes.md)
+- Wizja importu z DsoCraft: [`docs/design/dsocraft-import-vision.md`](docs/design/dsocraft-import-vision.md)
+- Kampania/endgame (referencja): [`docs/design/campaign-extraction.md`](docs/design/campaign-extraction.md)
+- Kit Rangera: [`docs/design/ranger-class.md`](docs/design/ranger-class.md) ·
+  Staty i EQ: [`docs/design/stats-and-equipment.md`](docs/design/stats-and-equipment.md)
+- Zadania graficzne (tablet): [`docs/design/art-tasks-tablet.md`](docs/design/art-tasks-tablet.md)
