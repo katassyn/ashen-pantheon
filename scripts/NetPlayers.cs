@@ -52,9 +52,61 @@ public partial class NetPlayers : Node2D
         p.CombatEnabled = CombatEnabled;
         p.Position = new Vector2(60f * GetChildCount(), 40f * GetChildCount());
         p.AddChild(new Nameplate { Peer = peer, LocalPlayer = peer == Net.MyId });
+        if (peer == Net.MyId) p.AddChild(new QuestArrow()); // wskaźnik kierunku do celu questa (tylko lokalny)
         AddChild(p);
         GD.Print($"[net] spawn gracza: peer {peer}{(peer == Net.MyId ? " (lokalny)" : " (puppet)")}");
     }
+}
+
+/// <summary>Złota strzałka orbitująca wokół gracza — wskazuje NAJBLIŻSZY widoczny obiekt questowy
+/// w scenie (znaczniki reach/interact, eskorta, obrona, survive). Znika, gdy cel blisko lub go brak.</summary>
+public partial class QuestArrow : Node2D
+{
+    private float _timer;
+    private Vector2 _target;
+    private bool _hasTarget;
+
+    public override void _Ready()
+    {
+        ZIndex = 25;
+        Visible = false;
+    }
+
+    public override void _Process(double delta)
+    {
+        _timer -= (float)delta;
+        if (_timer <= 0f)
+        {
+            _timer = 0.4f;
+            FindTarget();
+        }
+        if (!_hasTarget || GetParent() is not Node2D player) { Visible = false; return; }
+
+        var dir = _target - player.GlobalPosition;
+        if (dir.Length() < 280f) { Visible = false; return; } // cel na ekranie — strzałka zbędna
+        Visible = true;
+        Rotation = dir.Angle();
+        Position = dir.Normalized() * 58f;
+    }
+
+    private void FindTarget()
+    {
+        _hasTarget = false;
+        if (GetParent() is not Node2D player) return;
+        float best = float.MaxValue;
+        foreach (Node n in GetTree().GetNodesInGroup("minimap_objective"))
+        {
+            // QuestMarkerNode gasi Visible, gdy jego cel nie jest aktywny — filtr za darmo
+            if (n is not Node2D n2 || !IsInstanceValid(n2) || !n2.Visible) continue;
+            float d = n2.GlobalPosition.DistanceSquaredTo(player.GlobalPosition);
+            if (d < best) { best = d; _target = n2.GlobalPosition; _hasTarget = true; }
+        }
+    }
+
+    public override void _Draw() =>
+        DrawColoredPolygon(
+            new[] { new Vector2(16, 0), new Vector2(-7, -9), new Vector2(-7, 9) },
+            new Color(1f, 0.85f, 0.3f, 0.9f));
 }
 
 /// <summary>Nick nad głową gracza (MMO nameplate). U INNYCH graczy PPM na nicku = menu
