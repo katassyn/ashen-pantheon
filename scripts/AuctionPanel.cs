@@ -40,7 +40,7 @@ public partial class AuctionPanel : CanvasLayer
     {
         var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         vb.AddChild(new Label { Text = title });
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         var list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(list);
         vb.AddChild(scroll);

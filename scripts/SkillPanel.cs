@@ -56,7 +56,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         hb.AddThemeConstantOverride("separation", 14);
         vb.AddChild(hb);
 
-        var listScroll = new ScrollContainer { CustomMinimumSize = new Vector2(230, 0) };
+        var listScroll = new ScrollContainer { CustomMinimumSize = new Vector2(250, 0), HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
         _skillList = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         listScroll.AddChild(_skillList);
         hb.AddChild(listScroll);
@@ -69,7 +69,7 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         _backBtn.Pressed += () => { _mode = "class"; Refresh(); };
         right.AddChild(_backBtn);
 
-        var graphScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var graphScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
         var graphHost = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         _classCanvas = new ClassTreeCanvas { Panel = this };
         _graph = new SkillGraphCanvas { Panel = this };

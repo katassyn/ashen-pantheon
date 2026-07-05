@@ -70,7 +70,7 @@ public partial class VendorPanel : CanvasLayer
         bulk.AddChild(sellRare);
         vb.AddChild(bulk);
 
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         vb.AddChild(scroll);
         _list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_list);
@@ -153,7 +153,7 @@ public partial class StashPanel : CanvasLayer
     {
         var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         vb.AddChild(new Label { Text = title });
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         vb.AddChild(scroll);
         var list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(list);
@@ -199,20 +199,29 @@ public partial class StashPanel : CanvasLayer
 /// <summary>Wspólny szkielet okienka UI budowanego w kodzie.</summary>
 public static class UiKit
 {
+    /// <summary>Okno PEŁNOEKRANOWE (nad dolnym paskiem) — GUI ma być w 100% widoczne, bez suwaków poziomych.</summary>
     public static Panel Window(CanvasLayer layer, string title)
     {
         UiPanels.CloseAllExcept(layer.GetTree(), null); // zamknij panele C/I/K pod spodem
         var root = new Panel
         {
-            AnchorLeft = 0.5f, AnchorTop = 0f, AnchorRight = 0.5f, AnchorBottom = 1f,
-            OffsetLeft = -380, OffsetTop = 36, OffsetRight = 380, OffsetBottom = -150,
+            AnchorLeft = 0f, AnchorTop = 0f, AnchorRight = 1f, AnchorBottom = 1f,
+            OffsetLeft = 40, OffsetTop = 36, OffsetRight = -40, OffsetBottom = -170,
         };
         UiPanels.Solidify(root);
         layer.AddChild(root);
-        var vb = new VBoxContainer { Name = "VB", AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 16, OffsetTop = 14, OffsetRight = -16, OffsetBottom = -14 };
+        var vb = new VBoxContainer { Name = "VB", AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 20, OffsetTop = 14, OffsetRight = -20, OffsetBottom = -14 };
         vb.AddThemeConstantOverride("separation", 10);
         root.AddChild(vb);
         vb.AddChild(new Label { Text = title });
         return root;
     }
+
+    /// <summary>ScrollContainer tylko pionowy (poziome suwaki zakazane w GUI).</summary>
+    public static ScrollContainer VScroll() => new()
+    {
+        SizeFlagsVertical = Control.SizeFlags.ExpandFill,
+        SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+        HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled,
+    };
 }

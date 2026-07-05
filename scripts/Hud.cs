@@ -275,6 +275,9 @@ public partial class PauseMenu : CanvasLayer
 {
 	private Panel _root;
 	private CheckBox _fullscreen;
+	private Label _coopStatus;
+	private LineEdit _coopIp;
+	private Button _coopHost, _coopJoin, _coopLeave;
 
 	public override void _Ready()
 	{
@@ -288,7 +291,7 @@ public partial class PauseMenu : CanvasLayer
 		UiPanels.Solidify(_root);
 		AddChild(_root);
 
-		var scroll = new ScrollContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 20, OffsetTop = 16, OffsetRight = -20, OffsetBottom = -16 };
+		var scroll = new ScrollContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 20, OffsetTop = 16, OffsetRight = -20, OffsetBottom = -16, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
 		_root.AddChild(scroll);
 		var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 		vb.AddThemeConstantOverride("separation", 10);
@@ -346,6 +349,25 @@ public partial class PauseMenu : CanvasLayer
 		resetKeys.Pressed += () => { Keybinds.ResetDefaults(); foreach (Node n in vb.GetChildren()) if (n is RebindRow r) r.RefreshLabel(); };
 		vb.AddChild(resetKeys);
 
+		// ── co-op (przeniesione z pływającego LobbyPanel — user: box w hubie był useless) ──
+		vb.AddChild(new Label { Text = "— Co-op (max 4 players) —" });
+		_coopStatus = new Label();
+		vb.AddChild(_coopStatus);
+		var coopRow = new HBoxContainer();
+		coopRow.AddThemeConstantOverride("separation", 6);
+		_coopHost = new Button { Text = "Host" };
+		_coopHost.Pressed += () => Net.HostGame();
+		_coopIp = new LineEdit { Text = "127.0.0.1", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+		_coopJoin = new Button { Text = "Join" };
+		_coopJoin.Pressed += () => Net.JoinGame(_coopIp.Text.StripEdges());
+		_coopLeave = new Button { Text = "Disconnect" };
+		_coopLeave.Pressed += () => Net.Leave();
+		coopRow.AddChild(_coopHost);
+		coopRow.AddChild(_coopIp);
+		coopRow.AddChild(_coopJoin);
+		coopRow.AddChild(_coopLeave);
+		vb.AddChild(coopRow);
+
 		var toMenu = new Button { Text = "Main menu" };
 		toMenu.Pressed += () =>
 		{
@@ -363,6 +385,16 @@ public partial class PauseMenu : CanvasLayer
 			GetTree().Quit();
 		};
 		vb.AddChild(quit);
+	}
+
+	public override void _Process(double delta)
+	{
+		if (!_root.Visible || _coopStatus == null) return;
+		_coopStatus.Text = $"{Net.Status}   players: {Net.PlayerCount()}";
+		bool online = Net.Online;
+		_coopHost.Disabled = online;
+		_coopJoin.Disabled = online;
+		_coopLeave.Disabled = !online;
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -521,7 +553,8 @@ public partial class WhisperDialog : CanvasLayer
 	}
 }
 
-/// <summary>Active player buffs (chips above the skill bar): God pledge + Adrenaline w/ countdown.</summary>
+/// <summary>Active player buffs (chips above the skill bar): temporary effects like Adrenaline w/ countdown.
+/// Bez chipa boga — mylił graczy ("The Wilds" wisiało na ekranie bez kontekstu); bóg widoczny w panelach.</summary>
 public partial class BuffBar : CanvasLayer
 {
 	private HBoxContainer _row;
@@ -543,9 +576,6 @@ public partial class BuffBar : CanvasLayer
 	{
 		foreach (Node c in _row.GetChildren()) c.QueueFree();
 		var p = PlayerController.Local;
-
-		if (GameState.PledgedGod != GodId.None)
-			AddChip(Gods.Name(GameState.PledgedGod), new Color(0.5f, 0.35f, 0.7f));
 
 		if (p != null && p.AdrenalineActive)
 			AddChip($"Adrenaline {p.AdrenalineTimeLeft:0.0}s", new Color(0.8f, 0.4f, 0.2f));

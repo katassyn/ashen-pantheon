@@ -15,6 +15,8 @@ public partial class Net : Node
     public static int RunSeed;
     /// <summary>Id strefy mapy świata dla WorldZone.tscn (ustawiane przy podróży grupowej).</summary>
     public static string TravelZoneId = "";
+    /// <summary>Skąd przyszliśmy ("hub" = miasto) — WorldZone stawia gracza przy wyjściu łączącym z tą strefą.</summary>
+    public static string TravelFromZoneId = "";
     public static string Status { get; private set; } = "offline (solo)";
 
     public static bool Online => I != null && I.Multiplayer.MultiplayerPeer is ENetMultiplayerPeer;
@@ -339,6 +341,7 @@ public partial class Net : Node
     {
         GameState.Save();
         RunSeed = seed;
+        TravelFromZoneId = GetTree().CurrentScene?.Name == "WorldZone" ? TravelZoneId : "hub";
         TravelZoneId = zoneId;
         EnemiesById.Clear();
         GetTree().ChangeSceneToFile(scenePath);

@@ -94,8 +94,8 @@ public partial class TradePanel : CanvasLayer
     {
         _root = new Panel
         {
-            AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
-            OffsetLeft = -380, OffsetTop = -300, OffsetRight = 380, OffsetBottom = 300,
+            AnchorLeft = 0f, AnchorTop = 0f, AnchorRight = 1f, AnchorBottom = 1f,
+            OffsetLeft = 40, OffsetTop = 36, OffsetRight = -40, OffsetBottom = -170,
             Visible = false,
         };
         UiPanels.Solidify(_root);
@@ -122,7 +122,7 @@ public partial class TradePanel : CanvasLayer
         vb.AddChild(goldRow);
 
         vb.AddChild(new Label { Text = "Your bag — click to add:" });
-        var bagScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, 140) };
+        var bagScroll = UiKit.VScroll();
         _bag = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         bagScroll.AddChild(_bag);
         vb.AddChild(bagScroll);
@@ -142,7 +142,7 @@ public partial class TradePanel : CanvasLayer
     {
         var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         vb.AddChild(new Label { Text = title });
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         var list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(list);
         vb.AddChild(scroll);

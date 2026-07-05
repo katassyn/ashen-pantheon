@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/ArenaGrid.cs" id="2_grid"]
 [ext_resource type="PackedScene" path="res://scenes/Portal.tscn" id="3_portal"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" path="res://scripts/HubZone.cs" id="5_zones"]
 [ext_resource type="PackedScene" path="res://scenes/Hud.tscn" id="6_hud"]
 [ext_resource type="Script" path="res://scripts/NetPlayers.cs" id="7_players"]
-[ext_resource type="Script" path="res://scripts/LobbyPanel.cs" id="8_lobby"]
 [ext_resource type="Script" path="res://scripts/Waystone.cs" id="10_way"]
 
 [node name="Hub" type="Node2D"]
@@ -17,9 +16,6 @@ script = ExtResource("2_grid")
 [node name="Players" type="Node2D" parent="."]
 script = ExtResource("7_players")
 CombatEnabled = false
-
-[node name="Lobby" type="CanvasLayer" parent="."]
-script = ExtResource("8_lobby")
 
 [node name="Portal" parent="." instance=ExtResource("3_portal")]
 position = Vector2(340, 0)

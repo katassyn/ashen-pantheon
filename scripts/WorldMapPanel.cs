@@ -14,8 +14,8 @@ public partial class WorldMapPanel : CanvasLayer
         AddToGroup("worldmap");
         _root = new Panel
         {
-            AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
-            OffsetLeft = -320, OffsetTop = -320, OffsetRight = 320, OffsetBottom = 320,
+            AnchorLeft = 0f, AnchorTop = 0f, AnchorRight = 1f, AnchorBottom = 1f,
+            OffsetLeft = 40, OffsetTop = 36, OffsetRight = -40, OffsetBottom = -170,
             Visible = false,
         };
         UiPanels.Solidify(_root);
@@ -26,7 +26,7 @@ public partial class WorldMapPanel : CanvasLayer
         _root.AddChild(vb);
         vb.AddChild(new Label { Text = "WORLD MAP    [M] close    fast-travel between discovered zones" });
 
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         _list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         _list.AddThemeConstantOverride("separation", 6);
         scroll.AddChild(_list);

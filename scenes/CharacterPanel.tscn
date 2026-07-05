@@ -8,14 +8,14 @@ script = ExtResource("1_panel")
 
 [node name="Root" type="Panel" parent="."]
 unique_name_in_owner = true
-anchor_left = 0.5
+anchor_left = 0.0
 anchor_top = 0.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -580.0
+offset_left = 40.0
 offset_top = 36.0
-offset_right = 580.0
-offset_bottom = -150.0
+offset_right = -40.0
+offset_bottom = -170.0
 
 [node name="VB" type="VBoxContainer" parent="Root"]
 anchor_right = 1.0

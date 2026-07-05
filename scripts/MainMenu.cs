@@ -47,7 +47,7 @@ public partial class MainMenu : Control
         // ── realm lokalny: sloty postaci ──
         _localView = new VBoxContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         _localView.AddChild(new Label { Text = "Characters:" });
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         _slotList = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_slotList);
         _localView.AddChild(scroll);

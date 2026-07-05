@@ -14,8 +14,8 @@ public partial class SocialPanel : CanvasLayer
         Layer = 9;
         _root = new Panel
         {
-            AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
-            OffsetLeft = -360, OffsetTop = -320, OffsetRight = 360, OffsetBottom = 320,
+            AnchorLeft = 0f, AnchorTop = 0f, AnchorRight = 1f, AnchorBottom = 1f,
+            OffsetLeft = 40, OffsetTop = 36, OffsetRight = -40, OffsetBottom = -170,
             Visible = false,
         };
         UiPanels.Solidify(_root);
@@ -41,7 +41,7 @@ public partial class SocialPanel : CanvasLayer
         addBtn.Pressed += () => Do(AccountClient.Post("/friends/request", new { Username = _friendName.Text.StripEdges() }));
         addRow.AddChild(_friendName); addRow.AddChild(addBtn);
         fcol.AddChild(addRow);
-        var fscroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var fscroll = UiKit.VScroll();
         _friends = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         fscroll.AddChild(_friends);
         fcol.AddChild(fscroll);
@@ -54,7 +54,7 @@ public partial class SocialPanel : CanvasLayer
         _guildInput = new LineEdit { PlaceholderText = "guild name / invite username", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, MaxLength = 24 };
         gRow.AddChild(_guildInput);
         gcol.AddChild(gRow);
-        var gscroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var gscroll = UiKit.VScroll();
         _guild = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         gscroll.AddChild(_guild);
         gcol.AddChild(gscroll);

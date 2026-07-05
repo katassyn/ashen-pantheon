@@ -14,8 +14,8 @@ public partial class QuestJournal : CanvasLayer
         Layer = 8;
         _root = new Panel
         {
-            AnchorLeft = 0.5f, AnchorTop = 0f, AnchorRight = 0.5f, AnchorBottom = 1f,
-            OffsetLeft = -420, OffsetTop = 36, OffsetRight = 420, OffsetBottom = -150,
+            AnchorLeft = 0f, AnchorTop = 0f, AnchorRight = 1f, AnchorBottom = 1f,
+            OffsetLeft = 40, OffsetTop = 36, OffsetRight = -40, OffsetBottom = -170,
             Visible = false,
         };
         UiPanels.Solidify(_root);
@@ -26,7 +26,7 @@ public partial class QuestJournal : CanvasLayer
         _root.AddChild(vb);
         vb.AddChild(new Label { Text = "QUEST JOURNAL    [J] close" });
 
-        var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        var scroll = UiKit.VScroll();
         _text = new RichTextLabel { BbcodeEnabled = true, FitContent = true, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         scroll.AddChild(_text);
         vb.AddChild(scroll);

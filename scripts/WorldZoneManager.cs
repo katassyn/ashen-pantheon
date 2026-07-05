@@ -22,6 +22,24 @@ public partial class WorldZoneManager : Node
     public string CenterMessage => "";
     public Vector2 SpawnPoint => _zone == null ? Vector2.Zero : new Vector2(_zone.SpawnX, _zone.SpawnY);
 
+    /// <summary>Gracz pojawia się przy wyjściu prowadzącym do strefy, z której przyszedł
+    /// (odsunięty od portalu w głąb mapy, żeby nie teleportować z powrotem). Fallback: domyślny spawn.</summary>
+    private void PlaceLocalAtEntry()
+    {
+        string from = Net.TravelFromZoneId;
+        if (_zone == null || string.IsNullOrEmpty(from)) return;
+        foreach (var exit in _zone.Exits)
+        {
+            if (exit.Target != from) continue;
+            var portalPos = new Vector2(exit.X, exit.Y);
+            var inward = (SpawnPoint - portalPos).Normalized();
+            if (inward == Vector2.Zero) inward = Vector2.Right;
+            var entry = portalPos + inward * 170f + new Vector2(0, 26f * (Net.MyId & 3));
+            if (PlayerController.Local is { } p && IsInstanceValid(p)) p.GlobalPosition = entry;
+            return;
+        }
+    }
+
     public override void _Ready()
     {
         AddToGroup("arena"); // Hud czyta TopStatus z tej grupy
@@ -44,6 +62,9 @@ public partial class WorldZoneManager : Node
             if (label != null) label.Text = string.IsNullOrEmpty(exit.Label) ? exit.Target : exit.Label;
             GetParent().CallDeferred(Node.MethodName.AddChild, portal);
         }
+
+        // wejście od strony poprzedniej strefy (deferred: gracz musi już istnieć po _Ready wszystkich node'ów)
+        CallDeferred(nameof(PlaceLocalAtEntry));
 
         // znaczniki: reach/interact = lokalne per gracz; escort/defend = obiekty host-authoritative (na wszystkich)
         foreach (var marker in _zone.Markers)
