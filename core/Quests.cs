@@ -103,6 +103,10 @@ public sealed class QuestLog
     public bool ReadyToTurnIn(QuestDefinition q) =>
         IsActive(q.Id) && q.Objectives.All(o => ObjectiveDone(q, o));
 
+    /// <summary>Porzucenie questa (przycisk w dzienniku) — postęp przepada,
+    /// quest wraca do puli questgivera (CanAccept znów true).</summary>
+    public bool Abandon(string questId) => Active.Remove(questId);
+
     /// <summary>Oddanie questa. Zwraca definicję następnego w łańcuchu (albo null).</summary>
     public QuestDefinition? TurnIn(QuestDefinition q)
     {

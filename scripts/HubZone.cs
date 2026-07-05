@@ -9,6 +9,8 @@ public partial class HubZone : Area2D
 
     private bool _playerInside;
     private Label _hint;
+    private Label _questMark; // '!' quest do wzięcia / '?' do oddania (tylko NPC)
+    private float _markTimer;
 
     public override void _Ready()
     {
@@ -21,6 +23,27 @@ public partial class HubZone : Area2D
 
         _hint = new Label { Text = "[E]", Position = new Vector2(-12, -70), Visible = false };
         AddChild(_hint);
+
+        if (Kind is not ("vendor" or "stash" or "ah"))
+        {
+            _questMark = new Label { Position = new Vector2(-9, -104), Visible = false };
+            _questMark.AddThemeFontSizeOverride("font_size", 26);
+            _questMark.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.3f));
+            _questMark.AddThemeColorOverride("font_outline_color", Colors.Black);
+            _questMark.AddThemeConstantOverride("outline_size", 4);
+            AddChild(_questMark);
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_questMark == null) return;
+        _markTimer -= (float)delta;
+        if (_markTimer > 0f) return;
+        _markTimer = 0.5f; // tani polling — stan questów zmienia się rzadko
+        char? mark = QuestNpc.Indicator(Kind);
+        _questMark.Visible = mark.HasValue;
+        if (mark.HasValue) _questMark.Text = mark.Value.ToString();
     }
 
     private void ShowHint(bool on) => _hint.Visible = on;

@@ -1,9 +1,11 @@
 using System.Linq;
+using System.Text;
 using Godot;
 using AshenPantheon.Core;
 
-/// <summary>Logika rozmowy z NPC questowym (E przy znaczniku): oddaj gotowe → przyjmij dostępne → cel Talk.
-/// Dialog jako proste okno tekstowe.</summary>
+/// <summary>Rozmowa z NPC questowym (E przy znaczniku) — INTERAKTYWNY dialog:
+/// oferta questa = Accept/Decline, gotowy quest = Complete, w toku = postęp + Close.
+/// Nic nie dzieje się automatycznie — gracz klika.</summary>
 public static class QuestNpc
 {
     public static void Interact(string npcId, SceneTree tree)
@@ -11,44 +13,103 @@ public static class QuestNpc
         var log = GameState.Quests;
         int level = GameState.Progress.Level;
 
-        // 1) oddanie gotowego questa u tego NPC
+        // cel "Talk" zalicza się samą rozmową (może domknąć quest przed sprawdzeniem turn-in)
+        if (log.OnTalk(npcId)) GameState.Save();
+
+        // 1) quest gotowy do oddania u tego NPC → przycisk Complete
         var ready = log.Active.Keys
             .Select(QuestCatalog.Find)
             .FirstOrDefault(q => q != null && q.TurnIn == npcId && log.ReadyToTurnIn(q));
         if (ready != null)
         {
-            var next = log.TurnIn(ready);
-            GameState.Progress.GainXp(ready.RewardXp);
-            GameState.Wallet.Gold += ready.RewardGold;
-            GameState.Save();
-            PlayerController.Local?.Refresh();
             string text = string.Join("\n", ready.DialogueCompletion)
-                + $"\n\n✔ Completed: {ready.Name}   (+{ready.RewardXp} XP, +{ready.RewardGold} gold)";
-            if (next != null && log.Accept(next, level))
-            {
-                GameState.Save();
-                text += $"\n\n▶ New quest: {next.Name}\n" + string.Join("\n", next.DialogueStart);
-            }
-            Dialog(tree, NpcName(npcId), text);
+                + $"\n\n✔ {ready.Name} — all objectives done."
+                + $"\nRewards: +{ready.RewardXp} XP, +{ready.RewardGold} gold";
+            Dialog(tree, npcId, text,
+                ("Complete quest", () => CompleteQuest(ready, npcId, tree)),
+                ("Close", null));
             return;
         }
 
-        // 2) przyjęcie dostępnego questa od tego NPC
+        // 2) NPC ma quest do zaoferowania → Accept / Decline
         var offered = QuestCatalog.Quests.Values
             .FirstOrDefault(q => q.QuestGiver == npcId && log.CanAccept(q, level));
         if (offered != null)
         {
-            log.Accept(offered, level);
-            log.OnTalk(npcId); // rozmowa u questgivera zalicza cel Talk
-            GameState.Save();
-            Dialog(tree, NpcName(npcId), string.Join("\n", offered.DialogueStart) + $"\n\n▶ Accepted: {offered.Name}");
+            OfferDialog(tree, npcId, offered);
             return;
         }
 
-        // 3) cel Talk w aktywnych questach
-        if (log.OnTalk(npcId)) { GameState.Save(); Dialog(tree, NpcName(npcId), "Good that you came. Keep at it."); return; }
+        // 3) quest w toku od/do tego NPC → pokaż postęp
+        var inProgress = log.Active.Keys
+            .Select(QuestCatalog.Find)
+            .FirstOrDefault(q => q != null && (q.QuestGiver == npcId || q.TurnIn == npcId));
+        if (inProgress != null)
+        {
+            var sb = new StringBuilder($"How goes it? Your task is not finished yet.\n\n▶ {inProgress.Name}\n");
+            foreach (var o in inProgress.Objectives)
+            {
+                int cur = log.Progress(inProgress.Id, o.Id);
+                sb.AppendLine($"   {(cur >= o.Amount ? "✔" : "•")} {o.Description}  {cur}/{o.Amount}");
+            }
+            Dialog(tree, npcId, sb.ToString(), ("Close", null));
+            return;
+        }
 
-        Dialog(tree, NpcName(npcId), "I have no tasks for you now. Return stronger.");
+        Dialog(tree, npcId, "I have no tasks for you now. Return stronger.", ("Close", null));
+    }
+
+    /// <summary>Oferta questa: opis + cele + nagrody, przyciski Accept/Decline.
+    /// prefix = np. podsumowanie właśnie oddanego questa (łańcuch).</summary>
+    private static void OfferDialog(SceneTree tree, string npcId, QuestDefinition q, string prefix = "")
+    {
+        var sb = new StringBuilder(prefix);
+        sb.AppendLine(string.Join("\n", q.DialogueStart));
+        sb.AppendLine($"\n▶ {q.Name}   (lvl {q.RequiredLevel})");
+        sb.AppendLine("Objectives:");
+        foreach (var o in q.Objectives)
+            sb.AppendLine($"   • {o.Description}" + (o.Amount > 1 ? $"  (x{o.Amount})" : ""));
+        sb.Append($"Rewards: +{q.RewardXp} XP, +{q.RewardGold} gold");
+
+        Dialog(tree, npcId, sb.ToString(),
+            ("Accept quest", () =>
+            {
+                if (!GameState.Quests.Accept(q, GameState.Progress.Level)) return;
+                GameState.Quests.OnTalk(npcId); // rozmowa u questgivera zalicza cel Talk
+                GameState.Save();
+                Net.SendChatLocal($"Quest accepted: {q.Name}");
+            }),
+            ("Decline", null));
+    }
+
+    /// <summary>Klik "Complete quest": nagrody + jeśli łańcuch ma następny quest — od razu jego oferta.</summary>
+    private static void CompleteQuest(QuestDefinition q, string npcId, SceneTree tree)
+    {
+        var log = GameState.Quests;
+        if (!log.ReadyToTurnIn(q)) return; // stan mógł się zmienić — nie oddajemy na siłę
+        var next = log.TurnIn(q);
+        GameState.Progress.GainXp(q.RewardXp);
+        GameState.Wallet.Gold += q.RewardGold;
+        GameState.Save();
+        PlayerController.Local?.Refresh();
+        Net.SendChatLocal($"Quest completed: {q.Name}  (+{q.RewardXp} XP, +{q.RewardGold} gold)");
+
+        string summary = $"✔ Completed: {q.Name}   (+{q.RewardXp} XP, +{q.RewardGold} gold)";
+        if (next != null && log.CanAccept(next, GameState.Progress.Level))
+            OfferDialog(tree, npcId, next, summary + "\n\n"); // łańcuch: od razu oferta następnego
+        else
+            Dialog(tree, npcId, summary, ("Close", null));
+    }
+
+    /// <summary>Wskaźnik nad NPC: '?' = quest do oddania, '!' = quest do wzięcia, null = nic.</summary>
+    public static char? Indicator(string npcId)
+    {
+        var log = GameState.Quests;
+        if (log.Active.Keys.Select(QuestCatalog.Find)
+            .Any(q => q != null && q.TurnIn == npcId && log.ReadyToTurnIn(q))) return '?';
+        if (QuestCatalog.Quests.Values
+            .Any(q => q.QuestGiver == npcId && log.CanAccept(q, GameState.Progress.Level))) return '!';
+        return null;
     }
 
     public static string NpcName(string npcId) => npcId switch
@@ -58,29 +119,50 @@ public static class QuestNpc
         _ => npcId,
     };
 
-    private static void Dialog(SceneTree tree, string npcName, string text)
+    /// <summary>Okno dialogu z dowolnym zestawem przycisków (akcja null = tylko zamknij).
+    /// E/Esc zawsze zamyka bez akcji (Decline/Close).</summary>
+    private static void Dialog(SceneTree tree, string npcId, string text,
+        params (string Label, System.Action OnPressed)[] buttons)
     {
-        // jedno okno naraz
-        tree.Root.GetNodeOrNull<CanvasLayer>("QuestDialog")?.QueueFree();
+        // jedno okno naraz — stare przemianuj przed QueueFree, żeby nowe zachowało nazwę
+        if (tree.Root.GetNodeOrNull<CanvasLayer>("QuestDialog") is { } old)
+        {
+            old.Name = "QuestDialogOld";
+            old.QueueFree();
+        }
 
         var layer = new CanvasLayer { Name = "QuestDialog", Layer = 15 };
         var panel = new Panel
         {
             AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0.5f, AnchorBottom = 0.5f,
-            OffsetLeft = -420, OffsetRight = 420, OffsetTop = -140, OffsetBottom = 140,
+            OffsetLeft = -420, OffsetRight = 420, OffsetTop = -190, OffsetBottom = 190,
         };
         UiPanels.Solidify(panel);
         layer.AddChild(panel);
 
         var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 14, OffsetTop = 10, OffsetRight = -14, OffsetBottom = -10 };
+        vb.AddThemeConstantOverride("separation", 8);
         panel.AddChild(vb);
-        var title = new Label { Text = $"— {npcName} —" };
+        var title = new Label { Text = $"— {NpcName(npcId)} —" };
         title.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.5f));
         vb.AddChild(title);
         vb.AddChild(new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart, SizeFlagsVertical = Control.SizeFlags.ExpandFill });
-        var close = new Button { Text = "Close [E/Esc]" };
-        close.Pressed += () => layer.QueueFree();
-        vb.AddChild(close);
+
+        var row = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        row.AddThemeConstantOverride("separation", 12);
+        vb.AddChild(row);
+        foreach (var (label, action) in buttons)
+        {
+            var btn = new Button { Text = label, CustomMinimumSize = new Vector2(150, 0) };
+            var captured = action;
+            btn.Pressed += () =>
+            {
+                layer.Name = "QuestDialogOld"; // akcja może otworzyć kolejny dialog
+                layer.QueueFree();
+                captured?.Invoke();
+            };
+            row.AddChild(btn);
+        }
 
         var closer = new DialogCloser { Target = layer };
         layer.AddChild(closer);

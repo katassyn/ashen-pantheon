@@ -38,6 +38,23 @@ public class QuestTests
     }
 
     [Fact]
+    public void Abandon_DropsProgressAndAllowsReaccept()
+    {
+        var log = new QuestLog();
+        log.Accept(Q("swerdfield_01"), 1);
+        for (int i = 0; i < 5; i++) log.OnKill("undead_villager");
+        Assert.Equal(5, log.Progress("swerdfield_01", "kill_villagers"));
+
+        Assert.True(log.Abandon("swerdfield_01"));
+        Assert.False(log.IsActive("swerdfield_01"));
+        Assert.False(log.Abandon("swerdfield_01")); // drugi raz nie ma czego porzucać
+
+        Assert.True(log.CanAccept(Q("swerdfield_01"), 1)); // wraca do questgivera
+        log.Accept(Q("swerdfield_01"), 1);
+        Assert.Equal(0, log.Progress("swerdfield_01", "kill_villagers")); // postęp od zera
+    }
+
+    [Fact]
     public void Reach_IsOneShot()
     {
         var log = new QuestLog();

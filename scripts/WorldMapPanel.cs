@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 using AshenPantheon.Core;
 
@@ -69,8 +70,12 @@ public partial class WorldMapPanel : CanvasLayer
         if (!canTravel)
             _list.AddChild(new Label { Text = "Only the host can travel the party.", Modulate = new Color(0.9f, 0.7f, 0.4f) });
 
-        // Town (zawsze dostępne)
-        AddRow("⌂ Town  (hub)", curScene: GetTree().CurrentScene?.Name == "Hub",
+        // Town (zawsze dostępne); ❓ = masz quest do oddania (NPC są w mieście)
+        bool turnInReady = GameState.Quests.Active.Keys
+            .Select(QuestCatalog.Find)
+            .Any(q => q != null && GameState.Quests.ReadyToTurnIn(q));
+        AddRow("⌂ Town  (hub)" + (turnInReady ? "   ❓ quest turn-in" : ""),
+            curScene: GetTree().CurrentScene?.Name == "Hub",
             enabled: canTravel, () => Travel("res://scenes/Main.tscn", ""));
 
         foreach (var z in WorldMaps.Ordered())
@@ -78,10 +83,17 @@ public partial class WorldMapPanel : CanvasLayer
             bool discovered = GameState.DiscoveredZones.Contains(z.Id);
             bool isCurrent = z.Id == curZone && GetTree().CurrentScene?.Name == "WorldZone";
             string label = $"{z.Name}   (levels {z.LevelMin}-{z.LevelMax})" +
+                           (ZoneHasActiveQuest(z.Id) ? "   ❗ quest" : "") +
                            (discovered ? "" : "   — undiscovered");
             AddRow(label, isCurrent, enabled: canTravel && discovered, () => Travel("res://scenes/WorldZone.tscn", z.Id));
         }
     }
+
+    /// <summary>Czy w strefie toczy się aktywny (nieukończony) quest — ❗ na liście mapy.</summary>
+    private static bool ZoneHasActiveQuest(string zoneId) =>
+        GameState.Quests.Active.Keys
+            .Select(QuestCatalog.Find)
+            .Any(q => q != null && q.Zone == zoneId && !GameState.Quests.ReadyToTurnIn(q));
 
     private void AddRow(string label, bool curScene, bool enabled, System.Action onTravel)
     {

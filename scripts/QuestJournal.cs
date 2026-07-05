@@ -28,8 +28,40 @@ public partial class QuestJournal : CanvasLayer
 
         var scroll = UiKit.VScroll();
         _text = new RichTextLabel { BbcodeEnabled = true, FitContent = true, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        _text.MetaClicked += OnMetaClicked;
         scroll.AddChild(_text);
         vb.AddChild(scroll);
+    }
+
+    /// <summary>Klik "✖ Abandon quest" → potwierdzenie → porzucenie (postęp przepada, quest wraca do NPC).</summary>
+    private void OnMetaClicked(Variant meta)
+    {
+        string s = meta.AsString();
+        if (!s.StartsWith("abandon:")) return;
+        string questId = s["abandon:".Length..];
+        var q = QuestCatalog.Find(questId);
+        if (q == null || !GameState.Quests.IsActive(questId)) return;
+
+        var dlg = new ConfirmationDialog
+        {
+            Title = "Abandon quest",
+            DialogText = $"Abandon \"{q.Name}\"?\nAll progress will be lost. You can retake it from {QuestNpc.NpcName(q.QuestGiver)}.",
+            OkButtonText = "Abandon",
+        };
+        dlg.Confirmed += () =>
+        {
+            if (GameState.Quests.Abandon(questId))
+            {
+                GameState.Save();
+                Net.SendChatLocal($"Quest abandoned: {q.Name}");
+                Rebuild();
+            }
+        };
+        dlg.CloseRequested += dlg.QueueFree;
+        dlg.Confirmed += dlg.QueueFree;
+        dlg.Canceled += dlg.QueueFree;
+        AddChild(dlg);
+        dlg.PopupCentered();
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -70,7 +102,7 @@ public partial class QuestJournal : CanvasLayer
             }
             if (log.ReadyToTurnIn(q))
                 sb.AppendLine($"   [color=#8fd48f]→ Ready! Turn in at: {QuestNpc.NpcName(q.TurnIn)}[/color]");
-            sb.AppendLine($"   [color=#9a9a9a]Reward: {q.RewardXp} XP, {q.RewardGold} gold[/color]");
+            sb.AppendLine($"   [color=#9a9a9a]Reward: {q.RewardXp} XP, {q.RewardGold} gold[/color]   [url=abandon:{q.Id}][color=#d08080]✖ Abandon quest[/color][/url]");
         }
 
         sb.AppendLine($"\n[b][color=#7fae7f]COMPLETED ({log.Completed.Count})[/color][/b]");
