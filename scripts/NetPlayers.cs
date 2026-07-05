@@ -136,6 +136,7 @@ public partial class Nameplate : Label
             _menu.AddItem("Trade", 0);
             _menu.AddItem("Whisper", 1);
             _menu.AddItem("Invite to Guild", 2);
+            _menu.AddItem("Inspect", 3);
             _menu.IdPressed += OnMenu;
             AddChild(_menu);
         }
@@ -179,6 +180,9 @@ public partial class Nameplate : Label
                 break;
             case 2:
                 Net.SendChatLocal("Open Friends/Guild (O) to invite by account name (online realm).");
+                break;
+            case 3:
+                InspectPanel.Open(GetTree(), Peer);
                 break;
         }
     }

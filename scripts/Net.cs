@@ -517,6 +517,38 @@ public partial class Net : Node
     private void RpcDamageLocal(float amount, int type, string source) =>
         PlayerController.Local?.TakeDamage(amount, (DamageType)type, source);
 
+    // ── inspekcja gracza (PPM na nicku → Inspect): pytany klient odsyła SWÓJ ekwipunek ──
+
+    public static event System.Action<long, string> InspectReceived;
+
+    public static void RequestInspect(long peer)
+    {
+        if (!Online || peer == MyId) return;
+        I.RpcId((int)peer, MethodName.RpcInspectRequest);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcInspectRequest()
+    {
+        int asker = Multiplayer.GetRemoteSenderId();
+        var items = new Dictionary<string, ItemDto>();
+        foreach (EquipmentSlot slot in System.Enum.GetValues<EquipmentSlot>())
+            if (GameState.Equipment.Get(slot) is { } it)
+                items[slot.ToString()] = ItemMapper.ToDto(it);
+        string json = System.Text.Json.JsonSerializer.Serialize(new InspectPayload
+        {
+            Name = GameState.CharacterName,
+            Level = GameState.Progress.Level,
+            ClassId = GameState.ClassId,
+            Items = items,
+        });
+        I.RpcId(asker, MethodName.RpcInspectReply, json);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcInspectReply(string json) =>
+        InspectReceived?.Invoke(Multiplayer.GetRemoteSenderId(), json);
+
     public static void HealCaster(int casterPeer, float amount)
     {
         if (casterPeer == MyId) PlayerController.Local?.Heal(amount);
