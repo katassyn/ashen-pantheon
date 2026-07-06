@@ -1,0 +1,14 @@
+{
+  "id": "final_proving_m2",
+  "name": "The Final Proving — Map 2",
+  "monsters": [
+    { "id": "demon_warden", "weight": 3 },
+    { "id": "soulless_dragon_warrior", "weight": 2 },
+    { "id": "furious_fiend", "weight": 2 }
+  ],
+  "boss": "black_furred_mauler",
+  "roomsMin": 2,
+  "roomsMax": 3,
+  "baseSpawnCount": 5,
+  "spawnCountPerRoom": 2
+}

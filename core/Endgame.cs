@@ -37,7 +37,10 @@ public sealed class EndgameFile
 {
     public List<DungeonDefinition> Dungeons { get; set; } = new();
     public List<DifficultyDefinition> Difficulties { get; set; } = new();
-    public string QZone { get; set; } = "";
+    /// <summary>Mapy runu Q w kolejności: M1 (mini-boss) → M2 (mini-boss) → M3 (arena głównego bossa).</summary>
+    public List<string> QMaps { get; set; } = new();
+    /// <summary>Powtarzalny auto-quest runu Q (gracz dostaje przy wejściu, cele = Clear kolejnych map).</summary>
+    public string QQuest { get; set; } = "";
     public int QMax { get; set; } = 10;
 }
 
@@ -47,7 +50,8 @@ public static class EndgameCatalog
 
     public static readonly List<DungeonDefinition> Dungeons = new();
     public static readonly List<DifficultyDefinition> Difficulties = new();
-    public static string QZone { get; private set; } = "";
+    public static readonly List<string> QMaps = new();
+    public static string QQuest { get; private set; } = "";
     public static int QMax { get; private set; } = 10;
     public static bool Loaded => Difficulties.Count > 0;
 
@@ -58,9 +62,21 @@ public static class EndgameCatalog
         Dungeons.AddRange(file.Dungeons.OrderBy(d => d.Tier));
         Difficulties.Clear();
         Difficulties.AddRange(file.Difficulties);
-        QZone = file.QZone;
+        QMaps.Clear();
+        QMaps.AddRange(file.QMaps);
+        QQuest = file.QQuest;
         QMax = file.QMax;
     }
+
+    /// <summary>Następna mapa runu Q po ukończeniu podanej (null = to była ostatnia / spoza runu).</summary>
+    public static string? NextQMap(string zoneId)
+    {
+        int i = QMaps.IndexOf(zoneId);
+        return i < 0 || i + 1 >= QMaps.Count ? null : QMaps[i + 1];
+    }
+
+    /// <summary>Numer mapy runu (1-based; 0 = spoza runu Q).</summary>
+    public static int QMapIndex(string zoneId) => QMaps.IndexOf(zoneId) + 1;
 
     public static DungeonDefinition? Dungeon(string id) => Dungeons.FirstOrDefault(d => d.Id == id);
     public static DifficultyDefinition? Difficulty(string id) => Difficulties.FirstOrDefault(d => d.Id == id);

@@ -14,8 +14,45 @@ public class EndgameTests
         Assert.Equal("odyssey_of_shadows", EndgameCatalog.Dungeons[0].Id);
         Assert.True(EndgameCatalog.Dungeons[0].Enabled);
         Assert.Equal(new[] { "blood", "hell", "infernal" }, EndgameCatalog.Difficulties.Select(d => d.Id));
-        Assert.Equal("final_proving", EndgameCatalog.QZone);
+        Assert.Equal(new[] { "final_proving_m1", "final_proving_m2", "final_proving_m3" }, EndgameCatalog.QMaps);
+        Assert.Equal("final_proving_run", EndgameCatalog.QQuest);
         Assert.Equal(10, EndgameCatalog.QMax);
+    }
+
+    [Fact]
+    public void QMaps_ChainM1ToM3()
+    {
+        Assert.Equal("final_proving_m2", EndgameCatalog.NextQMap("final_proving_m1"));
+        Assert.Equal("final_proving_m3", EndgameCatalog.NextQMap("final_proving_m2"));
+        Assert.Null(EndgameCatalog.NextQMap("final_proving_m3")); // M3 = finał
+        Assert.Null(EndgameCatalog.NextQMap("swerdfield"));       // spoza runu
+        Assert.Equal(3, EndgameCatalog.QMapIndex("final_proving_m3"));
+    }
+
+    [Fact]
+    public void QRunQuest_TracksMapsAndIsRepeatable()
+    {
+        var q = QuestCatalog.Find("final_proving_run")!;
+        Assert.Equal(3, q.Objectives.Count);
+        // cele = Clear kolejnych map runu (auto-quest prowadzi gracza M1→M2→M3)
+        Assert.Equal(EndgameCatalog.QMaps, q.Objectives.Select(o => o.Target));
+        foreach (var o in q.Objectives) Assert.Equal(ObjectiveType.Clear, o.Kind);
+        // każda mapa musi istnieć w bestiariuszu (run musi dać się odpalić)
+        foreach (var map in EndgameCatalog.QMaps) Assert.True(Bestiary.Zones.ContainsKey(map));
+
+        var log = new QuestLog();
+        Assert.True(log.Accept(q, 50));
+        log.OnClear("final_proving_m1");
+        log.OnClear("final_proving_m2");
+        Assert.False(log.ReadyToTurnIn(q));
+        log.OnClear("final_proving_m3");
+        Assert.True(log.ReadyToTurnIn(q));
+        log.TurnIn(q);
+        Assert.True(log.IsCompleted(q.Id));
+
+        // powtarzalność: zdjęcie z Completed pozwala wziąć ponownie (wzorzec EndgamePanel.StartQRunQuest)
+        log.Completed.Remove(q.Id);
+        Assert.True(log.CanAccept(q, 50));
     }
 
     [Fact]
@@ -74,11 +111,16 @@ public class EndgameTests
     public void EndgameZones_ExistInBestiary()
     {
         Assert.True(Bestiary.Zones.ContainsKey("odyssey_of_shadows"));
-        Assert.True(Bestiary.Zones.ContainsKey("final_proving"));
         Assert.Equal("commander_emberwing", Bestiary.Zone("odyssey_of_shadows").Boss);
-        // boss ma fazy (BossBar + trudność), moby strefy istnieją
+        // bossowie mają fazy (BossBar + trudność), moby stref istnieją
         Assert.True(Bestiary.Monster("commander_emberwing").IsBoss);
         foreach (var m in Bestiary.Zone("odyssey_of_shadows").Monsters)
             Assert.True(Bestiary.Monsters.ContainsKey(m.Id));
+
+        // run Q: M1/M2 kończą mini-bossy, M3 = główny boss (wszyscy fazowi)
+        Assert.True(Bestiary.Monster("black_furred_berserk").IsBoss);
+        Assert.True(Bestiary.Monster("black_furred_mauler").IsBoss);
+        Assert.Equal("god_of_death", Bestiary.Zone("final_proving_m3").Boss);
+        Assert.True(Bestiary.Monster("god_of_death").IsBoss);
     }
 }

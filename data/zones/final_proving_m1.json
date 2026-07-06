@@ -1,0 +1,13 @@
+{
+  "id": "final_proving_m1",
+  "name": "The Final Proving — Map 1",
+  "monsters": [
+    { "id": "furious_fiend", "weight": 3 },
+    { "id": "dragon_berserk_thug", "weight": 2 }
+  ],
+  "boss": "black_furred_berserk",
+  "roomsMin": 2,
+  "roomsMax": 3,
+  "baseSpawnCount": 4,
+  "spawnCountPerRoom": 2
+}

@@ -1,0 +1,47 @@
+{
+  "id": "god_of_death",
+  "name": "God of Death",
+  "hp": 5000,
+  "armour": 55,
+  "resChaos": 70,
+  "resFire": 35,
+  "speed": 62,
+  "movement": "keep_distance",
+  "preferredRange": 170,
+  "scale": 2.5,
+  "tint": "#8a30c0",
+  "level": 55,
+  "xp": 2400,
+  "lootTable": "boss",
+  "attackInterval": 1.8,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 1.8,
+      "abilities": [
+        { "type": "tele_circle", "damage": 56, "damageType": "Chaos", "radius": 150, "windup": 0.85 },
+        { "type": "tele_cone", "damage": 60, "damageType": "Chaos", "radius": 280, "halfAngleDeg": 38, "windup": 0.85 },
+        { "type": "projectile", "damage": 46, "damageType": "Chaos", "speed": 360 }
+      ]
+    },
+    {
+      "hpBelow": 0.6,
+      "attackInterval": 1.45,
+      "abilities": [
+        { "type": "tele_line", "damage": 64, "damageType": "Chaos", "length": 520, "halfWidth": 40, "windup": 0.75 },
+        { "type": "tele_circle", "damage": 62, "damageType": "Chaos", "radius": 175, "windup": 0.7 },
+        { "type": "summon", "monsterId": "furious_fiend", "count": 2, "cooldown": 14 }
+      ]
+    },
+    {
+      "hpBelow": 0.3,
+      "attackInterval": 1.1,
+      "abilities": [
+        { "type": "tele_circle", "damage": 70, "damageType": "Chaos", "radius": 200, "windup": 0.6 },
+        { "type": "tele_cone", "damage": 66, "damageType": "Fire", "radius": 330, "halfAngleDeg": 50, "windup": 0.65 },
+        { "type": "summon", "monsterId": "demon_warden", "count": 1, "cooldown": 12 }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@
     { "id": "hell", "name": "Hell", "hpMult": 2.6, "dmgMult": 1.8, "xpMult": 2.4, "itemLevel": 64, "goldFee": 1200, "requiresPrevious": true },
     { "id": "infernal", "name": "Infernal", "hpMult": 4.2, "dmgMult": 2.5, "xpMult": 3.4, "itemLevel": 72, "goldFee": 3000, "requiresPrevious": true }
   ],
-  "qZone": "final_proving",
+  "qMaps": ["final_proving_m1", "final_proving_m2", "final_proving_m3"],
+  "qQuest": "final_proving_run",
   "qMax": 10
 }

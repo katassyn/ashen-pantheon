@@ -7,7 +7,7 @@ using AshenPantheon.Core;
 /// deterministyczne lokalnie), logika pokoi/spawnów/win-lose TYLKO u hosta, klienci dostają status RPC.</summary>
 public partial class ArenaManager : Node
 {
-    private enum State { Starting, Fighting, RoomCleared, Won, Lost }
+    private enum State { Starting, Fighting, RoomCleared, MapCleared, Won, Lost }
     private State _state = State.Starting;
 
     private List<RoomPlan> _plan;
@@ -21,8 +21,21 @@ public partial class ArenaManager : Node
     // wyzwanie endgame ("" = zwykły run): mnożniki + ilvl dropu + tytuł
     private string _challenge = "";
     private string _challengeTitle = "";
+    private string _nextMap = ""; // run Q: kolejna mapa po M1/M2
     private float _chalHp = 1f, _chalDmg = 1f, _chalXp = 1f;
     private int _chalIlvl;
+
+    /// <summary>Auto-quest runu Q oddaje się sam po M3 (nie ma NPC; nagrody + wpis do czatu).</summary>
+    private static void CompleteQuestAuto()
+    {
+        var q = QuestCatalog.Find(EndgameCatalog.QQuest);
+        if (q == null || !GameState.Quests.ReadyToTurnIn(q)) return;
+        GameState.Quests.TurnIn(q);
+        GameState.Progress.GainXp(q.RewardXp);
+        GameState.Wallet.Gold += q.RewardGold;
+        PlayerController.Local?.Refresh();
+        Net.SendChatLocal($"Quest completed: {q.Name}  (+{q.RewardXp} XP, +{q.RewardGold} gold)");
+    }
 
     public string TopStatus { get; private set; } = "";
     public string CenterMessage { get; private set; } = "";
@@ -41,7 +54,8 @@ public partial class ArenaManager : Node
         {
             var s = EndgameCatalog.QScale(q);
             (_chalHp, _chalDmg, _chalXp, _chalIlvl) = (s.Hp, s.Dmg, s.Xp, s.ItemLevel);
-            _challengeTitle = $"THE FINAL PROVING  Q{q}   ";
+            int mapIdx = EndgameCatalog.QMapIndex(zoneId);
+            _challengeTitle = $"THE FINAL PROVING  Q{q} — MAP {mapIdx}/{EndgameCatalog.QMaps.Count}   ";
         }
         else if (EndgameCatalog.TryParseGroup(_challenge, out var dun, out var diff))
         {
@@ -114,9 +128,25 @@ public partial class ArenaManager : Node
                 {
                     if (_room + 1 >= _plan.Count)
                     {
+                        Net.BroadcastQuestClear(_zone.Id); // cel questowy Clear u wszystkich graczy (zalicza auto-questa Q)
+
+                        // run Q = 3 mapy: M1/M2 (mini-bossy) → auto-przejście, M3 = finał
+                        string nextMap = _challenge.StartsWith("q:") ? EndgameCatalog.NextQMap(_zone.Id) : null;
+                        if (nextMap != null)
+                        {
+                            _state = State.MapCleared;
+                            _timer = 3f;
+                            _nextMap = nextMap;
+                            SetStatus("", $"MAP {EndgameCatalog.QMapIndex(_zone.Id)}/{EndgameCatalog.QMaps.Count} CLEARED!\nEntering the next map...");
+                            break;
+                        }
+
+                        if (_challenge.Length > 0)
+                        {
+                            Net.BroadcastEndgameClear(_challenge); // odblokowanie u całej drużyny
+                            CompleteQuestAuto(); // auto-quest runu Q oddaje się sam (bez NPC)
+                        }
                         SetStatus("", "RUN COMPLETE!\n[R on host] return to town");
-                        Net.BroadcastQuestClear(_zone.Id); // cel questowy Clear u wszystkich graczy
-                        if (_challenge.Length > 0) Net.BroadcastEndgameClear(_challenge); // odblokowanie u całej drużyny
                         GameState.Save();
                     }
                     else
@@ -137,6 +167,16 @@ public partial class ArenaManager : Node
                 SetStatus("Room cleared — next one incoming...", "");
                 _timer -= dt;
                 if (_timer <= 0f) StartRoom(_room + 1);
+                break;
+
+            case State.MapCleared:
+                _timer -= dt;
+                if (_timer <= 0f)
+                {
+                    int seed = (int)(GD.Randi() % int.MaxValue);
+                    if (seed == 0) seed = 1;
+                    Net.TravelAll("res://scenes/Arena.tscn", seed, _nextMap, _challenge);
+                }
                 break;
 
             case State.Won:

@@ -128,7 +128,9 @@ public partial class EndgamePanel : CanvasLayer
             var enter = new Button { Text = "Enter", CustomMinimumSize = new Vector2(90, 0) };
             enter.Disabled = !unlocked || !solo || GameState.Wallet.Gold < s.Fee;
             int captured = q; long fee = s.Fee;
-            enter.Pressed += () => EnterChallenge(EndgameCatalog.QZone, EndgameCatalog.QChallenge(captured), fee);
+            enter.Pressed += () => EnterChallenge(
+                EndgameCatalog.QMaps.Count > 0 ? EndgameCatalog.QMaps[0] : "",
+                EndgameCatalog.QChallenge(captured), fee);
             row.AddChild(enter);
             _solo.AddChild(row);
         }
@@ -136,12 +138,25 @@ public partial class EndgamePanel : CanvasLayer
 
     private void EnterChallenge(string zoneId, string challenge, long fee)
     {
-        if (GameState.Wallet.Gold < fee) return;
+        if (zoneId.Length == 0 || GameState.Wallet.Gold < fee) return;
         GameState.Wallet.Gold -= fee; // opłata wejścia = sink złota (klucze itemowe dojdą później)
+        if (challenge.StartsWith("q:")) StartQRunQuest();
         GameState.Save();
         int seed = (int)(GD.Randi() % int.MaxValue);
         if (seed == 0) seed = 1;
         QueueFree();
         Net.TravelAll("res://scenes/Arena.tscn", seed, zoneId, challenge);
+    }
+
+    /// <summary>Run Q = POWTARZALNY auto-quest (M1→M2→M3): reset poprzedniego przebiegu i przyjęcie od nowa.
+    /// Tracker pod minimapą prowadzi gracza przez mapy.</summary>
+    private static void StartQRunQuest()
+    {
+        var q = QuestCatalog.Find(EndgameCatalog.QQuest);
+        if (q == null) return;
+        GameState.Quests.Abandon(q.Id);          // porzuć niedokończony poprzedni run
+        GameState.Quests.Completed.Remove(q.Id); // powtarzalny — ukończenie nie blokuje kolejnych
+        if (GameState.Quests.Accept(q, GameState.Progress.Level))
+            Net.SendChatLocal($"Quest accepted: {q.Name}");
     }
 }

@@ -1,0 +1,13 @@
+{
+  "id": "final_proving_m3",
+  "name": "The Final Proving — Boss Arena",
+  "monsters": [
+    { "id": "demon_warden", "weight": 1 },
+    { "id": "furious_fiend", "weight": 1 }
+  ],
+  "boss": "god_of_death",
+  "roomsMin": 1,
+  "roomsMax": 1,
+  "baseSpawnCount": 3,
+  "spawnCountPerRoom": 0
+}
