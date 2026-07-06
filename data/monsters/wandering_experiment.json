@@ -1,0 +1,15 @@
+{
+  "id": "wandering_experiment",
+  "name": "Wandering Experiment",
+  "hp": 2000, "armour": 40, "resChaos": 60, "speed": 135, "movement": "chase", "scale": 1.8, "tint": "#c0509a",
+  "level": 54, "xp": 800, "lootTable": "boss", "attackInterval": 2.0,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 2.0, "abilities": [
+      { "type": "tele_circle", "damage": 50, "damageType": "Chaos", "radius": 170, "windup": 0.9 },
+      { "type": "summon", "monsterId": "living_voidmagic", "count": 2, "cooldown": 12 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.5, "abilities": [
+      { "type": "tele_circle", "damage": 56, "damageType": "Chaos", "radius": 200, "windup": 0.75 },
+      { "type": "summon", "monsterId": "furious_maggot", "count": 4, "cooldown": 10 } ] }
+  ]
+}

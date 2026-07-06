@@ -1,0 +1,7 @@
+{
+  "id": "furious_maggot",
+  "name": "Furious Maggot",
+  "hp": 200, "speed": 85, "movement": "chase", "scale": 0.75, "tint": "#b0a050",
+  "level": 52, "xp": 130, "lootTable": "common", "attackInterval": 1.1,
+  "abilities": [ { "type": "melee", "damage": 30, "windup": 0.35, "reach": 44 } ]
+}

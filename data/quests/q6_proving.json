@@ -1,0 +1,23 @@
+{
+  "quests": [
+    {
+      "id": "q6_run",
+      "name": "Q6: The Herald of the Grave",
+      "description": "Morthys raises the fallen legion. Break his knights, reforge the Sacrificial Dagger from three shards and pierce the Herald's heart.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "warriors", "type": "Kill", "target": "fallen_warrior", "amount": 10, "description": "Slay 10 Fallen Warriors" },
+        { "id": "archers", "type": "Kill", "target": "fallen_archer", "amount": 10, "description": "Slay 10 Fallen Archers" },
+        { "id": "knights", "type": "Kill", "target": "death_knight", "amount": 3, "description": "Slay 3 Death Knights" },
+        { "id": "mknight", "type": "Kill", "target": "morthys_death_knight", "amount": 1, "description": "Slay Morthys' Death Knight" },
+        { "id": "hilt", "type": "Collect", "target": "dagger_hilt", "amount": 1, "description": "Map 2: recover the Dagger Hilt (Elite Skeleton Archers)" },
+        { "id": "blade", "type": "Collect", "target": "dagger_blade", "amount": 1, "description": "Map 2: recover the Dagger Blade (Elite Skeleton Warriors)" },
+        { "id": "gem", "type": "Collect", "target": "dagger_gem", "amount": 1, "description": "Map 2: recover the Dagger Gem (Death Archers)" },
+        { "id": "murok", "type": "Kill", "target": "murok_high_priest", "amount": 1, "description": "Map 2: slay Murok the High Priest" },
+        { "id": "morthys", "type": "Kill", "target": "morthys_herald", "amount": 1, "description": "Map 3: slay Morthys, Herald of the Grave" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 11500, "rewardGold": 2100, "nextQuest": "", "zone": ""
+    }
+  ]
+}

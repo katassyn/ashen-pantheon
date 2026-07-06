@@ -1,0 +1,7 @@
+{
+  "id": "raging_hunting_hound",
+  "name": "Raging Hunting Hound",
+  "hp": 300, "evadeChance": 0.1, "speed": 120, "movement": "chase", "scale": 0.9, "tint": "#8a5a3a",
+  "level": 51, "xp": 170, "lootTable": "common", "attackInterval": 1.1,
+  "abilities": [ { "type": "melee", "damage": 32, "windup": 0.4, "reach": 50 } ]
+}

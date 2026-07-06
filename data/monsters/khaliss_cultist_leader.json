@@ -1,0 +1,18 @@
+{
+  "id": "khaliss_cultist_leader",
+  "name": "Khaliss, Leader of Cultists",
+  "hp": 5000, "armour": 45, "resChaos": 70, "speed": 115, "movement": "keep_distance", "preferredRange": 190, "scale": 2.3, "tint": "#5a2ab0",
+  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.8,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.8, "abilities": [
+      { "type": "projectile", "damage": 46, "damageType": "Chaos", "speed": 370 },
+      { "type": "tele_cone", "damage": 56, "damageType": "Chaos", "radius": 270, "halfAngleDeg": 38, "windup": 0.85 } ] },
+    { "hpBelow": 0.6, "attackInterval": 1.45, "abilities": [
+      { "type": "tele_circle", "damage": 60, "damageType": "Chaos", "radius": 175, "windup": 0.75 },
+      { "type": "summon", "monsterId": "khaliss_clone", "count": 3, "cooldown": 13 } ] },
+    { "hpBelow": 0.3, "attackInterval": 1.1, "abilities": [
+      { "type": "tele_line", "damage": 66, "damageType": "Chaos", "length": 520, "halfWidth": 42, "windup": 0.65 },
+      { "type": "summon", "monsterId": "khaliss_clone", "count": 4, "cooldown": 11 } ] }
+  ]
+}

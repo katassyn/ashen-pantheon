@@ -1,0 +1,7 @@
+{
+  "id": "eternal_hunter",
+  "name": "Eternal Hunter",
+  "hp": 1000, "evadeChance": 0.1, "speed": 72, "movement": "keep_distance", "preferredRange": 260, "scale": 1.25, "tint": "#4a8a5a",
+  "level": 53, "xp": 320, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "projectile", "damage": 54, "speed": 380 } ]
+}

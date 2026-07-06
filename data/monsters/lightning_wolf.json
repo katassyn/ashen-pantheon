@@ -1,0 +1,7 @@
+{
+  "id": "lightning_wolf",
+  "name": "Lightning Wolf",
+  "hp": 400, "evadeChance": 0.15, "speed": 130, "movement": "chase", "scale": 0.95, "tint": "#6a9ad0",
+  "level": 54, "xp": 150, "lootTable": "common", "attackInterval": 1.2,
+  "abilities": [ { "type": "melee", "damage": 30, "damageType": "Lightning", "windup": 0.35, "reach": 50 } ]
+}

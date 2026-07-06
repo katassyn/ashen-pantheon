@@ -1,0 +1,15 @@
+{
+  "id": "old_jabbok_shaman",
+  "name": "Old Jabbok Shaman",
+  "hp": 2000, "resChaos": 55, "speed": 105, "movement": "keep_distance", "preferredRange": 210, "scale": 1.7, "tint": "#4a9a7a",
+  "level": 53, "xp": 720, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "projectile", "damage": 46, "damageType": "Chaos", "speed": 350 },
+      { "type": "tele_circle", "damage": 52, "damageType": "Chaos", "radius": 150, "windup": 0.85 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.35, "abilities": [
+      { "type": "tele_circle", "damage": 56, "damageType": "Chaos", "radius": 170, "windup": 0.7 },
+      { "type": "summon", "monsterId": "furious_maggot", "count": 3, "cooldown": 12 } ] }
+  ]
+}

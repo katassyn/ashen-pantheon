@@ -1,0 +1,16 @@
+{
+  "id": "q5_m2", "name": "Voidtouched Wastes — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["voidmagic_guardian", "living_voidmagic", "living_voidmagic"], "respawnSeconds": 38 },
+    { "x": 640, "y": 200, "monsters": ["voidmagic_scorpid", "living_voidmagic"], "respawnSeconds": 42 },
+    { "x": 920, "y": -80, "monsters": ["wailing_voidmagic_ghost", "voidmagic_guardian", "living_voidmagic"], "respawnSeconds": 44 },
+    { "x": 1200, "y": 260, "monsters": ["voidmagic_scorpid", "wailing_voidmagic_ghost", "voidmagic_guardian"], "respawnSeconds": 46 },
+    { "x": 1560, "y": 40, "monsters": ["wandering_experiment"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q5_m3", "label": "Map 3 — the Cultist sanctum" }
+  ],
+  "markers": []
+}

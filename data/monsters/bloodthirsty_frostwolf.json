@@ -1,0 +1,7 @@
+{
+  "id": "bloodthirsty_frostwolf",
+  "name": "Bloodthirsty Frostwolf",
+  "hp": 1500, "evadeChance": 0.1, "resCold": 60, "speed": 72, "movement": "chase", "scale": 1.4, "tint": "#6a9ac8",
+  "level": 54, "xp": 380, "lootTable": "common", "attackInterval": 1.4,
+  "abilities": [ { "type": "melee", "damage": 48, "damageType": "Cold", "windup": 0.45, "reach": 60 } ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "eternal_hunting_hound",
+  "name": "Eternal Hunting Hound",
+  "hp": 400, "evadeChance": 0.12, "speed": 120, "movement": "chase", "scale": 0.9, "tint": "#4a7a5a",
+  "level": 53, "xp": 190, "lootTable": "common", "attackInterval": 1.1,
+  "abilities": [ { "type": "melee", "damage": 36, "windup": 0.4, "reach": 50 } ]
+}

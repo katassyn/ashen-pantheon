@@ -1,0 +1,16 @@
+{
+  "id": "q8_m2", "name": "Stormfrost Reaches — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["pale_pillager", "pale_pillager", "frost_magician"], "respawnSeconds": 36 },
+    { "x": 640, "y": 200, "monsters": ["simple_troll", "pale_pillager"], "respawnSeconds": 40 },
+    { "x": 920, "y": -80, "monsters": ["frost_bringer", "frost_magician", "pale_pillager"], "respawnSeconds": 44 },
+    { "x": 1200, "y": 260, "monsters": ["bloodthirsty_frostwolf", "simple_troll", "frost_magician"], "respawnSeconds": 46 },
+    { "x": 1560, "y": 40, "monsters": ["pale_enforcer"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q8_m3", "label": "Map 3 — Sigrimar's altar" }
+  ],
+  "markers": []
+}

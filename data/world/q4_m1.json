@@ -1,0 +1,17 @@
+{
+  "id": "q4_m1", "name": "Sanguine Hunting Grounds — Map 1",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["sanguine_clan_raging_guardian", "raging_hunting_hound", "sanguine_clan_raging_snooper"], "respawnSeconds": 32 },
+    { "x": 620, "y": 180, "monsters": ["sanguine_clan_raging_snooper", "raging_hunting_hound", "raging_hunting_hound"], "respawnSeconds": 34 },
+    { "x": 340, "y": 430, "monsters": ["sanguine_clan_raging_hunter", "sanguine_clan_raging_guardian"], "respawnSeconds": 36 },
+    { "x": 900, "y": -60, "monsters": ["sanguine_clan_raging_hunter", "sanguine_clan_raging_snooper", "raging_hunting_hound"], "respawnSeconds": 38 },
+    { "x": 1150, "y": 320, "monsters": ["sanguine_clan_raging_hunter", "sanguine_clan_raging_snooper", "sanguine_clan_raging_guardian"], "respawnSeconds": 40 },
+    { "x": 1620, "y": 60, "monsters": ["ancient_stag"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q4_m2", "label": "Map 2 — the Eternal Grove" }
+  ],
+  "markers": []
+}

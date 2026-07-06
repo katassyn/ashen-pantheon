@@ -1,0 +1,8 @@
+{
+  "id": "electrified_ferocity",
+  "name": "Electrified Ferocity",
+  "hp": 600, "resLightning": 60, "speed": 72, "movement": "keep_distance", "preferredRange": 250, "scale": 1.1, "tint": "#5ab0e0",
+  "level": 54, "xp": 250, "lootTable": "common", "attackInterval": 1.6,
+  "questItem": "electric_shard", "questItemChance": 0.75, "questItemPity": 3,
+  "abilities": [ { "type": "projectile", "damage": 48, "damageType": "Lightning", "speed": 400 } ]
+}

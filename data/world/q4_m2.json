@@ -1,0 +1,16 @@
+{
+  "id": "q4_m2", "name": "Sanguine Hunting Grounds — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["eternal_satyr_warrior", "eternal_hunting_hound", "eternal_hunter"], "respawnSeconds": 36 },
+    { "x": 640, "y": 200, "monsters": ["eternal_root_creature", "eternal_hunting_hound", "eternal_satyr_warrior"], "respawnSeconds": 40 },
+    { "x": 920, "y": -80, "monsters": ["eternal_hunter", "eternal_root_creature", "eternal_satyr_warrior"], "respawnSeconds": 42 },
+    { "x": 1200, "y": 260, "monsters": ["eternal_root_creature", "eternal_hunter", "eternal_hunting_hound"], "respawnSeconds": 44 },
+    { "x": 1560, "y": 40, "monsters": ["ulgor_butcher"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q4_m3", "label": "Map 3 — Bharok's clearing" }
+  ],
+  "markers": []
+}

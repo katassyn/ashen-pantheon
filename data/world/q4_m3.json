@@ -1,0 +1,10 @@
+{
+  "id": "q4_m3", "name": "Bharok's Clearing",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 420, "y": -120, "monsters": ["eternal_satyr_warrior", "eternal_hunting_hound"], "respawnSeconds": 60 },
+    { "x": 1100, "y": 0, "monsters": ["bharok_champion"], "respawnSeconds": 120, "aggroRange": 520 }
+  ],
+  "exits": [ { "x": -260, "y": 0, "target": "hub", "label": "Return to town" } ],
+  "markers": []
+}

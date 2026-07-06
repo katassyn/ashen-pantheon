@@ -1,0 +1,18 @@
+{
+  "id": "q6_m1", "name": "Grave of the Fallen — Map 1",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["fallen_warrior", "fallen_warrior", "fallen_archer"], "respawnSeconds": 30 },
+    { "x": 620, "y": 180, "monsters": ["fallen_archer", "fallen_archer", "fallen_warrior"], "respawnSeconds": 32 },
+    { "x": 340, "y": 430, "monsters": ["fallen_warrior", "fallen_archer", "death_knight"], "respawnSeconds": 36 },
+    { "x": 900, "y": -60, "monsters": ["fallen_warrior", "fallen_warrior", "fallen_archer", "fallen_archer"], "respawnSeconds": 34 },
+    { "x": 1150, "y": 320, "monsters": ["death_knight", "fallen_warrior", "fallen_archer"], "respawnSeconds": 40 },
+    { "x": 1400, "y": -220, "monsters": ["death_knight", "fallen_archer"], "respawnSeconds": 42 },
+    { "x": 1620, "y": 60, "monsters": ["morthys_death_knight"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q6_m2", "label": "Map 2 — the Bone Crypts" }
+  ],
+  "markers": []
+}

@@ -1,0 +1,7 @@
+{
+  "id": "eternal_satyr_warrior",
+  "name": "Eternal Satyr Warrior",
+  "hp": 800, "armour": 35, "speed": 72, "movement": "chase", "scale": 1.2, "tint": "#5a7a4a",
+  "level": 53, "xp": 250, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "melee", "damage": 48, "windup": 0.5, "reach": 58 } ]
+}

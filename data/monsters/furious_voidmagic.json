@@ -1,0 +1,7 @@
+{
+  "id": "furious_voidmagic",
+  "name": "Furious Voidmagic",
+  "hp": 600, "evadeChance": 0.12, "resChaos": 50, "speed": 115, "movement": "chase", "scale": 1.1, "tint": "#7a3ad0",
+  "level": 53, "xp": 300, "lootTable": "common", "attackInterval": 1.3,
+  "abilities": [ { "type": "melee", "damage": 44, "damageType": "Chaos", "windup": 0.4, "reach": 54 } ]
+}

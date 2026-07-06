@@ -1,0 +1,10 @@
+{
+  "id": "q5_m3", "name": "Sanctum of Khaliss",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 420, "y": -120, "monsters": ["voidmagic_guardian", "living_voidmagic"], "respawnSeconds": 60 },
+    { "x": 1100, "y": 0, "monsters": ["khaliss_cultist_leader"], "respawnSeconds": 120, "aggroRange": 520 }
+  ],
+  "exits": [ { "x": -260, "y": 0, "target": "hub", "label": "Return to town" } ],
+  "markers": []
+}

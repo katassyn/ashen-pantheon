@@ -1,0 +1,7 @@
+{
+  "id": "frost_magician",
+  "name": "Frost Magician",
+  "hp": 600, "resCold": 65, "speed": 58, "movement": "keep_distance", "preferredRange": 270, "scale": 1.1, "tint": "#70b0e8",
+  "level": 54, "xp": 280, "lootTable": "common", "attackInterval": 1.7,
+  "abilities": [ { "type": "projectile", "damage": 58, "damageType": "Cold", "speed": 360 } ]
+}

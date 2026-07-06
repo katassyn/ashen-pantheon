@@ -1,0 +1,10 @@
+{
+  "id": "frost_bringer",
+  "name": "Frost Bringer",
+  "hp": 2000, "armour": 45, "resCold": 70, "speed": 58, "movement": "chase", "scale": 1.6, "tint": "#5090d0",
+  "level": 54, "xp": 440, "lootTable": "common", "attackInterval": 1.9,
+  "abilities": [
+    { "type": "melee", "damage": 54, "damageType": "Cold", "windup": 0.6, "reach": 66 },
+    { "type": "tele_cone", "damage": 58, "damageType": "Cold", "radius": 230, "halfAngleDeg": 40, "windup": 0.85, "cooldown": 8 }
+  ]
+}

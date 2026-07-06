@@ -1,0 +1,17 @@
+{
+  "id": "q6_m2", "name": "Grave of the Fallen — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["elite_skeleton_archer", "elite_skeleton_warrior", "raging_soul"], "respawnSeconds": 34 },
+    { "x": 640, "y": 200, "monsters": ["elite_skeleton_warrior", "elite_skeleton_warrior", "raging_soul"], "respawnSeconds": 36 },
+    { "x": 920, "y": -80, "monsters": ["elite_skeleton_archer", "elite_skeleton_archer", "raging_soul"], "respawnSeconds": 36 },
+    { "x": 1200, "y": 260, "monsters": ["death_archer", "elite_skeleton_warrior"], "respawnSeconds": 44 },
+    { "x": 1400, "y": -200, "monsters": ["death_archer", "elite_skeleton_archer"], "respawnSeconds": 46 },
+    { "x": 1620, "y": 40, "monsters": ["murok_high_priest"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 40, "target": "q6_m3", "label": "Map 3 — the Herald's tomb" }
+  ],
+  "markers": []
+}

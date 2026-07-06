@@ -1,0 +1,7 @@
+{
+  "id": "raging_soul",
+  "name": "Raging Soul",
+  "hp": 500, "evadeChance": 0.15, "resChaos": 60, "speed": 95, "movement": "chase", "scale": 0.95, "tint": "#7ab0d0",
+  "level": 54, "xp": 190, "lootTable": "common", "attackInterval": 1.2,
+  "abilities": [ { "type": "melee", "damage": 36, "damageType": "Chaos", "windup": 0.4, "reach": 50 } ]
+}

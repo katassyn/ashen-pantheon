@@ -1,0 +1,21 @@
+{
+  "quests": [
+    {
+      "id": "q4_run",
+      "name": "Q4: The Sanguine Hunt",
+      "description": "The Sanguine Clan and the Eternal Grove answer to Bharok. Cull the hunt, fell his champions and claim the clearing.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "snoopers", "type": "Kill", "target": "sanguine_clan_raging_snooper", "amount": 5, "description": "Slay 5 Sanguine Clan Raging Snoopers" },
+        { "id": "hunters", "type": "Kill", "target": "sanguine_clan_raging_hunter", "amount": 5, "description": "Slay 5 Sanguine Clan Raging Hunters" },
+        { "id": "stag", "type": "Kill", "target": "ancient_stag", "amount": 1, "description": "Slay the Ancient Stag" },
+        { "id": "roots", "type": "Kill", "target": "eternal_root_creature", "amount": 5, "description": "Map 2: slay 5 Eternal Root Creatures" },
+        { "id": "ehunters", "type": "Kill", "target": "eternal_hunter", "amount": 5, "description": "Map 2: slay 5 Eternal Hunters" },
+        { "id": "ulgor", "type": "Kill", "target": "ulgor_butcher", "amount": 1, "description": "Map 2: slay Ulgor the Master Butcher" },
+        { "id": "bharok", "type": "Kill", "target": "bharok_champion", "amount": 1, "description": "Map 3: slay Bharok, Champion of the Wilds" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 10500, "rewardGold": 1900, "nextQuest": "", "zone": ""
+    }
+  ]
+}

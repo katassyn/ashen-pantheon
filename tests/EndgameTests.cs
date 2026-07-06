@@ -14,7 +14,7 @@ public class EndgameTests
         Assert.Equal("odyssey_of_shadows", EndgameCatalog.Dungeons[0].Id);
         Assert.True(EndgameCatalog.Dungeons[0].Enabled);
         Assert.Equal(new[] { "blood", "hell", "infernal" }, EndgameCatalog.Difficulties.Select(d => d.Id));
-        Assert.Equal(2, EndgameCatalog.QRuns.Count); // q1 + q2 (world-mode, kanon Parallel World)
+        Assert.Equal(6, EndgameCatalog.QRuns.Count); // q1/q2/q4/q5/q6/q8 (world-mode, kanon Parallel World)
         Assert.Equal("world", EndgameCatalog.RunFor(1)!.Mode);
         Assert.Equal("world", EndgameCatalog.RunFor(2)!.Mode);
         Assert.Equal("q1_run", EndgameCatalog.RunFor(7)!.Quest); // brak wpisu → fallback do q1
@@ -30,6 +30,56 @@ public class EndgameTests
         Assert.Null(EndgameCatalog.NextQMap("swerdfield")); // spoza runu
         Assert.Equal(3, EndgameCatalog.QMapIndex("q1_m3"));
         Assert.Equal("q2_m3", EndgameCatalog.NextQMap("q2_m2")); // runy niezależne
+    }
+
+    [Fact]
+    public void AllQRuns_AreInternallyConsistent()
+    {
+        // uniwersalny strażnik: każdy run Q ma istniejący quest, mapy, targety i dropujące moby
+        foreach (var run in EndgameCatalog.QRuns)
+        {
+            var quest = QuestCatalog.Find(run.Quest);
+            Assert.True(quest != null, $"brak questa {run.Quest}");
+            Assert.Equal(3, run.Maps.Count);
+            foreach (var map in run.Maps)
+                Assert.True(run.Mode == "world" ? WorldMaps.Zones.ContainsKey(map) : Bestiary.Zones.ContainsKey(map),
+                    $"brak mapy {map}");
+
+            foreach (var o in quest!.Objectives)
+                switch (o.Kind)
+                {
+                    case ObjectiveType.Kill:
+                        Assert.True(Bestiary.Monsters.ContainsKey(o.Target), $"{run.Quest}: brak moba {o.Target}");
+                        break;
+                    case ObjectiveType.Collect:
+                        Assert.True(Bestiary.Monsters.Values.Any(m => m.QuestItem == o.Target),
+                            $"{run.Quest}: nikt nie dropi {o.Target}");
+                        break;
+                }
+        }
+    }
+
+    [Fact]
+    public void Q6_DaggerPartsAnyOrder_AndQ8AfterGate()
+    {
+        var log = new QuestLog();
+        var q6 = QuestCatalog.Find("q6_run")!;
+        log.Accept(q6, 50);
+        // dowolna kolejność części sztyletu (kanon: nie wolno blokować gracza kolejnością)
+        log.OnCollect("dagger_gem");
+        log.OnCollect("dagger_hilt");
+        log.OnCollect("dagger_blade");
+        Assert.Equal(1, log.Progress(q6.Id, "gem"));
+        Assert.Equal(1, log.Progress(q6.Id, "hilt"));
+
+        var log8 = new QuestLog();
+        var q8 = QuestCatalog.Find("q8_run")!;
+        log8.Accept(q8, 50);
+        log8.OnInteract("q8_conduit"); // bez odłamków konduit nie działa (after-gate)
+        Assert.Equal(0, log8.Progress(q8.Id, "conduit"));
+        for (int i = 0; i < 5; i++) log8.OnCollect("electric_shard");
+        log8.OnInteract("q8_conduit");
+        Assert.Equal(1, log8.Progress(q8.Id, "conduit"));
     }
 
     [Fact]

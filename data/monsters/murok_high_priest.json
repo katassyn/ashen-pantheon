@@ -1,0 +1,15 @@
+{
+  "id": "murok_high_priest",
+  "name": "Murok the High Priest",
+  "hp": 3000, "resChaos": 60, "speed": 85, "movement": "keep_distance", "preferredRange": 210, "scale": 1.9, "tint": "#b09a3a",
+  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "projectile", "damage": 46, "damageType": "Chaos", "speed": 350 },
+      { "type": "tele_circle", "damage": 54, "damageType": "Chaos", "radius": 155, "windup": 0.85 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.35, "abilities": [
+      { "type": "tele_cone", "damage": 60, "damageType": "Chaos", "radius": 260, "halfAngleDeg": 40, "windup": 0.75 },
+      { "type": "summon", "monsterId": "raging_soul", "count": 3, "cooldown": 12 } ] }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "charged_drone",
+  "name": "Charged Drone",
+  "hp": 400, "evadeChance": 0.12, "resLightning": 50, "speed": 85, "movement": "chase", "scale": 0.9, "tint": "#7ac0e8",
+  "level": 54, "xp": 180, "lootTable": "common", "attackInterval": 1.2,
+  "abilities": [ { "type": "melee", "damage": 36, "damageType": "Lightning", "windup": 0.4, "reach": 50 } ]
+}

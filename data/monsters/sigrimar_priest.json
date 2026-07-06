@@ -1,0 +1,20 @@
+{
+  "id": "sigrimar_priest",
+  "name": "Sigrimar, Priest of Fjolnir",
+  "hp": 5000, "armour": 50, "resCold": 75, "resLightning": 50, "speed": 40, "movement": "keep_distance", "preferredRange": 300, "scale": 2.4, "tint": "#3878c8",
+  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "projectile", "damage": 48, "damageType": "Cold", "speed": 380 },
+      { "type": "tele_circle", "damage": 58, "damageType": "Cold", "radius": 170, "windup": 0.85 },
+      { "type": "tele_line", "damage": 60, "damageType": "Lightning", "length": 540, "halfWidth": 40, "windup": 0.85 } ] },
+    { "hpBelow": 0.6, "attackInterval": 1.4, "abilities": [
+      { "type": "tele_circle", "damage": 64, "damageType": "Cold", "radius": 200, "windup": 0.7 },
+      { "type": "summon", "monsterId": "heap_of_ice", "count": 3, "cooldown": 12 } ] },
+    { "hpBelow": 0.3, "attackInterval": 1.05, "abilities": [
+      { "type": "tele_cone", "damage": 70, "damageType": "Cold", "radius": 340, "halfAngleDeg": 52, "windup": 0.6 },
+      { "type": "tele_circle", "damage": 68, "damageType": "Lightning", "radius": 210, "windup": 0.6 },
+      { "type": "summon", "monsterId": "frost_magician", "count": 2, "cooldown": 11 } ] }
+  ]
+}

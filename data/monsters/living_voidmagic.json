@@ -1,0 +1,7 @@
+{
+  "id": "living_voidmagic",
+  "name": "Living Voidmagic",
+  "hp": 400, "resChaos": 55, "speed": 115, "movement": "chase", "scale": 0.95, "tint": "#8a5ae0",
+  "level": 53, "xp": 200, "lootTable": "common", "attackInterval": 1.2,
+  "abilities": [ { "type": "melee", "damage": 42, "damageType": "Chaos", "windup": 0.4, "reach": 50 } ]
+}

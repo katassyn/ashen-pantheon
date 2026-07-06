@@ -1,0 +1,7 @@
+{
+  "id": "sanguine_clan_raging_snooper",
+  "name": "Sanguine Clan Raging Snooper",
+  "hp": 600, "speed": 72, "movement": "keep_distance", "preferredRange": 240, "scale": 1.1, "tint": "#b04a4a",
+  "level": 52, "xp": 220, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "projectile", "damage": 40, "speed": 350 } ]
+}

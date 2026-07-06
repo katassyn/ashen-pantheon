@@ -1,0 +1,10 @@
+{
+  "id": "q8_m3", "name": "Altar of Fjolnir",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 420, "y": -120, "monsters": ["heap_of_ice", "frost_magician"], "respawnSeconds": 60 },
+    { "x": 1100, "y": 0, "monsters": ["sigrimar_priest"], "respawnSeconds": 120, "aggroRange": 560 }
+  ],
+  "exits": [ { "x": -260, "y": 0, "target": "hub", "label": "Return to town" } ],
+  "markers": []
+}

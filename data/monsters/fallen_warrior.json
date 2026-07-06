@@ -1,0 +1,7 @@
+{
+  "id": "fallen_warrior",
+  "name": "Fallen Warrior",
+  "hp": 800, "armour": 40, "speed": 95, "movement": "chase", "scale": 1.15, "tint": "#6a6a7a",
+  "level": 53, "xp": 250, "lootTable": "common", "attackInterval": 1.5,
+  "abilities": [ { "type": "melee", "damage": 44, "windup": 0.5, "reach": 58 } ]
+}

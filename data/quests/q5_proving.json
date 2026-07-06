@@ -1,0 +1,18 @@
+{
+  "quests": [
+    {
+      "id": "q5_run",
+      "name": "Q5: Voidtouched",
+      "description": "Khaliss and her cultists twist voidmagic into living horrors. Hunt the escaped magic and end the experiments.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "voidmagic", "type": "Kill", "target": "furious_voidmagic", "amount": 1, "description": "Hunt down the Furious Voidmagic" },
+        { "id": "shaman", "type": "Kill", "target": "old_jabbok_shaman", "amount": 1, "description": "Slay the Old Jabbok Shaman" },
+        { "id": "experiment", "type": "Kill", "target": "wandering_experiment", "amount": 1, "description": "Map 2: destroy the Wandering Experiment" },
+        { "id": "khaliss", "type": "Kill", "target": "khaliss_cultist_leader", "amount": 1, "description": "Map 3: slay Khaliss, Leader of Cultists" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 10500, "rewardGold": 1900, "nextQuest": "", "zone": ""
+    }
+  ]
+}

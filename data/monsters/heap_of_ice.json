@@ -1,0 +1,7 @@
+{
+  "id": "heap_of_ice",
+  "name": "Heap of Ice",
+  "hp": 500, "armour": 40, "resCold": 70, "speed": 58, "movement": "chase", "scale": 1.1, "tint": "#a0d0e8",
+  "level": 54, "xp": 200, "lootTable": "common", "attackInterval": 1.8,
+  "abilities": [ { "type": "melee", "damage": 36, "damageType": "Cold", "windup": 0.6, "reach": 56 } ]
+}

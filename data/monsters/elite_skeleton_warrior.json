@@ -1,0 +1,8 @@
+{
+  "id": "elite_skeleton_warrior",
+  "name": "Elite Skeleton Warrior",
+  "hp": 1000, "armour": 50, "speed": 95, "movement": "chase", "scale": 1.25, "tint": "#8a8a90",
+  "level": 54, "xp": 300, "lootTable": "common", "attackInterval": 1.6,
+  "questItem": "dagger_blade", "questItemChance": 0.3, "questItemPity": 20,
+  "abilities": [ { "type": "melee", "damage": 48, "windup": 0.5, "reach": 60 } ]
+}

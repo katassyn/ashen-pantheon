@@ -1,0 +1,18 @@
+{
+  "id": "ulgor_butcher",
+  "name": "Ulgor the Master Butcher",
+  "hp": 3000, "armour": 55, "speed": 78, "movement": "chase", "scale": 2.0, "tint": "#8a3a2a",
+  "level": 53, "xp": 900, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "melee", "damage": 52, "windup": 0.55, "reach": 72 },
+      { "type": "tele_cone", "damage": 58, "radius": 240, "halfAngleDeg": 42, "windup": 0.85, "cooldown": 7 } ] },
+    { "hpBelow": 0.66, "attackInterval": 1.4, "abilities": [
+      { "type": "melee", "damage": 58, "windup": 0.5, "reach": 72 },
+      { "type": "tele_circle", "damage": 60, "radius": 160, "windup": 0.75, "cooldown": 6 } ] },
+    { "hpBelow": 0.33, "attackInterval": 1.1, "abilities": [
+      { "type": "melee", "damage": 64, "windup": 0.4, "reach": 72 },
+      { "type": "tele_line", "damage": 66, "length": 480, "halfWidth": 40, "windup": 0.65, "cooldown": 6 } ] }
+  ]
+}

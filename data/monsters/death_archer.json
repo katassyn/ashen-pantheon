@@ -1,0 +1,8 @@
+{
+  "id": "death_archer",
+  "name": "Death Archer",
+  "hp": 1000, "evadeChance": 0.12, "speed": 105, "movement": "keep_distance", "preferredRange": 270, "scale": 1.2, "tint": "#5a5a80",
+  "level": 54, "xp": 340, "lootTable": "common", "attackInterval": 1.5,
+  "questItem": "dagger_gem", "questItemChance": 0.34, "questItemPity": 3,
+  "abilities": [ { "type": "projectile", "damage": 58, "damageType": "Chaos", "speed": 380 } ]
+}

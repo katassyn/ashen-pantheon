@@ -1,0 +1,10 @@
+{
+  "id": "death_knight",
+  "name": "Death Knight",
+  "hp": 1200, "armour": 55, "resChaos": 35, "speed": 95, "movement": "chase", "scale": 1.4, "tint": "#4a4a6a",
+  "level": 54, "xp": 380, "lootTable": "common", "attackInterval": 1.7,
+  "abilities": [
+    { "type": "melee", "damage": 54, "windup": 0.55, "reach": 64 },
+    { "type": "tele_cone", "damage": 58, "damageType": "Chaos", "radius": 210, "halfAngleDeg": 40, "windup": 0.85, "cooldown": 8 }
+  ]
+}

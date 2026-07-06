@@ -1,0 +1,7 @@
+{
+  "id": "voidmagic_guardian",
+  "name": "Voidmagic Guardian",
+  "hp": 600, "resChaos": 45, "speed": 115, "movement": "chase", "scale": 1.15, "tint": "#6a4ac0",
+  "level": 53, "xp": 240, "lootTable": "common", "attackInterval": 1.4,
+  "abilities": [ { "type": "melee", "damage": 44, "damageType": "Chaos", "windup": 0.45, "reach": 56 } ]
+}

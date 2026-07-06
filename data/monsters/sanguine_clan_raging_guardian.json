@@ -1,0 +1,7 @@
+{
+  "id": "sanguine_clan_raging_guardian",
+  "name": "Sanguine Clan Raging Guardian",
+  "hp": 400, "armour": 45, "speed": 72, "movement": "chase", "scale": 1.2, "tint": "#a03a3a",
+  "level": 52, "xp": 190, "lootTable": "common", "attackInterval": 1.7,
+  "abilities": [ { "type": "melee", "damage": 36, "windup": 0.55, "reach": 58 } ]
+}

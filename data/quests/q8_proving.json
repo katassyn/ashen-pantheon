@@ -1,0 +1,19 @@
+{
+  "quests": [
+    {
+      "id": "q8_run",
+      "name": "Q8: Priest of the Storm",
+      "description": "Sigrimar channels Fjolnir's storm through an ancient conduit. Gather shards of electricity, overload the conduit and silence the priest.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "shards", "type": "Collect", "target": "electric_shard", "amount": 5, "description": "Collect 5 Shards of Electricity (Electrified Ferocities)" },
+        { "id": "conduit", "type": "Interact", "target": "q8_conduit", "amount": 1, "after": "shards", "description": "Overload the Ancient Conduit" },
+        { "id": "shocking", "type": "Kill", "target": "shocking_ferocity", "amount": 1, "description": "Slay the Shocking Ferocity" },
+        { "id": "enforcer", "type": "Kill", "target": "pale_enforcer", "amount": 1, "description": "Map 2: slay the Pale Enforcer" },
+        { "id": "sigrimar", "type": "Kill", "target": "sigrimar_priest", "amount": 1, "description": "Map 3: slay Sigrimar, Priest of Fjolnir" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 12000, "rewardGold": 2200, "nextQuest": "", "zone": ""
+    }
+  ]
+}

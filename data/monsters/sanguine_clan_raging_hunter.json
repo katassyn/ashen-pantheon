@@ -1,0 +1,10 @@
+{
+  "id": "sanguine_clan_raging_hunter",
+  "name": "Sanguine Clan Raging Hunter",
+  "hp": 800, "armour": 30, "speed": 72, "movement": "chase", "scale": 1.25, "tint": "#c05a5a",
+  "level": 52, "xp": 260, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [
+    { "type": "melee", "damage": 44, "windup": 0.55, "reach": 60 },
+    { "type": "tele_line", "damage": 48, "length": 380, "halfWidth": 32, "windup": 0.8, "cooldown": 8 }
+  ]
+}

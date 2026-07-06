@@ -1,0 +1,19 @@
+{
+  "id": "q8_m1", "name": "Stormfrost Reaches — Map 1",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["electrified_ferocity", "charged_drone", "charged_drone"], "respawnSeconds": 32 },
+    { "x": 620, "y": 180, "monsters": ["electrified_ferocity", "electrified_ferocity", "charged_drone"], "respawnSeconds": 34 },
+    { "x": 340, "y": 430, "monsters": ["heap_of_ice", "heap_of_ice", "charged_drone"], "respawnSeconds": 36 },
+    { "x": 900, "y": -60, "monsters": ["electrified_ferocity", "bloodthirsty_frostwolf"], "respawnSeconds": 40 },
+    { "x": 1150, "y": 320, "monsters": ["big_heap_of_ice", "heap_of_ice"], "respawnSeconds": 44 },
+    { "x": 1620, "y": 60, "monsters": ["shocking_ferocity"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q8_m2", "label": "Map 2 — the Pale Camp" }
+  ],
+  "markers": [
+    { "id": "q8_conduit", "x": 760, "y": -320, "type": "interact", "label": "Ancient Conduit" }
+  ]
+}

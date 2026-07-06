@@ -1,0 +1,8 @@
+{
+  "id": "elite_skeleton_archer",
+  "name": "Elite Skeleton Archer",
+  "hp": 800, "evadeChance": 0.1, "speed": 115, "movement": "keep_distance", "preferredRange": 260, "scale": 1.1, "tint": "#9a9aa0",
+  "level": 54, "xp": 280, "lootTable": "common", "attackInterval": 1.5,
+  "questItem": "dagger_hilt", "questItemChance": 0.3, "questItemPity": 20,
+  "abilities": [ { "type": "projectile", "damage": 54, "speed": 380 } ]
+}

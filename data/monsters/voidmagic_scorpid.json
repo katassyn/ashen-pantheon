@@ -1,0 +1,10 @@
+{
+  "id": "voidmagic_scorpid",
+  "name": "Voidmagic Scorpid",
+  "hp": 1200, "armour": 45, "resChaos": 50, "speed": 95, "movement": "chase", "scale": 1.45, "tint": "#5a3aa0",
+  "level": 54, "xp": 360, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [
+    { "type": "melee", "damage": 44, "damageType": "Chaos", "windup": 0.5, "reach": 62 },
+    { "type": "tele_cone", "damage": 50, "damageType": "Chaos", "radius": 200, "halfAngleDeg": 38, "windup": 0.8, "cooldown": 8 }
+  ]
+}

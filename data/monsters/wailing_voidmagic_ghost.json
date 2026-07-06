@@ -1,0 +1,7 @@
+{
+  "id": "wailing_voidmagic_ghost",
+  "name": "Wailing Voidmagic Ghost",
+  "hp": 800, "evadeChance": 0.15, "resChaos": 60, "speed": 85, "movement": "keep_distance", "preferredRange": 220, "scale": 1.2, "tint": "#9a7ae0",
+  "level": 53, "xp": 280, "lootTable": "common", "attackInterval": 1.7,
+  "abilities": [ { "type": "projectile", "damage": 38, "damageType": "Chaos", "speed": 330 } ]
+}

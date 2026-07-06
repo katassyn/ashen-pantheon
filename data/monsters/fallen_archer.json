@@ -1,0 +1,7 @@
+{
+  "id": "fallen_archer",
+  "name": "Fallen Archer",
+  "hp": 600, "evadeChance": 0.08, "speed": 95, "movement": "keep_distance", "preferredRange": 250, "scale": 1.05, "tint": "#7a7a8a",
+  "level": 53, "xp": 230, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "projectile", "damage": 48, "speed": 360 } ]
+}

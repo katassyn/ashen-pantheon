@@ -1,0 +1,15 @@
+{
+  "id": "shocking_ferocity",
+  "name": "Shocking Ferocity",
+  "hp": 3000, "resLightning": 70, "speed": 72, "movement": "keep_distance", "preferredRange": 220, "scale": 1.9, "tint": "#40a0f0",
+  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "projectile", "damage": 50, "damageType": "Lightning", "speed": 420 },
+      { "type": "tele_circle", "damage": 56, "damageType": "Lightning", "radius": 155, "windup": 0.85 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.3, "abilities": [
+      { "type": "tele_line", "damage": 62, "damageType": "Lightning", "length": 480, "halfWidth": 38, "windup": 0.7 },
+      { "type": "summon", "monsterId": "charged_drone", "count": 2, "cooldown": 12 } ] }
+  ]
+}
