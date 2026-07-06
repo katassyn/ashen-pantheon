@@ -1,0 +1,12 @@
+{
+  "id": "elite_lootbox",
+  "rolls": 3,
+  "entries": [
+    { "type": "item", "weight": 34, "rarity": "Rare" },
+    { "type": "item", "weight": 6, "rarity": "Legendary" },
+    { "type": "gold", "weight": 26, "goldMin": 800, "goldMax": 2200 },
+    { "type": "ingredient", "weight": 22, "ingredient": "ips", "countMin": 3, "countMax": 6 },
+    { "type": "ingredient", "weight": 6, "ingredient": "t1_key", "countMin": 1, "countMax": 1 },
+    { "type": "ingredient", "weight": 6, "ingredient": "voidstone", "countMin": 1, "countMax": 2 }
+  ]
+}

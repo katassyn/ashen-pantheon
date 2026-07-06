@@ -279,6 +279,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
                     i++;
                     if (drop.Item != null) Net.GivePickup(peer, drop.Item, pos);
                     else if (drop.Gold > 0) Net.GiveGold(peer, drop.Gold, pos);
+                    else if (drop.Ingredient.Length > 0) Net.GiveIngredient(peer, drop.Ingredient, drop.IngredientCount, pos);
                 }
             }
 

@@ -22,6 +22,7 @@ public static class DataLoader
         foreach (var json in ReadDir("res://data/zones")) Bestiary.LoadZone(json);
         foreach (var json in ReadDir("res://data/world")) WorldMaps.Load(json);
         foreach (var json in ReadDir("res://data/endgame")) EndgameCatalog.Load(json);
+        foreach (var json in ReadDir("res://data/ingredients")) IngredientCatalog.Load(json);
 
         GD.Print($"[data] potwory: {Bestiary.Monsters.Count} · strefy: {Bestiary.Zones.Count} · mapy świata: {WorldMaps.Zones.Count} · tabele lootu: {LootTables.Tables.Count}");
     }

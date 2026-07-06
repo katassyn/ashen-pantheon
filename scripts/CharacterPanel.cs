@@ -32,6 +32,16 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
         AddToGroup(UiPanels.Group);
         UiPanels.Solidify(_root);
         _root.Visible = false;
+
+        // sakwa składników (kanon IngredientPouchPlugin): przycisk w EQ → zakładki kategorii z licznikami
+        var pouchBtn = new Button
+        {
+            Text = "🎒 Pouch",
+            AnchorLeft = 1f, AnchorRight = 1f,
+            OffsetLeft = -156, OffsetRight = -16, OffsetTop = 10, OffsetBottom = 46,
+        };
+        pouchBtn.Pressed += () => PouchPanel.Toggle(GetTree());
+        _root.AddChild(pouchBtn);
     }
 
     public override void _UnhandledInput(InputEvent @event)

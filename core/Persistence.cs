@@ -44,6 +44,9 @@ public sealed class SaveData
     /// <summary>Odkryte strefy świata (waystone fast-travel odblokowany).</summary>
     public List<string> DiscoveredZones { get; set; } = new();
 
+    /// <summary>Sakwa składników: id → ilość (waluty/wejściówki/klucze/materiały — poza plecakiem).</summary>
+    public Dictionary<string, long> Pouch { get; set; } = new();
+
     /// <summary>Endgame: najwyższy ODBLOKOWANY stopień The Final Proving (clear Qn → Qn+1).</summary>
     public int EndgameQ { get; set; } = 1;
     /// <summary>Endgame: ukończone dungeony grupowe — wpisy "dungeonId/difficultyId".</summary>

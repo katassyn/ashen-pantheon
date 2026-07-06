@@ -17,9 +17,11 @@ public static class QRunFlow
         GameState.Quests.TurnIn(quest);
         GameState.Progress.GainXp(quest.RewardXp);
         GameState.Wallet.Gold += quest.RewardGold;
+        // nagroda kanoniczna: Elite Lootbox (do Sakwy — otwierasz w EQ → Pouch)
+        GameState.Pouch.Add("elite_lootbox");
         GameState.Save();
         PlayerController.Local?.Refresh();
-        Net.SendChatLocal($"Quest completed: {quest.Name}  (+{quest.RewardXp} XP, +{quest.RewardGold} gold)");
+        Net.SendChatLocal($"Quest completed: {quest.Name}  (+{quest.RewardXp} XP, +{quest.RewardGold} gold, +1 Elite Lootbox)");
         Net.SendChatLocal($"Q{q} complete! Open the map [M] to return to town.");
         Net.BroadcastEndgameClear(challenge);
     }

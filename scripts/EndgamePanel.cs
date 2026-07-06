@@ -89,26 +89,31 @@ public partial class EndgamePanel : CanvasLayer
                 row.AddThemeConstantOverride("separation", 8);
                 var info = new Label
                 {
-                    Text = $"   {diff.Name}   —   HP x{diff.HpMult:0.0}, item lvl {diff.ItemLevel}, fee {diff.GoldFee}g" +
+                    Text = $"   {diff.Name}   —   HP x{diff.HpMult:0.0}, item lvl {diff.ItemLevel}, [T{dun.Tier}] key + {diff.GoldFee}g" +
                            (cleared ? "   ✔" : ""),
                     SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 };
                 info.Modulate = cleared ? new Color(0.6f, 0.9f, 0.6f) : Colors.White;
                 row.AddChild(info);
 
+                string keyId = $"t{dun.Tier}_key";
+                bool hasKey = GameState.Pouch.Count(keyId) > 0;
                 var enter = new Button { Text = "Enter", CustomMinimumSize = new Vector2(90, 0) };
                 if (!canTravel) { enter.Disabled = true; }
                 else if (!prevOk) { enter.Disabled = true; enter.TooltipText = $"Clear {prev.Name} first"; info.Modulate = new Color(0.55f, 0.55f, 0.6f); }
+                else if (!hasKey) { enter.Disabled = true; enter.TooltipText = $"Requires a [T{dun.Tier}] Mythological Dungeon Key"; }
                 else if (GameState.Wallet.Gold < diff.GoldFee) { enter.Disabled = true; enter.TooltipText = "Not enough gold"; }
-                var dunId = dun.Id; var diffId = diff.Id; var zone = dun.Zone; long fee = diff.GoldFee;
-                enter.Pressed += () => EnterChallenge(zone, EndgameCatalog.GroupChallenge(dunId, diffId), fee);
+                var dunId = dun.Id; var diffId = diff.Id; var zone = dun.Zone; long fee = diff.GoldFee; string capturedKey = keyId;
+                enter.Pressed += () => EnterChallenge(zone, EndgameCatalog.GroupChallenge(dunId, diffId), fee, capturedKey);
                 row.AddChild(enter);
                 _group.AddChild(row);
             }
         }
 
-        // ── solo Q1-Q10 ──
-        _solo.AddChild(new Label { Text = $"Highest unlocked: Q{GameState.EndgameQ}   (clear a stage to unlock the next)" });
+        // ── solo Q1-Q10: wejście za Fragments of Infernal Passage (kanon; fragmenty w Sakwie [I → Pouch]) ──
+        long ips = GameState.Pouch.Count("ips");
+        int entryFee = EndgameCatalog.QEntryFee;
+        _solo.AddChild(new Label { Text = $"Highest unlocked: Q{GameState.EndgameQ}   ·   Fragments of Infernal Passage: {ips}  (entry: {entryFee})" });
         bool solo = Net.PlayerCount() <= 1;
         if (!solo) _solo.AddChild(new Label { Text = "Solo only — leave your party to enter.", Modulate = new Color(0.9f, 0.6f, 0.4f) });
         for (int q = 1; q <= EndgameCatalog.QMax; q++)
@@ -119,38 +124,41 @@ public partial class EndgamePanel : CanvasLayer
             row.AddThemeConstantOverride("separation", 8);
             var info = new Label
             {
-                Text = $"   Q{q}   —   HP x{s.Hp:0.0}, item lvl {s.ItemLevel}, fee {s.Fee}g" + (unlocked ? "" : "   🔒"),
+                Text = $"   Q{q}   —   HP x{s.Hp:0.0}, item lvl {s.ItemLevel}, entry {entryFee} IPS" + (unlocked ? "" : "   🔒"),
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
             };
             info.Modulate = unlocked ? Colors.White : new Color(0.55f, 0.55f, 0.6f);
             row.AddChild(info);
 
             var enter = new Button { Text = "Enter", CustomMinimumSize = new Vector2(90, 0) };
-            enter.Disabled = !unlocked || !solo || GameState.Wallet.Gold < s.Fee;
-            int captured = q; long fee = s.Fee;
-            enter.Pressed += () => EnterQ(captured, fee);
+            enter.Disabled = !unlocked || !solo || ips < entryFee;
+            if (ips < entryFee) enter.TooltipText = "Not enough Fragments of Infernal Passage (they drop from bosses)";
+            int captured = q;
+            enter.Pressed += () => EnterQ(captured);
             row.AddChild(enter);
             _solo.AddChild(row);
         }
     }
 
-    /// <summary>Wejście w run Q: opłata + POWTARZALNY auto-quest + podróż na M1 runu
-    /// (tryb world = statyczne mapy z interakcjami; arena = proceduralne pokoje).</summary>
-    private void EnterQ(int q, long fee)
+    /// <summary>Wejście w run Q: opłata Fragments of Infernal Passage (kanon) + POWTARZALNY auto-quest +
+    /// podróż na M1 runu (tryb world = statyczne mapy z interakcjami; arena = proceduralne pokoje).</summary>
+    private void EnterQ(int q)
     {
         var run = EndgameCatalog.RunFor(q);
-        if (run == null || run.Maps.Count == 0 || GameState.Wallet.Gold < fee) return;
-        GameState.Wallet.Gold -= fee;
+        if (run == null || run.Maps.Count == 0) return;
+        if (!GameState.Pouch.TryTake("ips", EndgameCatalog.QEntryFee)) return; // fragment-sink (Sakwa)
         StartQRunQuest(run.Quest);
         GameState.Save();
         string scene = run.Mode == "world" ? "res://scenes/WorldZone.tscn" : "res://scenes/Arena.tscn";
         Travel(scene, run.Maps[0], EndgameCatalog.QChallenge(q));
     }
 
-    private void EnterChallenge(string zoneId, string challenge, long fee)
+    /// <summary>Dungeon grupowy: zużyj [T?] klucz (kanon) + opłata złotem, potem podróż.</summary>
+    private void EnterChallenge(string zoneId, string challenge, long fee, string keyId)
     {
         if (zoneId.Length == 0 || GameState.Wallet.Gold < fee) return;
-        GameState.Wallet.Gold -= fee; // opłata wejścia = sink złota (klucze itemowe dojdą później)
+        if (!GameState.Pouch.TryTake(keyId)) { Net.SendChatLocal("You need a Mythological Dungeon Key."); return; }
+        GameState.Wallet.Gold -= fee; // klucz + złoto = podwójny sink
         GameState.Save();
         Travel("res://scenes/Arena.tscn", zoneId, challenge);
     }

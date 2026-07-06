@@ -1,0 +1,34 @@
+{
+  "ingredients": [
+    { "id": "ips", "name": "Fragment of Infernal Passage", "category": "dungeon", "tint": "#d04030",
+      "description": "Entry toll of The Proving (Q1-Q10)" },
+    { "id": "t1_key", "name": "[T1] Mythological Dungeon Key", "category": "dungeon", "tint": "#40c0ff",
+      "description": "Opens The Odyssey of Shadows" },
+    { "id": "t2_key", "name": "[T2] Mythological Dungeon Key", "category": "dungeon", "tint": "#40a0f0",
+      "description": "Opens Poseidon's Underwater Temple" },
+    { "id": "t3_key", "name": "[T3] Mythological Dungeon Key", "category": "dungeon", "tint": "#4080e0",
+      "description": "Opens Mount Olympus" },
+    { "id": "t4_key", "name": "[T4] Mythological Dungeon Key", "category": "dungeon", "tint": "#4060d0",
+      "description": "Opens Daedalus' Eternal Labyrinth" },
+    { "id": "t5_key", "name": "[T5] Mythological Dungeon Key", "category": "dungeon", "tint": "#4040c0",
+      "description": "Opens the Fields of Immortal Souls" },
+    { "id": "elite_lootbox", "name": "Elite Lootbox", "category": "dungeon", "tint": "#ffa020",
+      "description": "Reward for completing a Proving run — open it here" },
+
+    { "id": "voidstone", "name": "Voidstone", "category": "currency", "tint": "#b060ff",
+      "description": "Crystallized essence of the Void" },
+    { "id": "drak_melon", "name": "Drak Melon", "category": "currency", "tint": "#ffd040",
+      "description": "Glistening trophy of the deep realms" },
+    { "id": "gilded_sunflower", "name": "Gilded Sunflower", "category": "currency", "tint": "#ffb020",
+      "description": "Event currency" },
+
+    { "id": "broken_armor_piece", "name": "Broken Armor Piece", "category": "crafting", "tint": "#8a8a90",
+      "description": "Crafting and quest resource" },
+    { "id": "dragon_scale", "name": "Dragon Scale", "category": "crafting", "tint": "#c05a2a",
+      "description": "Crafting and quest resource" },
+    { "id": "demon_blood", "name": "Demon Blood", "category": "crafting", "tint": "#a02030",
+      "description": "Crafting and quest resource" },
+    { "id": "satyrs_horn", "name": "Satyr's Horn", "category": "crafting", "tint": "#8a6a3a",
+      "description": "Crafting and quest resource" }
+  ]
+}

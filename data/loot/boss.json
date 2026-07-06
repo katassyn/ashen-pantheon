@@ -2,10 +2,11 @@
   "id": "boss",
   "rolls": 3,
   "entries": [
-    { "type": "gold", "weight": 30, "goldMin": 25, "goldMax": 60 },
-    { "type": "item", "weight": 40 },
+    { "type": "gold", "weight": 26, "goldMin": 25, "goldMax": 60 },
+    { "type": "item", "weight": 36 },
     { "type": "item", "weight": 8, "rarity": "Rare" },
     { "type": "jewel", "weight": 8 },
-    { "type": "table", "weight": 14, "table": "common" }
+    { "type": "ingredient", "weight": 14, "ingredient": "ips", "countMin": 2, "countMax": 5 },
+    { "type": "table", "weight": 8, "table": "common" }
   ]
 }

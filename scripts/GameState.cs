@@ -36,6 +36,8 @@ public static class GameState
     public static readonly System.Collections.Generic.Dictionary<string, int> QuestItemPity = new();
     /// <summary>Tokeny "niesione" w runie Q (Q10: fragment relikwiarza — 1 naraz); czyszczone przy starcie runu.</summary>
     public static readonly System.Collections.Generic.HashSet<string> CarryTokens = new();
+    /// <summary>Sakwa składników (waluty/wejściówki/klucze/materiały) — poza plecakiem.</summary>
+    public static Pouch Pouch = new();
     public static System.Collections.Generic.HashSet<string> EndgameCleared = new();
 
     /// <summary>Kampania ukończona = wejście do endgame (finał = pokonanie Nefertari).</summary>
@@ -181,6 +183,8 @@ public static class GameState
         DiscoveredZones = new System.Collections.Generic.HashSet<string>(data.DiscoveredZones);
         EndgameQ = System.Math.Max(1, data.EndgameQ);
         EndgameCleared = new System.Collections.Generic.HashSet<string>(data.EndgameCleared);
+        Pouch = new Pouch();
+        foreach (var (ing, count) in data.Pouch) Pouch.Add(ing, count);
         ClassId = string.IsNullOrEmpty(data.ClassId) ? "ranger" : data.ClassId;
         _classDef = null;
         PassiveNodes = new System.Collections.Generic.HashSet<string>(data.PassiveNodes);
@@ -237,6 +241,7 @@ public static class GameState
             DiscoveredZones = DiscoveredZones.ToList(),
             EndgameQ = EndgameQ,
             EndgameCleared = EndgameCleared.ToList(),
+            Pouch = new Dictionary<string, long>(Pouch.Counts),
             PledgedGod = PledgedGod.ToString(),
             GodSkills = GodSkills.ToList(),
             Loadout = Loadout.Slots.ToList(),

@@ -37,6 +37,14 @@ public static class SaveValidator
                     return (false, $"pasywka {id} wymaga poziomu {node.RequiredLevel}");
             }
 
+        // sakwa: nieujemne ilości, id tylko z katalogu (gdy załadowany)
+        foreach (var (ingId, count) in data.Pouch)
+        {
+            if (count < 0) return (false, $"ujemna ilość składnika {ingId}");
+            if (IngredientCatalog.Loaded && IngredientCatalog.Find(ingId) == null)
+                return (false, $"nieznany składnik: {ingId}");
+        }
+
         // endgame: Q w zakresie, cleary tylko z katalogu (anty-fałszywe odblokowania)
         int qMax = EndgameCatalog.Loaded ? EndgameCatalog.QMax : 10;
         if (data.EndgameQ < 1 || data.EndgameQ > qMax) return (false, "EndgameQ poza zakresem");

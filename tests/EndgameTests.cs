@@ -34,6 +34,58 @@ public class EndgameTests
     }
 
     [Fact]
+    public void Pouch_AddTakeAndValidator()
+    {
+        var pouch = new Pouch();
+        pouch.Add("ips", 7);
+        pouch.Add("ips", 5);
+        Assert.Equal(12, pouch.Count("ips"));
+        Assert.True(pouch.TryTake("ips", 10));      // wejściówka Q
+        Assert.Equal(2, pouch.Count("ips"));
+        Assert.False(pouch.TryTake("ips", 5));       // za mało — bez zmian
+        Assert.Equal(2, pouch.Count("ips"));
+        Assert.True(pouch.TryTake("ips", 2));
+        Assert.Equal(0, pouch.Count("ips"));         // zerowe → usunięte z licznika
+
+        // walidator: nieznany składnik i ujemna ilość = 400
+        var bad = new SaveData { Name = "T", ClassId = "ranger", Level = 50 };
+        bad.Pouch["totally_fake_ingredient"] = 5;
+        Assert.False(SaveValidator.Validate(bad).Ok);
+        var neg = new SaveData { Name = "T", ClassId = "ranger", Level = 50 };
+        neg.Pouch["ips"] = -3;
+        Assert.False(SaveValidator.Validate(neg).Ok);
+        var ok = new SaveData { Name = "T", ClassId = "ranger", Level = 50 };
+        ok.Pouch["ips"] = 40;
+        Assert.True(SaveValidator.Validate(ok).Ok);
+    }
+
+    [Fact]
+    public void Ingredients_CatalogAndCategories()
+    {
+        Assert.True(IngredientCatalog.Loaded);
+        Assert.Equal("Fragment of Infernal Passage", IngredientCatalog.Find("ips")!.Name);
+        Assert.Equal("dungeon", IngredientCatalog.Find("ips")!.Category);
+        // klucze T1-T5 istnieją (wejściówki dungeonów grupowych)
+        for (int t = 1; t <= 5; t++) Assert.NotNull(IngredientCatalog.Find($"t{t}_key"));
+        Assert.Contains("currency", IngredientCatalog.Categories);
+    }
+
+    [Fact]
+    public void EliteLootbox_TableRollsValidIngredients()
+    {
+        Assert.True(LootTables.Tables.ContainsKey("elite_lootbox"));
+        var rng = new System.Random(123);
+        // każdy wyrolowany składnik musi istnieć w katalogu (drop nie stworzy fantomu)
+        for (int i = 0; i < 40; i++)
+            foreach (var drop in LootTables.Roll("elite_lootbox", rng, new LootGenerator(i), 56))
+                if (drop.Ingredient.Length > 0)
+                {
+                    Assert.NotNull(IngredientCatalog.Find(drop.Ingredient));
+                    Assert.True(drop.IngredientCount >= 1);
+                }
+    }
+
+    [Fact]
     public void AllQRuns_AreInternallyConsistent()
     {
         // uniwersalny strażnik: każdy run Q ma istniejący quest, mapy, targety i dropujące moby

@@ -17,11 +17,15 @@ public sealed class LootTableDefinition
 
 public sealed class LootEntry
 {
-    /// <summary>nothing | gold | item | jewel | table</summary>
+    /// <summary>nothing | gold | item | jewel | table | ingredient</summary>
     public string Type { get; set; } = "nothing";
     public int Weight { get; set; } = 1;
     public int GoldMin { get; set; }
     public int GoldMax { get; set; }
+    /// <summary>Dla type=ingredient: id z katalogu składników + ile sztuk.</summary>
+    public string Ingredient { get; set; } = "";
+    public int CountMin { get; set; } = 1;
+    public int CountMax { get; set; } = 1;
     /// <summary>Wymuszona rzadkość itemu (puste = wagi generatora).</summary>
     public string Rarity { get; set; } = "";
     /// <summary>Id tabeli dla type=table.</summary>
@@ -33,6 +37,9 @@ public sealed class LootDrop
 {
     public Item? Item { get; init; }
     public long Gold { get; init; }
+    /// <summary>Składnik do sakwy (id + ilość); pusty = brak.</summary>
+    public string Ingredient { get; init; } = "";
+    public int IngredientCount { get; init; }
 }
 
 public static class LootTables
@@ -74,6 +81,13 @@ public static class LootTables
                 case "jewel":
                     if (JewelCatalog.Jewels.Count > 0)
                         drops.Add(new LootDrop { Item = JewelCatalog.Roll(rng, itemLevel) });
+                    break;
+                case "ingredient":
+                    if (entry.Ingredient.Length > 0)
+                    {
+                        int count = entry.CountMin + rng.Next(Math.Max(1, entry.CountMax - entry.CountMin + 1));
+                        drops.Add(new LootDrop { Ingredient = entry.Ingredient, IngredientCount = Math.Max(1, count) });
+                    }
                     break;
                 case "table":
                     drops.AddRange(Roll(entry.Table, rng, gen, itemLevel, depth + 1));

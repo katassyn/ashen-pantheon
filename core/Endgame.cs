@@ -50,6 +50,8 @@ public sealed class EndgameFile
     public List<DifficultyDefinition> Difficulties { get; set; } = new();
     public List<QRunDefinition> QRuns { get; set; } = new();
     public int QMax { get; set; } = 10;
+    /// <summary>Wejściówka do Q: ile Fragments of Infernal Passage (kanon: Infernal=10).</summary>
+    public int QEntryFee { get; set; } = 10;
 }
 
 public static class EndgameCatalog
@@ -60,6 +62,7 @@ public static class EndgameCatalog
     public static readonly List<DifficultyDefinition> Difficulties = new();
     public static readonly List<QRunDefinition> QRuns = new();
     public static int QMax { get; private set; } = 10;
+    public static int QEntryFee { get; private set; } = 10;
     public static bool Loaded => Difficulties.Count > 0;
 
     public static void Load(string json)
@@ -72,6 +75,7 @@ public static class EndgameCatalog
         QRuns.Clear();
         QRuns.AddRange(file.QRuns.OrderBy(r => r.Q));
         QMax = file.QMax;
+        QEntryFee = file.QEntryFee;
     }
 
     /// <summary>Run dla stopnia Q; brak dedykowanego wpisu = run bazowy (q=1) w skali QScale(q).</summary>

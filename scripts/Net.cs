@@ -731,6 +731,26 @@ public partial class Net : Node
         gold.GlobalPosition = pos;
     }
 
+    /// <summary>Składnik do sakwy — pickup instancjonowany per gracz (jak gold/item).</summary>
+    public static void GiveIngredient(int peer, string ingredientId, int count, Vector2 pos)
+    {
+        if (peer == MyId) I.SpawnIngredientLocal(ingredientId, count, pos);
+        else I.RpcId(peer, MethodName.RpcSpawnIngredient, ingredientId, count, pos);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcSpawnIngredient(string ingredientId, int count, Vector2 pos) =>
+        SpawnIngredientLocal(ingredientId, count, pos);
+
+    private void SpawnIngredientLocal(string ingredientId, int count, Vector2 pos)
+    {
+        var scene = GetTree().CurrentScene;
+        if (scene == null) return;
+        var pickup = new IngredientPickup { IngredientId = ingredientId, Count = count };
+        scene.AddChild(pickup);
+        pickup.GlobalPosition = pos;
+    }
+
     public static void NotifyPlayerDied()
     {
         if (IsServer) I.RpcPlayerDied((long)MyId);
