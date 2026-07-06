@@ -6,8 +6,8 @@
   "spawnX": 0,
   "spawnY": 0,
   "packs": [
-    { "x": 420, "y": -120, "monsters": ["venom_spiderling", "venom_spiderling"], "respawnSeconds": 60 },
-    { "x": 700, "y": 160, "monsters": ["venom_spiderling", "webweaver_stalker"], "respawnSeconds": 60 },
+    { "x": 420, "y": -120, "monsters": ["poisonous_spider", "poisonous_spider"], "respawnSeconds": 60 },
+    { "x": 700, "y": 160, "monsters": ["poisonous_spider", "death_witch"], "respawnSeconds": 60 },
     { "x": 1100, "y": 0, "monsters": ["arachnia_scourge"], "respawnSeconds": 120, "aggroRange": 520 }
   ],
   "exits": [

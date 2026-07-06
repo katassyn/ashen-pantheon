@@ -1,6 +1,14 @@
-# Q2-Q10 (Parallel World) — plan przełożenia na Ashen Pantheon
+# Q1-Q10 (Parallel World) — plan przełożenia na Ashen Pantheon
 
-Źródło: zarysy `q2 quest.md` … `q10 quest.md` (kanon DsoCraft/MC). Zasady od właściciela:
+Źródła (KOMPLET — niczego nie wymyślamy):
+- Zarysy questów: `q2 quest.md` … `q10 quest.md` (ten katalog).
+- **ROSTERY MOBÓW per Q: `C:\Users\mastu\Downloads\Serwer\Serwer\serwer_dsocraft_zapis\plugins\MythicMobs\mobs\q?_inf.yml`**
+  (staty Health/Damage/MovementSpeed/Skills = referencja balansu; wersje _hell/_blood = wyższe trudności).
+- **Flow Q1: `C:\Users\mastu\IdeaProjects\MyDungeonTeleportPlugin`** (quests/QuestData.java — etapy, cele, warpy;
+  Q1: Forgotten Circle → 25+25 flamecultów → Dragonknight → Grimmor; menu trudności Inf lvl 50 / Hell 65 /
+  Bloodshed 80 + opłata "Fragments of Infernal Passage" — przyszła waluta kluczowa).
+
+Zasady od właściciela:
 - Zarysy pisane pod ograniczenia Minecrafta — powtarzalność map/questów rozwiązujemy po swojemu.
 - Koordynaty portali NIEISTOTNE (MC) — u nas exity stref.
 - **Nazwy mobów LEKKO ZMIENIONE (DMCA — oryginały z Drakensang Online).** Tabela niżej.
@@ -22,6 +30,9 @@
 
 | Q | Oryginał (DSO) | U nas (id / nazwa) |
 |---|---|---|
+| Q1 | grimmag | `grimmor_the_risen` / Grimmor the Risen (nazwa Z PLUGINU właściciela) |
+| Q1 | raazghul_the_corruptor | `raazgor_corrupter` / Raazgor the Corrupter (nazwa Z YML właściciela) |
+| Q1 | perral_world_dragonknight | `parallel_dragonknight` / Parallel Realm Dragonknight |
 | Q2 | xerib_the_hunchback | `xarib_hunchback` / Xarib the Hunchback |
 | Q2 | archus_the_mad | `arkhus_the_mad` / Arkhus the Mad |
 | Q2 | arachna_scourge_of_duria | `arachnia_scourge` / Arachnia, Scourge of Dural |

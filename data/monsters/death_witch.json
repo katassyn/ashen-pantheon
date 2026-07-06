@@ -1,0 +1,19 @@
+{
+  "id": "death_witch",
+  "name": "Death Witch",
+  "hp": 560,
+  "resChaos": 45,
+  "speed": 70,
+  "movement": "keep_distance",
+  "preferredRange": 240,
+  "scale": 1.2,
+  "tint": "#7a4a9a",
+  "level": 52,
+  "xp": 240,
+  "lootTable": "common",
+  "attackInterval": 1.8,
+  "abilities": [
+    { "type": "projectile", "damage": 42, "damageType": "Chaos", "speed": 340 },
+    { "type": "tele_circle", "damage": 46, "damageType": "Chaos", "radius": 130, "windup": 0.9, "cooldown": 9 }
+  ]
+}

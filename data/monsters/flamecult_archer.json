@@ -1,0 +1,19 @@
+{
+  "id": "flamecult_archer",
+  "name": "Flamecult Archer",
+  "hp": 460,
+  "resFire": 50,
+  "evadeChance": 0.08,
+  "speed": 72,
+  "movement": "keep_distance",
+  "preferredRange": 260,
+  "scale": 1.0,
+  "tint": "#d87838",
+  "level": 51,
+  "xp": 200,
+  "lootTable": "common",
+  "attackInterval": 1.6,
+  "abilities": [
+    { "type": "projectile", "damage": 46, "damageType": "Fire", "speed": 360 }
+  ]
+}

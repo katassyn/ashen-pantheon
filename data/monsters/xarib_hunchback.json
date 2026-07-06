@@ -1,33 +1,34 @@
 {
   "id": "xarib_hunchback",
   "name": "Xarib the Hunchback",
-  "hp": 1900,
-  "armour": 45,
+  "hp": 2000,
+  "armour": 40,
   "resChaos": 55,
-  "speed": 90,
-  "movement": "chase",
+  "speed": 60,
+  "movement": "keep_distance",
+  "preferredRange": 210,
   "scale": 1.7,
   "tint": "#7a9a3a",
   "level": 52,
-  "xp": 680,
+  "xp": 700,
   "lootTable": "boss",
-  "attackInterval": 1.6,
+  "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     {
       "hpBelow": 1.0,
-      "attackInterval": 1.6,
+      "attackInterval": 1.7,
       "abilities": [
-        { "type": "melee", "damage": 46, "damageType": "Chaos", "windup": 0.55, "reach": 66 },
-        { "type": "tele_cone", "damage": 54, "damageType": "Chaos", "radius": 230, "halfAngleDeg": 40, "windup": 0.85, "cooldown": 6 }
+        { "type": "projectile", "damage": 44, "damageType": "Chaos", "speed": 340 },
+        { "type": "tele_circle", "damage": 52, "damageType": "Chaos", "radius": 150, "windup": 0.9 }
       ]
     },
     {
       "hpBelow": 0.5,
-      "attackInterval": 1.25,
+      "attackInterval": 1.35,
       "abilities": [
-        { "type": "melee", "damage": 52, "damageType": "Chaos", "windup": 0.45, "reach": 66 },
-        { "type": "summon", "monsterId": "venom_spiderling", "count": 2, "cooldown": 12 }
+        { "type": "tele_circle", "damage": 56, "damageType": "Chaos", "radius": 170, "windup": 0.75 },
+        { "type": "summon", "monsterId": "poisonous_spider", "count": 2, "cooldown": 12 }
       ]
     }
   ]

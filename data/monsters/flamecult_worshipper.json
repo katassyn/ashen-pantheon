@@ -1,0 +1,20 @@
+{
+  "id": "flamecult_worshipper",
+  "name": "Flamecult Worshipper",
+  "hp": 950,
+  "armour": 35,
+  "resFire": 60,
+  "speed": 66,
+  "movement": "keep_distance",
+  "preferredRange": 220,
+  "scale": 1.35,
+  "tint": "#e0a040",
+  "level": 52,
+  "xp": 320,
+  "lootTable": "common",
+  "attackInterval": 1.9,
+  "abilities": [
+    { "type": "projectile", "damage": 48, "damageType": "Fire", "speed": 340 },
+    { "type": "summon", "monsterId": "flamecult_servant", "count": 1, "cooldown": 14 }
+  ]
+}

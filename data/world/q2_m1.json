@@ -6,11 +6,11 @@
   "spawnX": 0,
   "spawnY": 0,
   "packs": [
-    { "x": 360, "y": -160, "monsters": ["venom_spiderling", "venom_spiderling", "webweaver_stalker"], "respawnSeconds": 45 },
-    { "x": 620, "y": 180, "monsters": ["venom_spiderling", "venom_spiderling", "venom_spiderling", "webweaver_stalker"], "respawnSeconds": 50 },
-    { "x": 340, "y": 430, "monsters": ["poison_bloated_husk", "venom_spiderling"], "respawnSeconds": 55 },
-    { "x": 900, "y": -60, "monsters": ["webweaver_stalker", "webweaver_stalker", "venom_spiderling"], "respawnSeconds": 55 },
-    { "x": 1150, "y": 320, "monsters": ["poison_bloated_husk", "poison_bloated_husk", "venom_spiderling"], "respawnSeconds": 60 },
+    { "x": 360, "y": -160, "monsters": ["gremlin_marauder", "gremlin_marauder", "poisonous_spider"], "respawnSeconds": 45 },
+    { "x": 620, "y": 180, "monsters": ["poisonous_spider", "gremlin_marauder", "gremlin_marauder", "death_witch"], "respawnSeconds": 50 },
+    { "x": 340, "y": 430, "monsters": ["corrupted_root_creature", "gremlin_marauder"], "respawnSeconds": 55 },
+    { "x": 900, "y": -60, "monsters": ["death_witch", "poisonous_spider", "gremlin_marauder"], "respawnSeconds": 55 },
+    { "x": 1150, "y": 320, "monsters": ["death_witch", "corrupted_root_creature", "gremlin_marauder"], "respawnSeconds": 60 },
     { "x": 1620, "y": 60, "monsters": ["xarib_hunchback"], "respawnSeconds": 90, "aggroRange": 420 }
   ],
   "exits": [

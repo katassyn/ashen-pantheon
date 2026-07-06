@@ -1,0 +1,47 @@
+{
+  "id": "grimmor_the_risen",
+  "name": "Grimmor the Risen",
+  "hp": 5000,
+  "armour": 50,
+  "resFire": 75,
+  "resChaos": 35,
+  "speed": 64,
+  "movement": "keep_distance",
+  "preferredRange": 180,
+  "scale": 2.4,
+  "tint": "#ff5020",
+  "level": 55,
+  "xp": 2600,
+  "lootTable": "boss",
+  "attackInterval": 1.8,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 1.8,
+      "abilities": [
+        { "type": "projectile", "damage": 46, "damageType": "Fire", "speed": 380 },
+        { "type": "tele_circle", "damage": 56, "damageType": "Fire", "radius": 160, "windup": 0.85 },
+        { "type": "tele_cone", "damage": 58, "damageType": "Fire", "radius": 280, "halfAngleDeg": 38, "windup": 0.85 }
+      ]
+    },
+    {
+      "hpBelow": 0.6,
+      "attackInterval": 1.45,
+      "abilities": [
+        { "type": "tele_line", "damage": 64, "damageType": "Fire", "length": 520, "halfWidth": 40, "windup": 0.75 },
+        { "type": "tele_circle", "damage": 62, "damageType": "Fire", "radius": 180, "windup": 0.7 },
+        { "type": "summon", "monsterId": "flamecult_servant", "count": 2, "cooldown": 14 }
+      ]
+    },
+    {
+      "hpBelow": 0.3,
+      "attackInterval": 1.1,
+      "abilities": [
+        { "type": "tele_circle", "damage": 70, "damageType": "Fire", "radius": 200, "windup": 0.6 },
+        { "type": "tele_cone", "damage": 66, "damageType": "Fire", "radius": 330, "halfAngleDeg": 50, "windup": 0.65 },
+        { "type": "summon", "monsterId": "flamecult_archer", "count": 2, "cooldown": 12 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "q1_m2",
+  "name": "Flamecult Grounds — Map 2",
+  "levelMin": 50,
+  "levelMax": 55,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["flamecult_servant", "flamecult_archer", "flamecult_archer"], "respawnSeconds": 40 },
+    { "x": 660, "y": 200, "monsters": ["flamecult_worshipper", "flamecult_servant", "flamecult_servant"], "respawnSeconds": 45 },
+    { "x": 960, "y": -60, "monsters": ["flamecult_servant", "flamecult_archer", "flamecult_worshipper"], "respawnSeconds": 50 },
+    { "x": 1400, "y": 40, "monsters": ["parallel_dragonknight"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1700, "y": 40, "target": "q1_m3", "label": "Map 3 — Grimmor's sanctum" }
+  ],
+  "markers": []
+}

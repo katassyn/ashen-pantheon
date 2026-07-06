@@ -1,0 +1,35 @@
+{
+  "id": "raazgor_corrupter",
+  "name": "Raazgor the Corrupter",
+  "hp": 2000,
+  "armour": 40,
+  "resFire": 55,
+  "speed": 74,
+  "movement": "keep_distance",
+  "preferredRange": 200,
+  "scale": 1.7,
+  "tint": "#b04a80",
+  "level": 52,
+  "xp": 720,
+  "lootTable": "boss",
+  "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 1.7,
+      "abilities": [
+        { "type": "projectile", "damage": 50, "damageType": "Fire", "speed": 360 },
+        { "type": "tele_circle", "damage": 54, "damageType": "Fire", "radius": 150, "windup": 0.85 }
+      ]
+    },
+    {
+      "hpBelow": 0.5,
+      "attackInterval": 1.35,
+      "abilities": [
+        { "type": "tele_circle", "damage": 58, "damageType": "Fire", "radius": 170, "windup": 0.7 },
+        { "type": "summon", "monsterId": "flamecult_servant", "count": 2, "cooldown": 12 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "quests": [
+    {
+      "id": "q1_run",
+      "name": "Q1: The Flamecult Rises",
+      "description": "The Flamecult gathers at the Forgotten Circle to raise their master. Investigate, thin their ranks and put Grimmor back in his grave.",
+      "requiredLevel": 50,
+      "questGiver": "",
+      "turnIn": "",
+      "objectives": [
+        { "id": "circle", "type": "Reach", "target": "q1_forgotten_circle", "amount": 1, "description": "Find the Forgotten Circle and investigate" },
+        { "id": "servants", "type": "Kill", "target": "flamecult_servant", "amount": 25, "description": "Slay 25 Flamecult Servants" },
+        { "id": "archers", "type": "Kill", "target": "flamecult_archer", "amount": 25, "description": "Slay 25 Flamecult Archers" },
+        { "id": "dragonknight", "type": "Kill", "target": "parallel_dragonknight", "amount": 1, "description": "Map 2: slay the Parallel Realm Dragonknight" },
+        { "id": "grimmor", "type": "Kill", "target": "grimmor_the_risen", "amount": 1, "description": "Map 3: slay Grimmor the Risen" }
+      ],
+      "dialogueStart": [],
+      "dialogueCompletion": [],
+      "rewardXp": 9000,
+      "rewardGold": 1600,
+      "nextQuest": "",
+      "zone": ""
+    }
+  ]
+}

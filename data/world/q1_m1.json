@@ -1,0 +1,24 @@
+{
+  "id": "q1_m1",
+  "name": "Flamecult Grounds — Map 1",
+  "levelMin": 50,
+  "levelMax": 55,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["flamecult_servant", "flamecult_servant", "flamecult_archer"], "respawnSeconds": 30 },
+    { "x": 620, "y": 180, "monsters": ["flamecult_servant", "flamecult_servant", "flamecult_servant", "flamecult_archer"], "respawnSeconds": 32 },
+    { "x": 340, "y": 430, "monsters": ["flamecult_archer", "flamecult_archer", "flamecult_servant"], "respawnSeconds": 34 },
+    { "x": 900, "y": -60, "monsters": ["flamecult_servant", "flamecult_archer", "flamecult_worshipper"], "respawnSeconds": 38 },
+    { "x": 1150, "y": 320, "monsters": ["flamecult_servant", "flamecult_servant", "flamecult_archer", "flamecult_archer"], "respawnSeconds": 36 },
+    { "x": 1400, "y": -220, "monsters": ["flamecult_worshipper", "flamecult_servant", "flamecult_archer"], "respawnSeconds": 40 },
+    { "x": 1620, "y": 80, "monsters": ["raazgor_corrupter"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 80, "target": "q1_m2", "label": "Map 2 — the Dragonknight's post" }
+  ],
+  "markers": [
+    { "id": "q1_forgotten_circle", "x": 760, "y": -320, "type": "reach", "label": "The Forgotten Circle" }
+  ]
+}

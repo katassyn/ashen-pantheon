@@ -14,21 +14,21 @@ public class EndgameTests
         Assert.Equal("odyssey_of_shadows", EndgameCatalog.Dungeons[0].Id);
         Assert.True(EndgameCatalog.Dungeons[0].Enabled);
         Assert.Equal(new[] { "blood", "hell", "infernal" }, EndgameCatalog.Difficulties.Select(d => d.Id));
-        Assert.Equal(2, EndgameCatalog.QRuns.Count); // q1 (arena) + q2 (world)
-        Assert.Equal("arena", EndgameCatalog.RunFor(1)!.Mode);
+        Assert.Equal(2, EndgameCatalog.QRuns.Count); // q1 + q2 (world-mode, kanon Parallel World)
+        Assert.Equal("world", EndgameCatalog.RunFor(1)!.Mode);
         Assert.Equal("world", EndgameCatalog.RunFor(2)!.Mode);
-        Assert.Equal("final_proving_run", EndgameCatalog.RunFor(7)!.Quest); // brak wpisu → fallback do q1
+        Assert.Equal("q1_run", EndgameCatalog.RunFor(7)!.Quest); // brak wpisu → fallback do q1
         Assert.Equal(10, EndgameCatalog.QMax);
     }
 
     [Fact]
     public void QMaps_ChainM1ToM3()
     {
-        Assert.Equal("final_proving_m2", EndgameCatalog.NextQMap("final_proving_m1"));
-        Assert.Equal("final_proving_m3", EndgameCatalog.NextQMap("final_proving_m2"));
-        Assert.Null(EndgameCatalog.NextQMap("final_proving_m3")); // M3 = finał
-        Assert.Null(EndgameCatalog.NextQMap("swerdfield"));       // spoza runu
-        Assert.Equal(3, EndgameCatalog.QMapIndex("final_proving_m3"));
+        Assert.Equal("q1_m2", EndgameCatalog.NextQMap("q1_m1"));
+        Assert.Equal("q1_m3", EndgameCatalog.NextQMap("q1_m2"));
+        Assert.Null(EndgameCatalog.NextQMap("q1_m3"));      // M3 = finał
+        Assert.Null(EndgameCatalog.NextQMap("swerdfield")); // spoza runu
+        Assert.Equal(3, EndgameCatalog.QMapIndex("q1_m3"));
         Assert.Equal("q2_m3", EndgameCatalog.NextQMap("q2_m2")); // runy niezależne
     }
 
@@ -68,23 +68,23 @@ public class EndgameTests
     }
 
     [Fact]
-    public void QRunQuest_TracksMapsAndIsRepeatable()
+    public void Q1Run_CanonFlowAndRepeatable()
     {
-        var q = QuestCatalog.Find("final_proving_run")!;
+        // kanon z MyDungeonTeleportPlugin: Forgotten Circle → 25+25 flamecultów → Dragonknight → Grimmor
+        var q = QuestCatalog.Find("q1_run")!;
         var maps = EndgameCatalog.RunFor(1)!.Maps;
-        Assert.Equal(3, q.Objectives.Count);
-        // cele = Clear kolejnych map runu (auto-quest prowadzi gracza M1→M2→M3)
-        Assert.Equal(maps, q.Objectives.Select(o => o.Target));
-        foreach (var o in q.Objectives) Assert.Equal(ObjectiveType.Clear, o.Kind);
-        // każda mapa musi istnieć w bestiariuszu (run musi dać się odpalić)
-        foreach (var map in maps) Assert.True(Bestiary.Zones.ContainsKey(map));
+        Assert.Equal(5, q.Objectives.Count);
+        foreach (var map in maps) Assert.True(WorldMaps.Zones.ContainsKey(map));
+        Assert.True(Bestiary.Monster("grimmor_the_risen").IsBoss);
+        Assert.True(Bestiary.Monster("parallel_dragonknight").IsBoss);
 
         var log = new QuestLog();
         Assert.True(log.Accept(q, 50));
-        log.OnClear("final_proving_m1");
-        log.OnClear("final_proving_m2");
+        log.OnReach("q1_forgotten_circle");
+        for (int i = 0; i < 25; i++) { log.OnKill("flamecult_servant"); log.OnKill("flamecult_archer"); }
+        log.OnKill("parallel_dragonknight");
         Assert.False(log.ReadyToTurnIn(q));
-        log.OnClear("final_proving_m3");
+        log.OnKill("grimmor_the_risen");
         Assert.True(log.ReadyToTurnIn(q));
         log.TurnIn(q);
         Assert.True(log.IsCompleted(q.Id));
@@ -156,10 +156,10 @@ public class EndgameTests
         foreach (var m in Bestiary.Zone("odyssey_of_shadows").Monsters)
             Assert.True(Bestiary.Monsters.ContainsKey(m.Id));
 
-        // run Q: M1/M2 kończą mini-bossy, M3 = główny boss (wszyscy fazowi)
-        Assert.True(Bestiary.Monster("black_furred_berserk").IsBoss);
-        Assert.True(Bestiary.Monster("black_furred_mauler").IsBoss);
-        Assert.Equal("god_of_death", Bestiary.Zone("final_proving_m3").Boss);
-        Assert.True(Bestiary.Monster("god_of_death").IsBoss);
+        // run Q: M1/M2 kończą mini-bossy, M3 = główny boss (roster 1:1 z MythicMobs q?_inf.yml)
+        Assert.True(Bestiary.Monster("xarib_hunchback").IsBoss);
+        Assert.True(Bestiary.Monster("arkhus_the_mad").IsBoss);
+        Assert.True(Bestiary.Monster("raazgor_corrupter").IsBoss); // elitka M1 Q1 (kanon: spawn obok Circle)
+        Assert.True(Bestiary.Monster("arachnia_scourge").IsBoss);
     }
 }

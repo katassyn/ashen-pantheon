@@ -12,7 +12,7 @@
     { "id": "infernal", "name": "Infernal", "hpMult": 4.2, "dmgMult": 2.5, "xpMult": 3.4, "itemLevel": 72, "goldFee": 3000, "requiresPrevious": true }
   ],
   "qRuns": [
-    { "q": 1, "quest": "final_proving_run", "maps": ["final_proving_m1", "final_proving_m2", "final_proving_m3"], "mode": "arena" },
+    { "q": 1, "quest": "q1_run", "maps": ["q1_m1", "q1_m2", "q1_m3"], "mode": "world" },
     { "q": 2, "quest": "q2_run", "maps": ["q2_m1", "q2_m2", "q2_m3"], "mode": "world" }
   ],
   "qMax": 10
