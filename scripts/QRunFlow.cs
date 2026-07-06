@@ -9,7 +9,7 @@ public static class QRunFlow
     public static void CheckAutoComplete()
     {
         string challenge = Net.TravelChallengeId;
-        if (!EndgameCatalog.TryParseQ(challenge, out int q)) return;
+        if (!EndgameCatalog.TryParseQ(challenge, out int q, out var qd)) return;
         var run = EndgameCatalog.RunFor(q);
         var quest = run == null ? null : QuestCatalog.Find(run.Quest);
         if (quest == null || !GameState.Quests.ReadyToTurnIn(quest)) return;

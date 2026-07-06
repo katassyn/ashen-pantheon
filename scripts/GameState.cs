@@ -47,7 +47,7 @@ public static class GameState
     public static void MarkEndgameCleared(string challenge)
     {
         if (string.IsNullOrEmpty(challenge)) return;
-        if (EndgameCatalog.TryParseQ(challenge, out int q))
+        if (EndgameCatalog.TryParseQ(challenge, out int q, out _))
             EndgameQ = System.Math.Max(EndgameQ, System.Math.Min(q + 1, EndgameCatalog.QMax));
         else if (challenge.StartsWith("g:"))
             EndgameCleared.Add(challenge[2..]);

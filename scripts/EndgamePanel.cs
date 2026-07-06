@@ -110,47 +110,58 @@ public partial class EndgamePanel : CanvasLayer
             }
         }
 
-        // ── solo Q1-Q10: wejście za Fragments of Infernal Passage (kanon; fragmenty w Sakwie [I → Pouch]) ──
+        // ── solo Q1-Q10: każdy Q × 3 trudności (Infernal/Hell/Bloodshed) za Fragments of Infernal Passage ──
         long ips = GameState.Pouch.Count("ips");
-        int entryFee = EndgameCatalog.QEntryFee;
-        _solo.AddChild(new Label { Text = $"Highest unlocked: Q{GameState.EndgameQ}   ·   Fragments of Infernal Passage: {ips}  (entry: {entryFee})" });
+        int level = GameState.Progress.Level;
+        _solo.AddChild(new Label { Text = $"Highest unlocked: Q{GameState.EndgameQ}   ·   Fragments of Infernal Passage: {ips}   ·   your level: {level}" });
         bool solo = Net.PlayerCount() <= 1;
         if (!solo) _solo.AddChild(new Label { Text = "Solo only — leave your party to enter.", Modulate = new Color(0.9f, 0.6f, 0.4f) });
+
         for (int q = 1; q <= EndgameCatalog.QMax; q++)
         {
-            var s = EndgameCatalog.QScale(q);
             bool unlocked = q <= GameState.EndgameQ;
-            var row = new HBoxContainer();
-            row.AddThemeConstantOverride("separation", 8);
-            var info = new Label
-            {
-                Text = $"   Q{q}   —   HP x{s.Hp:0.0}, item lvl {s.ItemLevel}, entry {entryFee} IPS" + (unlocked ? "" : "   🔒"),
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-            };
-            info.Modulate = unlocked ? Colors.White : new Color(0.55f, 0.55f, 0.6f);
-            row.AddChild(info);
+            var head = new Label { Text = $"Q{q}" + (unlocked ? "" : "   🔒 clear the previous stage first") };
+            head.Modulate = unlocked ? new Color(1f, 0.85f, 0.5f) : new Color(0.55f, 0.55f, 0.6f);
+            _solo.AddChild(head);
+            if (!unlocked) continue;
 
-            var enter = new Button { Text = "Enter", CustomMinimumSize = new Vector2(90, 0) };
-            enter.Disabled = !unlocked || !solo || ips < entryFee;
-            if (ips < entryFee) enter.TooltipText = "Not enough Fragments of Infernal Passage (they drop from bosses)";
-            int captured = q;
-            enter.Pressed += () => EnterQ(captured);
-            row.AddChild(enter);
-            _solo.AddChild(row);
+            foreach (var qd in EndgameCatalog.QDifficulties)
+            {
+                var row = new HBoxContainer();
+                row.AddThemeConstantOverride("separation", 8);
+                var info = new Label
+                {
+                    Text = $"   {qd.Name}   —   req lvl {qd.LevelReq}, HP x{qd.HpMult:0.#}, item lvl {qd.ItemLevel}, entry {qd.IpsFee} IPS",
+                    SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                };
+                bool levelOk = level >= qd.LevelReq;
+                bool ipsOk = ips >= qd.IpsFee;
+                info.Modulate = levelOk ? Colors.White : new Color(0.55f, 0.55f, 0.6f);
+                row.AddChild(info);
+
+                var enter = new Button { Text = "Enter", CustomMinimumSize = new Vector2(90, 0) };
+                enter.Disabled = !solo || !levelOk || !ipsOk;
+                if (!levelOk) enter.TooltipText = $"Requires level {qd.LevelReq}";
+                else if (!ipsOk) enter.TooltipText = $"Requires {qd.IpsFee} Fragments of Infernal Passage";
+                int cq = q; string cd = qd.Id; int fee = qd.IpsFee;
+                enter.Pressed += () => EnterQ(cq, cd, fee);
+                row.AddChild(enter);
+                _solo.AddChild(row);
+            }
         }
     }
 
-    /// <summary>Wejście w run Q: opłata Fragments of Infernal Passage (kanon) + POWTARZALNY auto-quest +
-    /// podróż na M1 runu (tryb world = statyczne mapy z interakcjami; arena = proceduralne pokoje).</summary>
-    private void EnterQ(int q)
+    /// <summary>Wejście w run Q na trudności: opłata Fragments of Infernal Passage (kanon) + POWTARZALNY
+    /// auto-quest + podróż na M1 runu (world = statyczne mapy; arena = proceduralne pokoje).</summary>
+    private void EnterQ(int q, string difficultyId, int ipsFee)
     {
         var run = EndgameCatalog.RunFor(q);
         if (run == null || run.Maps.Count == 0) return;
-        if (!GameState.Pouch.TryTake("ips", EndgameCatalog.QEntryFee)) return; // fragment-sink (Sakwa)
+        if (!GameState.Pouch.TryTake("ips", ipsFee)) return; // fragment-sink (Sakwa)
         StartQRunQuest(run.Quest);
         GameState.Save();
         string scene = run.Mode == "world" ? "res://scenes/WorldZone.tscn" : "res://scenes/Arena.tscn";
-        Travel(scene, run.Maps[0], EndgameCatalog.QChallenge(q));
+        Travel(scene, run.Maps[0], EndgameCatalog.QChallenge(q, difficultyId));
     }
 
     /// <summary>Dungeon grupowy: zużyj [T?] klucz (kanon) + opłata złotem, potem podróż.</summary>

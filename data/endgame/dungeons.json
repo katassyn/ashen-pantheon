@@ -23,6 +23,10 @@
     { "q": 9, "quest": "q9_run", "maps": ["q9_m1", "q9_m2", "q9_m3"], "mode": "world" },
     { "q": 10, "quest": "q10_run", "maps": ["q10_m1", "q10_m2", "q10_m3"], "mode": "world" }
   ],
-  "qMax": 10,
-  "qEntryFee": 10
+  "qDifficulties": [
+    { "id": "inf", "name": "Infernal", "levelReq": 50, "ipsFee": 10, "hpMult": 1.0, "dmgMult": 1.0, "xpMult": 1.0, "itemLevel": 56 },
+    { "id": "hell", "name": "Hell", "levelReq": 65, "ipsFee": 25, "hpMult": 3.0, "dmgMult": 2.0, "xpMult": 2.5, "itemLevel": 66 },
+    { "id": "blood", "name": "Bloodshed", "levelReq": 80, "ipsFee": 50, "hpMult": 10.0, "dmgMult": 5.0, "xpMult": 5.0, "itemLevel": 76 }
+  ],
+  "qMax": 10
 }

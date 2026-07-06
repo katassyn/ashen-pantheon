@@ -41,13 +41,12 @@ public partial class ArenaManager : Node
         _zone = Bestiary.Zone(zoneId);
 
         _challenge = Net.TravelChallengeId;
-        if (EndgameCatalog.TryParseQ(_challenge, out int q))
+        if (EndgameCatalog.TryParseQ(_challenge, out int q, out var qd) && qd != null)
         {
-            var s = EndgameCatalog.QScale(q);
-            (_chalHp, _chalDmg, _chalXp, _chalIlvl) = (s.Hp, s.Dmg, s.Xp, s.ItemLevel);
+            (_chalHp, _chalDmg, _chalXp, _chalIlvl) = (qd.HpMult, qd.DmgMult, qd.XpMult, qd.ItemLevel);
             int mapIdx = EndgameCatalog.QMapIndex(zoneId);
             int mapCount = EndgameCatalog.RunOfMap(zoneId)?.Maps.Count ?? 3;
-            _challengeTitle = $"THE FINAL PROVING  Q{q} — MAP {mapIdx}/{mapCount}   ";
+            _challengeTitle = $"THE PROVING  Q{q} [{qd.Name.ToUpperInvariant()}] — MAP {mapIdx}/{mapCount}   ";
         }
         else if (EndgameCatalog.TryParseGroup(_challenge, out var dun, out var diff))
         {

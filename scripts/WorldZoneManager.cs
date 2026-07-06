@@ -57,14 +57,13 @@ public partial class WorldZoneManager : Node
         GameState.DiscoverZone(zoneId); // waystone fast-travel odblokowany
         TopStatus = $"{_zone.Name}  (levels {_zone.LevelMin}-{_zone.LevelMax})";
 
-        // run Q w trybie world: skala trudności + ilvl dropu z wyzwania
-        if (EndgameCatalog.TryParseQ(Net.TravelChallengeId, out int qLvl))
+        // run Q w trybie world: skala trudności (Inf/Hell/Blood) + ilvl dropu z wyzwania
+        if (EndgameCatalog.TryParseQ(Net.TravelChallengeId, out int qLvl, out var qd) && qd != null)
         {
-            var s = EndgameCatalog.QScale(qLvl);
-            (_qHp, _qDmg, _qXp, _qIlvl) = (s.Hp, s.Dmg, s.Xp, s.ItemLevel);
+            (_qHp, _qDmg, _qXp, _qIlvl) = (qd.HpMult, qd.DmgMult, qd.XpMult, qd.ItemLevel);
             int mapIdx = EndgameCatalog.QMapIndex(zoneId);
             int mapCount = EndgameCatalog.RunOfMap(zoneId)?.Maps.Count ?? 3;
-            TopStatus = $"THE PROVING  Q{qLvl} — MAP {mapIdx}/{mapCount}   {_zone.Name}";
+            TopStatus = $"THE PROVING  Q{qLvl} [{qd.Name}] — MAP {mapIdx}/{mapCount}   {_zone.Name}";
         }
 
         // wyjścia — widoczne u wszystkich (deterministyczne z definicji)

@@ -44,14 +44,28 @@ public sealed class QRunDefinition
     public string Mode { get; set; } = "arena"; // arena | world
 }
 
+/// <summary>Trudność runu Q (kanon Parallel World): Infernal(lvl 50) / Hell(65) / Bloodshed(80).
+/// Mnożniki wg YML _inf/_hell/_blood (boss HP 5k/15k/50k → x1/x3/x10, dmg x1/x2/x5); opłata w Fragments
+/// of Infernal Passage rośnie 10/25/50; ItemLevel dropu rośnie z trudnością.</summary>
+public sealed class QDifficultyDefinition
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public int LevelReq { get; set; } = 50;
+    public int IpsFee { get; set; } = 10;
+    public float HpMult { get; set; } = 1f;
+    public float DmgMult { get; set; } = 1f;
+    public float XpMult { get; set; } = 1f;
+    public int ItemLevel { get; set; } = 56;
+}
+
 public sealed class EndgameFile
 {
     public List<DungeonDefinition> Dungeons { get; set; } = new();
     public List<DifficultyDefinition> Difficulties { get; set; } = new();
     public List<QRunDefinition> QRuns { get; set; } = new();
+    public List<QDifficultyDefinition> QDifficulties { get; set; } = new();
     public int QMax { get; set; } = 10;
-    /// <summary>Wejściówka do Q: ile Fragments of Infernal Passage (kanon: Infernal=10).</summary>
-    public int QEntryFee { get; set; } = 10;
 }
 
 public static class EndgameCatalog
@@ -61,8 +75,8 @@ public static class EndgameCatalog
     public static readonly List<DungeonDefinition> Dungeons = new();
     public static readonly List<DifficultyDefinition> Difficulties = new();
     public static readonly List<QRunDefinition> QRuns = new();
+    public static readonly List<QDifficultyDefinition> QDifficulties = new();
     public static int QMax { get; private set; } = 10;
-    public static int QEntryFee { get; private set; } = 10;
     public static bool Loaded => Difficulties.Count > 0;
 
     public static void Load(string json)
@@ -74,9 +88,14 @@ public static class EndgameCatalog
         Difficulties.AddRange(file.Difficulties);
         QRuns.Clear();
         QRuns.AddRange(file.QRuns.OrderBy(r => r.Q));
+        QDifficulties.Clear();
+        QDifficulties.AddRange(file.QDifficulties);
         QMax = file.QMax;
-        QEntryFee = file.QEntryFee;
     }
+
+    public static QDifficultyDefinition? QDifficulty(string id) => QDifficulties.FirstOrDefault(d => d.Id == id);
+    /// <summary>Najniższa trudność (Infernal) — domyślna / wstecznie dla starych "q:N".</summary>
+    public static QDifficultyDefinition? DefaultQDifficulty => QDifficulties.FirstOrDefault();
 
     /// <summary>Run dla stopnia Q; brak dedykowanego wpisu = run bazowy (q=1) w skali QScale(q).</summary>
     public static QRunDefinition? RunFor(int q) =>
@@ -108,23 +127,23 @@ public static class EndgameCatalog
         return idx <= 0 ? null : Difficulties[idx - 1];
     }
 
-    /// <summary>Skala solo-wyzwania Q1-Q10 (The Final Proving): rosnące HP/dmg/XP/ilvl/opłata.</summary>
-    public static (float Hp, float Dmg, float Xp, int ItemLevel, long Fee) QScale(int q)
-    {
-        q = Math.Clamp(q, 1, QMax);
-        return (1f + 0.35f * q, 1f + 0.20f * q, 1f + 0.30f * q, 50 + 2 * q, 250L * q);
-    }
-
     // ── identyfikatory wyzwań (w RPC podróży i zapisie clearów) ──
-    // format: "q:3" (solo Q3) · "g:odyssey_of_shadows/blood" (dungeon grupowy + trudność)
+    // format: "q:3:hell" (Q3 na trudności Hell) · "g:odyssey_of_shadows/blood" (dungeon grupowy)
+    // wstecznie "q:3" (bez trudności) = Infernal (najniższa)
 
     public static string GroupChallenge(string dungeonId, string difficultyId) => $"g:{dungeonId}/{difficultyId}";
-    public static string QChallenge(int q) => $"q:{q}";
+    public static string QChallenge(int q, string difficultyId) => $"q:{q}:{difficultyId}";
 
-    public static bool TryParseQ(string challenge, out int q)
+    /// <summary>Parsuje wyzwanie Q: numer + trudność. "q:3:hell" → (3, Hell); "q:3" → (3, Infernal).</summary>
+    public static bool TryParseQ(string challenge, out int q, out QDifficultyDefinition? difficulty)
     {
         q = 0;
-        return challenge.StartsWith("q:") && int.TryParse(challenge[2..], out q) && q >= 1 && q <= QMax;
+        difficulty = DefaultQDifficulty;
+        if (!challenge.StartsWith("q:")) return false;
+        var parts = challenge[2..].Split(':');
+        if (!int.TryParse(parts[0], out q) || q < 1 || q > QMax) return false;
+        if (parts.Length >= 2) difficulty = QDifficulty(parts[1]) ?? DefaultQDifficulty;
+        return true;
     }
 
     public static bool TryParseGroup(string challenge, out DungeonDefinition? dungeon, out DifficultyDefinition? difficulty)

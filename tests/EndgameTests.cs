@@ -212,21 +212,34 @@ public class EndgameTests
     }
 
     [Fact]
-    public void QScale_GrowsWithStage()
+    public void QDifficulties_CanonInfHellBlood()
     {
-        var q1 = EndgameCatalog.QScale(1);
-        var q10 = EndgameCatalog.QScale(10);
-        Assert.True(q10.Hp > q1.Hp);
-        Assert.True(q10.Fee > q1.Fee);
-        Assert.Equal(52, q1.ItemLevel);
-        Assert.Equal(70, q10.ItemLevel);
+        Assert.Equal(new[] { "inf", "hell", "blood" }, EndgameCatalog.QDifficulties.Select(d => d.Id));
+        var inf = EndgameCatalog.QDifficulty("inf")!;
+        var hell = EndgameCatalog.QDifficulty("hell")!;
+        var blood = EndgameCatalog.QDifficulty("blood")!;
+        // kanon gate poziomów i opłat IPS (ListenerQ*: 50/65/80, 10/25/50)
+        Assert.Equal((50, 10), (inf.LevelReq, inf.IpsFee));
+        Assert.Equal((65, 25), (hell.LevelReq, hell.IpsFee));
+        Assert.Equal((80, 50), (blood.LevelReq, blood.IpsFee));
+        // skala rośnie monotonicznie (HP z YML: x1/x3/x10)
+        Assert.True(blood.HpMult > hell.HpMult && hell.HpMult > inf.HpMult);
+        Assert.True(blood.ItemLevel > hell.ItemLevel && hell.ItemLevel > inf.ItemLevel);
+        Assert.Same(inf, EndgameCatalog.DefaultQDifficulty); // Infernal = domyślna
     }
 
     [Fact]
-    public void ChallengeIds_ParseRoundTrip()
+    public void ChallengeIds_ParseWithDifficulty()
     {
-        Assert.True(EndgameCatalog.TryParseQ(EndgameCatalog.QChallenge(3), out int q) && q == 3);
-        Assert.False(EndgameCatalog.TryParseQ("q:99", out _)); // ponad QMax
+        // "q:3:hell" → (3, Hell)
+        Assert.True(EndgameCatalog.TryParseQ(EndgameCatalog.QChallenge(3, "hell"), out int q, out var qd));
+        Assert.Equal(3, q);
+        Assert.Equal("hell", qd!.Id);
+        // wstecznie "q:3" (bez trudności) → Infernal
+        Assert.True(EndgameCatalog.TryParseQ("q:3", out _, out var qd2));
+        Assert.Equal("inf", qd2!.Id);
+        Assert.False(EndgameCatalog.TryParseQ("q:99:hell", out _, out _)); // ponad QMax
+        // dungeon grupowy bez zmian
         Assert.True(EndgameCatalog.TryParseGroup(
             EndgameCatalog.GroupChallenge("odyssey_of_shadows", "hell"), out var dun, out var diff));
         Assert.Equal("The Odyssey of Shadows", dun!.Name);
