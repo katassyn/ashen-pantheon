@@ -68,31 +68,51 @@ dungeony T1-T5 mitologiczne, trudności Blood/Hell/Infernal, epilog Q1-Q10).
       T2-T5 "coming soon" (dane są, brakuje contentu stref).
 - [x] **The Final Proving Q1-Q10** (solo): skala formułą w core (HP/dmg/XP/ilvl/fee), clear Qn
       odblokowuje Qn+1, persist w SaveData + walidator anty-fałszywym odblokowaniom.
-- [ ] **Klucze itemowe do tierów** ([T1]-[T5] Mythological Dungeon Key — kanon; teraz opłata złotem).
-- [ ] **Loot endgame — skala ilvl >50**: `AffixRanges.ScaleFor` plateau'uje na 50 — tiery różnią się
-      dziś XP/trudnością, nie mocą affixów; rozszerzyć krzywą (dotyka walidatora — osobny batch).
-- [ ] **Content T2-T5**: strefy bestiariusza per dungeon (moby mitologiczne per tier).
-- [ ] **Hub endgame jako osobna mapa** (kosmetyka — po art passie; brama w mieście wystarcza na MVP).
+- [ ] **Dokończenie Q3-Q10** (zarysy + rostery YML `q?_inf.yml`, flow z QuestData.java; kolejność
+      wg złożoności: Q4/Q5 → Q6 → Q8 → Q3 → Q10 → Q9 → Q7).
+- [ ] **Loot endgame — skala ilvl >50**: `AffixRanges.ScaleFor` plateau'uje na 50 — rozszerzyć
+      krzywą (dotyka walidatora — osobny batch, przed trudnościami Hell/Blood).
 
-## FAZA C — Systemy głębi buildów (kolejność wg wpływu na build)
+## PLAN PO Q (decyzje właściciela 2026-07-05 — trzy rundy pytań; KOLEJNOŚĆ OBOWIĄZUJE)
 
-- [ ] **Questy lvl 50 + wybór BOGA-PATRONA** [DESIGN z właścicielem]: łańcuch questów per bóg,
-      na końcu przysięga; **zmiana patrona możliwa za wysoką cenę** (decyzja 2026-07-05).
-      Framework questów już to udźwignie (RequiredLevel/prereqs/łańcuchy).
-- [ ] **Jewels → SPECJALNY SLOT** (decyzja: jewele NIE do socketów): nowy slot w Equipment,
-      migracja placeholdera; **gemy z kopalni → sockety** (nowy typ itemu + kopalnia jako źródło).
-- [ ] **Runy + Słowa Runiczne** (DsoCraft): sloty run co 5 lvl od 50, mix 9 run, nazwane komba.
-- [ ] **Boss Souls** (trinkety z bossów).
-- [ ] **Demon Tower** (piętra, klucze per piętro, fale+bossy) — decyzja właściciela 2026-07-05:
-      DOPIERO po podstawowych mechanikach poziomowych z plików DsoCraft (runy, jewele/gemy, souls).
-- [ ] **Crafting / biologist / graveKeeper** (wiedza o rodzinach mobów) — dalszy horyzont.
+### B1. Wejściówki + nagrody Q (od razu po Q10)
+- [ ] **Fragments of Infernal Passage** — waluta wejściowa Q (kanon: Inf 10 / Hell 25 / Blood 50);
+      drop z endgame + daily; zastępuje opłatę złotem w Q.
+- [ ] **Klucze T1-T5** ([T?] Mythological Dungeon Key) do dungeonów grupowych.
+- [ ] **EliteLootbox** — nagroda ukończenia Q jak w oryginale (skrzynka, tabela per Q/trudność).
+- [ ] **Trudności Q: Infernal (lvl 50) / Hell (65) / Bloodshed (80) per Q** — z YML `_hell/_blood`
+      (zastępuje sztuczną skalę QScale 1→10; sekwencja odblokowań Q1→Q10 per trudność —
+      założenie do potwierdzenia przy wdrożeniu). Hell/Blood grywalne po levelingu 51+ (C2).
 
-## FAZA D — Żywy świat (retencja dzienna; wymaga B)
+### B2. Żywy świat (po wejściówkach, PRZED systemami buildów)
+- [ ] **Daily questy** (dailyQuestPlugin; źródło fragmentów/kluczy).
+- [ ] **Eventy kalendarzowe** (eventPlugin, full_moon/x_mas z YML) — BEZ sezonów-resetów.
+- [ ] **World chesty**: bloodChest (wyzwanie przy skrzyni) + lockpick (minigra) — mapy kampanii i Q.
 
-- [ ] Daily questy (endgame hub).
-- [ ] World chesty / eventy strefowe (bloodChest, lockpick).
-- [ ] Eventy sezonowe kalendarzowe (full moon, x-mas) — BEZ sezonów-resetów (decyzja: NIE ma seasonów).
-- [ ] Pety (kosmetyczne/utility) — niski priorytet.
+### C. Systemy buildów (kolejność potwierdzona)
+- [ ] **C1. GOD-QUESTY lvl 50** [DESIGN z właścicielem — PIERWSZY system]: łańcuch questów wyboru
+      boga-patrona, zmiana za wysoką cenę. **Ascendancje z MyExperiencePlugin NIE wchodzą —
+      bogowie pełnią tę rolę** (patron = duży power-spike).
+- [ ] **C2. Leveling 51-100**: 5 stref farmowych z YML (Brigavik 51-60, Tetaconetl 61-70,
+      Telepolos 70-80, Tywil 81-90, OceanBones 91-100) + questy farmowe (campaign-extraction:
+      "Heart of Darkness"…). Odblokowuje Hell (65) i Bloodshed (80).
+- [ ] **C3. Tiery T1-T5 wg YML** (WSZYSTKIE, też T1 — obecny roster T1 to MVP do wymiany na
+      `odyssey_shadows.yml`; potem poseidon_isle_of_mist_t2, mount_olympus_t3,
+      daedalus_eternal_labyrinth_t4, fields_of_immortal_souls_t5).
+- [ ] **C4. Boss Souls** (TrinketsPlugin): **mega-rare drop WYŁĄCZNIE z Q-Bloodshed (kanon,
+      bez źródeł przejściowych)** — wymaga C2. Akcesoria + Augmenter.
+- [ ] **C5. Runy + Słowa Runiczne + ŁOWISKO**: **runy są stricte połączone z fishingiem**
+      (FishingPlugin + fishing.yml) — łowisko wchodzi razem z runami jako ich źródło;
+      sloty run co 5 lvl od 50, mix 9, nazwane komba.
+- [ ] **C6. Gemy + Kopalnia + Jewel-slot**: kopalnia instancjonowana ze STAMINĄ (mineSystemPlugin)
+      jako źródło gemów do socketów; jewele przeniesione do SPECJALNEGO SLOTU.
+
+### D. Po systemach
+- [ ] **Demon Tower** (piętra, klucze per piętro, fale+bossy; demon_tower_I-IV.yml) — po C.
+- [ ] **Life-skills — WSZYSTKIE wchodzą** (decyzja): crafting + alchemia (MyCraftingPlugin2),
+      biolog + graveKeeper (wiedza o rodzinach mobów → buffy), pety (petplugin, 31 petów),
+      farming / bees (fishing już w C5). Kolejność do ustalenia przy D.
+- [ ] Hub endgame jako osobna mapa (kosmetyka — po art passie).
 
 ## FAZA E — Art & audio pass (równolegle z B/C, wchodzi gdy assety gotowe)
 
