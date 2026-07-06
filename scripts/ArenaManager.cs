@@ -25,17 +25,8 @@ public partial class ArenaManager : Node
     private float _chalHp = 1f, _chalDmg = 1f, _chalXp = 1f;
     private int _chalIlvl;
 
-    /// <summary>Auto-quest runu Q oddaje się sam po M3 (nie ma NPC; nagrody + wpis do czatu).</summary>
-    private static void CompleteQuestAuto()
-    {
-        var q = QuestCatalog.Find(EndgameCatalog.QQuest);
-        if (q == null || !GameState.Quests.ReadyToTurnIn(q)) return;
-        GameState.Quests.TurnIn(q);
-        GameState.Progress.GainXp(q.RewardXp);
-        GameState.Wallet.Gold += q.RewardGold;
-        PlayerController.Local?.Refresh();
-        Net.SendChatLocal($"Quest completed: {q.Name}  (+{q.RewardXp} XP, +{q.RewardGold} gold)");
-    }
+    /// <summary>Auto-quest runu Q oddaje się sam po M3 (wspólna ścieżka z trybem world).</summary>
+    private static void CompleteQuestAuto() => QRunFlow.CheckAutoComplete();
 
     public string TopStatus { get; private set; } = "";
     public string CenterMessage { get; private set; } = "";
@@ -55,7 +46,8 @@ public partial class ArenaManager : Node
             var s = EndgameCatalog.QScale(q);
             (_chalHp, _chalDmg, _chalXp, _chalIlvl) = (s.Hp, s.Dmg, s.Xp, s.ItemLevel);
             int mapIdx = EndgameCatalog.QMapIndex(zoneId);
-            _challengeTitle = $"THE FINAL PROVING  Q{q} — MAP {mapIdx}/{EndgameCatalog.QMaps.Count}   ";
+            int mapCount = EndgameCatalog.RunOfMap(zoneId)?.Maps.Count ?? 3;
+            _challengeTitle = $"THE FINAL PROVING  Q{q} — MAP {mapIdx}/{mapCount}   ";
         }
         else if (EndgameCatalog.TryParseGroup(_challenge, out var dun, out var diff))
         {
@@ -137,7 +129,7 @@ public partial class ArenaManager : Node
                             _state = State.MapCleared;
                             _timer = 3f;
                             _nextMap = nextMap;
-                            SetStatus("", $"MAP {EndgameCatalog.QMapIndex(_zone.Id)}/{EndgameCatalog.QMaps.Count} CLEARED!\nEntering the next map...");
+                            SetStatus("", $"MAP {EndgameCatalog.QMapIndex(_zone.Id)}/{EndgameCatalog.RunOfMap(_zone.Id)?.Maps.Count ?? 3} CLEARED!\nEntering the next map...");
                             break;
                         }
 

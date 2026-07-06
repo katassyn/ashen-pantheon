@@ -26,6 +26,10 @@ public sealed class MonsterDefinition
     public string QuestItem { get; set; } = "";
     /// <summary>Szansa na zrzut przedmiotu questowego (0..1).</summary>
     public float QuestItemChance { get; set; } = 0.5f;
+    /// <summary>Pity: gwarantowany drop przedmiotu questowego najpóźniej przy N-tym zabiciu (0 = tylko %).</summary>
+    public int QuestItemPity { get; set; }
+    /// <summary>Damage-gate: "questId/objectiveId" — mob ODPORNY, dopóki gracz nie zaliczy celu (questy Q).</summary>
+    public string GatedByObjective { get; set; } = "";
 
     // obrona (typy obrażeń graczy mają znaczenie)
     public float Armour { get; set; }

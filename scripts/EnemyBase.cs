@@ -35,6 +35,8 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     /// <summary>Przedmiot questowy (cel Collect) + szansa — z definicji potwora.</summary>
     protected virtual string QuestItemId => "";
     protected virtual float QuestItemChance => 0f;
+    /// <summary>Pity: gwarantowany drop przy N-tym zabiciu (0 = tylko szansa).</summary>
+    protected virtual int QuestItemPityAt => 0;
     /// <summary>Poziom potwora (= poziom dropu / skala affixów).</summary>
     protected virtual int MonsterLevel => 1;
 
@@ -161,9 +163,31 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
             if (n is EnemyBase e && !e._dying) yield return e;
     }
 
+    /// <summary>Damage-gate (questy Q): "questId/objectiveId" — mob odporny, dopóki gracz nie zaliczy celu.</summary>
+    protected virtual string GateObjective => "";
+
+    private bool GateBlocked()
+    {
+        string gate = GateObjective;
+        if (gate.Length == 0) return false;
+        var parts = gate.Split('/');
+        if (parts.Length != 2) return false;
+        var q = QuestCatalog.Find(parts[0]);
+        if (q == null) return false;
+        foreach (var o in q.Objectives)
+            if (o.Id == parts[1])
+                return !GameState.Quests.IsActive(q.Id) || !GameState.Quests.ObjectiveDone(q, o);
+        return false;
+    }
+
     public void ReceiveHit(ResolvedSkill skill)
     {
         if (_dying) return;
+        if (GateBlocked())
+        {
+            FloatingText.Spawn(GetParent(), GlobalPosition, "IMMUNE", new Color(0.75f, 0.7f, 1f), 16);
+            return; // warunek questa niespełniony — boss nietykalny (kanon Q3/Q9/Q10)
+        }
         if (Puppet)
         {
             // klient: tylko wizualny feedback — HP/statusy przyjdą z serwera
@@ -230,9 +254,18 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         Net.GrantXpAll(XpReward);
         Net.BroadcastQuestKill(ReplicationId); // cele Kill u wszystkich graczy (party-share)
 
-        // cel Collect: przedmiot questowy z szansą (rzut u hosta → broadcast do drużyny)
-        if (QuestItemId.Length > 0 && GD.Randf() < QuestItemChance)
-            Net.BroadcastQuestCollect(QuestItemId);
+        // cel Collect: przedmiot questowy z szansą + PITY (gwarancja najpóźniej przy N-tym zabiciu)
+        if (QuestItemId.Length > 0)
+        {
+            GameState.QuestItemPity.TryGetValue(QuestItemId, out int misses);
+            bool drop = GD.Randf() < QuestItemChance || (QuestItemPityAt > 0 && misses + 1 >= QuestItemPityAt);
+            if (drop)
+            {
+                GameState.QuestItemPity[QuestItemId] = 0;
+                Net.BroadcastQuestCollect(QuestItemId);
+            }
+            else GameState.QuestItemPity[QuestItemId] = misses + 1;
+        }
 
         // loot z TABELI (data/loot/*.json), rolowany OSOBNO per gracz (instancjonowany)
         if (DropsLoot)

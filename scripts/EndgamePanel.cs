@@ -128,31 +128,46 @@ public partial class EndgamePanel : CanvasLayer
             var enter = new Button { Text = "Enter", CustomMinimumSize = new Vector2(90, 0) };
             enter.Disabled = !unlocked || !solo || GameState.Wallet.Gold < s.Fee;
             int captured = q; long fee = s.Fee;
-            enter.Pressed += () => EnterChallenge(
-                EndgameCatalog.QMaps.Count > 0 ? EndgameCatalog.QMaps[0] : "",
-                EndgameCatalog.QChallenge(captured), fee);
+            enter.Pressed += () => EnterQ(captured, fee);
             row.AddChild(enter);
             _solo.AddChild(row);
         }
+    }
+
+    /// <summary>Wejście w run Q: opłata + POWTARZALNY auto-quest + podróż na M1 runu
+    /// (tryb world = statyczne mapy z interakcjami; arena = proceduralne pokoje).</summary>
+    private void EnterQ(int q, long fee)
+    {
+        var run = EndgameCatalog.RunFor(q);
+        if (run == null || run.Maps.Count == 0 || GameState.Wallet.Gold < fee) return;
+        GameState.Wallet.Gold -= fee;
+        StartQRunQuest(run.Quest);
+        GameState.Save();
+        string scene = run.Mode == "world" ? "res://scenes/WorldZone.tscn" : "res://scenes/Arena.tscn";
+        Travel(scene, run.Maps[0], EndgameCatalog.QChallenge(q));
     }
 
     private void EnterChallenge(string zoneId, string challenge, long fee)
     {
         if (zoneId.Length == 0 || GameState.Wallet.Gold < fee) return;
         GameState.Wallet.Gold -= fee; // opłata wejścia = sink złota (klucze itemowe dojdą później)
-        if (challenge.StartsWith("q:")) StartQRunQuest();
         GameState.Save();
+        Travel("res://scenes/Arena.tscn", zoneId, challenge);
+    }
+
+    private void Travel(string scene, string zoneId, string challenge)
+    {
         int seed = (int)(GD.Randi() % int.MaxValue);
         if (seed == 0) seed = 1;
         QueueFree();
-        Net.TravelAll("res://scenes/Arena.tscn", seed, zoneId, challenge);
+        Net.TravelAll(scene, seed, zoneId, challenge);
     }
 
     /// <summary>Run Q = POWTARZALNY auto-quest (M1→M2→M3): reset poprzedniego przebiegu i przyjęcie od nowa.
     /// Tracker pod minimapą prowadzi gracza przez mapy.</summary>
-    private static void StartQRunQuest()
+    private static void StartQRunQuest(string questId)
     {
-        var q = QuestCatalog.Find(EndgameCatalog.QQuest);
+        var q = QuestCatalog.Find(questId);
         if (q == null) return;
         GameState.Quests.Abandon(q.Id);          // porzuć niedokończony poprzedni run
         GameState.Quests.Completed.Remove(q.Id); // powtarzalny — ukończenie nie blokuje kolejnych

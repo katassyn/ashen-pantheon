@@ -14,8 +14,10 @@ public class EndgameTests
         Assert.Equal("odyssey_of_shadows", EndgameCatalog.Dungeons[0].Id);
         Assert.True(EndgameCatalog.Dungeons[0].Enabled);
         Assert.Equal(new[] { "blood", "hell", "infernal" }, EndgameCatalog.Difficulties.Select(d => d.Id));
-        Assert.Equal(new[] { "final_proving_m1", "final_proving_m2", "final_proving_m3" }, EndgameCatalog.QMaps);
-        Assert.Equal("final_proving_run", EndgameCatalog.QQuest);
+        Assert.Equal(2, EndgameCatalog.QRuns.Count); // q1 (arena) + q2 (world)
+        Assert.Equal("arena", EndgameCatalog.RunFor(1)!.Mode);
+        Assert.Equal("world", EndgameCatalog.RunFor(2)!.Mode);
+        Assert.Equal("final_proving_run", EndgameCatalog.RunFor(7)!.Quest); // brak wpisu → fallback do q1
         Assert.Equal(10, EndgameCatalog.QMax);
     }
 
@@ -27,18 +29,55 @@ public class EndgameTests
         Assert.Null(EndgameCatalog.NextQMap("final_proving_m3")); // M3 = finał
         Assert.Null(EndgameCatalog.NextQMap("swerdfield"));       // spoza runu
         Assert.Equal(3, EndgameCatalog.QMapIndex("final_proving_m3"));
+        Assert.Equal("q2_m3", EndgameCatalog.NextQMap("q2_m2")); // runy niezależne
+    }
+
+    [Fact]
+    public void Q2Run_MapsMobsAndGatesExist()
+    {
+        var run = EndgameCatalog.RunFor(2)!;
+        foreach (var map in run.Maps) Assert.True(WorldMaps.Zones.ContainsKey(map)); // world-mode = strefy świata
+        var quest = QuestCatalog.Find(run.Quest)!;
+        Assert.Equal(5, quest.Objectives.Count);
+        Assert.Equal("mushrooms", quest.Objectives[1].After); // eliksir dopiero po grzybach
+        foreach (var o in quest.Objectives.Where(o => o.Kind == ObjectiveType.Kill))
+            Assert.True(Bestiary.Monsters.ContainsKey(o.Target)); // bossy istnieją
+        Assert.True(Bestiary.Monster("arachnia_scourge").IsBoss);
+    }
+
+    [Fact]
+    public void Q2Quest_WildcardMushroomsAndAfterGate()
+    {
+        var log = new QuestLog();
+        var q = QuestCatalog.Find("q2_run")!;
+        Assert.True(log.Accept(q, 50));
+
+        log.OnInteract("q2_cauldron"); // bramka: bez grzybów kocioł nie liczy się
+        Assert.Equal(0, log.Progress(q.Id, "potion"));
+
+        for (int i = 1; i <= 5; i++) log.OnInteract($"q2_mushroom_{i}"); // wildcard zbiera po 1
+        Assert.Equal(5, log.Progress(q.Id, "mushrooms"));
+
+        log.OnInteract("q2_cauldron");
+        Assert.Equal(1, log.Progress(q.Id, "potion"));
+
+        log.OnKill("xarib_hunchback");
+        log.OnKill("arkhus_the_mad");
+        log.OnKill("arachnia_scourge");
+        Assert.True(log.ReadyToTurnIn(q));
     }
 
     [Fact]
     public void QRunQuest_TracksMapsAndIsRepeatable()
     {
         var q = QuestCatalog.Find("final_proving_run")!;
+        var maps = EndgameCatalog.RunFor(1)!.Maps;
         Assert.Equal(3, q.Objectives.Count);
         // cele = Clear kolejnych map runu (auto-quest prowadzi gracza M1→M2→M3)
-        Assert.Equal(EndgameCatalog.QMaps, q.Objectives.Select(o => o.Target));
+        Assert.Equal(maps, q.Objectives.Select(o => o.Target));
         foreach (var o in q.Objectives) Assert.Equal(ObjectiveType.Clear, o.Kind);
         // każda mapa musi istnieć w bestiariuszu (run musi dać się odpalić)
-        foreach (var map in EndgameCatalog.QMaps) Assert.True(Bestiary.Zones.ContainsKey(map));
+        foreach (var map in maps) Assert.True(Bestiary.Zones.ContainsKey(map));
 
         var log = new QuestLog();
         Assert.True(log.Accept(q, 50));

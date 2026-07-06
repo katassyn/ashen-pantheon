@@ -1,0 +1,20 @@
+{
+  "id": "q2_m2",
+  "name": "Poisoned Grove — Map 2",
+  "levelMin": 50,
+  "levelMax": 55,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["webweaver_stalker", "webweaver_stalker", "venom_spiderling"], "respawnSeconds": 45 },
+    { "x": 640, "y": 200, "monsters": ["poison_bloated_husk", "venom_spiderling", "venom_spiderling"], "respawnSeconds": 50 },
+    { "x": 920, "y": -80, "monsters": ["poison_bloated_husk", "webweaver_stalker", "venom_spiderling", "venom_spiderling"], "respawnSeconds": 55 },
+    { "x": 1200, "y": 260, "monsters": ["webweaver_stalker", "poison_bloated_husk", "poison_bloated_husk"], "respawnSeconds": 60 },
+    { "x": 1560, "y": 40, "monsters": ["arkhus_the_mad"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q2_m3", "label": "Map 3 — Arachnia's lair" }
+  ],
+  "markers": []
+}

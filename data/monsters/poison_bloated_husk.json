@@ -1,0 +1,19 @@
+{
+  "id": "poison_bloated_husk",
+  "name": "Poison-Bloated Husk",
+  "hp": 640,
+  "armour": 35,
+  "resChaos": 60,
+  "speed": 62,
+  "movement": "chase",
+  "scale": 1.4,
+  "tint": "#4a7a30",
+  "level": 52,
+  "xp": 250,
+  "lootTable": "common",
+  "attackInterval": 2.0,
+  "abilities": [
+    { "type": "melee", "damage": 44, "damageType": "Chaos", "windup": 0.65, "reach": 64 },
+    { "type": "tele_circle", "damage": 48, "damageType": "Chaos", "radius": 140, "windup": 0.9, "cooldown": 7 }
+  ]
+}

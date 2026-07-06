@@ -1,0 +1,44 @@
+{
+  "id": "arachnia_scourge",
+  "name": "Arachnia, Scourge of Dural",
+  "hp": 5400,
+  "armour": 50,
+  "resChaos": 70,
+  "speed": 74,
+  "movement": "chase",
+  "scale": 2.5,
+  "tint": "#50c040",
+  "level": 55,
+  "xp": 2600,
+  "lootTable": "boss",
+  "attackInterval": 1.8,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 1.8,
+      "abilities": [
+        { "type": "melee", "damage": 50, "damageType": "Chaos", "windup": 0.6, "reach": 80 },
+        { "type": "tele_circle", "damage": 56, "damageType": "Chaos", "radius": 160, "windup": 0.85 },
+        { "type": "projectile", "damage": 44, "damageType": "Chaos", "speed": 340 }
+      ]
+    },
+    {
+      "hpBelow": 0.6,
+      "attackInterval": 1.45,
+      "abilities": [
+        { "type": "tele_cone", "damage": 62, "damageType": "Chaos", "radius": 300, "halfAngleDeg": 42, "windup": 0.75 },
+        { "type": "summon", "monsterId": "venom_spiderling", "count": 3, "cooldown": 12 }
+      ]
+    },
+    {
+      "hpBelow": 0.3,
+      "attackInterval": 1.1,
+      "abilities": [
+        { "type": "tele_circle", "damage": 68, "damageType": "Chaos", "radius": 200, "windup": 0.6 },
+        { "type": "tele_line", "damage": 64, "damageType": "Chaos", "length": 520, "halfWidth": 42, "windup": 0.65 },
+        { "type": "summon", "monsterId": "webweaver_stalker", "count": 2, "cooldown": 11 }
+      ]
+    }
+  ]
+}

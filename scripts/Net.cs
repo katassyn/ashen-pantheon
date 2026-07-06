@@ -623,7 +623,11 @@ public partial class Net : Node
     private static void QuestKillLocal(string monsterId)
     {
         KillCredited?.Invoke();
-        if (GameState.Quests.OnKill(monsterId)) GameState.Save();
+        if (GameState.Quests.OnKill(monsterId))
+        {
+            GameState.Save();
+            QRunFlow.CheckAutoComplete(); // run Q domyka się killem bossa M3 (auto-oddanie bez NPC)
+        }
     }
 
     public static void BroadcastQuestCollect(string itemId)

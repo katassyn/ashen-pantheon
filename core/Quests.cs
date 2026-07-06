@@ -24,9 +24,12 @@ public sealed class ObjectiveDefinition
 {
     public string Id { get; set; } = "";
     public string Type { get; set; } = "Kill";
+    /// <summary>Cel dopasowania; sufiks "*" = prefiks-wildcard (np. "q2_mushroom_*" łapie 8 spotów grzybów).</summary>
     public string Target { get; set; } = "";
     public int Amount { get; set; } = 1;
     public string Description { get; set; } = "";
+    /// <summary>Bramka kolejności: id celu TEGO questa, który musi być ukończony, zanim ten zacznie się liczyć.</summary>
+    public string After { get; set; } = "";
 
     public ObjectiveType Kind => Enum.TryParse<ObjectiveType>(Type, true, out var t) ? t : ObjectiveType.Kill;
 }
@@ -120,11 +123,19 @@ public sealed class QuestLog
 
     // ── zdarzenia świata → postęp celów (zwracają true, jeśli coś się zmieniło) ──
 
+    /// <summary>Dopasowanie targetu celu ("*"-sufiks = prefiks-wildcard).</summary>
+    public static bool TargetMatches(string target, string id) =>
+        target == id || (target.EndsWith("*") && id.StartsWith(target[..^1]));
+
     public bool OnKill(string monsterId) => Bump(ObjectiveType.Kill, o => o.Target == monsterId || o.Target == "*");
     public bool OnCollect(string itemId, int count = 1) => Bump(ObjectiveType.Collect, o => o.Target == itemId, count);
     public bool OnTalk(string npcId) => Bump(ObjectiveType.Talk, o => o.Target == npcId);
     public bool OnReach(string markerId) => BumpOnce(ObjectiveType.Reach, markerId);
-    public bool OnInteract(string markerId) => BumpOnce(ObjectiveType.Interact, markerId);
+    /// <summary>Interakcja: wildcard-target liczy +1 per marker (zbieranie N obiektów z mapy),
+    /// dokładny target = jednorazowe zaliczenie.</summary>
+    public bool OnInteract(string markerId) =>
+        Bump(ObjectiveType.Interact, o => TargetMatches(o.Target, markerId),
+            bumpToMax: false);
     public bool OnClear(string zoneId) => Bump(ObjectiveType.Clear, o => o.Target == zoneId);
     public bool OnEscortArrived(string npcId) => BumpOnce(ObjectiveType.Escort, npcId);
     public bool OnDefendWave(string markerId) => Bump(ObjectiveType.Defend, o => o.Target == markerId);
@@ -154,6 +165,12 @@ public sealed class QuestLog
             if (q == null) continue;
             foreach (var o in q.Objectives.Where(o => o.Kind == kind && match(o)))
             {
+                // bramka kolejności: cel liczy się dopiero po ukończeniu celu z "after"
+                if (o.After.Length > 0)
+                {
+                    var gate = q.Objectives.FirstOrDefault(x => x.Id == o.After);
+                    if (gate != null && prog.GetValueOrDefault(gate.Id) < gate.Amount) continue;
+                }
                 int cur = prog.GetValueOrDefault(o.Id);
                 if (cur >= o.Amount) continue;
                 prog[o.Id] = bumpToMax ? o.Amount : Math.Min(o.Amount, cur + count);

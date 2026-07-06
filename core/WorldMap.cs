@@ -24,11 +24,15 @@ public sealed class WorldZoneDefinition
 public sealed class MarkerDefinition
 {
     public string Id { get; set; } = "";
-    /// <summary>reach | interact | escort | defend</summary>
+    /// <summary>reach | interact | escort | defend | survive | hazard</summary>
     public string Type { get; set; } = "reach";
     public float X { get; set; }
     public float Y { get; set; }
     public string Label { get; set; } = "";
+    /// <summary>Promień działania (hazard); 0 = domyślny typu.</summary>
+    public float Radius { get; set; }
+    /// <summary>Hazard: "questId/objectiveId" — zaliczony cel (np. antidotum) daje ODPORNOŚĆ na strefę.</summary>
+    public string RequiresObjective { get; set; } = "";
 
     // ── escort: NPC idzie z (X,Y) do (DestX,DestY) gdy gracz blisko; śmierć = reset ──
     public float DestX { get; set; }

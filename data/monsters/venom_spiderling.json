@@ -1,0 +1,18 @@
+{
+  "id": "venom_spiderling",
+  "name": "Venom Spiderling",
+  "hp": 300,
+  "evadeChance": 0.1,
+  "resChaos": 30,
+  "speed": 130,
+  "movement": "chase",
+  "scale": 0.9,
+  "tint": "#6aa03a",
+  "level": 51,
+  "xp": 180,
+  "lootTable": "common",
+  "attackInterval": 1.2,
+  "abilities": [
+    { "type": "melee", "damage": 32, "damageType": "Chaos", "windup": 0.4, "reach": 50 }
+  ]
+}

@@ -33,14 +33,22 @@ public sealed class DifficultyDefinition
     public bool RequiresPrevious { get; set; }
 }
 
+/// <summary>Definicja runu Q: 3 mapy (M1/M2 mini-bossy → M3 boss) + powtarzalny auto-quest.
+/// Mode "arena" = proceduralne pokoje; "world" = statyczne strefy z markerami (questy Q2-Q10
+/// z interakcjami wymagają stałej geografii). Q bez wpisu gra runem q=1 (fallback).</summary>
+public sealed class QRunDefinition
+{
+    public int Q { get; set; } = 1;
+    public string Quest { get; set; } = "";
+    public List<string> Maps { get; set; } = new();
+    public string Mode { get; set; } = "arena"; // arena | world
+}
+
 public sealed class EndgameFile
 {
     public List<DungeonDefinition> Dungeons { get; set; } = new();
     public List<DifficultyDefinition> Difficulties { get; set; } = new();
-    /// <summary>Mapy runu Q w kolejności: M1 (mini-boss) → M2 (mini-boss) → M3 (arena głównego bossa).</summary>
-    public List<string> QMaps { get; set; } = new();
-    /// <summary>Powtarzalny auto-quest runu Q (gracz dostaje przy wejściu, cele = Clear kolejnych map).</summary>
-    public string QQuest { get; set; } = "";
+    public List<QRunDefinition> QRuns { get; set; } = new();
     public int QMax { get; set; } = 10;
 }
 
@@ -50,8 +58,7 @@ public static class EndgameCatalog
 
     public static readonly List<DungeonDefinition> Dungeons = new();
     public static readonly List<DifficultyDefinition> Difficulties = new();
-    public static readonly List<string> QMaps = new();
-    public static string QQuest { get; private set; } = "";
+    public static readonly List<QRunDefinition> QRuns = new();
     public static int QMax { get; private set; } = 10;
     public static bool Loaded => Difficulties.Count > 0;
 
@@ -62,21 +69,30 @@ public static class EndgameCatalog
         Dungeons.AddRange(file.Dungeons.OrderBy(d => d.Tier));
         Difficulties.Clear();
         Difficulties.AddRange(file.Difficulties);
-        QMaps.Clear();
-        QMaps.AddRange(file.QMaps);
-        QQuest = file.QQuest;
+        QRuns.Clear();
+        QRuns.AddRange(file.QRuns.OrderBy(r => r.Q));
         QMax = file.QMax;
     }
 
-    /// <summary>Następna mapa runu Q po ukończeniu podanej (null = to była ostatnia / spoza runu).</summary>
+    /// <summary>Run dla stopnia Q; brak dedykowanego wpisu = run bazowy (q=1) w skali QScale(q).</summary>
+    public static QRunDefinition? RunFor(int q) =>
+        QRuns.FirstOrDefault(r => r.Q == q) ?? QRuns.FirstOrDefault(r => r.Q == 1);
+
+    /// <summary>Run, do którego należy mapa (null = strefa spoza runów Q).</summary>
+    public static QRunDefinition? RunOfMap(string zoneId) =>
+        QRuns.FirstOrDefault(r => r.Maps.Contains(zoneId));
+
+    /// <summary>Następna mapa w OBRĘBIE runu (null = ostatnia / spoza runu).</summary>
     public static string? NextQMap(string zoneId)
     {
-        int i = QMaps.IndexOf(zoneId);
-        return i < 0 || i + 1 >= QMaps.Count ? null : QMaps[i + 1];
+        var run = RunOfMap(zoneId);
+        if (run == null) return null;
+        int i = run.Maps.IndexOf(zoneId);
+        return i + 1 >= run.Maps.Count ? null : run.Maps[i + 1];
     }
 
-    /// <summary>Numer mapy runu (1-based; 0 = spoza runu Q).</summary>
-    public static int QMapIndex(string zoneId) => QMaps.IndexOf(zoneId) + 1;
+    /// <summary>Numer mapy w runie (1-based; 0 = spoza runu Q).</summary>
+    public static int QMapIndex(string zoneId) => (RunOfMap(zoneId)?.Maps.IndexOf(zoneId) ?? -1) + 1;
 
     public static DungeonDefinition? Dungeon(string id) => Dungeons.FirstOrDefault(d => d.Id == id);
     public static DifficultyDefinition? Difficulty(string id) => Difficulties.FirstOrDefault(d => d.Id == id);

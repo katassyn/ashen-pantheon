@@ -320,3 +320,59 @@ public partial class SurviveZone : Node2D
             HorizontalAlignment.Left, -1, 13, new Color(1f, 0.9f, 0.6f));
     }
 }
+
+/// <summary>Strefa zagrożenia (np. trucizna Arachnii, Q2): gracz bez odporności umiera po 3 s
+/// od wejścia. Odporność = zaliczony cel z RequiresObjective ("questId/objectiveId" — antidotum).</summary>
+public partial class HazardZone : Area2D
+{
+    public string RequiresObjective = "";
+    public float Radius = 220f;
+    public string LabelText = "Poison";
+
+    private const float GraceSeconds = 3f;
+    private bool _inside;
+    private float _time;
+    private float _warnCd;
+
+    public override void _Ready()
+    {
+        CollisionLayer = 0;
+        CollisionMask = 1;
+        AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = Radius } });
+        BodyEntered += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) { _inside = true; _time = 0f; } };
+        BodyExited += b => { if (b is PlayerController p && p.IsMultiplayerAuthority()) _inside = false; };
+        QueueRedraw();
+    }
+
+    private bool Immune()
+    {
+        var parts = RequiresObjective.Split('/');
+        if (parts.Length != 2) return false;
+        var q = AshenPantheon.Core.QuestCatalog.Find(parts[0]);
+        if (q == null) return false;
+        foreach (var o in q.Objectives)
+            if (o.Id == parts[1])
+                return GameState.Quests.IsActive(q.Id) && GameState.Quests.ObjectiveDone(q, o);
+        return false;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!_inside || PlayerController.Local is not { } p || p.Dead) { _time = 0f; return; }
+        if (Immune()) return;
+
+        _time += (float)delta;
+        _warnCd -= (float)delta;
+        if (_warnCd <= 0f)
+        {
+            _warnCd = 1f;
+            FloatingText.Spawn(GetParent(), p.GlobalPosition + new Vector2(0, -60),
+                $"{LabelText}! FLEE!", new Color(0.5f, 0.9f, 0.35f), 16);
+        }
+        if (_time >= GraceSeconds)
+            p.TakeDamage(99999f, AshenPantheon.Core.DamageType.Chaos, LabelText);
+    }
+
+    public override void _Draw() =>
+        DrawArc(Vector2.Zero, Radius, 0, Mathf.Tau, 64, new Color(0.5f, 0.9f, 0.35f, 0.4f), 3f);
+}

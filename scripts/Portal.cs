@@ -1,4 +1,5 @@
 using Godot;
+using AshenPantheon.Core;
 
 /// <summary>Portal do runu. Multiplayer: wejście GRACZA-HOSTA zabiera całą drużynę (wspólny seed).</summary>
 public partial class Portal : Area2D
@@ -27,6 +28,11 @@ public partial class Portal : Area2D
     {
         int seed = (int)(GD.Randi() % int.MaxValue);
         if (seed == 0) seed = 1;
-        Net.TravelAll(TargetScene, seed, TargetZone);
+        // przejście między mapami TEGO SAMEGO runu Q niesie challenge (skala + auto-quest ciągną się M1→M3)
+        string challenge = "";
+        var current = EndgameCatalog.RunOfMap(Net.TravelZoneId);
+        if (current != null && current == EndgameCatalog.RunOfMap(TargetZone))
+            challenge = Net.TravelChallengeId;
+        Net.TravelAll(TargetScene, seed, TargetZone, challenge);
     }
 }

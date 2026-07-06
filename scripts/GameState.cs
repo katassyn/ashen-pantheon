@@ -32,6 +32,8 @@ public static class GameState
 
     // ── endgame (The Final Proving Q1-Q10 + dungeony grupowe) ──
     public static int EndgameQ = 1;
+    /// <summary>Pity questItemów: liczba zabić bez dropu per item (sesyjne, jak w MC).</summary>
+    public static readonly System.Collections.Generic.Dictionary<string, int> QuestItemPity = new();
     public static System.Collections.Generic.HashSet<string> EndgameCleared = new();
 
     /// <summary>Kampania ukończona = wejście do endgame (finał = pokonanie Nefertari).</summary>

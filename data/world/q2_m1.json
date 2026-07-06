@@ -1,0 +1,32 @@
+{
+  "id": "q2_m1",
+  "name": "Poisoned Grove — Map 1",
+  "levelMin": 50,
+  "levelMax": 55,
+  "spawnX": 0,
+  "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["venom_spiderling", "venom_spiderling", "webweaver_stalker"], "respawnSeconds": 45 },
+    { "x": 620, "y": 180, "monsters": ["venom_spiderling", "venom_spiderling", "venom_spiderling", "webweaver_stalker"], "respawnSeconds": 50 },
+    { "x": 340, "y": 430, "monsters": ["poison_bloated_husk", "venom_spiderling"], "respawnSeconds": 55 },
+    { "x": 900, "y": -60, "monsters": ["webweaver_stalker", "webweaver_stalker", "venom_spiderling"], "respawnSeconds": 55 },
+    { "x": 1150, "y": 320, "monsters": ["poison_bloated_husk", "poison_bloated_husk", "venom_spiderling"], "respawnSeconds": 60 },
+    { "x": 1620, "y": 60, "monsters": ["xarib_hunchback"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q2_m2", "label": "Map 2 — the Mad One's camp" }
+  ],
+  "markers": [
+    { "id": "q2_mushroom_1", "x": 260, "y": 260, "type": "interact", "label": "Red Mushroom" },
+    { "id": "q2_mushroom_2", "x": 520, "y": -320, "type": "interact", "label": "Brown Mushroom" },
+    { "id": "q2_mushroom_3", "x": 740, "y": 420, "type": "interact", "label": "Red Mushroom" },
+    { "id": "q2_mushroom_4", "x": 980, "y": -260, "type": "interact", "label": "Brown Mushroom" },
+    { "id": "q2_mushroom_5", "x": 1120, "y": 120, "type": "interact", "label": "Red Mushroom" },
+    { "id": "q2_mushroom_6", "x": 480, "y": 560, "type": "interact", "label": "Brown Mushroom" },
+    { "id": "q2_mushroom_7", "x": 60, "y": -300, "type": "interact", "label": "Red Mushroom" },
+    { "id": "q2_mushroom_8", "x": 1300, "y": -140, "type": "interact", "label": "Brown Mushroom" },
+    { "id": "q2_cauldron", "x": 200, "y": 80, "type": "interact", "label": "Cauldron — brew the antidote" },
+    { "id": "q2_poison", "x": 1620, "y": 60, "type": "hazard", "label": "Arachnia's Poison", "radius": 300, "requiresObjective": "q2_run/potion" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "quests": [
+    {
+      "id": "q2_run",
+      "name": "Q2: The Poisoned Grove",
+      "description": "Arachnia's venom seeps through the grove. Brew an antidote, break through her champions and slay the Scourge of Dural.",
+      "requiredLevel": 50,
+      "questGiver": "",
+      "turnIn": "",
+      "objectives": [
+        { "id": "mushrooms", "type": "Interact", "target": "q2_mushroom_*", "amount": 5, "description": "Gather 5 mushrooms for the antidote" },
+        { "id": "potion", "type": "Interact", "target": "q2_cauldron", "amount": 1, "after": "mushrooms", "description": "Brew the antidote at the cauldron" },
+        { "id": "xarib", "type": "Kill", "target": "xarib_hunchback", "amount": 1, "description": "Slay Xarib the Hunchback (his lair is poisoned!)" },
+        { "id": "arkhus", "type": "Kill", "target": "arkhus_the_mad", "amount": 1, "description": "Map 2: slay Arkhus the Mad" },
+        { "id": "arachnia", "type": "Kill", "target": "arachnia_scourge", "amount": 1, "description": "Map 3: slay Arachnia, Scourge of Dural" }
+      ],
+      "dialogueStart": [],
+      "dialogueCompletion": [],
+      "rewardXp": 10000,
+      "rewardGold": 1800,
+      "nextQuest": "",
+      "zone": ""
+    }
+  ]
+}

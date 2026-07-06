@@ -18,6 +18,10 @@ public partial class WorldZoneManager : Node
 
     private readonly List<PackState> _packs = new();
 
+    // run Q (tryb world): mnożniki wyzwania na packach + ilvl dropu (0 = zwykła strefa)
+    private float _qHp = 1f, _qDmg = 1f, _qXp = 1f;
+    private int _qIlvl;
+
     public string TopStatus { get; private set; } = "";
     public string CenterMessage => "";
     public Vector2 SpawnPoint => _zone == null ? Vector2.Zero : new Vector2(_zone.SpawnX, _zone.SpawnY);
@@ -49,6 +53,16 @@ public partial class WorldZoneManager : Node
         _zone = WorldMaps.Zone(zoneId);
         GameState.DiscoverZone(zoneId); // waystone fast-travel odblokowany
         TopStatus = $"{_zone.Name}  (levels {_zone.LevelMin}-{_zone.LevelMax})";
+
+        // run Q w trybie world: skala trudności + ilvl dropu z wyzwania
+        if (EndgameCatalog.TryParseQ(Net.TravelChallengeId, out int qLvl))
+        {
+            var s = EndgameCatalog.QScale(qLvl);
+            (_qHp, _qDmg, _qXp, _qIlvl) = (s.Hp, s.Dmg, s.Xp, s.ItemLevel);
+            int mapIdx = EndgameCatalog.QMapIndex(zoneId);
+            int mapCount = EndgameCatalog.RunOfMap(zoneId)?.Maps.Count ?? 3;
+            TopStatus = $"THE PROVING  Q{qLvl} — MAP {mapIdx}/{mapCount}   {_zone.Name}";
+        }
 
         // wyjścia — widoczne u wszystkich (deterministyczne z definicji)
         foreach (var exit in _zone.Exits)
@@ -86,6 +100,12 @@ public partial class WorldZoneManager : Node
                 {
                     MarkerId = marker.Id, LabelText = marker.Label,
                     SurviveSeconds = marker.SurviveSeconds, WaveMonsters = marker.WaveMonsters, WaveInterval = marker.WaveInterval,
+                },
+                "hazard" => new HazardZone
+                {
+                    LabelText = marker.Label,
+                    Radius = marker.Radius > 0f ? marker.Radius : 220f,
+                    RequiresObjective = marker.RequiresObjective,
                 },
                 _ => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = marker.Type == "interact" },
             };
@@ -137,6 +157,7 @@ public partial class WorldZoneManager : Node
         public string MarkerId = "";
         public string LabelText = "";
         public bool Interact;
+        private bool _used; // interact z wildcard-celem: każdy marker liczy się RAZ (np. 5 różnych grzybów)
 
         private bool _inside;
         private Label _label;
@@ -182,7 +203,7 @@ public partial class WorldZoneManager : Node
                 var q = QuestCatalog.Find(questId);
                 if (q == null) continue;
                 foreach (var o in q.Objectives)
-                    if (o.Target == MarkerId && !GameState.Quests.ObjectiveDone(q, o))
+                    if (QuestLog.TargetMatches(o.Target, MarkerId) && !GameState.Quests.ObjectiveDone(q, o))
                         return true;
             }
             return false;
@@ -190,7 +211,7 @@ public partial class WorldZoneManager : Node
 
         private void UpdateVisibility()
         {
-            bool active = ObjectiveActive();
+            bool active = !_used && ObjectiveActive();
             Visible = active;
             SetDeferred(Area2D.PropertyName.Monitoring, active);
         }
@@ -200,7 +221,13 @@ public partial class WorldZoneManager : Node
             if (!Interact || !_inside || !Visible) return;
             if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "interact"))
             {
-                if (GameState.Quests.OnInteract(MarkerId)) Credit("used!");
+                if (GameState.Quests.OnInteract(MarkerId))
+                {
+                    Credit("used!");
+                    _used = true; // ten obiekt zużyty — cel wymaga N RÓŻNYCH markerów
+                    UpdateVisibility();
+                    QRunFlow.CheckAutoComplete(); // quest Q może kończyć się interakcją
+                }
                 GetViewport().SetInputAsHandled();
             }
         }
@@ -227,6 +254,13 @@ public partial class WorldZoneManager : Node
             var m = Monster.Create(monsterId);
             m.AggroRange = pack.Def.AggroRange;
             m.HomePos = center;
+            if (_qIlvl > 0) // run Q: skala trudności + drop na ilvl stopnia
+            {
+                m.HpMult *= _qHp;
+                m.DmgMult *= _qDmg;
+                m.XpMult *= _qXp;
+                m.LootIlvlOverride = _qIlvl;
+            }
             m.Position = center + Vector2.Right.Rotated(Mathf.Tau * i / Mathf.Max(1, pack.Def.Monsters.Count)) * pack.Def.Spread;
             i++;
             pack.Alive.Add(m);

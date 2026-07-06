@@ -1,0 +1,34 @@
+{
+  "id": "xarib_hunchback",
+  "name": "Xarib the Hunchback",
+  "hp": 1900,
+  "armour": 45,
+  "resChaos": 55,
+  "speed": 90,
+  "movement": "chase",
+  "scale": 1.7,
+  "tint": "#7a9a3a",
+  "level": 52,
+  "xp": 680,
+  "lootTable": "boss",
+  "attackInterval": 1.6,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 1.6,
+      "abilities": [
+        { "type": "melee", "damage": 46, "damageType": "Chaos", "windup": 0.55, "reach": 66 },
+        { "type": "tele_cone", "damage": 54, "damageType": "Chaos", "radius": 230, "halfAngleDeg": 40, "windup": 0.85, "cooldown": 6 }
+      ]
+    },
+    {
+      "hpBelow": 0.5,
+      "attackInterval": 1.25,
+      "abilities": [
+        { "type": "melee", "damage": 52, "damageType": "Chaos", "windup": 0.45, "reach": 66 },
+        { "type": "summon", "monsterId": "venom_spiderling", "count": 2, "cooldown": 12 }
+      ]
+    }
+  ]
+}
