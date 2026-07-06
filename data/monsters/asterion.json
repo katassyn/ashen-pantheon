@@ -1,0 +1,15 @@
+{
+  "id": "asterion", "name": "Asterion",
+  "hp": 3000, "armour": 60, "speed": 115, "movement": "chase", "scale": 2.0, "tint": "#b08a50",
+  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.6,
+  "gatedByObjective": "q9_run/statues",
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.6, "abilities": [
+      { "type": "melee", "damage": 56, "windup": 0.5, "reach": 74 },
+      { "type": "tele_line", "damage": 62, "length": 480, "halfWidth": 40, "windup": 0.75, "cooldown": 7 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.2, "abilities": [
+      { "type": "melee", "damage": 62, "windup": 0.4, "reach": 74 },
+      { "type": "tele_circle", "damage": 66, "radius": 175, "windup": 0.65, "cooldown": 6 } ] }
+  ]
+}

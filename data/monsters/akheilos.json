@@ -1,0 +1,15 @@
+{
+  "id": "akheilos", "name": "Akheilos",
+  "hp": 2000, "armour": 45, "resCold": 50, "speed": 105, "movement": "chase", "scale": 1.8, "tint": "#3a6ac0",
+  "level": 55, "xp": 820, "lootTable": "boss", "attackInterval": 1.5,
+  "gatedByObjective": "q10_run/statuette",
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.5, "abilities": [
+      { "type": "melee", "damage": 52, "windup": 0.45, "reach": 70 },
+      { "type": "tele_cone", "damage": 58, "damageType": "Cold", "radius": 240, "halfAngleDeg": 40, "windup": 0.8, "cooldown": 7 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.15, "abilities": [
+      { "type": "melee", "damage": 58, "windup": 0.38, "reach": 70 },
+      { "type": "tele_circle", "damage": 62, "damageType": "Cold", "radius": 165, "windup": 0.6, "cooldown": 6 } ] }
+  ]
+}

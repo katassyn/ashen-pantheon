@@ -1,0 +1,7 @@
+{
+  "id": "slain_assassin", "name": "Slain Assassin",
+  "hp": 600, "evadeChance": 0.15, "speed": 135, "movement": "chase", "scale": 1.05, "tint": "#5a6a5a",
+  "level": 53, "xp": 260, "lootTable": "common", "attackInterval": 1.2,
+  "questItem": "emerald_rune_fragment", "questItemChance": 0.34, "questItemPity": 3,
+  "abilities": [ { "type": "melee", "damage": 48, "windup": 0.35, "reach": 52 } ]
+}

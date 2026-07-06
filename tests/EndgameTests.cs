@@ -14,10 +14,11 @@ public class EndgameTests
         Assert.Equal("odyssey_of_shadows", EndgameCatalog.Dungeons[0].Id);
         Assert.True(EndgameCatalog.Dungeons[0].Enabled);
         Assert.Equal(new[] { "blood", "hell", "infernal" }, EndgameCatalog.Difficulties.Select(d => d.Id));
-        Assert.Equal(6, EndgameCatalog.QRuns.Count); // q1/q2/q4/q5/q6/q8 (world-mode, kanon Parallel World)
+        Assert.Equal(10, EndgameCatalog.QRuns.Count); // Q1-Q10 KOMPLET (world-mode, kanon Parallel World)
         Assert.Equal("world", EndgameCatalog.RunFor(1)!.Mode);
         Assert.Equal("world", EndgameCatalog.RunFor(2)!.Mode);
-        Assert.Equal("q1_run", EndgameCatalog.RunFor(7)!.Quest); // brak wpisu → fallback do q1
+        Assert.Equal("q7_run", EndgameCatalog.RunFor(7)!.Quest); // każdy Q ma własny run
+        Assert.Equal("q1_run", EndgameCatalog.RunFor(99)!.Quest); // brak wpisu → fallback do q1
         Assert.Equal(10, EndgameCatalog.QMax);
     }
 

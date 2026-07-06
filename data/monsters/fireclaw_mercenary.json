@@ -1,0 +1,9 @@
+{
+  "id": "fireclaw_mercenary", "name": "Fireclaw Mercenary",
+  "hp": 1200, "armour": 40, "resFire": 55, "speed": 115, "movement": "chase", "scale": 1.35, "tint": "#d06a30",
+  "level": 54, "xp": 340, "lootTable": "common", "attackInterval": 1.5,
+  "abilities": [
+    { "type": "melee", "damage": 48, "damageType": "Fire", "windup": 0.45, "reach": 60 },
+    { "type": "tele_cone", "damage": 54, "damageType": "Fire", "radius": 210, "halfAngleDeg": 38, "windup": 0.8, "cooldown": 8 }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "quests": [
+    {
+      "id": "q3_run",
+      "name": "Q3: The Miller's Curse",
+      "description": "The Evil Miller wards King Haradur's grave with a spell. Grind undead bones in his own mill to dispel it, then put the king to rest.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "bones", "type": "Collect", "target": "undead_bones", "amount": 20, "description": "Collect 20 Undead Bones (Cursed Farmers and Archers)" },
+        { "id": "mill", "type": "Interact", "target": "q3_mill", "amount": 1, "after": "bones", "description": "Grind the bones at the Mill to dispel the ward" },
+        { "id": "miller", "type": "Kill", "target": "evil_miller", "amount": 1, "description": "Slay the Evil Miller (immune until the ward is broken!)" },
+        { "id": "rune", "type": "Collect", "target": "emerald_rune_fragment", "amount": 1, "description": "Map 2: recover the Emerald Rune fragment (Slain Assassins)" },
+        { "id": "arrow", "type": "Kill", "target": "crimson_arrow", "amount": 1, "description": "Map 2: slay The Crimson Arrow — it carries the second fragment" },
+        { "id": "haradur", "type": "Kill", "target": "undead_king_haradur", "amount": 1, "description": "Map 3: slay Undead King Haradur" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 11000, "rewardGold": 2000, "nextQuest": "", "zone": ""
+    }
+  ]
+}

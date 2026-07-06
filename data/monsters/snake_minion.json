@@ -1,0 +1,6 @@
+{
+  "id": "snake_minion", "name": "Snake Minion",
+  "hp": 100, "evadeChance": 0.15, "speed": 135, "movement": "chase", "scale": 0.7, "tint": "#4aa04a",
+  "level": 55, "xp": 60, "lootTable": "common", "attackInterval": 1.0,
+  "abilities": [ { "type": "melee", "damage": 34, "damageType": "Chaos", "windup": 0.3, "reach": 44 } ]
+}

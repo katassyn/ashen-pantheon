@@ -171,6 +171,7 @@ public partial class EndgamePanel : CanvasLayer
         if (q == null) return;
         GameState.Quests.Abandon(q.Id);          // porzuć niedokończony poprzedni run
         GameState.Quests.Completed.Remove(q.Id); // powtarzalny — ukończenie nie blokuje kolejnych
+        GameState.CarryTokens.Clear();           // świeży run = puste ręce (Q10)
         if (GameState.Quests.Accept(q, GameState.Progress.Level))
             Net.SendChatLocal($"Quest accepted: {q.Name}");
     }

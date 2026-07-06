@@ -1,0 +1,18 @@
+{
+  "id": "herald_of_the_void", "name": "Herald of the Void",
+  "hp": 5000, "armour": 50, "resChaos": 75, "speed": 115, "movement": "keep_distance", "preferredRange": 220, "scale": 2.4, "tint": "#5a30a0",
+  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "tele_circle", "damage": 58, "damageType": "Chaos", "radius": 165, "windup": 0.85 },
+      { "type": "tele_cone", "damage": 60, "damageType": "Chaos", "radius": 290, "halfAngleDeg": 40, "windup": 0.85 },
+      { "type": "projectile", "damage": 46, "damageType": "Chaos", "speed": 380 } ] },
+    { "hpBelow": 0.6, "attackInterval": 1.4, "abilities": [
+      { "type": "tele_line", "damage": 64, "damageType": "Chaos", "length": 540, "halfWidth": 42, "windup": 0.7 },
+      { "type": "summon", "monsterId": "angry_flamespawn", "count": 3, "cooldown": 12 } ] },
+    { "hpBelow": 0.3, "attackInterval": 1.05, "abilities": [
+      { "type": "tele_circle", "damage": 72, "damageType": "Chaos", "radius": 210, "windup": 0.6 },
+      { "type": "tele_cone", "damage": 68, "damageType": "Chaos", "radius": 340, "halfAngleDeg": 52, "windup": 0.62 } ] }
+  ]
+}

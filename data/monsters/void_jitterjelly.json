@@ -1,0 +1,6 @@
+{
+  "id": "void_jitterjelly", "name": "Void Jitterjelly",
+  "hp": 600, "resChaos": 55, "speed": 85, "movement": "chase", "scale": 1.05, "tint": "#7a5ac0",
+  "level": 55, "xp": 230, "lootTable": "common", "attackInterval": 1.5,
+  "abilities": [ { "type": "melee", "damage": 36, "damageType": "Chaos", "windup": 0.5, "reach": 54 } ]
+}

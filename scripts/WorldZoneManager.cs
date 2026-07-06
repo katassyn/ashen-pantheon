@@ -22,6 +22,9 @@ public partial class WorldZoneManager : Node
     private float _qHp = 1f, _qDmg = 1f, _qXp = 1f;
     private int _qIlvl;
 
+    /// <summary>Loteria znaczników (Q9): id "prawdziwych" wylosowane przy budowie mapy.</summary>
+    public static readonly HashSet<string> LotteryWinners = new();
+
     public string TopStatus { get; private set; } = "";
     public string CenterMessage => "";
     public Vector2 SpawnPoint => _zone == null ? Vector2.Zero : new Vector2(_zone.SpawnX, _zone.SpawnY);
@@ -107,10 +110,30 @@ public partial class WorldZoneManager : Node
                     Radius = marker.Radius > 0f ? marker.Radius : 220f,
                     RequiresObjective = marker.RequiresObjective,
                 },
+                "take" => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = true, CarryTake = marker.CarryId },
+                "deposit" => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = true, CarryPut = marker.CarryId },
+                "lottery" => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = true, Lottery = true },
                 _ => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = marker.Type == "interact" },
             };
             node.Position = new Vector2(marker.X, marker.Y);
             GetParent().CallDeferred(Node.MethodName.AddChild, node);
+        }
+
+        // loteria (Q9): przy wejściu losujemy, które znaczniki są "prawdziwe" — reszta to atrapy
+        var lotteryIds = new List<string>();
+        int lotteryPick = 0;
+        foreach (var marker in _zone.Markers)
+            if (marker.Type == "lottery")
+            {
+                lotteryIds.Add(marker.Id);
+                if (marker.LotteryPick > 0) lotteryPick = marker.LotteryPick;
+            }
+        if (lotteryIds.Count > 0)
+        {
+            LotteryWinners.Clear();
+            var rng = new System.Random();
+            while (LotteryWinners.Count < Mathf.Min(lotteryPick, lotteryIds.Count))
+                LotteryWinners.Add(lotteryIds[rng.Next(lotteryIds.Count)]);
         }
 
         // waystone przy wejściu do strefy (fast-travel)
@@ -157,6 +180,9 @@ public partial class WorldZoneManager : Node
         public string MarkerId = "";
         public string LabelText = "";
         public bool Interact;
+        public string CarryTake = ""; // Q10: interakcja daje token (tylko gdy rąk nie zajmuje inny)
+        public string CarryPut = "";  // Q10: interakcja zużywa token (wymaga niesienia)
+        public bool Lottery;          // Q9: liczy się tylko wylosowany znacznik (reszta = atrapy)
         private bool _used; // interact z wildcard-celem: każdy marker liczy się RAZ (np. 5 różnych grzybów)
 
         private bool _inside;
@@ -221,14 +247,37 @@ public partial class WorldZoneManager : Node
             if (!Interact || !_inside || !Visible) return;
             if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "interact"))
             {
+                GetViewport().SetInputAsHandled();
+
+                // loteria (Q9): atrapa — informacja i zużycie znacznika, bez postępu
+                if (Lottery && !LotteryWinners.Contains(MarkerId))
+                {
+                    _used = true;
+                    UpdateVisibility();
+                    FloatingText.Spawn(GetParent(), GlobalPosition, "a decoy — nothing here", new Color(0.7f, 0.7f, 0.75f), 15);
+                    return;
+                }
+                // niesienie (Q10): najpierw odłóż, dopiero potem weź kolejny (1 → 1)
+                if (CarryTake.Length > 0 && GameState.CarryTokens.Contains(CarryTake))
+                {
+                    FloatingText.Spawn(GetParent(), GlobalPosition, "deposit the fragment you carry first!", new Color(1f, 0.7f, 0.4f), 15);
+                    return;
+                }
+                if (CarryPut.Length > 0 && !GameState.CarryTokens.Contains(CarryPut))
+                {
+                    FloatingText.Spawn(GetParent(), GlobalPosition, "you need a fragment to deposit!", new Color(1f, 0.7f, 0.4f), 15);
+                    return;
+                }
+
                 if (GameState.Quests.OnInteract(MarkerId))
                 {
+                    if (CarryTake.Length > 0) GameState.CarryTokens.Add(CarryTake);
+                    if (CarryPut.Length > 0) GameState.CarryTokens.Remove(CarryPut);
                     Credit("used!");
                     _used = true; // ten obiekt zużyty — cel wymaga N RÓŻNYCH markerów
                     UpdateVisibility();
                     QRunFlow.CheckAutoComplete(); // quest Q może kończyć się interakcją
                 }
-                GetViewport().SetInputAsHandled();
             }
         }
 

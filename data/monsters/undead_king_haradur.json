@@ -1,0 +1,17 @@
+{
+  "id": "undead_king_haradur", "name": "Undead King Haradur",
+  "hp": 5000, "armour": 65, "resCold": 40, "resChaos": 45, "speed": 105, "movement": "chase", "scale": 2.4, "tint": "#4a5a8a",
+  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.8,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.8, "abilities": [
+      { "type": "melee", "damage": 54, "windup": 0.6, "reach": 78 },
+      { "type": "tele_cone", "damage": 60, "damageType": "Cold", "radius": 280, "halfAngleDeg": 40, "windup": 0.85 } ] },
+    { "hpBelow": 0.6, "attackInterval": 1.45, "abilities": [
+      { "type": "tele_line", "damage": 64, "damageType": "Cold", "length": 520, "halfWidth": 42, "windup": 0.75 },
+      { "type": "summon", "monsterId": "slain_warrior", "count": 2, "cooldown": 13 } ] },
+    { "hpBelow": 0.3, "attackInterval": 1.1, "abilities": [
+      { "type": "tele_circle", "damage": 70, "damageType": "Cold", "radius": 205, "windup": 0.6 },
+      { "type": "summon", "monsterId": "slain_archer", "count": 2, "cooldown": 11 } ] }
+  ]
+}

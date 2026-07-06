@@ -1,0 +1,6 @@
+{
+  "id": "jabbax", "name": "Jabbax",
+  "hp": 500, "evadeChance": 0.1, "speed": 105, "movement": "chase", "scale": 0.9, "tint": "#5a9a6a",
+  "level": 54, "xp": 190, "lootTable": "common", "attackInterval": 1.2,
+  "abilities": [ { "type": "melee", "damage": 36, "windup": 0.4, "reach": 50 } ]
+}

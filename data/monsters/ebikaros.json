@@ -1,0 +1,15 @@
+{
+  "id": "ebikaros", "name": "Ebikaros",
+  "hp": 3000, "armour": 50, "resChaos": 50, "speed": 95, "movement": "keep_distance", "preferredRange": 210, "scale": 1.95, "tint": "#6a8ab0",
+  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.7,
+  "gatedByObjective": "q9_run/altars",
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "projectile", "damage": 50, "damageType": "Chaos", "speed": 380 },
+      { "type": "tele_circle", "damage": 58, "damageType": "Chaos", "radius": 160, "windup": 0.85 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.3, "abilities": [
+      { "type": "tele_cone", "damage": 62, "damageType": "Chaos", "radius": 260, "halfAngleDeg": 42, "windup": 0.72 },
+      { "type": "summon", "monsterId": "jabbax", "count": 3, "cooldown": 12 } ] }
+  ]
+}

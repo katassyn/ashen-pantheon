@@ -33,6 +33,10 @@ public sealed class MarkerDefinition
     public float Radius { get; set; }
     /// <summary>Hazard: "questId/objectiveId" — zaliczony cel (np. antidotum) daje ODPORNOŚĆ na strefę.</summary>
     public string RequiresObjective { get; set; } = "";
+    /// <summary>take/deposit: token niesiony przez gracza (Q10: fragment — weź 1 → odłóż 1 → dopiero kolejny).</summary>
+    public string CarryId { get; set; } = "";
+    /// <summary>lottery: ile znaczników z tej mapy jest losowo "prawdziwych" (Q9: 4 z 8 posągów).</summary>
+    public int LotteryPick { get; set; }
 
     // ── escort: NPC idzie z (X,Y) do (DestX,DestY) gdy gracz blisko; śmierć = reset ──
     public float DestX { get; set; }

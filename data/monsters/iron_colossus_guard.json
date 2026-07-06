@@ -1,0 +1,14 @@
+{
+  "id": "iron_colossus_guard", "name": "Iron Colossus Gate Guard",
+  "hp": 3000, "armour": 70, "resLightning": 40, "speed": 85, "movement": "chase", "scale": 2.0, "tint": "#6a7078",
+  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.9,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.9, "abilities": [
+      { "type": "melee", "damage": 54, "windup": 0.6, "reach": 74 },
+      { "type": "tele_circle", "damage": 60, "radius": 165, "windup": 0.9, "cooldown": 7 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.4, "abilities": [
+      { "type": "melee", "damage": 60, "windup": 0.5, "reach": 74 },
+      { "type": "tele_line", "damage": 64, "length": 480, "halfWidth": 42, "windup": 0.75, "cooldown": 6 } ] }
+  ]
+}

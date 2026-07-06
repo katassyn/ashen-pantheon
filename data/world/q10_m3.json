@@ -1,0 +1,10 @@
+{
+  "id": "q10_m3", "name": "Gorgatha's Maw",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 420, "y": -120, "monsters": ["snake_minion", "void_jabbax"], "respawnSeconds": 55 },
+    { "x": 1100, "y": 0, "monsters": ["gorgatha"], "respawnSeconds": 120, "aggroRange": 560 }
+  ],
+  "exits": [ { "x": -260, "y": 0, "target": "hub", "label": "Return to town" } ],
+  "markers": []
+}

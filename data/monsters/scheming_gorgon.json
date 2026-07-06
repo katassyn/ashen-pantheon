@@ -1,0 +1,6 @@
+{
+  "id": "scheming_gorgon", "name": "Scheming Gorgon",
+  "hp": 800, "resChaos": 50, "speed": 105, "movement": "keep_distance", "preferredRange": 240, "scale": 1.15, "tint": "#4a9a7a",
+  "level": 55, "xp": 280, "lootTable": "common", "attackInterval": 1.5,
+  "abilities": [ { "type": "projectile", "damage": 48, "damageType": "Chaos", "speed": 380 } ]
+}

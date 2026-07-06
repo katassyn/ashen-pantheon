@@ -1,0 +1,20 @@
+{
+  "id": "q7_m2", "name": "Siegeworks of the Void — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["wild_razorclaw", "wild_razorclaw", "angry_flamespawn"], "respawnSeconds": 32 },
+    { "x": 640, "y": 200, "monsters": ["flamescale_defender", "angry_flamespawn", "wild_razorclaw"], "respawnSeconds": 34 },
+    { "x": 1200, "y": -260, "monsters": ["fireclaw_mercenary", "flamescale_defender"], "respawnSeconds": 40 },
+    { "x": 1560, "y": 40, "monsters": ["commander_cindersword"], "respawnSeconds": 90, "aggroRange": 440 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q7_m3", "label": "Map 3 — the Void breach" }
+  ],
+  "markers": [
+    { "id": "q7_altar1", "x": 700, "y": -60, "type": "defend", "label": "First Altar", "waves": 3,
+      "waveMonsters": ["wild_razorclaw", "flamescale_defender", "fireclaw_mercenary"], "waveInterval": 10 },
+    { "id": "q7_altar2", "x": 1100, "y": 220, "type": "defend", "label": "Second Altar", "waves": 3,
+      "waveMonsters": ["wild_razorclaw", "wild_razorclaw", "flamescale_defender", "flamescale_defender", "fireclaw_mercenary"], "waveInterval": 11 }
+  ]
+}

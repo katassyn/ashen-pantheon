@@ -1,0 +1,6 @@
+{
+  "id": "slain_warrior", "name": "Slain Warrior",
+  "hp": 800, "armour": 40, "speed": 95, "movement": "chase", "scale": 1.15, "tint": "#6a7a6a",
+  "level": 53, "xp": 250, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "melee", "damage": 40, "windup": 0.5, "reach": 58 } ]
+}

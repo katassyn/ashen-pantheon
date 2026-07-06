@@ -1,0 +1,14 @@
+{
+  "id": "crimson_arrow", "name": "The Crimson Arrow",
+  "hp": 1500, "evadeChance": 0.18, "speed": 115, "movement": "keep_distance", "preferredRange": 280, "scale": 1.5, "tint": "#c03a3a",
+  "level": 53, "xp": 700, "lootTable": "boss", "attackInterval": 1.5,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.5, "abilities": [
+      { "type": "projectile", "damage": 52, "speed": 420 },
+      { "type": "tele_line", "damage": 58, "length": 520, "halfWidth": 34, "windup": 0.75, "cooldown": 6 } ] },
+    { "hpBelow": 0.5, "attackInterval": 1.15, "abilities": [
+      { "type": "projectile", "damage": 58, "speed": 440 },
+      { "type": "tele_line", "damage": 62, "length": 560, "halfWidth": 38, "windup": 0.65, "cooldown": 5 } ] }
+  ]
+}

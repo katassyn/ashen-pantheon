@@ -1,0 +1,6 @@
+{
+  "id": "perfidious_satyr_archer", "name": "Perfidious Satyr Archer",
+  "hp": 600, "evadeChance": 0.1, "speed": 115, "movement": "keep_distance", "preferredRange": 260, "scale": 1.05, "tint": "#9a7a4a",
+  "level": 54, "xp": 240, "lootTable": "common", "attackInterval": 1.5,
+  "abilities": [ { "type": "projectile", "damage": 48, "speed": 380 } ]
+}

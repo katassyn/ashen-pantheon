@@ -1,0 +1,10 @@
+{
+  "id": "q7_m3", "name": "The Void Breach",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 420, "y": -120, "monsters": ["angry_flamespawn", "angry_flamespawn"], "respawnSeconds": 60 },
+    { "x": 1100, "y": 0, "monsters": ["herald_of_the_void"], "respawnSeconds": 120, "aggroRange": 540 }
+  ],
+  "exits": [ { "x": -260, "y": 0, "target": "hub", "label": "Return to town" } ],
+  "markers": []
+}

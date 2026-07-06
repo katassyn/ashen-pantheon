@@ -1,0 +1,10 @@
+{
+  "id": "b900_mechanoid", "name": "B-900 Combat Mechanoid",
+  "hp": 1200, "armour": 60, "resLightning": 50, "speed": 85, "movement": "chase", "scale": 1.35, "tint": "#8a9aa8",
+  "level": 53, "xp": 340, "lootTable": "common", "attackInterval": 1.8,
+  "questItem": "catapult_ball", "questItemChance": 0.5, "questItemPity": 4,
+  "abilities": [
+    { "type": "melee", "damage": 36, "windup": 0.55, "reach": 60 },
+    { "type": "projectile", "damage": 42, "damageType": "Lightning", "speed": 380, "cooldown": 7 }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "id": "mordacious_kharos", "name": "Mordacious Kharos",
+  "hp": 1000, "evadeChance": 0.1, "speed": 95, "movement": "chase", "scale": 1.25, "tint": "#2a7a90",
+  "level": 55, "xp": 320, "lootTable": "common", "attackInterval": 1.4,
+  "abilities": [ { "type": "melee", "damage": 48, "damageType": "Chaos", "windup": 0.45, "reach": 58 } ]
+}

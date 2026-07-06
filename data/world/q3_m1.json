@@ -1,0 +1,19 @@
+{
+  "id": "q3_m1", "name": "Haradur's Fields — Map 1",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["cursed_farmer", "cursed_farmer", "cursed_archer"], "respawnSeconds": 28 },
+    { "x": 620, "y": 180, "monsters": ["cursed_farmer", "cursed_archer", "cursed_archer"], "respawnSeconds": 30 },
+    { "x": 340, "y": 430, "monsters": ["cursed_troll", "cursed_farmer"], "respawnSeconds": 36 },
+    { "x": 900, "y": -60, "monsters": ["cursed_farmer", "cursed_farmer", "cursed_archer", "cursed_archer"], "respawnSeconds": 32 },
+    { "x": 1150, "y": 320, "monsters": ["cursed_troll", "cursed_archer", "cursed_farmer"], "respawnSeconds": 38 },
+    { "x": 1620, "y": 60, "monsters": ["evil_miller"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q3_m2", "label": "Map 2 — the Slain Ranks" }
+  ],
+  "markers": [
+    { "id": "q3_mill", "x": 760, "y": -320, "type": "interact", "label": "The Mill — grind the bones" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "quests": [
+    {
+      "id": "q10_run",
+      "name": "Q10: The Drowned Idol",
+      "description": "Carry the ancient fragments one by one to the pedestals — the shrine allows no greed. Break the wards, claim the whale idol and slay Gorgatha.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "taken", "type": "Interact", "target": "q10_reliquary_*", "amount": 3, "description": "Take ancient fragments from the Reliquaries (one at a time!)" },
+        { "id": "placed", "type": "Interact", "target": "q10_pedestal_*", "amount": 3, "description": "Deposit each fragment at a different Pedestal" },
+        { "id": "melax", "type": "Kill", "target": "melax_swift_footed", "amount": 1, "description": "Slay Melax the Swift-Footed (immune until all fragments rest!)" },
+        { "id": "statuette", "type": "Collect", "target": "whale_statuette", "amount": 1, "description": "Map 2: claim the Golden Whale Statuette (Armed Kharos)" },
+        { "id": "akheilos", "type": "Kill", "target": "akheilos", "amount": 1, "description": "Map 2: slay Akheilos (immune without the statuette!)" },
+        { "id": "gorgatha", "type": "Kill", "target": "gorgatha", "amount": 1, "description": "Map 3: slay Gorgatha" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 13000, "rewardGold": 2500, "nextQuest": "", "zone": ""
+    }
+  ]
+}

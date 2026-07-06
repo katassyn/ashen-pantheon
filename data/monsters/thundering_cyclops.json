@@ -1,0 +1,9 @@
+{
+  "id": "thundering_cyclops", "name": "Thundering Cyclops",
+  "hp": 1500, "armour": 45, "resLightning": 55, "speed": 105, "movement": "chase", "scale": 1.6, "tint": "#7a88c0",
+  "level": 53, "xp": 400, "lootTable": "common", "attackInterval": 1.8,
+  "abilities": [
+    { "type": "melee", "damage": 52, "windup": 0.6, "reach": 70 },
+    { "type": "tele_circle", "damage": 56, "damageType": "Lightning", "radius": 155, "windup": 0.9, "cooldown": 8 }
+  ]
+}

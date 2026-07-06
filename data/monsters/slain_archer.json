@@ -1,0 +1,6 @@
+{
+  "id": "slain_archer", "name": "Slain Archer",
+  "hp": 500, "evadeChance": 0.08, "speed": 95, "movement": "keep_distance", "preferredRange": 250, "scale": 1.0, "tint": "#7a8a7a",
+  "level": 53, "xp": 230, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "projectile", "damage": 44, "speed": 360 } ]
+}

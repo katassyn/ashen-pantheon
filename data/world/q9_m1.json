@@ -1,0 +1,25 @@
+{
+  "id": "q9_m1", "name": "Labyrinth Approach — Map 1",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["agile_satyr_warrior", "perfidious_satyr_archer"], "respawnSeconds": 32 },
+    { "x": 620, "y": 180, "monsters": ["agile_satyr_warrior", "agile_satyr_warrior", "perfidious_satyr_archer"], "respawnSeconds": 34 },
+    { "x": 900, "y": -60, "monsters": ["cohort_swordsman", "perfidious_satyr_archer"], "respawnSeconds": 38 },
+    { "x": 1150, "y": 320, "monsters": ["stone_golem", "agile_satyr_warrior"], "respawnSeconds": 44 },
+    { "x": 1620, "y": 60, "monsters": ["asterion"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q9_m2", "label": "Map 2 — the altar grounds" }
+  ],
+  "markers": [
+    { "id": "q9_statue_1", "x": 240, "y": 300, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_2", "x": 520, "y": -320, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_3", "x": 760, "y": 420, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_4", "x": 1000, "y": -280, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_5", "x": 1180, "y": 100, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_6", "x": 480, "y": 560, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_7", "x": 80, "y": -300, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 },
+    { "id": "q9_statue_8", "x": 1340, "y": -120, "type": "lottery", "label": "Stone Effigy", "lotteryPick": 4 }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "q3_m2", "name": "Haradur's Fields — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["slain_warrior", "slain_archer", "slain_archer"], "respawnSeconds": 32 },
+    { "x": 640, "y": 200, "monsters": ["slain_assassin", "slain_warrior"], "respawnSeconds": 36 },
+    { "x": 920, "y": -80, "monsters": ["slain_assassin", "slain_archer", "slain_warrior"], "respawnSeconds": 38 },
+    { "x": 1200, "y": 260, "monsters": ["slain_assassin", "slain_assassin", "slain_warrior"], "respawnSeconds": 40 },
+    { "x": 1560, "y": 40, "monsters": ["crimson_arrow"], "respawnSeconds": 90, "aggroRange": 440 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q3_m3", "label": "Map 3 — the King's grave" }
+  ],
+  "markers": []
+}

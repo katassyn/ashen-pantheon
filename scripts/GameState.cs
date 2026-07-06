@@ -34,6 +34,8 @@ public static class GameState
     public static int EndgameQ = 1;
     /// <summary>Pity questItemów: liczba zabić bez dropu per item (sesyjne, jak w MC).</summary>
     public static readonly System.Collections.Generic.Dictionary<string, int> QuestItemPity = new();
+    /// <summary>Tokeny "niesione" w runie Q (Q10: fragment relikwiarza — 1 naraz); czyszczone przy starcie runu.</summary>
+    public static readonly System.Collections.Generic.HashSet<string> CarryTokens = new();
     public static System.Collections.Generic.HashSet<string> EndgameCleared = new();
 
     /// <summary>Kampania ukończona = wejście do endgame (finał = pokonanie Nefertari).</summary>

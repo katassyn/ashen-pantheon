@@ -1,0 +1,6 @@
+{
+  "id": "wild_razorclaw", "name": "Wild Razorclaw",
+  "hp": 600, "evadeChance": 0.12, "speed": 135, "movement": "chase", "scale": 1.0, "tint": "#c07a3a",
+  "level": 54, "xp": 240, "lootTable": "common", "attackInterval": 1.1,
+  "abilities": [ { "type": "melee", "damage": 52, "windup": 0.35, "reach": 52 } ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "cursed_troll", "name": "Cursed Troll",
+  "hp": 1000, "armour": 45, "speed": 105, "movement": "chase", "scale": 1.45, "tint": "#6a8a4a",
+  "level": 52, "xp": 320, "lootTable": "common", "attackInterval": 1.8,
+  "abilities": [
+    { "type": "melee", "damage": 44, "windup": 0.6, "reach": 66 },
+    { "type": "tele_circle", "damage": 50, "radius": 145, "windup": 0.9, "cooldown": 8 }
+  ]
+}

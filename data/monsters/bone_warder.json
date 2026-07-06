@@ -1,0 +1,6 @@
+{
+  "id": "bone_warder", "name": "Bone Warder",
+  "hp": 800, "armour": 40, "speed": 95, "movement": "chase", "scale": 1.15, "tint": "#b0a890",
+  "level": 53, "xp": 250, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "melee", "damage": 44, "windup": 0.5, "reach": 58 } ]
+}

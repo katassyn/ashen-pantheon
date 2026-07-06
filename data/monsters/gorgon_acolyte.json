@@ -1,0 +1,6 @@
+{
+  "id": "gorgon_acolyte", "name": "Gorgon Acolyte",
+  "hp": 600, "resChaos": 45, "speed": 105, "movement": "keep_distance", "preferredRange": 240, "scale": 1.05, "tint": "#5aa08a",
+  "level": 54, "xp": 240, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "projectile", "damage": 48, "damageType": "Chaos", "speed": 360 } ]
+}

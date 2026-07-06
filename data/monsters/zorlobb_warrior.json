@@ -1,0 +1,9 @@
+{
+  "id": "zorlobb_warrior", "name": "Zorlobb Warrior",
+  "hp": 1500, "armour": 55, "speed": 95, "movement": "chase", "scale": 1.5, "tint": "#4a8a8a",
+  "level": 54, "xp": 400, "lootTable": "common", "attackInterval": 1.7,
+  "abilities": [
+    { "type": "melee", "damage": 54, "windup": 0.55, "reach": 64 },
+    { "type": "tele_cone", "damage": 58, "radius": 220, "halfAngleDeg": 40, "windup": 0.85, "cooldown": 8 }
+  ]
+}

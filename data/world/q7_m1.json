@@ -1,0 +1,20 @@
+{
+  "id": "q7_m1", "name": "Siegeworks of the Void — Map 1",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 360, "y": -160, "monsters": ["bone_warder", "bone_warder", "b900_mechanoid"], "respawnSeconds": 32 },
+    { "x": 620, "y": 180, "monsters": ["b900_mechanoid", "bone_warder"], "respawnSeconds": 34 },
+    { "x": 340, "y": 430, "monsters": ["thundering_cyclops", "bone_warder"], "respawnSeconds": 38 },
+    { "x": 900, "y": -60, "monsters": ["b900_mechanoid", "b900_mechanoid", "bone_warder"], "respawnSeconds": 36 },
+    { "x": 1150, "y": 320, "monsters": ["dark_sentinel", "thundering_cyclops"], "respawnSeconds": 42 },
+    { "x": 1620, "y": 60, "monsters": ["iron_colossus_guard"], "respawnSeconds": 90, "aggroRange": 420 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1900, "y": 60, "target": "q7_m2", "label": "Map 2 — the burning altars" }
+  ],
+  "markers": [
+    { "id": "q7_lever_1", "x": 520, "y": -340, "type": "interact", "label": "Catapult Lever" },
+    { "id": "q7_lever_2", "x": 1050, "y": -300, "type": "interact", "label": "Catapult Lever" }
+  ]
+}

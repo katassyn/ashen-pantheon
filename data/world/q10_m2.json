@@ -1,0 +1,16 @@
+{
+  "id": "q10_m2", "name": "Sunken Shrine — Map 2",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 380, "y": -140, "monsters": ["void_jabbax", "void_jabbax", "patrolling_jabbax"], "respawnSeconds": 30 },
+    { "x": 640, "y": 200, "monsters": ["armed_kharos", "void_jabbax"], "respawnSeconds": 32 },
+    { "x": 920, "y": -80, "monsters": ["armed_kharos", "mordacious_kharos"], "respawnSeconds": 34 },
+    { "x": 1200, "y": 260, "monsters": ["armed_kharos", "armed_kharos", "mordacious_kharos"], "respawnSeconds": 36 },
+    { "x": 1560, "y": 40, "monsters": ["akheilos"], "respawnSeconds": 90, "aggroRange": 440 }
+  ],
+  "exits": [
+    { "x": -260, "y": 0, "target": "hub", "label": "Abandon run (back to town)" },
+    { "x": 1860, "y": 40, "target": "q10_m3", "label": "Map 3 — Gorgatha's maw" }
+  ],
+  "markers": []
+}

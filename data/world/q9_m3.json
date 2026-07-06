@@ -1,0 +1,10 @@
+{
+  "id": "q9_m3", "name": "Medusa's Den",
+  "levelMin": 50, "levelMax": 55, "spawnX": 0, "spawnY": 0,
+  "packs": [
+    { "x": 420, "y": -120, "monsters": ["snake_minion", "snake_minion", "snake_minion"], "respawnSeconds": 50 },
+    { "x": 1100, "y": 0, "monsters": ["medusa"], "respawnSeconds": 120, "aggroRange": 540 }
+  ],
+  "exits": [ { "x": -260, "y": 0, "target": "hub", "label": "Return to town" } ],
+  "markers": []
+}

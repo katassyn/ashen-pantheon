@@ -1,0 +1,7 @@
+{
+  "id": "armed_kharos", "name": "Armed Kharos",
+  "hp": 1000, "armour": 50, "speed": 95, "movement": "chase", "scale": 1.25, "tint": "#3a8aa0",
+  "level": 55, "xp": 320, "lootTable": "common", "attackInterval": 1.6,
+  "questItem": "whale_statuette", "questItemChance": 0.12, "questItemPity": 30,
+  "abilities": [ { "type": "melee", "damage": 44, "windup": 0.5, "reach": 60 } ]
+}

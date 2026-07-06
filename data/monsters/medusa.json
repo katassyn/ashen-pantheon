@@ -1,0 +1,17 @@
+{
+  "id": "medusa", "name": "Medusa",
+  "hp": 5000, "armour": 50, "resChaos": 70, "speed": 105, "movement": "keep_distance", "preferredRange": 240, "scale": 2.4, "tint": "#3aa06a",
+  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.7,
+  "abilities": [],
+  "phases": [
+    { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
+      { "type": "projectile", "damage": 48, "damageType": "Chaos", "speed": 400 },
+      { "type": "tele_cone", "damage": 58, "damageType": "Chaos", "radius": 280, "halfAngleDeg": 36, "windup": 0.85 } ] },
+    { "hpBelow": 0.6, "attackInterval": 1.4, "abilities": [
+      { "type": "tele_circle", "damage": 62, "damageType": "Chaos", "radius": 175, "windup": 0.72 },
+      { "type": "summon", "monsterId": "snake_minion", "count": 4, "cooldown": 12 } ] },
+    { "hpBelow": 0.3, "attackInterval": 1.05, "abilities": [
+      { "type": "tele_line", "damage": 70, "damageType": "Chaos", "length": 560, "halfWidth": 42, "windup": 0.6 },
+      { "type": "summon", "monsterId": "snake_minion", "count": 5, "cooldown": 10 } ] }
+  ]
+}

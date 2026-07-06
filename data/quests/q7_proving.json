@@ -1,0 +1,21 @@
+{
+  "quests": [
+    {
+      "id": "q7_run",
+      "name": "Q7: Siege of the Breach",
+      "description": "The Void legion masses behind the gate. Arm the catapults, hold both altars against the counterattack and cut down the Herald.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "balls", "type": "Collect", "target": "catapult_ball", "amount": 2, "description": "Recover 2 Catapult Balls (B-900 Combat Mechanoids)" },
+        { "id": "levers", "type": "Interact", "target": "q7_lever_*", "amount": 2, "after": "balls", "description": "Fire both catapults" },
+        { "id": "guard", "type": "Kill", "target": "iron_colossus_guard", "amount": 1, "description": "Slay the Iron Colossus Gate Guard" },
+        { "id": "altar1", "type": "Defend", "target": "q7_altar1", "amount": 3, "description": "Map 2: defend the First Altar (3 waves)" },
+        { "id": "altar2", "type": "Defend", "target": "q7_altar2", "amount": 3, "after": "altar1", "description": "Map 2: defend the Second Altar (3 waves)" },
+        { "id": "cindersword", "type": "Kill", "target": "commander_cindersword", "amount": 1, "description": "Map 2: slay Commander Cindersword" },
+        { "id": "herald", "type": "Kill", "target": "herald_of_the_void", "amount": 1, "description": "Map 3: slay the Herald of the Void" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 12000, "rewardGold": 2200, "nextQuest": "", "zone": ""
+    }
+  ]
+}

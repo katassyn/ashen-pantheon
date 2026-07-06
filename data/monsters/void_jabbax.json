@@ -1,0 +1,6 @@
+{
+  "id": "void_jabbax", "name": "Void Jabbax",
+  "hp": 400, "evadeChance": 0.1, "speed": 105, "movement": "chase", "scale": 0.85, "tint": "#6a5aa0",
+  "level": 55, "xp": 170, "lootTable": "common", "attackInterval": 1.2,
+  "abilities": [ { "type": "melee", "damage": 36, "damageType": "Chaos", "windup": 0.4, "reach": 48 } ]
+}

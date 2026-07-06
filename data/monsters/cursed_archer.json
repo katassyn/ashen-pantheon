@@ -1,0 +1,7 @@
+{
+  "id": "cursed_archer", "name": "Cursed Archer",
+  "hp": 400, "evadeChance": 0.08, "speed": 105, "movement": "keep_distance", "preferredRange": 250, "scale": 1.0, "tint": "#9aa06a",
+  "level": 52, "xp": 190, "lootTable": "common", "attackInterval": 1.6,
+  "questItem": "undead_bones", "questItemChance": 0.75, "questItemPity": 2,
+  "abilities": [ { "type": "projectile", "damage": 40, "speed": 360 } ]
+}

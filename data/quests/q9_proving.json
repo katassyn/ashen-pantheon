@@ -1,0 +1,19 @@
+{
+  "quests": [
+    {
+      "id": "q9_run",
+      "name": "Q9: Trial of the Labyrinth",
+      "description": "Only the marked effigies hold true statue fragments — the rest are decoys. Gather them, wake the altars and face Medusa.",
+      "requiredLevel": 50, "questGiver": "", "turnIn": "",
+      "objectives": [
+        { "id": "statues", "type": "Interact", "target": "q9_statue_*", "amount": 4, "description": "Recover 4 statue fragments (search the Stone Effigies)" },
+        { "id": "asterion", "type": "Kill", "target": "asterion", "amount": 1, "description": "Slay Asterion (immune until you hold all fragments!)" },
+        { "id": "altars", "type": "Interact", "target": "q9_altar_*", "amount": 5, "description": "Map 2: activate 5 Ancient Altars" },
+        { "id": "ebikaros", "type": "Kill", "target": "ebikaros", "amount": 1, "description": "Map 2: slay Ebikaros (immune until the altars burn!)" },
+        { "id": "medusa", "type": "Kill", "target": "medusa", "amount": 1, "description": "Map 3: slay Medusa" }
+      ],
+      "dialogueStart": [], "dialogueCompletion": [],
+      "rewardXp": 12500, "rewardGold": 2300, "nextQuest": "", "zone": ""
+    }
+  ]
+}

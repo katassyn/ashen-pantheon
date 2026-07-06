@@ -1,0 +1,6 @@
+{
+  "id": "combat_ready_zorlobb", "name": "Combat-Ready Zorlobb",
+  "hp": 1200, "armour": 50, "speed": 95, "movement": "chase", "scale": 1.4, "tint": "#4a7a9a",
+  "level": 55, "xp": 340, "lootTable": "common", "attackInterval": 1.6,
+  "abilities": [ { "type": "melee", "damage": 40, "windup": 0.5, "reach": 62 } ]
+}
