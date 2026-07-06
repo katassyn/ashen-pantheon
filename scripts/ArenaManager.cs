@@ -18,6 +18,12 @@ public partial class ArenaManager : Node
     private ZoneDefinition _zone;
     private readonly List<Node> _obstacles = new();
 
+    // wyzwanie endgame ("" = zwykły run): mnożniki + ilvl dropu + tytuł
+    private string _challenge = "";
+    private string _challengeTitle = "";
+    private float _chalHp = 1f, _chalDmg = 1f, _chalXp = 1f;
+    private int _chalIlvl;
+
     public string TopStatus { get; private set; } = "";
     public string CenterMessage { get; private set; } = "";
     private string _lastTop = "", _lastCenter = "";
@@ -29,6 +35,19 @@ public partial class ArenaManager : Node
         // strefa runu z TravelZoneId (finałowe dungeony), fallback: ashen_wastes
         string zoneId = Bestiary.Zones.ContainsKey(Net.TravelZoneId) ? Net.TravelZoneId : "ashen_wastes";
         _zone = Bestiary.Zone(zoneId);
+
+        _challenge = Net.TravelChallengeId;
+        if (EndgameCatalog.TryParseQ(_challenge, out int q))
+        {
+            var s = EndgameCatalog.QScale(q);
+            (_chalHp, _chalDmg, _chalXp, _chalIlvl) = (s.Hp, s.Dmg, s.Xp, s.ItemLevel);
+            _challengeTitle = $"THE FINAL PROVING  Q{q}   ";
+        }
+        else if (EndgameCatalog.TryParseGroup(_challenge, out var dun, out var diff))
+        {
+            (_chalHp, _chalDmg, _chalXp, _chalIlvl) = (diff.HpMult, diff.DmgMult, diff.XpMult, diff.ItemLevel);
+            _challengeTitle = $"{dun.Name.ToUpperInvariant()}  [{diff.Name.ToUpperInvariant()}]   ";
+        }
 
         int seed = Net.RunSeed != 0 ? Net.RunSeed : (int)(GD.Randi() % int.MaxValue);
         _plan = RunGenerator.Generate(seed, GameState.Progress.Level, _zone);
@@ -90,13 +109,14 @@ public partial class ArenaManager : Node
             case State.Fighting:
                 int alive = GetTree().GetNodesInGroup("enemies").Count;
                 var room = _plan[_room];
-                SetStatus($"Room {_room + 1}/{_plan.Count}{(room.Boss ? " [BOSS]" : "")}   enemies: {alive}   players: {Net.PlayerCount() - _deadPlayers.Count}", "");
+                SetStatus($"{_challengeTitle}Room {_room + 1}/{_plan.Count}{(room.Boss ? " [BOSS]" : "")}   enemies: {alive}   players: {Net.PlayerCount() - _deadPlayers.Count}", "");
                 if (alive == 0)
                 {
                     if (_room + 1 >= _plan.Count)
                     {
                         SetStatus("", "RUN COMPLETE!\n[R on host] return to town");
                         Net.BroadcastQuestClear(_zone.Id); // cel questowy Clear u wszystkich graczy
+                        if (_challenge.Length > 0) Net.BroadcastEndgameClear(_challenge); // odblokowanie u całej drużyny
                         GameState.Save();
                     }
                     else
@@ -158,11 +178,12 @@ public partial class ArenaManager : Node
         }
     }
 
-    private static void ApplyPlan(EnemyBase e, RoomPlan room, float coopHp, float coopDmg)
+    private void ApplyPlan(EnemyBase e, RoomPlan room, float coopHp, float coopDmg)
     {
-        e.HpMult = room.HpMult * coopHp;
-        e.DmgMult = room.DmgMult * coopDmg;
-        e.XpMult = room.XpMult;
+        e.HpMult = room.HpMult * coopHp * _chalHp;
+        e.DmgMult = room.DmgMult * coopDmg * _chalDmg;
+        e.XpMult = room.XpMult * _chalXp;
+        e.LootIlvlOverride = _chalIlvl; // 0 = zwykły run (poziom potwora)
     }
 
     private void SpawnObstacles(RoomPlan room)

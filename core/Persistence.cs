@@ -43,6 +43,11 @@ public sealed class SaveData
 
     /// <summary>Odkryte strefy świata (waystone fast-travel odblokowany).</summary>
     public List<string> DiscoveredZones { get; set; } = new();
+
+    /// <summary>Endgame: najwyższy ODBLOKOWANY stopień The Final Proving (clear Qn → Qn+1).</summary>
+    public int EndgameQ { get; set; } = 1;
+    /// <summary>Endgame: ukończone dungeony grupowe — wpisy "dungeonId/difficultyId".</summary>
+    public List<string> EndgameCleared { get; set; } = new();
     public long Xp { get; set; }
     public int AttributePoints { get; set; }
     public int SkillPoints { get; set; }

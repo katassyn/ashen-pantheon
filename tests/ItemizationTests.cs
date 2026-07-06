@@ -165,9 +165,10 @@ public class SocketsAndJewelsTests
     }
 
     [Fact]
-    public void AllMonsters_HaveLevelsInCampaignBands()
+    public void AllMonsters_HaveLevelsInCampaignOrEndgameBands()
     {
+        // kampania 1-50, moby epilogu/endgame do 60
         foreach (var m in Bestiary.Monsters.Values)
-            Assert.InRange(m.Level, 1, 50);
+            Assert.InRange(m.Level, 1, 60);
     }
 }

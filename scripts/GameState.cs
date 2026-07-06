@@ -30,6 +30,24 @@ public static class GameState
     /// <summary>Odkryte strefy świata (waystone fast-travel).</summary>
     public static System.Collections.Generic.HashSet<string> DiscoveredZones = new();
 
+    // ── endgame (The Final Proving Q1-Q10 + dungeony grupowe) ──
+    public static int EndgameQ = 1;
+    public static System.Collections.Generic.HashSet<string> EndgameCleared = new();
+
+    /// <summary>Kampania ukończona = wejście do endgame (finał = pokonanie Nefertari).</summary>
+    public static bool CampaignCompleted => Quests.IsCompleted("desert_03");
+
+    /// <summary>Zaliczenie wyzwania endgame ("q:N" lub "g:dungeon/diff") — odblokowuje następny stopień.</summary>
+    public static void MarkEndgameCleared(string challenge)
+    {
+        if (string.IsNullOrEmpty(challenge)) return;
+        if (EndgameCatalog.TryParseQ(challenge, out int q))
+            EndgameQ = System.Math.Max(EndgameQ, System.Math.Min(q + 1, EndgameCatalog.QMax));
+        else if (challenge.StartsWith("g:"))
+            EndgameCleared.Add(challenge[2..]);
+        Save();
+    }
+
     /// <summary>Oznacz strefę jako odkrytą (wejście przez portal). Zwraca true jeśli nowa.</summary>
     public static bool DiscoverZone(string zoneId)
     {
@@ -157,6 +175,8 @@ public static class GameState
         }
         foreach (var id in data.QuestCompleted) Quests.Completed.Add(id);
         DiscoveredZones = new System.Collections.Generic.HashSet<string>(data.DiscoveredZones);
+        EndgameQ = System.Math.Max(1, data.EndgameQ);
+        EndgameCleared = new System.Collections.Generic.HashSet<string>(data.EndgameCleared);
         ClassId = string.IsNullOrEmpty(data.ClassId) ? "ranger" : data.ClassId;
         _classDef = null;
         PassiveNodes = new System.Collections.Generic.HashSet<string>(data.PassiveNodes);
@@ -211,6 +231,8 @@ public static class GameState
             QuestActive = Quests.Active.ToDictionary(kv => kv.Key, kv => new System.Collections.Generic.Dictionary<string, int>(kv.Value)),
             QuestCompleted = Quests.Completed.ToList(),
             DiscoveredZones = DiscoveredZones.ToList(),
+            EndgameQ = EndgameQ,
+            EndgameCleared = EndgameCleared.ToList(),
             PledgedGod = PledgedGod.ToString(),
             GodSkills = GodSkills.ToList(),
             Loadout = Loadout.Slots.ToList(),

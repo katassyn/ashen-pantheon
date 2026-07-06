@@ -1,0 +1,19 @@
+{
+  "id": "demon_warden",
+  "name": "Demon Warden",
+  "hp": 620,
+  "armour": 65,
+  "resFire": 50,
+  "speed": 78,
+  "movement": "chase",
+  "scale": 1.5,
+  "tint": "#a03030",
+  "level": 52,
+  "xp": 240,
+  "lootTable": "common",
+  "attackInterval": 1.8,
+  "abilities": [
+    { "type": "melee", "damage": 44, "windup": 0.6, "reach": 66 },
+    { "type": "tele_circle", "damage": 52, "damageType": "Fire", "radius": 150, "windup": 0.85, "cooldown": 7 }
+  ]
+}

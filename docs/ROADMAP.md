@@ -54,18 +54,25 @@ akt 1-2 bez uwag blokujących.
       questa, tooltip pierwszego dropu.
 - [ ] **Death recap tuning** po feedbacku (czy 12 s okna wystarcza itd.).
 
-## FAZA B — Endgame MVP [GREENLIGHT właściciela]
+## FAZA B — Endgame MVP [GREENLIGHT 2026-07-05 — W TOKU]
 
-Cel: powód do grania po 50. Źródło designu: `design/campaign-extraction.md` (DsoCraft T1-T5,
-Q1-Q10, Demon Tower) — wzorce, nie kalka.
+Cel: powód do grania po 50. Źródło designu: `design/campaign-extraction.md` (kanon DsoCraft:
+dungeony T1-T5 mitologiczne, trudności Blood/Hell/Infernal, epilog Q1-Q10).
 
-- [ ] **Hub endgame** (osobna mapa-miasto po ukończeniu kampanii; wejście z hubu).
-- [ ] **Tiered dungeons (grupowe):** Blood/Hell/Infernal — te same mapy, skalowane HP/dmg/ilvl
-      dropu + klucze wejściowe (drop z kampanii/endgame; opłata = sink złota).
-- [ ] **Q1-Q10 (solo scaling):** jeden dungeon, 10 stopni trudności, progresja odblokowań.
-- [ ] **Loot endgame:** ilvl 50+ (skala affixów już to wspiera — `AffixRanges.ScaleFor` przyjmuje >50),
-      osobne loot-table per tier, pity/duplicate-protection na unikach (do decyzji).
-- [ ] **Demon Tower** (piętra, klucze) — po sprawdzeniu się tierów.
+- [x] **Pantheon Gate** w mieście (blok, E; odblokowany po pokonaniu Nefertari) → panel endgame.
+- [x] **Dungeony grupowe T1-T5** (katalog `data/endgame/dungeons.json`, kanon nazw: Odyssey of
+      Shadows / Poseidon's Underwater Temple / Mount Olympus / Daedalus' Eternal Labyrinth /
+      Fields of Immortal Souls) × trudności **Blood/Hell/Infernal** (HP/dmg/XP/ilvl dropu,
+      opłata wejścia = sink złota, wyższa trudność wymaga ukończenia niższej; unlock całej
+      drużyny przez RPC). T1 grywalny (moby epilogu + boss Commander Emberwing 3 fazy);
+      T2-T5 "coming soon" (dane są, brakuje contentu stref).
+- [x] **The Final Proving Q1-Q10** (solo): skala formułą w core (HP/dmg/XP/ilvl/fee), clear Qn
+      odblokowuje Qn+1, persist w SaveData + walidator anty-fałszywym odblokowaniom.
+- [ ] **Klucze itemowe do tierów** ([T1]-[T5] Mythological Dungeon Key — kanon; teraz opłata złotem).
+- [ ] **Loot endgame — skala ilvl >50**: `AffixRanges.ScaleFor` plateau'uje na 50 — tiery różnią się
+      dziś XP/trudnością, nie mocą affixów; rozszerzyć krzywą (dotyka walidatora — osobny batch).
+- [ ] **Content T2-T5**: strefy bestiariusza per dungeon (moby mitologiczne per tier).
+- [ ] **Hub endgame jako osobna mapa** (kosmetyka — po art passie; brama w mieście wystarcza na MVP).
 
 ## FAZA C — Systemy głębi buildów (kolejność wg wpływu na build)
 
@@ -76,6 +83,8 @@ Q1-Q10, Demon Tower) — wzorce, nie kalka.
       migracja placeholdera; **gemy z kopalni → sockety** (nowy typ itemu + kopalnia jako źródło).
 - [ ] **Runy + Słowa Runiczne** (DsoCraft): sloty run co 5 lvl od 50, mix 9 run, nazwane komba.
 - [ ] **Boss Souls** (trinkety z bossów).
+- [ ] **Demon Tower** (piętra, klucze per piętro, fale+bossy) — decyzja właściciela 2026-07-05:
+      DOPIERO po podstawowych mechanikach poziomowych z plików DsoCraft (runy, jewele/gemy, souls).
 - [ ] **Crafting / biologist / graveKeeper** (wiedza o rodzinach mobów) — dalszy horyzont.
 
 ## FAZA D — Żywy świat (retencja dzienna; wymaga B)

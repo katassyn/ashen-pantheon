@@ -1,0 +1,19 @@
+{
+  "id": "dragon_berserk_thug",
+  "name": "Dragon Berserk Thug",
+  "hp": 480,
+  "armour": 30,
+  "resFire": 40,
+  "speed": 105,
+  "movement": "chase",
+  "scale": 1.25,
+  "tint": "#d07030",
+  "level": 52,
+  "xp": 220,
+  "lootTable": "common",
+  "attackInterval": 1.4,
+  "abilities": [
+    { "type": "melee", "damage": 40, "windup": 0.5, "reach": 58 },
+    { "type": "tele_line", "damage": 50, "damageType": "Physical", "length": 380, "halfWidth": 34, "windup": 0.8, "cooldown": 8 }
+  ]
+}

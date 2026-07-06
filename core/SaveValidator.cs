@@ -37,6 +37,14 @@ public static class SaveValidator
                     return (false, $"pasywka {id} wymaga poziomu {node.RequiredLevel}");
             }
 
+        // endgame: Q w zakresie, cleary tylko z katalogu (anty-fałszywe odblokowania)
+        int qMax = EndgameCatalog.Loaded ? EndgameCatalog.QMax : 10;
+        if (data.EndgameQ < 1 || data.EndgameQ > qMax) return (false, "EndgameQ poza zakresem");
+        if (EndgameCatalog.Loaded)
+            foreach (var entry in data.EndgameCleared)
+                if (!EndgameCatalog.ValidClearedEntry(entry))
+                    return (false, $"nieznany clear endgame: {entry}");
+
         // walidacja względem katalogów danych (serwer/testy ładują data/; brak danych → pomiń te checki)
         if (GameData.Loaded)
         {

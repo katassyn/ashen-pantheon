@@ -17,6 +17,8 @@ public partial class Net : Node
     public static string TravelZoneId = "";
     /// <summary>Skąd przyszliśmy ("hub" = miasto) — WorldZone stawia gracza przy wyjściu łączącym z tą strefą.</summary>
     public static string TravelFromZoneId = "";
+    /// <summary>Wyzwanie endgame dla areny: "" (zwykły run) · "q:3" · "g:odyssey_of_shadows/blood".</summary>
+    public static string TravelChallengeId = "";
     public static string Status { get; private set; } = "offline (solo)";
 
     public static bool Online => I != null && I.Multiplayer.MultiplayerPeer is ENetMultiplayerPeer;
@@ -331,21 +333,29 @@ public partial class Net : Node
 
     // ── podróż grupowa ──
 
-    public static void TravelAll(string scenePath, int seed, string zoneId = "")
+    public static void TravelAll(string scenePath, int seed, string zoneId = "", string challenge = "")
     {
-        I.Rpc(MethodName.RpcTravel, scenePath, seed, zoneId);
+        I.Rpc(MethodName.RpcTravel, scenePath, seed, zoneId, challenge);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RpcTravel(string scenePath, int seed, string zoneId)
+    private void RpcTravel(string scenePath, int seed, string zoneId, string challenge)
     {
         GameState.Save();
         RunSeed = seed;
         TravelFromZoneId = GetTree().CurrentScene?.Name == "WorldZone" ? TravelZoneId : "hub";
         TravelZoneId = zoneId;
+        TravelChallengeId = challenge;
         EnemiesById.Clear();
         GetTree().ChangeSceneToFile(scenePath);
     }
+
+    /// <summary>Zaliczenie wyzwania endgame u WSZYSTKICH w drużynie (odblokowania per gracz).</summary>
+    public static void BroadcastEndgameClear(string challenge) =>
+        I.Rpc(MethodName.RpcEndgameClear, challenge);
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcEndgameClear(string challenge) => GameState.MarkEndgameCleared(challenge);
 
     // ── replikacja wrogów (serwer → klienci) ──
 

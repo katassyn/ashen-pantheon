@@ -16,6 +16,8 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     public float DmgMult = 1f;
     public float XpMult = 1f;
     public long XpReward = 12;
+    /// <summary>Endgame: wymuszony poziom itemów dropu (0 = poziom potwora).</summary>
+    public int LootIlvlOverride;
 
     public long NetId;
     public bool Puppet;
@@ -236,7 +238,7 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         if (DropsLoot)
             foreach (int peer in Net.AllPeers())
             {
-                var drops = LootTables.Roll(LootTableId, LootRng, Loot, MonsterLevel);
+                var drops = LootTables.Roll(LootTableId, LootRng, Loot, LootIlvlOverride > 0 ? LootIlvlOverride : MonsterLevel);
                 int i = 0;
                 foreach (var drop in drops)
                 {

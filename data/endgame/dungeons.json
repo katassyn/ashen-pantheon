@@ -1,0 +1,16 @@
+{
+  "dungeons": [
+    { "id": "odyssey_of_shadows", "name": "The Odyssey of Shadows", "tier": 1, "zone": "odyssey_of_shadows", "levelReq": 50, "enabled": true },
+    { "id": "poseidon_temple", "name": "Poseidon's Underwater Temple", "tier": 2, "zone": "odyssey_of_shadows", "levelReq": 50, "enabled": false },
+    { "id": "mount_olympus", "name": "Mount Olympus", "tier": 3, "zone": "odyssey_of_shadows", "levelReq": 50, "enabled": false },
+    { "id": "daedalus_labyrinth", "name": "Daedalus' Eternal Labyrinth", "tier": 4, "zone": "odyssey_of_shadows", "levelReq": 50, "enabled": false },
+    { "id": "immortal_souls", "name": "Fields of Immortal Souls", "tier": 5, "zone": "odyssey_of_shadows", "levelReq": 50, "enabled": false }
+  ],
+  "difficulties": [
+    { "id": "blood", "name": "Blood", "hpMult": 1.6, "dmgMult": 1.3, "xpMult": 1.6, "itemLevel": 56, "goldFee": 400, "requiresPrevious": false },
+    { "id": "hell", "name": "Hell", "hpMult": 2.6, "dmgMult": 1.8, "xpMult": 2.4, "itemLevel": 64, "goldFee": 1200, "requiresPrevious": true },
+    { "id": "infernal", "name": "Infernal", "hpMult": 4.2, "dmgMult": 2.5, "xpMult": 3.4, "itemLevel": 72, "goldFee": 3000, "requiresPrevious": true }
+  ],
+  "qZone": "final_proving",
+  "qMax": 10
+}

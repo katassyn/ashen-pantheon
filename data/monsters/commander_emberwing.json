@@ -1,0 +1,47 @@
+{
+  "id": "commander_emberwing",
+  "name": "Commander Emberwing",
+  "hp": 5200,
+  "armour": 70,
+  "resFire": 70,
+  "resChaos": 40,
+  "speed": 66,
+  "movement": "keep_distance",
+  "preferredRange": 180,
+  "scale": 2.4,
+  "tint": "#ff7030",
+  "level": 55,
+  "xp": 2000,
+  "lootTable": "boss",
+  "attackInterval": 1.9,
+  "abilities": [],
+  "phases": [
+    {
+      "hpBelow": 1.0,
+      "attackInterval": 1.9,
+      "abilities": [
+        { "type": "tele_cone", "damage": 58, "damageType": "Fire", "radius": 300, "halfAngleDeg": 40, "windup": 0.85 },
+        { "type": "tele_circle", "damage": 54, "damageType": "Fire", "radius": 150, "windup": 0.8 },
+        { "type": "projectile", "damage": 44, "damageType": "Fire", "speed": 380 }
+      ]
+    },
+    {
+      "hpBelow": 0.6,
+      "attackInterval": 1.5,
+      "abilities": [
+        { "type": "tele_line", "damage": 62, "damageType": "Fire", "length": 520, "halfWidth": 40, "windup": 0.75 },
+        { "type": "tele_circle", "damage": 60, "damageType": "Fire", "radius": 170, "windup": 0.7 },
+        { "type": "summon", "monsterId": "furious_fiend", "count": 2, "cooldown": 14 }
+      ]
+    },
+    {
+      "hpBelow": 0.3,
+      "attackInterval": 1.15,
+      "abilities": [
+        { "type": "tele_cone", "damage": 68, "damageType": "Fire", "radius": 340, "halfAngleDeg": 50, "windup": 0.65 },
+        { "type": "tele_circle", "damage": 66, "damageType": "Chaos", "radius": 190, "windup": 0.6 },
+        { "type": "summon", "monsterId": "dragon_berserk_thug", "count": 2, "cooldown": 12 }
+      ]
+    }
+  ]
+}

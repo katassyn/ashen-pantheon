@@ -1,0 +1,17 @@
+{
+  "id": "furious_fiend",
+  "name": "Furious Fiend",
+  "hp": 340,
+  "evadeChance": 0.12,
+  "speed": 140,
+  "movement": "chase",
+  "scale": 1.0,
+  "tint": "#d84a6a",
+  "level": 51,
+  "xp": 190,
+  "lootTable": "common",
+  "attackInterval": 1.1,
+  "abilities": [
+    { "type": "melee", "damage": 34, "windup": 0.4, "reach": 52 }
+  ]
+}

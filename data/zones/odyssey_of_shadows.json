@@ -1,0 +1,15 @@
+{
+  "id": "odyssey_of_shadows",
+  "name": "The Odyssey of Shadows",
+  "monsters": [
+    { "id": "demon_warden", "weight": 3 },
+    { "id": "furious_fiend", "weight": 3 },
+    { "id": "dragon_berserk_thug", "weight": 2 },
+    { "id": "soulless_dragon_warrior", "weight": 1 }
+  ],
+  "boss": "commander_emberwing",
+  "roomsMin": 5,
+  "roomsMax": 6,
+  "baseSpawnCount": 5,
+  "spawnCountPerRoom": 2
+}
