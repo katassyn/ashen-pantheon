@@ -2,7 +2,8 @@
   "id": "murok_high_priest",
   "name": "Murok the High Priest",
   "hp": 3000, "resChaos": 60, "speed": 85, "movement": "keep_distance", "preferredRange": 210, "scale": 1.9, "tint": "#b09a3a",
-  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.7,
+  "level": 54, "xp": 950, "lootTable": "boss",
+  "legendaryEssence": "q6_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [

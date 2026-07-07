@@ -85,7 +85,7 @@ public sealed class Equipment
 
         // gear (+ klejnoty w socketach) + dodatkowe źródła (pasywki z drzewa klasy) — jeden pipeline
         var allAffixes = EquippedItems()
-            .SelectMany(i => i.Affixes.Concat(i.SocketedJewels.SelectMany(j => j.Affixes)));
+            .SelectMany(i => i.UpgradedAffixes().Concat(i.SocketedJewels.SelectMany(j => j.Affixes)));
         if (extraAffixes != null) allAffixes = allAffixes.Concat(extraAffixes);
 
         foreach (var a in allAffixes)

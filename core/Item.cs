@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AshenPantheon.Core;
 
@@ -61,6 +62,19 @@ public sealed class Item
     public int Sockets { get; set; }
     /// <summary>Klejnoty w socketach (permanentne po włożeniu — jak Diablo 2).</summary>
     public List<Item> SocketedJewels { get; } = new();
+
+    /// <summary>Ulepszenie kowala +0..+4 (tylko Rare+). Każdy poziom = +UpgradeBonusPerLevel do WSZYSTKICH affixów.</summary>
+    public int UpgradeLevel { get; set; }
+    public const int MaxUpgrade = 4;
+    public const float UpgradeBonusPerLevel = 0.08f; // +4 = +32% do statów itemu
+    public float UpgradeMultiplier => 1f + UpgradeBonusPerLevel * UpgradeLevel;
+    /// <summary>Ulepszać można rollowane Rare (bez UniqueId — hand-authored tiery to shared instancje katalogu).</summary>
+    public bool CanBeUpgraded => Rarity >= Rarity.Rare && Kind != ItemKind.Jewel && UniqueId == null;
+
+    /// <summary>Affiksy itemu przeskalowane ulepszeniem (klejnoty w socketach liczone osobno, bez skalowania).</summary>
+    public IEnumerable<Affix> UpgradedAffixes() =>
+        UpgradeLevel <= 0 ? Affixes
+        : Affixes.Select(a => new Affix { Stat = a.Stat, Value = a.Value * UpgradeMultiplier });
 
     /// <summary>Id z JewelCatalog (dla Kind == Jewel).</summary>
     public string? JewelId { get; init; }

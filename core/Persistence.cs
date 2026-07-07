@@ -22,6 +22,8 @@ public sealed class ItemDto
     /// <summary>Poziom itemu (0 w starych zapisach = traktowany jako 50).</summary>
     public int ItemLevel { get; set; }
     public int Sockets { get; set; }
+    /// <summary>Ulepszenie kowala +0..+4.</summary>
+    public int UpgradeLevel { get; set; }
     public string? JewelId { get; set; }
     /// <summary>Klejnoty w socketach (zagnieżdżone ItemDto typu Jewel).</summary>
     public List<ItemDto> Jewels { get; set; } = new();
@@ -120,6 +122,7 @@ public static class ItemMapper
         Affixes = item.Affixes.Select(a => new AffixDto { Stat = a.Stat.ToString(), Value = a.Value }).ToList(),
         ItemLevel = item.ItemLevel,
         Sockets = item.Sockets,
+        UpgradeLevel = item.UpgradeLevel,
         JewelId = item.JewelId,
         Jewels = item.SocketedJewels.Select(ToDto).ToList(),
     };
@@ -143,6 +146,7 @@ public static class ItemMapper
                 .ToList(),
             ItemLevel = dto.ItemLevel <= 0 ? 50 : dto.ItemLevel, // legacy zapisy = pełna skala
             Sockets = dto.Sockets,
+            UpgradeLevel = Math.Clamp(dto.UpgradeLevel, 0, Item.MaxUpgrade),
         };
         foreach (var j in dto.Jewels) item.SocketedJewels.Add(FromDto(j));
         return item;

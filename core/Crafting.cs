@@ -98,3 +98,60 @@ public static class Crafting
         return (gen.Generate(rarity, r.ResultItemLevel, kind), "", 0);
     }
 }
+
+/// <summary>Ulepszanie przedmiotu u kowala (+1..+4, tylko Rare+). Koszt rośnie z poziomem: coraz więcej
+/// common+rare materiałów, a +3/+4 dodatkowo wymaga legendary essence (dowolne — dropi z bossów Q).
+/// Materiały: common="upgrade_dust", rare="upgrade_shard", legendary=dowolny ingredient rarity="legendary".</summary>
+public static class ItemUpgrade
+{
+    public const string CommonMat = "upgrade_dust";
+    public const string RareMat = "upgrade_shard";
+
+    /// <summary>Koszt dojścia do targetLevel (1..4): złoto + common + rare + legendary (dowolne).</summary>
+    public static (long Gold, int Common, int Rare, int Legendary) Cost(int targetLevel) => targetLevel switch
+    {
+        1 => (300, 4, 1, 0),
+        2 => (900, 8, 3, 0),
+        3 => (2500, 14, 6, 1),
+        4 => (6000, 22, 10, 2),
+        _ => (0, 0, 0, 0),
+    };
+
+    /// <summary>Suma posiadanych legendary essence (dowolnego rodzaju — każdy Q ma swoje).</summary>
+    public static long LegendaryOwned(Pouch pouch) =>
+        IngredientCatalog.OfRarity("legendary").Sum(pouch.Count);
+
+    public static bool CanUpgrade(Item item, Pouch pouch, long gold)
+    {
+        if (item == null || !item.CanBeUpgraded || item.UpgradeLevel >= Item.MaxUpgrade) return false;
+        var (g, c, r, l) = Cost(item.UpgradeLevel + 1);
+        return gold >= g
+            && pouch.Count(CommonMat) >= c
+            && pouch.Count(RareMat) >= r
+            && LegendaryOwned(pouch) >= l;
+    }
+
+    /// <summary>Zdejmuje materiały (złoto pobiera warstwa Godot) i podnosi UpgradeLevel o 1.
+    /// Legendary zdejmowane z dowolnych essence (najpierw te, których gracz ma najwięcej).</summary>
+    public static bool Apply(Item item, Pouch pouch, long gold)
+    {
+        if (!CanUpgrade(item, pouch, gold)) return false;
+        var (_, c, r, l) = Cost(item.UpgradeLevel + 1);
+        pouch.TryTake(CommonMat, c);
+        pouch.TryTake(RareMat, r);
+        TakeLegendary(pouch, l);
+        item.UpgradeLevel++;
+        return true;
+    }
+
+    private static void TakeLegendary(Pouch pouch, int amount)
+    {
+        foreach (var id in IngredientCatalog.OfRarity("legendary").OrderByDescending(pouch.Count))
+        {
+            if (amount <= 0) break;
+            long have = pouch.Count(id);
+            long take = Math.Min(have, amount);
+            if (take > 0 && pouch.TryTake(id, take)) amount -= (int)take;
+        }
+    }
+}

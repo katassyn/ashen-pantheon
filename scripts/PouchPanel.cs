@@ -59,7 +59,7 @@ public partial class PouchPanel : CanvasLayer
         _tabs = new HBoxContainer();
         _tabs.AddThemeConstantOverride("separation", 8);
         vb.AddChild(_tabs);
-        foreach (var cat in new[] { "dungeon", "currency", "crafting", "quest" })
+        foreach (var cat in new[] { "dungeon", "upgrade", "currency", "crafting", "quest" })
         {
             var b = new Button { Text = char.ToUpper(cat[0]) + cat[1..], CustomMinimumSize = new Vector2(130, 0) };
             string captured = cat;

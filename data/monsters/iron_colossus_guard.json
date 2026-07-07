@@ -1,7 +1,8 @@
 {
   "id": "iron_colossus_guard", "name": "Iron Colossus Gate Guard",
   "hp": 3000, "armour": 70, "resLightning": 40, "speed": 85, "movement": "chase", "scale": 2.0, "tint": "#6a7078",
-  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.9,
+  "level": 54, "xp": 950, "lootTable": "boss",
+  "legendaryEssence": "q7_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.9,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.9, "abilities": [

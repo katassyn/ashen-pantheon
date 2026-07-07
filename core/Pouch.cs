@@ -12,8 +12,10 @@ public sealed class IngredientDefinition
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
-    /// <summary>Zakładka GUI: currency | dungeon | crafting | quest.</summary>
+    /// <summary>Zakładka GUI: currency | dungeon | crafting | upgrade | quest.</summary>
     public string Category { get; set; } = "crafting";
+    /// <summary>Rzadkość materiału ulepszenia: common | rare | legendary (puste = brak, np. waluty).</summary>
+    public string Rarity { get; set; } = "";
     /// <summary>Kolor kwadracika w GUI (placeholder ikony).</summary>
     public string Tint { get; set; } = "#c0c0c0";
     public string Description { get; set; } = "";
@@ -43,6 +45,10 @@ public static class IngredientCatalog
 
     public static IEnumerable<IngredientDefinition> InCategory(string category) =>
         Ingredients.Values.Where(i => i.Category == category).OrderBy(i => i.Name);
+
+    /// <summary>Wszystkie id materiałów danej rzadkości (upgrade: common/rare/legendary).</summary>
+    public static IEnumerable<string> OfRarity(string rarity) =>
+        Ingredients.Values.Where(i => i.Rarity == rarity).Select(i => i.Id);
 }
 
 /// <summary>Liczniki składników gracza (persist w SaveData.Pouch).</summary>

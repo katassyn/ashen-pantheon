@@ -2,7 +2,8 @@
   "id": "bharok_champion",
   "name": "Bharok, Champion of the Wilds",
   "hp": 5000, "armour": 55, "resCold": 40, "speed": 72, "movement": "chase", "scale": 2.4, "tint": "#4a8a3a",
-  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.8,
+  "level": 55, "xp": 2600, "lootTable": "boss",
+  "legendaryEssence": "q4_essence", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.8,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.8, "abilities": [

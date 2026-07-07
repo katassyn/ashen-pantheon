@@ -89,6 +89,91 @@ public class EndgameTests
     }
 
     [Fact]
+    public void ItemUpgrade_ScalesAffixesAndGatesRarity()
+    {
+        var rare = new Item { Name = "T", Kind = ItemKind.BodyArmour, Rarity = Rarity.Rare,
+            Affixes = { new Affix { Stat = AffixStat.FlatLife, Value = 100f } } };
+        Assert.True(rare.CanBeUpgraded);
+        Assert.Equal(100f, rare.UpgradedAffixes().First().Value); // +0 = bez zmian
+        rare.UpgradeLevel = 4;
+        Assert.Equal(132f, rare.UpgradedAffixes().First().Value, 1); // +4 = +32%
+
+        // Normal/Magic nie da się ulepszać
+        var magic = new Item { Name = "M", Kind = ItemKind.Helmet, Rarity = Rarity.Magic };
+        Assert.False(magic.CanBeUpgraded);
+        // jewel też nie
+        var jewel = new Item { Name = "J", Kind = ItemKind.Jewel, Rarity = Rarity.Rare };
+        Assert.False(jewel.CanBeUpgraded);
+    }
+
+    [Fact]
+    public void ItemUpgrade_CostsAndLegendaryGate()
+    {
+        var item = new Item { Name = "T", Kind = ItemKind.TwoHandWeapon, Rarity = Rarity.Rare,
+            Affixes = { new Affix { Stat = AffixStat.WeaponDamage, Value = 50f } } };
+        var pouch = new Pouch();
+
+        // +1: 4 dust + 1 shard + 300g, bez legendary
+        Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 999999)); // brak matów
+        pouch.Add("upgrade_dust", 4); pouch.Add("upgrade_shard", 1);
+        Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 100)); // brak złota
+        Assert.True(ItemUpgrade.CanUpgrade(item, pouch, 300));
+        Assert.True(ItemUpgrade.Apply(item, pouch, 300));
+        Assert.Equal(1, item.UpgradeLevel);
+        Assert.Equal(0, pouch.Count("upgrade_dust")); // zdjęte
+
+        // dobicie do +3 wymaga legendary essence (dowolnego Q)
+        item.UpgradeLevel = 2;
+        var (_, c, r, l) = ItemUpgrade.Cost(3);
+        Assert.Equal(1, l);
+        pouch.Add("upgrade_dust", c); pouch.Add("upgrade_shard", r);
+        Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 999999)); // brak legendary
+        pouch.Add("q7_essence", 1); // legendary z Q7 liczy się do dowolnego upgrade
+        Assert.True(ItemUpgrade.CanUpgrade(item, pouch, 999999));
+        Assert.True(ItemUpgrade.Apply(item, pouch, 999999));
+        Assert.Equal(3, item.UpgradeLevel);
+        Assert.Equal(0, pouch.Count("q7_essence")); // legendary zdjęte
+
+        // +4 to sufit
+        item.UpgradeLevel = Item.MaxUpgrade;
+        Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 999999));
+    }
+
+    [Fact]
+    public void Validator_RejectsUpgradeOnNonRareAndOverMax()
+    {
+        var save = new SaveData { Name = "T", ClassId = "ranger", Level = 50 };
+        // Magic z upgradem = 400
+        save.Bag.Add(new PlacedItemDto { X = 0, Y = 0, Item = new ItemDto { Name = "X", Kind = "Helmet", Rarity = "Magic", UpgradeLevel = 2, ItemLevel = 50 } });
+        Assert.False(SaveValidator.Validate(save).Ok);
+        // Rare +5 = poza zakresem
+        save.Bag[0].Item = new ItemDto { Name = "X", Kind = "Helmet", Rarity = "Rare", UpgradeLevel = 5, ItemLevel = 50 };
+        Assert.False(SaveValidator.Validate(save).Ok);
+        // Rare +3 = OK
+        save.Bag[0].Item = new ItemDto { Name = "X", Kind = "Helmet", Rarity = "Rare", UpgradeLevel = 3, ItemLevel = 50, Affixes = { new AffixDto { Stat = "FlatLife", Value = 20 } } };
+        Assert.True(SaveValidator.Validate(save).Ok);
+    }
+
+    [Fact]
+    public void LegendaryEssence_EveryQHasOwnFromBosses()
+    {
+        // każdy Q ma swój essence w katalogu (kategoria upgrade, rzadkość legendary)
+        for (int q = 1; q <= 10; q++)
+        {
+            var ess = IngredientCatalog.Find($"q{q}_essence");
+            Assert.NotNull(ess);
+            Assert.Equal("legendary", ess!.Rarity);
+        }
+        // main bossy Q dropią swój essence (gwarant), mini-bossy szansę
+        Assert.Equal("q1_essence", Bestiary.Monster("grimmor_the_risen").LegendaryEssence);
+        Assert.Equal(1.0f, Bestiary.Monster("grimmor_the_risen").LegendaryChance);
+        Assert.Equal("q10_essence", Bestiary.Monster("gorgatha").LegendaryEssence);
+        Assert.Equal("q2_essence", Bestiary.Monster("xarib_hunchback").LegendaryEssence); // mini-boss
+        // zwykły mob nie dropi essence
+        Assert.Equal("", Bestiary.Monster("gremlin_marauder").LegendaryEssence);
+    }
+
+    [Fact]
     public void Crafting_RefineProducesIngredient()
     {
         var refine = RecipeCatalog.Find("refine_alloy")!;

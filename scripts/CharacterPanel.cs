@@ -62,8 +62,10 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
     public static string Describe(Item item)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"{item.Name}  [{item.Rarity}]  ilvl {item.ItemLevel}");
-        foreach (var a in item.Affixes) sb.AppendLine($"  {a.Stat} +{a.Value:0.##}");
+        string plus = item.UpgradeLevel > 0 ? $" +{item.UpgradeLevel}" : "";
+        sb.AppendLine($"{item.Name}{plus}  [{item.Rarity}]  ilvl {item.ItemLevel}");
+        // affiksy przeskalowane ulepszeniem (to co realnie daje item)
+        foreach (var a in item.UpgradedAffixes()) sb.AppendLine($"  {a.Stat} +{a.Value:0.##}");
         if (item.Effect != UniqueEffect.None) sb.AppendLine($"  ✦ {item.Effect}");
         if (item.Sockets > 0)
         {

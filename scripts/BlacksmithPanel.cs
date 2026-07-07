@@ -8,7 +8,7 @@ public partial class BlacksmithPanel : CanvasLayer
 {
     private Panel _root;
     private VBoxContainer _list;
-    private string _category = "armor";
+    private string _category = "upgrade";
 
     public static void Toggle(SceneTree tree)
     {
@@ -24,9 +24,9 @@ public partial class BlacksmithPanel : CanvasLayer
         var tabs = new HBoxContainer();
         tabs.AddThemeConstantOverride("separation", 8);
         vb.AddChild(tabs);
-        foreach (var cat in new[] { "armor", "weapons", "jewelry", "materials" })
+        foreach (var (label, cat) in new[] { ("Upgrade", "upgrade"), ("Armor", "armor"), ("Weapons", "weapons"), ("Jewelry", "jewelry"), ("Materials", "materials") })
         {
-            var b = new Button { Text = char.ToUpper(cat[0]) + cat[1..], CustomMinimumSize = new Vector2(130, 0) };
+            var b = new Button { Text = label, CustomMinimumSize = new Vector2(120, 0) };
             string captured = cat;
             b.Pressed += () => { _category = captured; Refresh(); };
             tabs.AddChild(b);
@@ -54,6 +54,8 @@ public partial class BlacksmithPanel : CanvasLayer
         foreach (Node c in _list.GetChildren()) c.QueueFree();
         _list.AddChild(new Label { Text = $"Your gold: {GameState.Wallet.Gold}", Modulate = new Color(1f, 0.9f, 0.5f) });
 
+        if (_category == "upgrade") { RefreshUpgrade(); return; }
+
         bool any = false;
         foreach (var recipe in RecipeCatalog.InCategory(_category))
         {
@@ -61,6 +63,76 @@ public partial class BlacksmithPanel : CanvasLayer
             _list.AddChild(RecipeRow(recipe));
         }
         if (!any) _list.AddChild(new Label { Text = "  No recipes here." });
+    }
+
+    /// <summary>Zakładka Upgrade: itemy Rare+ z plecaka i ekwipunku → +1..+4 za materiały (common/rare/legendary).</summary>
+    private void RefreshUpgrade()
+    {
+        long dust = GameState.Pouch.Count(ItemUpgrade.CommonMat);
+        long shard = GameState.Pouch.Count(ItemUpgrade.RareMat);
+        long leg = ItemUpgrade.LegendaryOwned(GameState.Pouch);
+        _list.AddChild(new Label { Text = $"Materials — Upgrade Dust: {dust}   ·   Upgrade Shard: {shard}   ·   Legendary Essence: {leg}", Modulate = new Color(0.7f, 0.85f, 1f) });
+        _list.AddChild(new Label { Text = "Reforge Rare+ gear up to +4. Higher tiers also need legendary essence from Q bosses.", Modulate = new Color(0.7f, 0.7f, 0.75f) });
+
+        bool any = false;
+        // ekwipunek
+        foreach (EquipmentSlot slot in System.Enum.GetValues<EquipmentSlot>())
+            if (GameState.Equipment.Get(slot) is { CanBeUpgraded: true } it) { any = true; _list.AddChild(UpgradeRow(it, $"[{slot}]")); }
+        // plecak
+        foreach (var placed in GameState.Bag.Placed)
+            if (placed.Item.CanBeUpgraded) { any = true; _list.AddChild(UpgradeRow(placed.Item, "[bag]")); }
+
+        if (!any) _list.AddChild(new Label { Text = "  No upgradeable gear. Craft or find Rare items first." });
+    }
+
+    private Control UpgradeRow(Item item, string where)
+    {
+        var box = new VBoxContainer();
+        var style = new StyleBoxFlat { BgColor = new Color(0.09f, 0.08f, 0.12f, 0.85f) };
+        style.SetContentMarginAll(8);
+        style.SetCornerRadiusAll(4);
+        var panel = new PanelContainer();
+        panel.AddThemeStyleboxOverride("panel", style);
+        panel.AddChild(box);
+
+        string plus = item.UpgradeLevel > 0 ? $" +{item.UpgradeLevel}" : "";
+        var title = new Label { Text = $"{where}  {item.Name}{plus}  [{item.Rarity}]" + (item.UpgradeLevel >= Item.MaxUpgrade ? "   ✔ MAX" : "") };
+        title.Modulate = ItemPickup.RarityColor(item.Rarity);
+        title.TooltipText = CharacterPanel.Describe(item);
+        title.MouseFilter = Control.MouseFilterEnum.Stop;
+        box.AddChild(title);
+
+        if (item.UpgradeLevel < Item.MaxUpgrade)
+        {
+            var (g, c, r, l) = ItemUpgrade.Cost(item.UpgradeLevel + 1);
+            var row = new HBoxContainer();
+            row.AddThemeConstantOverride("separation", 12);
+            row.AddChild(MatLabel($"Dust {c}", GameState.Pouch.Count(ItemUpgrade.CommonMat) >= c));
+            row.AddChild(MatLabel($"Shard {r}", GameState.Pouch.Count(ItemUpgrade.RareMat) >= r));
+            if (l > 0) row.AddChild(MatLabel($"Legendary {l}", ItemUpgrade.LegendaryOwned(GameState.Pouch) >= l));
+            row.AddChild(MatLabel($"Gold {g}", GameState.Wallet.Gold >= g));
+
+            var btn = new Button { Text = $"Upgrade → +{item.UpgradeLevel + 1}", CustomMinimumSize = new Vector2(150, 0) };
+            btn.Disabled = !ItemUpgrade.CanUpgrade(item, GameState.Pouch, GameState.Wallet.Gold);
+            btn.Pressed += () => DoUpgrade(item);
+            row.AddChild(btn);
+            box.AddChild(row);
+        }
+        return panel;
+    }
+
+    private static Label MatLabel(string text, bool ok) =>
+        new() { Text = text, Modulate = ok ? new Color(0.6f, 0.9f, 0.6f) : new Color(0.9f, 0.5f, 0.5f) };
+
+    private void DoUpgrade(Item item)
+    {
+        var (g, _, _, _) = ItemUpgrade.Cost(item.UpgradeLevel + 1);
+        if (!ItemUpgrade.Apply(item, GameState.Pouch, GameState.Wallet.Gold)) return;
+        GameState.Wallet.Gold -= g;
+        GameState.Save();
+        PlayerController.Local?.Refresh(); // przelicz arkusz (ulepszony item = mocniejsze staty)
+        Net.SendChatLocal($"Upgraded {item.Name} to +{item.UpgradeLevel}!");
+        Refresh();
     }
 
     private Control RecipeRow(RecipeDefinition r)

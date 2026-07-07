@@ -1,7 +1,8 @@
 {
   "id": "undead_king_haradur", "name": "Undead King Haradur",
   "hp": 5000, "armour": 65, "resCold": 40, "resChaos": 45, "speed": 105, "movement": "chase", "scale": 2.4, "tint": "#4a5a8a",
-  "level": 55, "xp": 2600, "lootTable": "boss", "attackInterval": 1.8,
+  "level": 55, "xp": 2600, "lootTable": "boss",
+  "legendaryEssence": "q3_essence", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.8,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.8, "abilities": [

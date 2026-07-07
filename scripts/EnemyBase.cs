@@ -37,6 +37,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     protected virtual float QuestItemChance => 0f;
     /// <summary>Pity: gwarantowany drop przy N-tym zabiciu (0 = tylko szansa).</summary>
     protected virtual int QuestItemPityAt => 0;
+    /// <summary>Legendary essence upgrade (mini-bossy/boss Q). Pusty = brak.</summary>
+    protected virtual string LegendaryEssenceId => "";
+    protected virtual float LegendaryEssenceChance => 0f;
+    protected virtual int LegendaryEssenceCount => 1;
     /// <summary>Poziom potwora (= poziom dropu / skala affixów).</summary>
     protected virtual int MonsterLevel => 1;
 
@@ -281,6 +285,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
                     else if (drop.Gold > 0) Net.GiveGold(peer, drop.Gold, pos);
                     else if (drop.Ingredient.Length > 0) Net.GiveIngredient(peer, drop.Ingredient, drop.IngredientCount, pos);
                 }
+                // legendary essence upgrade (kanon: mini-bossy + boss Q, każdy Q swoje) — poza tabelą, per gracz
+                if (LegendaryEssenceId.Length > 0 && GD.Randf() < LegendaryEssenceChance)
+                    Net.GiveIngredient(peer, LegendaryEssenceId, LegendaryEssenceCount,
+                        GlobalPosition + new Vector2(0, -30));
             }
 
         if (Net.Online) Net.DespawnEnemy(this, died: true);

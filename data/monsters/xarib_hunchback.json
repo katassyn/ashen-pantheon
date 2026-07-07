@@ -12,6 +12,7 @@
   "level": 52,
   "xp": 700,
   "lootTable": "boss",
+  "legendaryEssence": "q2_essence", "legendaryChance": 0.5, "legendaryCount": 1,
   "attackInterval": 1.7,
   "abilities": [],
   "phases": [

@@ -96,6 +96,12 @@ public static class SaveValidator
         int ilvl = dto.ItemLevel <= 0 ? 50 : dto.ItemLevel; // legacy zapisy bez ilvl = pełna skala
         if (ilvl > 100) return (false, $"item {dto.Name}: ilvl {ilvl} poza zakresem");
 
+        // ulepszenie kowala: 0..+4, wyłącznie Rare+ (Normal/Magic nie da się ulepszać)
+        if (dto.UpgradeLevel is < 0 || dto.UpgradeLevel > Item.MaxUpgrade)
+            return (false, $"item {dto.Name}: upgrade {dto.UpgradeLevel} poza zakresem");
+        if (dto.UpgradeLevel > 0 && rarity < Rarity.Rare)
+            return (false, $"item {dto.Name}: ulepszać można tylko Rare+");
+
         // klejnot: jeden affix zgodny z katalogiem (gdy katalog załadowany — serwer/testy TAK)
         if (kind == ItemKind.Jewel)
         {

@@ -30,6 +30,11 @@ public sealed class MonsterDefinition
     public int QuestItemPity { get; set; }
     /// <summary>Damage-gate: "questId/objectiveId" — mob ODPORNY, dopóki gracz nie zaliczy celu (questy Q).</summary>
     public string GatedByObjective { get; set; } = "";
+    /// <summary>Legendary essence upgrade (kanon: tylko mini-bossy i boss danego Q, każdy Q swoje). Pusty = brak.</summary>
+    public string LegendaryEssence { get; set; } = "";
+    /// <summary>Szansa + ilość dropu legendary essence (main boss = 1.0/2 szt, mini-boss ~0.5/1).</summary>
+    public float LegendaryChance { get; set; } = 0.5f;
+    public int LegendaryCount { get; set; } = 1;
 
     // obrona (typy obrażeń graczy mają znaczenie)
     public float Armour { get; set; }

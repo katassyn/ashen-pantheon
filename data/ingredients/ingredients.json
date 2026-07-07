@@ -41,6 +41,32 @@
     { "id": "dragon_gold", "name": "Dragon Gold", "category": "crafting", "tint": "#e0b030",
       "description": "Molten treasure of dragon hoards" },
     { "id": "refined_alloy", "name": "Refined Alloy", "category": "crafting", "tint": "#b0b8c0",
-      "description": "Smithed from scrap — used in armor recipes" }
+      "description": "Smithed from scrap — used in armor recipes" },
+
+    { "id": "upgrade_dust", "name": "Upgrade Dust", "category": "upgrade", "rarity": "common", "tint": "#b0b0b8",
+      "description": "Common reforging material — drops from any foe" },
+    { "id": "upgrade_shard", "name": "Upgrade Shard", "category": "upgrade", "rarity": "rare", "tint": "#4a90e0",
+      "description": "Rare reforging material — drops from any foe (rarely)" },
+
+    { "id": "q1_essence", "name": "Emberheart Essence", "category": "upgrade", "rarity": "legendary", "tint": "#ff6020",
+      "description": "Legendary — from Flamecult bosses (Q1)" },
+    { "id": "q2_essence", "name": "Venom Heart", "category": "upgrade", "rarity": "legendary", "tint": "#50c040",
+      "description": "Legendary — from the Poisoned Grove bosses (Q2)" },
+    { "id": "q3_essence", "name": "Cursed Millstone", "category": "upgrade", "rarity": "legendary", "tint": "#a08a4a",
+      "description": "Legendary — from Haradur's bosses (Q3)" },
+    { "id": "q4_essence", "name": "Wildheart Antler", "category": "upgrade", "rarity": "legendary", "tint": "#4a8a3a",
+      "description": "Legendary — from the Sanguine Hunt bosses (Q4)" },
+    { "id": "q5_essence", "name": "Void Sigil", "category": "upgrade", "rarity": "legendary", "tint": "#7a3ad0",
+      "description": "Legendary — from Voidtouched bosses (Q5)" },
+    { "id": "q6_essence", "name": "Grave Seal", "category": "upgrade", "rarity": "legendary", "tint": "#30308a",
+      "description": "Legendary — from the Herald's bosses (Q6)" },
+    { "id": "q7_essence", "name": "Void Core", "category": "upgrade", "rarity": "legendary", "tint": "#5a30a0",
+      "description": "Legendary — from the Siegeworks bosses (Q7)" },
+    { "id": "q8_essence", "name": "Storm Crystal", "category": "upgrade", "rarity": "legendary", "tint": "#40a0f0",
+      "description": "Legendary — from the Stormfrost bosses (Q8)" },
+    { "id": "q9_essence", "name": "Gorgon Eye", "category": "upgrade", "rarity": "legendary", "tint": "#3aa06a",
+      "description": "Legendary — from the Labyrinth bosses (Q9)" },
+    { "id": "q10_essence", "name": "Drowned Pearl", "category": "upgrade", "rarity": "legendary", "tint": "#2a9a5a",
+      "description": "Legendary — from the Sunken Shrine bosses (Q10)" }
   ]
 }

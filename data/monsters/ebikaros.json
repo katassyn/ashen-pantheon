@@ -1,7 +1,8 @@
 {
   "id": "ebikaros", "name": "Ebikaros",
   "hp": 3000, "armour": 50, "resChaos": 50, "speed": 95, "movement": "keep_distance", "preferredRange": 210, "scale": 1.95, "tint": "#6a8ab0",
-  "level": 54, "xp": 950, "lootTable": "boss", "attackInterval": 1.7,
+  "level": 54, "xp": 950, "lootTable": "boss",
+  "legendaryEssence": "q9_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
   "gatedByObjective": "q9_run/altars",
   "abilities": [],
   "phases": [
