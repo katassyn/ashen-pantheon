@@ -7,6 +7,7 @@
     { "type": "item", "weight": 8, "rarity": "Rare" },
     { "type": "jewel", "weight": 8 },
     { "type": "ingredient", "weight": 14, "ingredient": "ips", "countMin": 2, "countMax": 5 },
-    { "type": "table", "weight": 8, "table": "common" }
+    { "type": "table", "weight": 10, "table": "materials" },
+    { "type": "ingredient", "weight": 4, "ingredient": "dragon_gold", "countMin": 1, "countMax": 2 }
   ]
 }

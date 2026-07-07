@@ -2,9 +2,10 @@
   "id": "common",
   "rolls": 1,
   "entries": [
-    { "type": "nothing", "weight": 45 },
-    { "type": "gold", "weight": 30, "goldMin": 3, "goldMax": 14 },
-    { "type": "item", "weight": 23 },
+    { "type": "nothing", "weight": 40 },
+    { "type": "gold", "weight": 28, "goldMin": 3, "goldMax": 14 },
+    { "type": "item", "weight": 21 },
+    { "type": "table", "weight": 9, "table": "materials" },
     { "type": "jewel", "weight": 2 }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "id": "materials",
+  "rolls": 1,
+  "entries": [
+    { "type": "ingredient", "weight": 30, "ingredient": "chain_fragment", "countMin": 1, "countMax": 3 },
+    { "type": "ingredient", "weight": 20, "ingredient": "broken_armor_piece", "countMin": 1, "countMax": 2 },
+    { "type": "ingredient", "weight": 14, "ingredient": "sticky_mucus", "countMin": 1, "countMax": 2 },
+    { "type": "ingredient", "weight": 12, "ingredient": "satyrs_horn", "countMin": 1, "countMax": 1 },
+    { "type": "ingredient", "weight": 10, "ingredient": "gorgons_poison", "countMin": 1, "countMax": 1 },
+    { "type": "ingredient", "weight": 8, "ingredient": "demon_blood", "countMin": 1, "countMax": 1 },
+    { "type": "ingredient", "weight": 5, "ingredient": "dragon_scale", "countMin": 1, "countMax": 1 },
+    { "type": "ingredient", "weight": 1, "ingredient": "protectors_heart", "countMin": 1, "countMax": 1 }
+  ]
+}

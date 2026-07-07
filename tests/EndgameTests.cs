@@ -60,6 +60,52 @@ public class EndgameTests
     }
 
     [Fact]
+    public void Crafting_CanCraftTakesCostsAndProducesResult()
+    {
+        Assert.True(RecipeCatalog.Loaded);
+        var plate = RecipeCatalog.Find("forge_plate")!;
+        Assert.Equal("armor", plate.Category);
+
+        var pouch = new Pouch();
+        // brak materiałów → nie stać, oba inputy raportowane jako brakujące
+        Assert.False(Crafting.CanCraft(plate, pouch, 100000));
+        Assert.Equal(plate.Inputs.Count, Crafting.Missing(plate, pouch).Count());
+
+        pouch.Add("refined_alloy", 4);
+        pouch.Add("dragon_scale", 2);
+        Assert.False(Crafting.CanCraft(plate, pouch, 0));       // brak złota
+        Assert.True(Crafting.CanCraft(plate, pouch, plate.GoldCost));
+
+        Assert.True(Crafting.TakeCosts(plate, pouch, plate.GoldCost));
+        Assert.Equal(0, pouch.Count("refined_alloy"));         // materiały zdjęte
+        Assert.Equal(0, pouch.Count("dragon_scale"));
+
+        var (item, ing, cnt) = Crafting.Result(plate, new LootGenerator(1));
+        Assert.NotNull(item);
+        Assert.Equal(ItemKind.BodyArmour, item!.Kind);         // wymuszony slot receptury
+        Assert.Equal(Rarity.Rare, item.Rarity);
+        Assert.Equal("", ing);
+        Assert.Equal(0, cnt);
+    }
+
+    [Fact]
+    public void Crafting_RefineProducesIngredient()
+    {
+        var refine = RecipeCatalog.Find("refine_alloy")!;
+        Assert.Equal("ingredient", refine.ResultType);
+        var (item, ing, cnt) = Crafting.Result(refine, new LootGenerator(2));
+        Assert.Null(item);
+        Assert.Equal("refined_alloy", ing);
+        Assert.True(cnt >= 1);
+        // wszystkie inputy i wyniki receptur muszą istnieć w katalogu składników
+        foreach (var r in RecipeCatalog.Recipes)
+        {
+            foreach (var i in r.Inputs) Assert.NotNull(IngredientCatalog.Find(i.Ingredient));
+            if (r.ResultType == "ingredient") Assert.NotNull(IngredientCatalog.Find(r.ResultIngredient));
+        }
+    }
+
+    [Fact]
     public void Ingredients_CatalogAndCategories()
     {
         Assert.True(IngredientCatalog.Loaded);

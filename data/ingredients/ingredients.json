@@ -23,12 +23,24 @@
       "description": "Event currency" },
 
     { "id": "broken_armor_piece", "name": "Broken Armor Piece", "category": "crafting", "tint": "#8a8a90",
-      "description": "Crafting and quest resource" },
+      "description": "Salvage from armored foes" },
     { "id": "dragon_scale", "name": "Dragon Scale", "category": "crafting", "tint": "#c05a2a",
-      "description": "Crafting and quest resource" },
+      "description": "Shed by drakes and dragonkin" },
     { "id": "demon_blood", "name": "Demon Blood", "category": "crafting", "tint": "#a02030",
-      "description": "Crafting and quest resource" },
+      "description": "Ichor of the infernal" },
     { "id": "satyrs_horn", "name": "Satyr's Horn", "category": "crafting", "tint": "#8a6a3a",
-      "description": "Crafting and quest resource" }
+      "description": "Trophy of the wild satyrs" },
+    { "id": "chain_fragment", "name": "Chain Fragment", "category": "crafting", "tint": "#9098a0",
+      "description": "Common metal scrap" },
+    { "id": "gorgons_poison", "name": "Gorgon's Poison", "category": "crafting", "tint": "#4aa06a",
+      "description": "Venom of serpent-folk" },
+    { "id": "sticky_mucus", "name": "Sticky Mucus", "category": "crafting", "tint": "#8ac060",
+      "description": "Dripped by jellies and oozes" },
+    { "id": "protectors_heart", "name": "Protector's Heart", "category": "crafting", "tint": "#d04060",
+      "description": "Rare core of an elite guardian" },
+    { "id": "dragon_gold", "name": "Dragon Gold", "category": "crafting", "tint": "#e0b030",
+      "description": "Molten treasure of dragon hoards" },
+    { "id": "refined_alloy", "name": "Refined Alloy", "category": "crafting", "tint": "#b0b8c0",
+      "description": "Smithed from scrap — used in armor recipes" }
   ]
 }

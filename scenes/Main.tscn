@@ -53,6 +53,24 @@ offset_bottom = 130.0
 horizontal_alignment = 1
 text = "PANTHEON GATE — Endgame (lvl 50) [E]"
 
+[node name="BlacksmithMark" type="Sprite2D" parent="."]
+position = Vector2(340, 300)
+scale = Vector2(0.32, 0.32)
+modulate = Color(0.7, 0.6, 0.5, 1)
+texture = ExtResource("4_icon")
+
+[node name="BlacksmithZone" type="Area2D" parent="BlacksmithMark"]
+script = ExtResource("5_zones")
+Kind = "blacksmith"
+
+[node name="BlacksmithLabel" type="Label" parent="BlacksmithMark"]
+offset_left = -220.0
+offset_top = 100.0
+offset_right = 220.0
+offset_bottom = 130.0
+horizontal_alignment = 1
+text = "BLACKSMITH — Robert [E]"
+
 [node name="AhMark" type="Sprite2D" parent="."]
 position = Vector2(-140, 260)
 scale = Vector2(0.3, 0.3)

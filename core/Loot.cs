@@ -85,7 +85,10 @@ public sealed class LootGenerator
     public Item Generate(Rarity rarity) => Generate(rarity, 50);
 
     /// <summary>Drop skalowany poziomem itemu (= poziom potwora/strefy): wartości affixów, sockety, obrażenia broni.</summary>
-    public Item Generate(Rarity rarity, int itemLevel)
+    public Item Generate(Rarity rarity, int itemLevel) => Generate(rarity, itemLevel, null);
+
+    /// <summary>Jak wyżej, ale z WYMUSZONYM typem itemu (crafting u kowala: konkretny slot).</summary>
+    public Item Generate(Rarity rarity, int itemLevel, ItemKind? forceKind)
     {
         itemLevel = Math.Clamp(itemLevel <= 0 ? 50 : itemLevel, 1, 100);
 
@@ -96,7 +99,7 @@ public sealed class LootGenerator
             rarity = Rarity.Rare; // fallback gdy katalog pusty
         }
 
-        var kind = Kinds[_rng.Next(Kinds.Length)];
+        var kind = forceKind ?? Kinds[_rng.Next(Kinds.Length)];
         int affixCount = rarity switch
         {
             Rarity.Normal => 0,

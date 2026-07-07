@@ -24,7 +24,7 @@ public partial class HubZone : Area2D
         _hint = new Label { Text = "[E]", Position = new Vector2(-12, -70), Visible = false };
         AddChild(_hint);
 
-        if (Kind is not ("vendor" or "stash" or "ah" or "endgame"))
+        if (Kind is not ("vendor" or "stash" or "ah" or "endgame" or "blacksmith"))
         {
             _questMark = new Label { Position = new Vector2(-9, -104), Visible = false };
             _questMark.AddThemeFontSizeOverride("font_size", 26);
@@ -57,6 +57,7 @@ public partial class HubZone : Area2D
             else if (Kind == "stash") StashPanel.Toggle(GetTree());
             else if (Kind == "ah") AuctionPanel.Toggle(GetTree());
             else if (Kind == "endgame") EndgamePanel.Toggle(GetTree());
+            else if (Kind == "blacksmith") BlacksmithPanel.Toggle(GetTree());
             else QuestNpc.Interact(Kind, GetTree()); // Kind = npcId (amuun/guildmaster/...)
             GetViewport().SetInputAsHandled();
         }

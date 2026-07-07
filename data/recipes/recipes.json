@@ -1,0 +1,39 @@
+{
+  "recipes": [
+    { "id": "refine_alloy", "name": "Refined Alloy", "category": "materials",
+      "inputs": [ { "ingredient": "chain_fragment", "count": 5 }, { "ingredient": "broken_armor_piece", "count": 2 } ],
+      "goldCost": 50, "resultType": "ingredient", "resultIngredient": "refined_alloy", "resultCount": 1 },
+
+    { "id": "smelt_dragon_gold", "name": "Smelt Dragon Gold", "category": "materials",
+      "inputs": [ { "ingredient": "dragon_scale", "count": 3 } ],
+      "goldCost": 200, "resultType": "ingredient", "resultIngredient": "dragon_gold", "resultCount": 1 },
+
+    { "id": "forge_helm", "name": "Forged Helm", "category": "armor",
+      "inputs": [ { "ingredient": "refined_alloy", "count": 2 }, { "ingredient": "chain_fragment", "count": 4 } ],
+      "goldCost": 400, "resultType": "item", "resultKind": "Helmet", "resultRarity": "Rare", "resultItemLevel": 56 },
+
+    { "id": "forge_plate", "name": "Forged Plate Armor", "category": "armor",
+      "inputs": [ { "ingredient": "refined_alloy", "count": 4 }, { "ingredient": "dragon_scale", "count": 2 } ],
+      "goldCost": 800, "resultType": "item", "resultKind": "BodyArmour", "resultRarity": "Rare", "resultItemLevel": 58 },
+
+    { "id": "forge_boots", "name": "Forged Boots", "category": "armor",
+      "inputs": [ { "ingredient": "refined_alloy", "count": 2 }, { "ingredient": "sticky_mucus", "count": 3 } ],
+      "goldCost": 350, "resultType": "item", "resultKind": "Boots", "resultRarity": "Rare", "resultItemLevel": 56 },
+
+    { "id": "forge_dragonblade", "name": "Dragonbone Blade", "category": "weapons",
+      "inputs": [ { "ingredient": "dragon_scale", "count": 3 }, { "ingredient": "demon_blood", "count": 1 } ],
+      "goldCost": 900, "resultType": "item", "resultKind": "TwoHandWeapon", "resultRarity": "Rare", "resultItemLevel": 58 },
+
+    { "id": "forge_venom_dagger", "name": "Venomfang Dagger", "category": "weapons",
+      "inputs": [ { "ingredient": "gorgons_poison", "count": 2 }, { "ingredient": "chain_fragment", "count": 3 } ],
+      "goldCost": 500, "resultType": "item", "resultKind": "OneHandWeapon", "resultRarity": "Rare", "resultItemLevel": 56 },
+
+    { "id": "forge_heart_amulet", "name": "Guardian's Heart Amulet", "category": "jewelry",
+      "inputs": [ { "ingredient": "protectors_heart", "count": 1 }, { "ingredient": "dragon_gold", "count": 1 } ],
+      "goldCost": 1500, "resultType": "item", "resultKind": "Amulet", "resultRarity": "Rare", "resultItemLevel": 60 },
+
+    { "id": "forge_satyr_ring", "name": "Satyr's Ring", "category": "jewelry",
+      "inputs": [ { "ingredient": "satyrs_horn", "count": 2 }, { "ingredient": "refined_alloy", "count": 1 } ],
+      "goldCost": 600, "resultType": "item", "resultKind": "Ring", "resultRarity": "Rare", "resultItemLevel": 56 }
+  ]
+}
