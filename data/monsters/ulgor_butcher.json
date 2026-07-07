@@ -3,7 +3,7 @@
   "name": "Ulgor the Master Butcher",
   "hp": 3000, "armour": 55, "speed": 78, "movement": "chase", "scale": 2.0, "tint": "#8a3a2a",
   "level": 53, "xp": 900, "lootTable": "boss",
-  "legendaryEssence": "q4_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
+  "legendaryEssence": "bharoks_honey_hide", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [

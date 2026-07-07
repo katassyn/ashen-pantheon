@@ -3,7 +3,7 @@
   "name": "Old Jabbok Shaman",
   "hp": 2000, "resChaos": 55, "speed": 105, "movement": "keep_distance", "preferredRange": 210, "scale": 1.7, "tint": "#4a9a7a",
   "level": 53, "xp": 720, "lootTable": "boss",
-  "legendaryEssence": "q5_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
+  "legendaryEssence": "khaliss_magic_robe", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [

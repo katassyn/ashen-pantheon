@@ -115,24 +115,24 @@ public class EndgameTests
 
         // +1: 4 dust + 1 shard + 300g, bez legendary
         Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 999999)); // brak matów
-        pouch.Add("upgrade_dust", 4); pouch.Add("upgrade_shard", 1);
+        pouch.Add("monster_soul_fragment", 4); pouch.Add("monster_heart_fragment", 1);
         Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 100)); // brak złota
         Assert.True(ItemUpgrade.CanUpgrade(item, pouch, 300));
         Assert.True(ItemUpgrade.Apply(item, pouch, 300));
         Assert.Equal(1, item.UpgradeLevel);
-        Assert.Equal(0, pouch.Count("upgrade_dust")); // zdjęte
+        Assert.Equal(0, pouch.Count("monster_soul_fragment")); // zdjęte
 
         // dobicie do +3 wymaga legendary essence (dowolnego Q)
         item.UpgradeLevel = 2;
         var (_, c, r, l) = ItemUpgrade.Cost(3);
         Assert.Equal(1, l);
-        pouch.Add("upgrade_dust", c); pouch.Add("upgrade_shard", r);
+        pouch.Add("monster_soul_fragment", c); pouch.Add("monster_heart_fragment", r);
         Assert.False(ItemUpgrade.CanUpgrade(item, pouch, 999999)); // brak legendary
-        pouch.Add("q7_essence", 1); // legendary z Q7 liczy się do dowolnego upgrade
+        pouch.Add("heralds_dragon_skin", 1); // legendary z Q7 liczy się do dowolnego upgrade
         Assert.True(ItemUpgrade.CanUpgrade(item, pouch, 999999));
         Assert.True(ItemUpgrade.Apply(item, pouch, 999999));
         Assert.Equal(3, item.UpgradeLevel);
-        Assert.Equal(0, pouch.Count("q7_essence")); // legendary zdjęte
+        Assert.Equal(0, pouch.Count("heralds_dragon_skin")); // legendary zdjęte
 
         // +4 to sufit
         item.UpgradeLevel = Item.MaxUpgrade;
@@ -155,21 +155,25 @@ public class EndgameTests
     }
 
     [Fact]
-    public void LegendaryEssence_EveryQHasOwnFromBosses()
+    public void LegendaryBossParts_CanonPerQFromBosses()
     {
-        // każdy Q ma swój essence w katalogu (kategoria upgrade, rzadkość legendary)
-        for (int q = 1; q <= 10; q++)
+        // 10 kanonicznych "części bossów" (IngredientPouchPlugin) — kategoria upgrade, rzadkość legendary
+        string[] parts = { "grimmors_burned_cape", "arachnias_poisonous_husk", "haradurs_glacial_armor",
+            "bharoks_honey_hide", "khaliss_magic_robe", "morthys_sacrificial_bones", "heralds_dragon_skin",
+            "sigrimars_eternal_ice", "medusas_stone_scales", "gorgathas_broken_tooth" };
+        foreach (var p in parts)
         {
-            var ess = IngredientCatalog.Find($"q{q}_essence");
+            var ess = IngredientCatalog.Find(p);
             Assert.NotNull(ess);
             Assert.Equal("legendary", ess!.Rarity);
+            Assert.Equal("upgrade", ess.Category);
         }
-        // main bossy Q dropią swój essence (gwarant), mini-bossy szansę
-        Assert.Equal("q1_essence", Bestiary.Monster("grimmor_the_risen").LegendaryEssence);
+        // main bossy Q dropią swoją część (gwarant), mini-bossy szansę; ta sama część dla całego Q
+        Assert.Equal("grimmors_burned_cape", Bestiary.Monster("grimmor_the_risen").LegendaryEssence);
         Assert.Equal(1.0f, Bestiary.Monster("grimmor_the_risen").LegendaryChance);
-        Assert.Equal("q10_essence", Bestiary.Monster("gorgatha").LegendaryEssence);
-        Assert.Equal("q2_essence", Bestiary.Monster("xarib_hunchback").LegendaryEssence); // mini-boss
-        // zwykły mob nie dropi essence
+        Assert.Equal("gorgathas_broken_tooth", Bestiary.Monster("gorgatha").LegendaryEssence);
+        Assert.Equal("arachnias_poisonous_husk", Bestiary.Monster("xarib_hunchback").LegendaryEssence); // mini-boss Q2
+        // zwykły mob nie dropi części bossa
         Assert.Equal("", Bestiary.Monster("gremlin_marauder").LegendaryEssence);
     }
 

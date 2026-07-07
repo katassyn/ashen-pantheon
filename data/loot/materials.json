@@ -2,8 +2,8 @@
   "id": "materials",
   "rolls": 1,
   "entries": [
-    { "type": "ingredient", "weight": 34, "ingredient": "upgrade_dust", "countMin": 1, "countMax": 3 },
-    { "type": "ingredient", "weight": 8, "ingredient": "upgrade_shard", "countMin": 1, "countMax": 1 },
+    { "type": "ingredient", "weight": 34, "ingredient": "monster_soul_fragment", "countMin": 1, "countMax": 3 },
+    { "type": "ingredient", "weight": 8, "ingredient": "monster_heart_fragment", "countMin": 1, "countMax": 1 },
     { "type": "ingredient", "weight": 30, "ingredient": "chain_fragment", "countMin": 1, "countMax": 3 },
     { "type": "ingredient", "weight": 20, "ingredient": "broken_armor_piece", "countMin": 1, "countMax": 2 },
     { "type": "ingredient", "weight": 14, "ingredient": "sticky_mucus", "countMin": 1, "countMax": 2 },

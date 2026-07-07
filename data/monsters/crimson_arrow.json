@@ -2,7 +2,7 @@
   "id": "crimson_arrow", "name": "The Crimson Arrow",
   "hp": 1500, "evadeChance": 0.18, "speed": 115, "movement": "keep_distance", "preferredRange": 280, "scale": 1.5, "tint": "#c03a3a",
   "level": 53, "xp": 700, "lootTable": "boss",
-  "legendaryEssence": "q3_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.5,
+  "legendaryEssence": "haradurs_glacial_armor", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.5,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.5, "abilities": [

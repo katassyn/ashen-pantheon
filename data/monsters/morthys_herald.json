@@ -3,7 +3,7 @@
   "name": "Morthys, Herald of the Grave",
   "hp": 6500, "armour": 55, "resChaos": 70, "speed": 115, "movement": "chase", "scale": 2.6, "tint": "#30308a",
   "level": 55, "xp": 3000, "lootTable": "boss",
-  "legendaryEssence": "q6_essence", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.8,
+  "legendaryEssence": "morthys_sacrificial_bones", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.8,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.8, "abilities": [

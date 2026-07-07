@@ -3,7 +3,7 @@
   "name": "Sigrimar, Priest of Fjolnir",
   "hp": 5000, "armour": 50, "resCold": 75, "resLightning": 50, "speed": 40, "movement": "keep_distance", "preferredRange": 300, "scale": 2.4, "tint": "#3878c8",
   "level": 55, "xp": 2600, "lootTable": "boss",
-  "legendaryEssence": "q8_essence", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.7,
+  "legendaryEssence": "sigrimars_eternal_ice", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [

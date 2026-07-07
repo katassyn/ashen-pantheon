@@ -104,8 +104,8 @@ public static class Crafting
 /// Materiały: common="upgrade_dust", rare="upgrade_shard", legendary=dowolny ingredient rarity="legendary".</summary>
 public static class ItemUpgrade
 {
-    public const string CommonMat = "upgrade_dust";
-    public const string RareMat = "upgrade_shard";
+    public const string CommonMat = "monster_soul_fragment";
+    public const string RareMat = "monster_heart_fragment";
 
     /// <summary>Koszt dojścia do targetLevel (1..4): złoto + common + rare + legendary (dowolne).</summary>
     public static (long Gold, int Common, int Rare, int Legendary) Cost(int targetLevel) => targetLevel switch

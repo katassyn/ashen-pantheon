@@ -2,7 +2,7 @@
   "id": "evil_miller", "name": "The Evil Miller",
   "hp": 2000, "armour": 40, "resChaos": 50, "speed": 95, "movement": "chase", "scale": 1.75, "tint": "#a08a4a",
   "level": 52, "xp": 750, "lootTable": "boss",
-  "legendaryEssence": "q3_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
+  "legendaryEssence": "haradurs_glacial_armor", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
   "gatedByObjective": "q3_run/mill",
   "abilities": [],
   "phases": [

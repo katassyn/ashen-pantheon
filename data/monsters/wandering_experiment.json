@@ -3,7 +3,7 @@
   "name": "Wandering Experiment",
   "hp": 2000, "armour": 40, "resChaos": 60, "speed": 135, "movement": "chase", "scale": 1.8, "tint": "#c0509a",
   "level": 54, "xp": 800, "lootTable": "boss",
-  "legendaryEssence": "q5_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 2.0,
+  "legendaryEssence": "khaliss_magic_robe", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 2.0,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 2.0, "abilities": [

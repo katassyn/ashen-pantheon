@@ -2,7 +2,7 @@
   "id": "asterion", "name": "Asterion",
   "hp": 3000, "armour": 60, "speed": 115, "movement": "chase", "scale": 2.0, "tint": "#b08a50",
   "level": 54, "xp": 950, "lootTable": "boss",
-  "legendaryEssence": "q9_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.6,
+  "legendaryEssence": "medusas_stone_scales", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.6,
   "gatedByObjective": "q9_run/statues",
   "abilities": [],
   "phases": [

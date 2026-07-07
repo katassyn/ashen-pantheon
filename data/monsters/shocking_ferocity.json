@@ -3,7 +3,7 @@
   "name": "Shocking Ferocity",
   "hp": 3000, "resLightning": 70, "speed": 72, "movement": "keep_distance", "preferredRange": 220, "scale": 1.9, "tint": "#40a0f0",
   "level": 54, "xp": 950, "lootTable": "boss",
-  "legendaryEssence": "q8_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
+  "legendaryEssence": "sigrimars_eternal_ice", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [

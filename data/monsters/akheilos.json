@@ -2,7 +2,7 @@
   "id": "akheilos", "name": "Akheilos",
   "hp": 2000, "armour": 45, "resCold": 50, "speed": 105, "movement": "chase", "scale": 1.8, "tint": "#3a6ac0",
   "level": 55, "xp": 820, "lootTable": "boss",
-  "legendaryEssence": "q10_essence", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.5,
+  "legendaryEssence": "gorgathas_broken_tooth", "legendaryChance": 0.5, "legendaryCount": 1, "attackInterval": 1.5,
   "gatedByObjective": "q10_run/statuette",
   "abilities": [],
   "phases": [
