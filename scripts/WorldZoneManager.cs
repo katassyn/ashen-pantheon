@@ -26,9 +26,14 @@ public partial class WorldZoneManager : Node
     /// <summary>Loteria znaczników (Q9): id "prawdziwych" wylosowane przy budowie mapy.</summary>
     public static readonly HashSet<string> LotteryWinners = new();
 
+    // WARIANTY MAPY: lustrzane odbicie całej strefy w X/Y z seeda (co-op spójne) — 4 orientacje
+    // z jednego layoutu; wejścia lądują góra/dół/lewo/prawo. Wszystkie pozycje przez Tf().
+    private bool _flipX, _flipY;
+    private Vector2 Tf(float x, float y) => new(_flipX ? -x : x, _flipY ? -y : y);
+
     public string TopStatus { get; private set; } = "";
     public string CenterMessage => "";
-    public Vector2 SpawnPoint => _zone == null ? Vector2.Zero : new Vector2(_zone.SpawnX, _zone.SpawnY);
+    public Vector2 SpawnPoint => _zone == null ? Vector2.Zero : Tf(_zone.SpawnX, _zone.SpawnY);
 
     /// <summary>Gracz pojawia się przy wyjściu prowadzącym do strefy, z której przyszedł
     /// (odsunięty od portalu w głąb mapy, żeby nie teleportować z powrotem). Fallback: domyślny spawn.</summary>
@@ -39,7 +44,7 @@ public partial class WorldZoneManager : Node
         foreach (var exit in _zone.Exits)
         {
             if (exit.Target != from) continue;
-            var portalPos = new Vector2(exit.X, exit.Y);
+            var portalPos = Tf(exit.X, exit.Y);
             var inward = (SpawnPoint - portalPos).Normalized();
             if (inward == Vector2.Zero) inward = Vector2.Right;
             var entry = portalPos + inward * 170f + new Vector2(0, 26f * (Net.MyId & 3));
@@ -58,6 +63,11 @@ public partial class WorldZoneManager : Node
         GameState.DiscoverZone(zoneId); // waystone fast-travel odblokowany
         TopStatus = $"{_zone.Name}  (levels {_zone.LevelMin}-{_zone.LevelMax})";
 
+        // wariant mapy: lustro X/Y z seeda runu (co-op: identyczne u wszystkich)
+        int seed = Net.RunSeed != 0 ? Net.RunSeed : zoneId.GetHashCode();
+        _flipX = (seed & 1) != 0;
+        _flipY = (seed & 2) != 0;
+
         // run Q w trybie world: skala trudności (Inf/Hell/Blood) + ilvl dropu z wyzwania
         if (EndgameCatalog.TryParseQ(Net.TravelChallengeId, out int qLvl, out var qd) && qd != null)
         {
@@ -74,7 +84,7 @@ public partial class WorldZoneManager : Node
             portal.TargetScene = exit.Scene.Length > 0 ? exit.Scene
                 : exit.Target == "hub" ? "res://scenes/Main.tscn" : "res://scenes/WorldZone.tscn";
             portal.TargetZone = exit.Target == "hub" ? "" : exit.Target;
-            portal.Position = new Vector2(exit.X, exit.Y);
+            portal.Position = Tf(exit.X, exit.Y);
             var label = portal.GetNodeOrNull<Label>("Label");
             if (label != null) label.Text = string.IsNullOrEmpty(exit.Label) ? exit.Target : exit.Label;
             GetParent().CallDeferred(Node.MethodName.AddChild, portal);
@@ -91,7 +101,7 @@ public partial class WorldZoneManager : Node
                 "escort" => new EscortNpc
                 {
                     MarkerId = marker.Id, LabelText = marker.Label,
-                    DestPos = new Vector2(marker.DestX, marker.DestY),
+                    DestPos = Tf(marker.DestX, marker.DestY),
                     MaxHp = marker.EscortHp, MoveSpeed = marker.EscortSpeed,
                 },
                 "defend" => new DefendZone
@@ -115,7 +125,7 @@ public partial class WorldZoneManager : Node
                 "lottery" => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = true, Lottery = true },
                 _ => new QuestMarkerNode { MarkerId = marker.Id, LabelText = marker.Label, Interact = marker.Type == "interact" },
             };
-            node.Position = new Vector2(marker.X, marker.Y);
+            node.Position = Tf(marker.X, marker.Y);
             GetParent().CallDeferred(Node.MethodName.AddChild, node);
         }
 
@@ -137,17 +147,17 @@ public partial class WorldZoneManager : Node
         }
 
         // waystone przy wejściu do strefy (fast-travel)
-        var waystone = new Waystone { Position = new Vector2(_zone.SpawnX - 120f, _zone.SpawnY - 120f) };
+        var waystone = new Waystone { Position = SpawnPoint + Tf(-120f, -120f) };
         GetParent().CallDeferred(Node.MethodName.AddChild, waystone);
 
         // STRUKTURA MAPY: komnaty (spawn + packi + wyjścia) połączone korytarzami zamiast płaskiego prostokąta.
-        // Deterministyczne z RunSeed → identyczny layout u wszystkich w co-op (kolizyjne przeszkody spójne).
+        // Wszystkie punkty PRZETRANSFORMOWANE (flip X/Y) — layout spójny z wariantem mapy.
         var layout = new ZoneLayout
         {
-            Seed = Net.RunSeed != 0 ? Net.RunSeed : zoneId.GetHashCode(),
+            Seed = seed,
             Spawn = SpawnPoint,
             RoomCenters = BuildRoomCenters(),
-            Portals = _zone.Exits.Select(e => new Vector2(e.X, e.Y)).Append(SpawnPoint).ToList(),
+            Portals = _zone.Exits.Select(e => Tf(e.X, e.Y)).Append(SpawnPoint).ToList(),
         };
         GetParent().CallDeferred(Node.MethodName.AddChild, layout);
 
@@ -156,13 +166,13 @@ public partial class WorldZoneManager : Node
             _packs.Add(new PackState { Def = packDef, RespawnTimer = 0f });
     }
 
-    /// <summary>Węzły komnat: spawn + każdy pack + każde wyjście + markery (komnaty wokół punktów gry).</summary>
+    /// <summary>Węzły komnat: spawn + każdy pack + każde wyjście + markery (wszystko przez Tf → wariant mapy).</summary>
     private List<Vector2> BuildRoomCenters()
     {
         var centers = new List<Vector2> { SpawnPoint };
-        centers.AddRange(_zone.Packs.Select(p => new Vector2(p.X, p.Y)));
-        centers.AddRange(_zone.Exits.Select(e => new Vector2(e.X, e.Y)));
-        centers.AddRange(_zone.Markers.Select(m => new Vector2(m.X, m.Y)));
+        centers.AddRange(_zone.Packs.Select(p => Tf(p.X, p.Y)));
+        centers.AddRange(_zone.Exits.Select(e => Tf(e.X, e.Y)));
+        centers.AddRange(_zone.Markers.Select(m => Tf(m.X, m.Y)));
         return centers;
     }
 
@@ -317,7 +327,7 @@ public partial class WorldZoneManager : Node
     private void SpawnPack(PackState pack)
     {
         pack.Spawned = true;
-        var center = new Vector2(pack.Def.X, pack.Def.Y);
+        var center = Tf(pack.Def.X, pack.Def.Y);
         int i = 0;
         foreach (var monsterId in pack.Def.Monsters)
         {
