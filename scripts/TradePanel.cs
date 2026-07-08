@@ -164,7 +164,7 @@ public partial class TradePanel : CanvasLayer
         {
             var it = item;
             var b = new Button { Text = $"{it.Name} [{it.Rarity}]", TooltipText = "click to return to bag" };
-            b.Modulate = ItemPickup.RarityColor(it.Rarity);
+            UiIcons.DecorateItemButton(b, it.Kind, it.Rarity);
             b.Pressed += () => RemoveFromOffer(it);
             _mine.AddChild(b);
         }
@@ -174,9 +174,13 @@ public partial class TradePanel : CanvasLayer
         foreach (Node c in _theirs.GetChildren()) c.QueueFree();
         foreach (var it in _theirItems)
         {
-            var lbl = new Label { Text = $"{it.Name} [{it.Rarity}]" };
-            lbl.Modulate = ItemPickup.RarityColor(System.Enum.Parse<Rarity>(it.Rarity));
-            _theirs.AddChild(lbl);
+            var rr = System.Enum.Parse<Rarity>(it.Rarity);
+            var row = new HBoxContainer();
+            row.AddChild(UiIcons.Chip(System.Enum.Parse<ItemKind>(it.Kind), rr));
+            var lbl = new Label { Text = $"{it.Name} [{it.Rarity}]", VerticalAlignment = VerticalAlignment.Center };
+            lbl.Modulate = ItemPickup.RarityColor(rr);
+            row.AddChild(lbl);
+            _theirs.AddChild(row);
         }
         if (_theirGold > 0) _theirs.AddChild(new Label { Text = $"+ {_theirGold} gold" });
 
@@ -186,7 +190,7 @@ public partial class TradePanel : CanvasLayer
         {
             var it = placed.Item;
             var b = new Button { Text = $"{it.Name} [{it.Rarity}]" };
-            b.Modulate = ItemPickup.RarityColor(it.Rarity);
+            UiIcons.DecorateItemButton(b, it.Kind, it.Rarity);
             b.Pressed += () => AddToOffer(it);
             _bag.AddChild(b);
         }

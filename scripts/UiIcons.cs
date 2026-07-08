@@ -188,6 +188,39 @@ public static class UiIcons
             ci.DrawLine(c + d * r * 0.4f, c + d * r * 0.9f, new Color(col, 0.6f), 2f);
     }
 
+    // ── STATY / ATRYBUTY (małe symbole obok liczb) ──
+    public static void Stat(CanvasItem ci, string kind, Vector2 c, float r, Color col)
+    {
+        switch (kind)
+        {
+            case "life": // serce
+                ci.DrawColoredPolygon(new[] { c + new Vector2(0, r * 0.85f), c + new Vector2(-r, -r * 0.1f), c + new Vector2(-r * 0.5f, -r * 0.7f), c + new Vector2(0, -r * 0.25f), c + new Vector2(r * 0.5f, -r * 0.7f), c + new Vector2(r, -r * 0.1f) }, col);
+                break;
+            case "es": // tarcza-diament (energia)
+                ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r), c + new Vector2(r * 0.8f, 0), c + new Vector2(0, r), c + new Vector2(-r * 0.8f, 0) }, new Color(col, 0.5f));
+                ci.DrawArc(c, r, 0, Mathf.Tau, 4, col, 2f);
+                break;
+            case "armour": ci.DrawColoredPolygon(new[] { c + new Vector2(-r * 0.7f, -r * 0.7f), c + new Vector2(r * 0.7f, -r * 0.7f), c + new Vector2(r * 0.7f, r * 0.3f), c + new Vector2(0, r), c + new Vector2(-r * 0.7f, r * 0.3f) }, col); break;
+            case "evasion": ci.DrawArc(c, r * 0.8f, 0.3f, Mathf.Tau - 0.3f, 22, col, 3f); break; // uchyl (przerwany krąg)
+            case "damage": DrawSword(ci, c, r, col); break;
+            case "crit": Bolt(ci, c, r, col); break;
+            case "speed": Chevrons(ci, c, r, col); break;
+            case "str": ci.DrawString(ThemeDB.FallbackFont, c + new Vector2(-r * 0.5f, r * 0.5f), "S", HorizontalAlignment.Left, -1, (int)(r * 1.8f), col); break;
+            case "dex": ci.DrawString(ThemeDB.FallbackFont, c + new Vector2(-r * 0.5f, r * 0.5f), "D", HorizontalAlignment.Left, -1, (int)(r * 1.8f), col); break;
+            case "int": ci.DrawString(ThemeDB.FallbackFont, c + new Vector2(-r * 0.5f, r * 0.5f), "I", HorizontalAlignment.Left, -1, (int)(r * 1.8f), col); break;
+            case "fire":  ci.DrawColoredPolygon(Flame(c, r), col); break;
+            case "cold":  ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r), c + new Vector2(r * 0.5f, r * 0.6f), c + new Vector2(-r * 0.5f, r * 0.6f) }, col); break;
+            case "light": Bolt(ci, c, r, col); break;
+            case "chaos": ci.DrawArc(c, r * 0.75f, 0, Mathf.Tau, 3, col, 2.5f); break; // triquetra-uproszczona
+            default: ci.DrawCircle(c, r * 0.5f, col); break;
+        }
+    }
+
+    private static Vector2[] Flame(Vector2 c, float r) => new[] {
+        c + new Vector2(0, -r), c + new Vector2(r * 0.55f, -r * 0.1f), c + new Vector2(r * 0.35f, r * 0.6f),
+        c + new Vector2(0, r * 0.85f), c + new Vector2(-r * 0.35f, r * 0.6f), c + new Vector2(-r * 0.5f, 0f)
+    };
+
     /// <summary>Typ ikony dla PUSTEGO slotu ekwipunku (sylwetka-placeholder).</summary>
     public static AshenPantheon.Core.ItemKind SlotKind(EquipmentSlot slot) => slot switch
     {
@@ -268,4 +301,14 @@ public partial class ItemIcon : Control
 
     public override void _Draw() =>
         UiIcons.ItemKind(this, Kind, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.32f, IconColor);
+}
+
+/// <summary>Mały widget: symbol statystyki (StatsPanel, obok liczby).</summary>
+public partial class StatIcon : Control
+{
+    public string Kind = "";
+    public Color IconColor = new(0.75f, 0.8f, 0.95f);
+
+    public override void _Draw() =>
+        UiIcons.Stat(this, Kind, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.34f, IconColor);
 }

@@ -57,13 +57,12 @@ public partial class InspectPanel : CanvasLayer
         foreach (var (slot, dto) in data.Items)
         {
             var item = ItemMapper.FromDto(dto);
-            var row = new Label
-            {
-                Text = $"{slot,-14}  {item.Name}  [{item.Rarity}]",
-                TooltipText = CharacterPanel.Describe(item), // pełne affixy w tooltipie
-                MouseFilter = Control.MouseFilterEnum.Stop,   // tooltip wymaga odbioru myszy
-            };
-            row.Modulate = ItemPickup.RarityColor(item.Rarity);
+            var row = new HBoxContainer { TooltipText = CharacterPanel.Describe(item), MouseFilter = Control.MouseFilterEnum.Stop };
+            row.AddThemeConstantOverride("separation", 8);
+            row.AddChild(UiIcons.Chip(item.Kind, item.Rarity));
+            var lbl = new Label { Text = $"{slot,-14}  {item.Name}  [{item.Rarity}]", VerticalAlignment = VerticalAlignment.Center };
+            lbl.Modulate = ItemPickup.RarityColor(item.Rarity);
+            row.AddChild(lbl);
             _list.AddChild(row);
         }
     }

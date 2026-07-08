@@ -71,7 +71,7 @@ public partial class BlacksmithPanel : CanvasLayer
         long dust = GameState.Pouch.Count(ItemUpgrade.CommonMat);
         long shard = GameState.Pouch.Count(ItemUpgrade.RareMat);
         long leg = ItemUpgrade.LegendaryOwned(GameState.Pouch);
-        _list.AddChild(new Label { Text = $"Materials — Upgrade Dust: {dust}   ·   Upgrade Shard: {shard}   ·   Legendary Essence: {leg}", Modulate = new Color(0.7f, 0.85f, 1f) });
+        _list.AddChild(new Label { Text = $"Materials — Soul Fragment: {dust}   ·   Heart Fragment: {shard}   ·   Boss Parts (legendary): {leg}", Modulate = new Color(0.7f, 0.85f, 1f) });
         _list.AddChild(new Label { Text = "Reforge Rare+ gear up to +4. Higher tiers also need legendary essence from Q bosses.", Modulate = new Color(0.7f, 0.7f, 0.75f) });
 
         bool any = false;
@@ -96,11 +96,13 @@ public partial class BlacksmithPanel : CanvasLayer
         panel.AddChild(box);
 
         string plus = item.UpgradeLevel > 0 ? $" +{item.UpgradeLevel}" : "";
-        var title = new Label { Text = $"{where}  {item.Name}{plus}  [{item.Rarity}]" + (item.UpgradeLevel >= Item.MaxUpgrade ? "   ✔ MAX" : "") };
+        var titleRow = new HBoxContainer { TooltipText = CharacterPanel.Describe(item), MouseFilter = Control.MouseFilterEnum.Stop };
+        titleRow.AddThemeConstantOverride("separation", 8);
+        titleRow.AddChild(UiIcons.Chip(item.Kind, item.Rarity));
+        var title = new Label { Text = $"{where}  {item.Name}{plus}  [{item.Rarity}]" + (item.UpgradeLevel >= Item.MaxUpgrade ? "   ✔ MAX" : ""), VerticalAlignment = VerticalAlignment.Center };
         title.Modulate = ItemPickup.RarityColor(item.Rarity);
-        title.TooltipText = CharacterPanel.Describe(item);
-        title.MouseFilter = Control.MouseFilterEnum.Stop;
-        box.AddChild(title);
+        titleRow.AddChild(title);
+        box.AddChild(titleRow);
 
         if (item.UpgradeLevel < Item.MaxUpgrade)
         {
@@ -145,14 +147,21 @@ public partial class BlacksmithPanel : CanvasLayer
         panel.AddThemeStyleboxOverride("panel", style);
         panel.AddChild(box);
 
-        // tytuł + wynik
+        // tytuł + wynik (z ikoną produktu)
+        var titleRow = new HBoxContainer();
+        titleRow.AddThemeConstantOverride("separation", 8);
+        if (r.ResultType != "ingredient"
+            && System.Enum.TryParse<ItemKind>(r.ResultKind, out var rk)
+            && System.Enum.TryParse<Rarity>(r.ResultRarity, out var rr))
+            titleRow.AddChild(UiIcons.Chip(rk, rr));
         string resultDesc = r.ResultType == "ingredient"
             ? $"→ {r.ResultCount}x {IngredientCatalog.Find(r.ResultIngredient)?.Name ?? r.ResultIngredient}"
             : $"→ {r.ResultRarity} {r.ResultKind}  (item lvl {r.ResultItemLevel})";
-        var title = new Label { Text = $"{r.Name}   {resultDesc}" };
+        var title = new Label { Text = $"{r.Name}   {resultDesc}", VerticalAlignment = VerticalAlignment.Center };
         title.AddThemeFontSizeOverride("font_size", 16);
         title.Modulate = new Color(0.9f, 0.85f, 0.6f);
-        box.AddChild(title);
+        titleRow.AddChild(title);
+        box.AddChild(titleRow);
 
         // materiały (kolor wg posiadania)
         var mats = new HBoxContainer();

@@ -9,6 +9,9 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
     private HBoxContainer _buttons;
     private PlayerController _player;
 
+    // wiersze statów z ikonami (budowane raz, wartości aktualizowane w _Process)
+    private readonly System.Collections.Generic.Dictionary<string, Label> _vals = new();
+
     public void CloseUi() => _root.Visible = false;
     public bool IsOpen => _root != null && _root.Visible;
 
@@ -18,6 +21,7 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
         _text = GetNode<Label>("%Text");
         AddToGroup(UiPanels.Group);
         UiPanels.Solidify(_root);
+        BuildStatRows();
 
         _buttons = new HBoxContainer();
         _buttons.AddThemeConstantOverride("separation", 8);
@@ -67,6 +71,52 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
         _player?.Refresh();
     }
 
+    /// <summary>Buduje siatkę statów z ikonami (raz). Trzy kolumny: obrona · ofensywa · atrybuty+resisty.</summary>
+    private void BuildStatRows()
+    {
+        var cols = new HBoxContainer { AnchorLeft = 0f, AnchorRight = 1f, OffsetLeft = 20, OffsetTop = 96, OffsetRight = -20 };
+        cols.AddThemeConstantOverride("separation", 28);
+        _text.GetParent().AddChild(cols);
+
+        VBoxContainer col() { var v = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill }; v.AddThemeConstantOverride("separation", 5); cols.AddChild(v); return v; }
+        var c1 = col(); var c2 = col(); var c3 = col();
+
+        void row(VBoxContainer parent, string kind, string name, Color icol)
+        {
+            var r = new HBoxContainer();
+            r.AddThemeConstantOverride("separation", 7);
+            r.AddChild(new StatIcon { Kind = kind, IconColor = icol, CustomMinimumSize = new Vector2(20, 20) });
+            r.AddChild(new Label { Text = name, CustomMinimumSize = new Vector2(96, 0) });
+            var val = new Label { Text = "—" };
+            val.AddThemeColorOverride("font_color", new Color(1f, 0.92f, 0.7f));
+            r.AddChild(val);
+            _vals[kind] = val;
+            parent.AddChild(r);
+        }
+
+        c1.AddChild(new Label { Text = "— Defense —", Modulate = new Color(0.7f, 0.8f, 1f) });
+        row(c1, "life", "Life", new Color(0.9f, 0.3f, 0.3f));
+        row(c1, "mana", "Mana", new Color(0.4f, 0.6f, 1f));
+        row(c1, "es", "Energy Shield", new Color(0.5f, 0.85f, 1f));
+        row(c1, "armour", "Armour", new Color(0.75f, 0.75f, 0.8f));
+        row(c1, "evasion", "Evasion", new Color(0.6f, 0.9f, 0.6f));
+
+        c2.AddChild(new Label { Text = "— Offense —", Modulate = new Color(1f, 0.8f, 0.6f) });
+        row(c2, "damage", "Attack dmg", new Color(1f, 0.7f, 0.4f));
+        row(c2, "crit", "Crit", new Color(1f, 0.85f, 0.3f));
+        row(c2, "hit", "Hit chance", new Color(0.8f, 0.85f, 0.9f));
+        row(c2, "speed", "Move speed", new Color(0.7f, 0.9f, 1f));
+
+        c3.AddChild(new Label { Text = "— Attributes & Resists —", Modulate = new Color(0.8f, 1f, 0.8f) });
+        row(c3, "str", "Strength", new Color(1f, 0.5f, 0.4f));
+        row(c3, "dex", "Dexterity", new Color(0.5f, 1f, 0.6f));
+        row(c3, "int", "Intelligence", new Color(0.5f, 0.7f, 1f));
+        row(c3, "fire", "Fire res", new Color(1f, 0.5f, 0.3f));
+        row(c3, "cold", "Cold res", new Color(0.5f, 0.8f, 1f));
+        row(c3, "light", "Light res", new Color(1f, 0.9f, 0.4f));
+        row(c3, "chaos", "Chaos res", new Color(0.8f, 0.4f, 0.9f));
+    }
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is InputEventKey k && k.Pressed && !k.Echo && Keybinds.Matches(k, "stats"))
@@ -88,24 +138,26 @@ public partial class StatsPanel : CanvasLayer, IUiPanel
         var p = GameState.Progress;
         int spentAttr = GameState.Spent.Strength + GameState.Spent.Dexterity + GameState.Spent.Intelligence;
         _text.Text =
-            "STATS    [C] close\n\n" +
+            "STATS    [C] close\n" +
             $"Level: {p.Level}    XP: {p.Xp}/{PlayerProgress.XpToNext(p.Level)}    Gold: {GameState.Wallet.Gold}\n" +
-            $"Attribute points: {p.AttributePoints}    Skill points: {p.SkillPoints}\n\n" +
-            $"Life:             {s.MaxLife:0}\n" +
-            $"Mana:             {s.MaxMana:0}\n" +
-            $"Energy Shield:    {s.MaxEnergyShield:0}\n" +
-            $"Armour:           {s.Armour:0}\n" +
-            $"Evasion:          {s.EvasionRating:0}\n" +
-            $"Hit chance:       {s.HitChance:0}%\n" +
-            $"Crit:             {s.CritChance * 100f:0}%  x{s.CritMultiplier:0.00}\n" +
-            $"Attack dmg:       x{s.AttackDamageMultiplier:0.00}\n\n" +
-            $"Str {s.Attributes.Strength} (spent {GameState.Spent.Strength})   " +
-            $"Dex {s.Attributes.Dexterity} (spent {GameState.Spent.Dexterity})   " +
-            $"Int {s.Attributes.Intelligence} (spent {GameState.Spent.Intelligence})\n\n" +
-            $"Resists: Fire {s.Resistances.Effective(DamageType.Fire, s.Level):0}%  " +
-            $"Cold {s.Resistances.Effective(DamageType.Cold, s.Level):0}%  " +
-            $"Lightning {s.Resistances.Effective(DamageType.Lightning, s.Level):0}%  " +
-            $"Chaos {s.Resistances.Effective(DamageType.Chaos, s.Level):0}%\n" +
-            $"Attribute respec costs: {Respec.AttributeCost(spentAttr)} gold";
+            $"Attribute points: {p.AttributePoints}    Skill points: {p.SkillPoints}    (respec: {Respec.AttributeCost(spentAttr)}g)";
+
+        void set(string k, string v) { if (_vals.TryGetValue(k, out var l)) l.Text = v; }
+        set("life", $"{s.MaxLife:0}");
+        set("mana", $"{s.MaxMana:0}");
+        set("es", $"{s.MaxEnergyShield:0}");
+        set("armour", $"{s.Armour:0}");
+        set("evasion", $"{s.EvasionRating:0}");
+        set("damage", $"x{s.AttackDamageMultiplier:0.00}");
+        set("crit", $"{s.CritChance * 100f:0}%  x{s.CritMultiplier:0.00}");
+        set("hit", $"{s.HitChance:0}%");
+        set("speed", $"x{s.MoveSpeedMult:0.00}");
+        set("str", $"{s.Attributes.Strength}  (+{GameState.Spent.Strength})");
+        set("dex", $"{s.Attributes.Dexterity}  (+{GameState.Spent.Dexterity})");
+        set("int", $"{s.Attributes.Intelligence}  (+{GameState.Spent.Intelligence})");
+        set("fire", $"{s.Resistances.Effective(DamageType.Fire, s.Level):0}%");
+        set("cold", $"{s.Resistances.Effective(DamageType.Cold, s.Level):0}%");
+        set("light", $"{s.Resistances.Effective(DamageType.Lightning, s.Level):0}%");
+        set("chaos", $"{s.Resistances.Effective(DamageType.Chaos, s.Level):0}%");
     }
 }
