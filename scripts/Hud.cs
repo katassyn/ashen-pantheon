@@ -316,6 +316,35 @@ public partial class PauseMenu : CanvasLayer
 	private LineEdit _coopIp;
 	private Button _coopHost, _coopJoin, _coopLeave;
 
+	/// <summary>Przycisk menu pauzy: glif + tekst + kolor akcentu (green=akcja, red=wyjście, neutral).</summary>
+	private static Button MenuBtn(string text, string glyph, Color accent)
+	{
+		var b = new Button { Text = "     " + text, Alignment = HorizontalAlignment.Left, CustomMinimumSize = new Vector2(0, 42) };
+		void S(string n, Color f)
+		{
+			var sb = new StyleBoxFlat { BgColor = f, BorderColor = f.Lightened(0.28f) };
+			sb.SetBorderWidthAll(2); sb.SetCornerRadiusAll(6); sb.SetContentMarginAll(8);
+			b.AddThemeStyleboxOverride(n, sb);
+		}
+		S("normal", accent); S("hover", accent.Lightened(0.12f)); S("pressed", accent.Darkened(0.12f));
+		b.AddThemeColorOverride("font_color", new Color(0.95f, 0.95f, 1f));
+		b.AddChild(new GlyphIcon
+		{
+			Kind = glyph, IconColor = new Color(0.92f, 0.95f, 1f),
+			AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -10, OffsetBottom = 10,
+			OffsetLeft = 10, Size = new Vector2(20, 20), MouseFilter = Control.MouseFilterEnum.Ignore,
+		});
+		return b;
+	}
+
+	private static Label SectionHeader(string text)
+	{
+		var l = new Label { Text = "— " + text + " —" };
+		l.AddThemeColorOverride("font_color", new Color(0.7f, 0.62f, 0.9f));
+		l.AddThemeFontSizeOverride("font_size", 15);
+		return l;
+	}
+
 	public override void _Ready()
 	{
 		Layer = 20;
@@ -334,9 +363,16 @@ public partial class PauseMenu : CanvasLayer
 		vb.AddThemeConstantOverride("separation", 10);
 		scroll.AddChild(vb);
 
-		vb.AddChild(new Label { Text = "PAUSED", HorizontalAlignment = HorizontalAlignment.Center });
+		var titleRow = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+		titleRow.AddThemeConstantOverride("separation", 10);
+		titleRow.AddChild(new GlyphIcon { Kind = "pause", IconColor = new Color(0.8f, 0.75f, 0.95f), CustomMinimumSize = new Vector2(24, 24), MouseFilter = Control.MouseFilterEnum.Ignore });
+		var pausedLbl = new Label { Text = "PAUSED" };
+		pausedLbl.AddThemeFontSizeOverride("font_size", 26);
+		pausedLbl.AddThemeColorOverride("font_color", new Color(0.9f, 0.85f, 1f));
+		titleRow.AddChild(pausedLbl);
+		vb.AddChild(titleRow);
 
-		var resume = new Button { Text = "Resume" };
+		var resume = MenuBtn("Resume", "play", new Color(0.2f, 0.5f, 0.24f));
 		resume.Pressed += () => _root.Visible = false;
 		vb.AddChild(resume);
 
@@ -379,15 +415,15 @@ public partial class PauseMenu : CanvasLayer
 		vb.AddChild(volRow);
 
 		// ── controls (rebind klawiszy) ──
-		vb.AddChild(new Label { Text = "— Controls (click to rebind) —" });
+		vb.AddChild(SectionHeader("Controls (click to rebind)"));
 		foreach (var (id, label, _) in Keybinds.Actions)
 			vb.AddChild(new RebindRow { ActionId = id, ActionLabel = label });
-		var resetKeys = new Button { Text = "Reset controls to default" };
+		var resetKeys = MenuBtn("Reset controls to default", "gear", new Color(0.24f, 0.22f, 0.34f));
 		resetKeys.Pressed += () => { Keybinds.ResetDefaults(); foreach (Node n in vb.GetChildren()) if (n is RebindRow r) r.RefreshLabel(); };
 		vb.AddChild(resetKeys);
 
 		// ── co-op (przeniesione z pływającego LobbyPanel — user: box w hubie był useless) ──
-		vb.AddChild(new Label { Text = "— Co-op (max 4 players) —" });
+		vb.AddChild(SectionHeader("Co-op (max 4 players)"));
 		_coopStatus = new Label();
 		vb.AddChild(_coopStatus);
 		var coopRow = new HBoxContainer();
@@ -405,7 +441,7 @@ public partial class PauseMenu : CanvasLayer
 		coopRow.AddChild(_coopLeave);
 		vb.AddChild(coopRow);
 
-		var toMenu = new Button { Text = "Main menu" };
+		var toMenu = MenuBtn("Main menu", "home", new Color(0.24f, 0.22f, 0.34f));
 		toMenu.Pressed += () =>
 		{
 			GameState.Save();
@@ -414,7 +450,7 @@ public partial class PauseMenu : CanvasLayer
 		};
 		vb.AddChild(toMenu);
 
-		var quit = new Button { Text = "Quit game" };
+		var quit = MenuBtn("Quit game", "power", new Color(0.42f, 0.14f, 0.16f));
 		quit.Pressed += () =>
 		{
 			GameState.Save();
@@ -792,8 +828,18 @@ public partial class DeathScreen : CanvasLayer
 			}
 		}
 
-		var respawn = new Button { Text = "Respawn", CustomMinimumSize = new Vector2(240, 48) };
+		var respawn = new Button { Text = "     Respawn", CustomMinimumSize = new Vector2(240, 48), Alignment = HorizontalAlignment.Center };
 		respawn.AddThemeFontSizeOverride("font_size", 20);
+		var rsAccent = new Color(0.2f, 0.5f, 0.24f);
+		foreach (var st in new[] { "normal", "hover", "pressed" })
+		{
+			var f = st == "hover" ? rsAccent.Lightened(0.12f) : st == "pressed" ? rsAccent.Darkened(0.12f) : rsAccent;
+			var sb = new StyleBoxFlat { BgColor = f, BorderColor = f.Lightened(0.3f) };
+			sb.SetBorderWidthAll(2); sb.SetCornerRadiusAll(7); sb.SetContentMarginAll(8);
+			respawn.AddThemeStyleboxOverride(st, sb);
+		}
+		respawn.AddThemeColorOverride("font_color", new Color(0.95f, 1f, 0.95f));
+		respawn.AddChild(new GlyphIcon { Kind = "play", IconColor = new Color(0.92f, 1f, 0.92f), AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -12, OffsetBottom = 12, OffsetLeft = 24, Size = new Vector2(24, 24), MouseFilter = Control.MouseFilterEnum.Ignore });
 		respawn.Pressed += () =>
 		{
 			_player?.RespawnAtZoneSpawn();

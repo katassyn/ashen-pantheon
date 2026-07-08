@@ -140,6 +140,35 @@ public static class QuestNpc
         _ => npcId,
     };
 
+    /// <summary>Kolor + glif przycisku dialogu wg semantyki etykiety
+    /// (Accept/Complete = zielony check, Decline = czerwony x, Close = neutralny).</summary>
+    private static void StyleDialogButton(Button b, string label)
+    {
+        string glyph = "";
+        Color accent;
+        if (label.StartsWith("Accept") || label.StartsWith("Complete")) { accent = new Color(0.2f, 0.5f, 0.24f); glyph = "check"; }
+        else if (label.StartsWith("Decline")) { accent = new Color(0.5f, 0.18f, 0.2f); glyph = "cross"; }
+        else accent = new Color(0.24f, 0.22f, 0.34f); // Close / neutralny
+
+        void S(string n, Color f)
+        {
+            var sb = new StyleBoxFlat { BgColor = f, BorderColor = f.Lightened(0.28f) };
+            sb.SetBorderWidthAll(2); sb.SetCornerRadiusAll(6); sb.SetContentMarginAll(8);
+            b.AddThemeStyleboxOverride(n, sb);
+        }
+        S("normal", accent); S("hover", accent.Lightened(0.12f)); S("pressed", accent.Darkened(0.12f));
+        b.AddThemeColorOverride("font_color", new Color(0.95f, 0.95f, 1f));
+
+        if (glyph != "")
+            b.AddChild(new GlyphIcon
+            {
+                Kind = glyph, IconColor = new Color(0.92f, 1f, 0.92f),
+                AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -9, OffsetBottom = 9,
+                OffsetLeft = 10, Size = new Vector2(18, 18),
+                MouseFilter = Control.MouseFilterEnum.Ignore,
+            });
+    }
+
     /// <summary>Okno dialogu z dowolnym zestawem przycisków (akcja null = tylko zamknij).
     /// E/Esc zawsze zamyka bez akcji (Decline/Close).</summary>
     private static void Dialog(SceneTree tree, string npcId, string text,
@@ -161,12 +190,23 @@ public static class QuestNpc
         UiPanels.Solidify(panel);
         layer.AddChild(panel);
 
-        var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 14, OffsetTop = 10, OffsetRight = -14, OffsetBottom = -10 };
+        // layout: [ portret NPC | kolumna treści ]
+        var outer = new HBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 16, OffsetTop = 12, OffsetRight = -16, OffsetBottom = -12 };
+        outer.AddThemeConstantOverride("separation", 16);
+        panel.AddChild(outer);
+
+        var portraitCol = new VBoxContainer { SizeFlagsVertical = Control.SizeFlags.ShrinkCenter };
+        portraitCol.AddChild(new NpcAvatar { NpcId = npcId, CustomMinimumSize = new Vector2(124, 124) });
+        var nameTag = new Label { Text = NpcName(npcId), HorizontalAlignment = HorizontalAlignment.Center, CustomMinimumSize = new Vector2(124, 0) };
+        nameTag.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.5f));
+        nameTag.AddThemeConstantOverride("outline_size", 4);
+        nameTag.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        portraitCol.AddChild(nameTag);
+        outer.AddChild(portraitCol);
+
+        var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         vb.AddThemeConstantOverride("separation", 8);
-        panel.AddChild(vb);
-        var title = new Label { Text = $"— {NpcName(npcId)} —" };
-        title.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.5f));
-        vb.AddChild(title);
+        outer.AddChild(vb);
         vb.AddChild(new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart, SizeFlagsVertical = Control.SizeFlags.ExpandFill });
 
         var row = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
@@ -174,7 +214,8 @@ public static class QuestNpc
         vb.AddChild(row);
         foreach (var (label, action) in buttons)
         {
-            var btn = new Button { Text = label, CustomMinimumSize = new Vector2(150, 0) };
+            var btn = new Button { Text = label, CustomMinimumSize = new Vector2(160, 40) };
+            StyleDialogButton(btn, label);
             var captured = action;
             btn.Pressed += () =>
             {

@@ -251,6 +251,82 @@ public static class UiIcons
         }
     }
 
+    // ── GLIFY (potwierdzenie / odmowa) ──
+    public static void Check(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawLine(c + new Vector2(-r * 0.7f, 0), c + new Vector2(-r * 0.15f, r * 0.55f), col, 3f);
+        ci.DrawLine(c + new Vector2(-r * 0.15f, r * 0.55f), c + new Vector2(r * 0.7f, -r * 0.6f), col, 3f);
+    }
+    public static void Cross(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawLine(c + new Vector2(-r * 0.6f, -r * 0.6f), c + new Vector2(r * 0.6f, r * 0.6f), col, 3f);
+        ci.DrawLine(c + new Vector2(-r * 0.6f, r * 0.6f), c + new Vector2(r * 0.6f, -r * 0.6f), col, 3f);
+    }
+    public static void Play(CanvasItem ci, Vector2 c, float r, Color col) =>
+        ci.DrawColoredPolygon(new[] { c + new Vector2(-r * 0.55f, -r * 0.7f), c + new Vector2(r * 0.7f, 0), c + new Vector2(-r * 0.55f, r * 0.7f) }, col);
+    public static void Pause(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.5f, -r * 0.65f), new Vector2(r * 0.32f, r * 1.3f)), col);
+        ci.DrawRect(new Rect2(c + new Vector2(r * 0.18f, -r * 0.65f), new Vector2(r * 0.32f, r * 1.3f)), col);
+    }
+    public static void Home(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r * 0.8f), c + new Vector2(r * 0.8f, 0), c + new Vector2(-r * 0.8f, 0) }, col); // dach
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.5f, 0), new Vector2(r, r * 0.7f)), col);                                            // korpus
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.15f, r * 0.2f), new Vector2(r * 0.3f, r * 0.5f)), new Color(0.1f, 0.09f, 0.12f));   // drzwi
+    }
+    public static void Power(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawArc(c, r * 0.7f, Mathf.Pi * 1.75f, Mathf.Pi * 3.25f, 26, col, 3f); // przerwany krąg
+        ci.DrawLine(c + new Vector2(0, -r * 0.85f), c + new Vector2(0, -r * 0.1f), col, 3f); // pion
+    }
+    public static void Gear(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            float a = i * Mathf.Tau / 8f;
+            var d = new Vector2(Mathf.Cos(a), Mathf.Sin(a));
+            ci.DrawLine(c + d * r * 0.6f, c + d * r * 0.95f, col, 2.5f);
+        }
+        ci.DrawArc(c, r * 0.55f, 0, Mathf.Tau, 24, col, 2.5f);
+    }
+
+    // ── PORTRET NPC (popiersie w medalionie, rysowane kodem) ──
+    public static void Portrait(CanvasItem ci, string npcId, Vector2 c, float r, Color accent)
+    {
+        ci.DrawCircle(c, r, new Color(0.1f, 0.09f, 0.14f));               // tło medalionu
+        ci.DrawArc(c, r, 0, Mathf.Tau, 40, accent, 2.5f);                 // ramka
+        // barki
+        ci.DrawColoredPolygon(new[] {
+            c + new Vector2(-r * 0.72f, r * 0.98f), c + new Vector2(-r * 0.5f, r * 0.28f),
+            c + new Vector2(r * 0.5f, r * 0.28f), c + new Vector2(r * 0.72f, r * 0.98f)
+        }, new Color(accent, 0.3f));
+        // głowa
+        ci.DrawCircle(c + new Vector2(0, -r * 0.08f), r * 0.32f, new Color(0.68f, 0.62f, 0.55f));
+        // kaptur (łuk obejmujący głowę)
+        ci.DrawArc(c + new Vector2(0, -r * 0.06f), r * 0.52f, Mathf.Pi * 0.78f, Mathf.Pi * 2.22f, 30, new Color(accent, 0.9f), 4f);
+        // oczy
+        var eye = new Color(0.1f, 0.09f, 0.12f);
+        ci.DrawCircle(c + new Vector2(-r * 0.12f, -r * 0.1f), r * 0.045f, eye);
+        ci.DrawCircle(c + new Vector2(r * 0.12f, -r * 0.1f), r * 0.045f, eye);
+        // detal per NPC
+        switch (npcId)
+        {
+            case "amuun": // mistyk — gwiazda mocy nad głową
+                DrawStar4(ci, c + new Vector2(0, -r * 0.72f), r * 0.16f, new Color(0.85f, 0.75f, 1f));
+                break;
+            case "guildmaster": // dowódca — pióropusz/grzebień na kapturze
+                ci.DrawLine(c + new Vector2(0, -r * 0.62f), c + new Vector2(0, -r * 0.95f), accent, 3f);
+                break;
+        }
+    }
+
+    private static void DrawStar4(CanvasItem ci, Vector2 c, float r, Color col) =>
+        ci.DrawColoredPolygon(new[] {
+            c + new Vector2(0, -r), c + new Vector2(r * 0.22f, -r * 0.22f), c + new Vector2(r, 0), c + new Vector2(r * 0.22f, r * 0.22f),
+            c + new Vector2(0, r), c + new Vector2(-r * 0.22f, r * 0.22f), c + new Vector2(-r, 0), c + new Vector2(-r * 0.22f, -r * 0.22f)
+        }, col);
+
     // ── STATY / ATRYBUTY (małe symbole obok liczb) ──
     public static void Stat(CanvasItem ci, string kind, Vector2 c, float r, Color col)
     {
@@ -386,6 +462,39 @@ public partial class StatIcon : Control
 
     public override void _Draw() =>
         UiIcons.Stat(this, Kind, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.34f, IconColor);
+}
+
+/// <summary>Mały glif potwierdzenia/odmowy (przyciski dialogów).</summary>
+public partial class GlyphIcon : Control
+{
+    public string Kind = ""; // check | cross | play | pause | home | power | gear
+    public Color IconColor = Colors.White;
+
+    public override void _Draw()
+    {
+        var c = Size / 2f;
+        float r = Mathf.Min(Size.X, Size.Y) * 0.36f;
+        switch (Kind)
+        {
+            case "check": UiIcons.Check(this, c, r, IconColor); break;
+            case "cross": UiIcons.Cross(this, c, r, IconColor); break;
+            case "play":  UiIcons.Play(this, c, r, IconColor); break;
+            case "pause": UiIcons.Pause(this, c, r, IconColor); break;
+            case "home":  UiIcons.Home(this, c, r, IconColor); break;
+            case "power": UiIcons.Power(this, c, r, IconColor); break;
+            case "gear":  UiIcons.Gear(this, c, r, IconColor); break;
+        }
+    }
+}
+
+/// <summary>Portret NPC w medalionie (dialogi questowe).</summary>
+public partial class NpcAvatar : Control
+{
+    public string NpcId = "";
+    public Color Accent = new(0.6f, 0.5f, 0.85f);
+
+    public override void _Draw() =>
+        UiIcons.Portrait(this, NpcId, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.46f, Accent);
 }
 
 /// <summary>Herb/emblemat klasy (karty postaci w menu, kreator).</summary>
