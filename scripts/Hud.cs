@@ -43,6 +43,9 @@ public partial class Hud : CanvasLayer
 		_esNum = AddBarNumber(_esBar);
 		_hpNum = AddBarNumber(_hpBar);
 		_resNum = AddBarNumber(_resBar);
+		AddBarIcon(_esBar, "es", new Color(0.6f, 0.9f, 1f));
+		AddBarIcon(_hpBar, "life", new Color(1f, 0.6f, 0.6f));
+		AddBarIcon(_resBar, "cold", new Color(0.6f, 1f, 0.7f)); // kropla koncentracji
 
 		var slotRow = new HBoxContainer();
 		slotRow.AddThemeConstantOverride("separation", 8);
@@ -58,6 +61,7 @@ public partial class Hud : CanvasLayer
 
 		root.AddChild(_xpBar);
 		_xpNum = AddBarNumber(_xpBar);
+		AddBarIcon(_xpBar, "crit", new Color(1f, 0.9f, 0.5f)); // gwiazda/błysk XP
 		_goldLabel = new Label { HorizontalAlignment = HorizontalAlignment.Center };
 		root.AddChild(_goldLabel);
 
@@ -147,6 +151,19 @@ public partial class Hud : CanvasLayer
 		label.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.9f));
 		bar.AddChild(label);
 		return label;
+	}
+
+	/// <summary>Mała ikona na lewym końcu paska (serce/tarcza/kropla/gwiazda).</summary>
+	private static void AddBarIcon(ProgressBar bar, string kind, Color col)
+	{
+		var icon = new StatIcon
+		{
+			Kind = kind, IconColor = col,
+			AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -8, OffsetBottom = 8,
+			OffsetLeft = -20, Size = new Vector2(16, 16),
+			MouseFilter = Control.MouseFilterEnum.Ignore,
+		};
+		bar.AddChild(icon);
 	}
 
 	public override void _Process(double delta)
@@ -600,19 +617,26 @@ public partial class BuffBar : CanvasLayer
 		var p = PlayerController.Local;
 
 		if (p != null && p.AdrenalineActive)
-			AddChip($"Adrenaline {p.AdrenalineTimeLeft:0.0}s", new Color(0.8f, 0.4f, 0.2f));
+			AddChip($"Adrenaline {p.AdrenalineTimeLeft:0.0}s", new Color(0.8f, 0.4f, 0.2f), "adrenaline");
 	}
 
-	private void AddChip(string text, Color col)
+	private void AddChip(string text, Color col, string skillIcon = "")
 	{
 		var chip = new PanelContainer();
 		var style = new StyleBoxFlat { BgColor = new Color(col.R, col.G, col.B, 0.85f) };
-		style.SetContentMarginAll(4);
-		style.SetCornerRadiusAll(4);
+		style.SetContentMarginAll(5);
+		style.SetCornerRadiusAll(5);
+		style.SetBorderWidthAll(1);
+		style.BorderColor = new Color(1f, 1f, 1f, 0.4f);
 		chip.AddThemeStyleboxOverride("panel", style);
-		var lbl = new Label { Text = text };
+		var hb = new HBoxContainer();
+		hb.AddThemeConstantOverride("separation", 5);
+		if (skillIcon.Length > 0)
+			hb.AddChild(new SkillIcon { SkillId = skillIcon, IconColor = Colors.White, CustomMinimumSize = new Vector2(18, 18) });
+		var lbl = new Label { Text = text, VerticalAlignment = VerticalAlignment.Center };
 		lbl.AddThemeFontSizeOverride("font_size", 12);
-		chip.AddChild(lbl);
+		hb.AddChild(lbl);
+		chip.AddChild(hb);
 		_row.AddChild(chip);
 	}
 }

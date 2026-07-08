@@ -210,6 +210,8 @@ public static class UiIcons
             case "int": ci.DrawString(ThemeDB.FallbackFont, c + new Vector2(-r * 0.5f, r * 0.5f), "I", HorizontalAlignment.Left, -1, (int)(r * 1.8f), col); break;
             case "fire":  ci.DrawColoredPolygon(Flame(c, r), col); break;
             case "cold":  ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r), c + new Vector2(r * 0.5f, r * 0.6f), c + new Vector2(-r * 0.5f, r * 0.6f) }, col); break;
+            case "poison": case "bleed": // kropla
+                ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r), c + new Vector2(r * 0.6f, r * 0.4f), c + new Vector2(0, r * 0.75f), c + new Vector2(-r * 0.6f, r * 0.4f) }, col); break;
             case "light": Bolt(ci, c, r, col); break;
             case "chaos": ci.DrawArc(c, r * 0.75f, 0, Mathf.Tau, 3, col, 2.5f); break; // triquetra-uproszczona
             default: ci.DrawCircle(c, r * 0.5f, col); break;

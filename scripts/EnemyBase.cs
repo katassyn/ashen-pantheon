@@ -337,13 +337,13 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
             BaseTint;
     }
 
-    // ikony debuffów: kolor kropki = kolor tinta danego statusu (spójna legenda)
-    private static readonly (StatusType Type, Color Col)[] StatusDots =
+    // ikony debuffów: mały symbol nad paskiem HP (płomień/płatek/kropla), spójna legenda kolorów
+    private static readonly (StatusType Type, string Icon, Color Col)[] StatusDots =
     {
-        (StatusType.Burn, new Color(1f, 0.4f, 0.2f)),
-        (StatusType.Chill, new Color(0.4f, 0.7f, 1f)),
-        (StatusType.Poison, new Color(0.5f, 0.9f, 0.35f)),
-        (StatusType.Bleed, new Color(0.85f, 0.15f, 0.25f)),
+        (StatusType.Burn, "fire", new Color(1f, 0.5f, 0.25f)),
+        (StatusType.Chill, "cold", new Color(0.5f, 0.75f, 1f)),
+        (StatusType.Poison, "poison", new Color(0.55f, 0.95f, 0.4f)),
+        (StatusType.Bleed, "bleed", new Color(0.9f, 0.2f, 0.3f)),
     };
 
     public override void _Draw()
@@ -355,14 +355,14 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
         DrawRect(new Rect2(pos, size), new Color(0f, 0f, 0f, 0.7f));
         DrawRect(new Rect2(pos, new Vector2(size.X * frac, size.Y)), new Color(0.9f, 0.2f, 0.2f));
 
-        // kropki aktywnych debuffów nad paskiem (host: realne statusy, puppet: bitmaska z sync)
-        float dotX = -HpBarWidth / 2f + 4f;
-        float dotY = HpBarY - 13f;
-        foreach (var (type, col) in StatusDots)
+        // małe ikony aktywnych debuffów nad paskiem (host: realne statusy, puppet: bitmaska z sync)
+        float dotX = -HpBarWidth / 2f + 6f;
+        float dotY = HpBarY - 15f;
+        foreach (var (type, icon, col) in StatusDots)
         {
             if (!Combatant.Has(type)) continue;
-            DrawCircle(new Vector2(dotX, dotY), 3.5f, col);
-            dotX += 9f;
+            UiIcons.Stat(this, icon, new Vector2(dotX, dotY), 5.5f, col);
+            dotX += 13f;
         }
 
         if (Combatant.IsMarked)
