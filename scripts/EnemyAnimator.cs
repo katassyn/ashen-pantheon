@@ -103,6 +103,7 @@ public partial class EnemyAnimator : Node
     {
         var a = NewAnim(1.2f, loop: true);
         TrackVec2(a, "scale", new[] { (0f, V(0.22f, 0.22f)), (0.6f, V(0.23f, 0.21f)), (1.2f, V(0.22f, 0.22f)) });
+        TrackVec2(a, "position", new[] { (0f, Vector2.Zero) }); // reset bobu chodzenia
         return a;
     }
 
@@ -114,6 +115,15 @@ public partial class EnemyAnimator : Node
         a.TrackInsertKey(rot, 0f, -0.12f);
         a.TrackInsertKey(rot, 0.25f, 0.12f);
         a.TrackInsertKey(rot, 0.5f, -0.12f);
+        // bob góra-dół (kroki) — dwa odbicia na cykl, skala względem BaseScale
+        float bob = 5f * (BaseScale / 0.22f);
+        int pos = a.AddTrack(Animation.TrackType.Value);
+        a.TrackSetPath(pos, $"{SpritePath}:position");
+        a.TrackInsertKey(pos, 0f, Vector2.Zero);
+        a.TrackInsertKey(pos, 0.125f, new Vector2(0, -bob));
+        a.TrackInsertKey(pos, 0.25f, Vector2.Zero);
+        a.TrackInsertKey(pos, 0.375f, new Vector2(0, -bob));
+        a.TrackInsertKey(pos, 0.5f, Vector2.Zero);
         return a;
     }
 

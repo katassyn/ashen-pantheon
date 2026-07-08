@@ -63,6 +63,7 @@ public partial class PlayerController : CharacterBody2D
     {
         _netPos = GlobalPosition;
         _animator = GetNodeOrNull<EnemyAnimator>("Animator");
+        AddChild(new PlayerFx()); // feel ruchu: cień, pył, smuga dashu (lokalny + puppety)
 
         if (!IsMultiplayerAuthority())
         {
@@ -311,11 +312,14 @@ public partial class PlayerController : CharacterBody2D
         }
     }
 
-    private Vector2 AimDirection()
+    public Vector2 AimDirection()
     {
         Vector2 dir = GetGlobalMousePosition() - GlobalPosition;
         return dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
     }
+
+    /// <summary>Trwa dash (dla efektów wizualnych — PlayerFx smuga).</summary>
+    public bool IsDashing => _dashTimeLeft > 0f;
 
     private void FireProjectiles(ResolvedSkill s, Color tint)
     {
