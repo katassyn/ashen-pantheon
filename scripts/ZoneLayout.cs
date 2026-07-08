@@ -4,45 +4,47 @@ using System.Linq;
 using Godot;
 
 /// <summary>Struktura mapy: zamiast płaskiego prostokąta — KOMNATY (wokół spawnu, packów, wyjść)
-/// połączone KORYTARZAMI, na ciemnym tle, z taktycznymi przeszkodami (kolumny/głazy).
-/// Deterministyczne z seeda (co-op: każda maszyna generuje identyczny layout).
-/// Kolizyjne przeszkody na warstwie 4 (blokują gracza i wrogów).</summary>
+/// połączone KORYTARZAMI, otoczone KOLIZYJNYMI ŚCIANAMI (nieregularny, zamknięty kształt lochu),
+/// z taktycznymi przeszkodami. Deterministyczne z seeda (co-op: identyczny layout u wszystkich).
+/// Ściany + przeszkody na warstwie 4 (blokują gracza i wrogów).</summary>
 public partial class ZoneLayout : Node2D
 {
     public int Seed;
     public Vector2 Spawn;
-    public List<Vector2> RoomCenters = new(); // spawn + packi + wyjścia
-    public List<Vector2> Portals = new();      // pozycje portali/spawnu — bez przeszkód w pobliżu
+    public List<Vector2> RoomCenters = new(); // spawn + packi + wyjścia + markery
+    public List<Vector2> Portals = new();      // wejścia — bez przeszkód/ścian blisko
 
     private readonly List<(Vector2 A, Vector2 B)> _corridors = new();
-    private readonly List<(Vector2 Pos, float R)> _rooms = new();
+    private readonly List<(Vector2 Pos, float R, float Hue)> _rooms = new();
 
-    private static readonly Color FloorLit = new(0.16f, 0.14f, 0.20f);
-    private static readonly Color FloorEdge = new(0.30f, 0.26f, 0.40f);
-    private static readonly Color Dark = new(0.05f, 0.04f, 0.08f);
+    private const float CorridorHalfWidth = 70f;
+    private const float WallStep = 52f;
+
+    private static readonly Color FloorBase = new(0.15f, 0.13f, 0.19f);
+    private static readonly Color FloorEdge = new(0.34f, 0.29f, 0.46f);
+    private static readonly Color WallFill = new(0.09f, 0.08f, 0.13f);
+    private static readonly Color WallEdge = new(0.26f, 0.22f, 0.34f);
+    private static readonly Color Dark = new(0.045f, 0.04f, 0.07f);
 
     public override void _Ready()
     {
         ZIndex = -5; // pod graczami/wrogami
         var rng = new Random(Seed);
 
-        // 1) komnaty: promień zależny od "ważności" (spawn/wyjścia większe)
         foreach (var c in RoomCenters)
         {
-            float r = 150f + (float)rng.NextDouble() * 90f;
-            _rooms.Add((c, r));
+            float r = 155f + (float)rng.NextDouble() * 95f;
+            float hue = (float)rng.NextDouble() * 0.06f - 0.03f; // subtelna wariacja koloru per komnata
+            _rooms.Add((c, r, hue));
         }
 
-        // 2) korytarze: minimalne drzewo rozpinające (wszystko przechodnie) + kilka pętli
         BuildCorridors(rng);
-
-        // 3) przeszkody taktyczne w komnatach (z dala od centrów packów i portali)
+        BuildWalls();
         SpawnObstacles(rng);
-
         QueueRedraw();
     }
 
-    /// <summary>MST po centrach komnat (Prim) — gwarantuje spójność; + 25% dodatkowych krawędzi na pętle.</summary>
+    // ── korytarze: MST (Prim) + kilka pętli ──
     private void BuildCorridors(Random rng)
     {
         int n = _rooms.Count;
@@ -69,33 +71,74 @@ public partial class ZoneLayout : Node2D
             edges.Add((ba, bb));
         }
 
-        // pętle: kilka dodatkowych krótkich połączeń (mapa nie jest czystym drzewem = ciekawsza nawigacja)
         int extra = Math.Max(1, n / 4);
         for (int e = 0; e < extra; e++)
         {
             int i = rng.Next(n), j = rng.Next(n);
             if (i != j && !edges.Contains((i, j)) && !edges.Contains((j, i))
-                && _rooms[i].Pos.DistanceTo(_rooms[j].Pos) < 700f)
+                && _rooms[i].Pos.DistanceTo(_rooms[j].Pos) < 720f)
                 edges.Add((i, j));
         }
 
         foreach (var (a, b) in edges) _corridors.Add((_rooms[a].Pos, _rooms[b].Pos));
     }
 
+    // ── ściany: pierścień wokół komnaty z LUKAMI w kierunku korytarzy + boki korytarzy ──
+    private void BuildWalls()
+    {
+        foreach (var (pos, r, _) in _rooms)
+        {
+            // kierunki korytarzy wychodzących z tej komnaty (luki w ścianie)
+            var openDirs = _corridors
+                .Where(c => c.A == pos || c.B == pos)
+                .Select(c => ((c.A == pos ? c.B : c.A) - pos).Angle())
+                .ToList();
+            float gapHalf = Mathf.Atan2(CorridorHalfWidth + 26f, r); // szerokość luki na wejście
+
+            for (float a = 0; a < Mathf.Tau; a += 0.30f)
+            {
+                if (openDirs.Any(d => Mathf.Abs(Mathf.AngleDifference(a, d)) < gapHalf)) continue;
+                var wp = pos + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * (r + 6f);
+                if (Portals.Any(p => p.DistanceTo(wp) < 130f)) continue;
+                AddWall(wp, 30f);
+            }
+        }
+
+        foreach (var (a, b) in _corridors)
+        {
+            var dir = (b - a).Normalized();
+            var perp = new Vector2(-dir.Y, dir.X);
+            float len = a.DistanceTo(b);
+            for (float t = WallStep; t < len - WallStep; t += WallStep)
+            {
+                var mid = a + dir * t;
+                AddWall(mid + perp * (CorridorHalfWidth + 6f), 24f);
+                AddWall(mid - perp * (CorridorHalfWidth + 6f), 24f);
+            }
+        }
+    }
+
+    private void AddWall(Vector2 pos, float size)
+    {
+        var body = new StaticBody2D { Position = pos, CollisionLayer = 4, CollisionMask = 0 };
+        body.AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = size } });
+        body.AddChild(new WallVisual { Radius = size });
+        AddChild(body);
+    }
+
     private void SpawnObstacles(Random rng)
     {
-        foreach (var (center, radius) in _rooms)
+        foreach (var (center, radius, _) in _rooms)
         {
-            // przy portalach/spawnie mniej przeszkód (nie blokuj wejść)
-            bool nearPortal = Portals.Any(p => p.DistanceTo(center) < 120f);
-            int count = nearPortal ? 0 : 1 + rng.Next(3);
+            bool nearPortal = Portals.Any(p => p.DistanceTo(center) < 140f);
+            int count = nearPortal ? 0 : rng.Next(3);
             for (int i = 0; i < count; i++)
             {
                 float ang = (float)(rng.NextDouble() * Math.Tau);
-                float dist = radius * (0.35f + (float)rng.NextDouble() * 0.4f);
+                float dist = radius * (0.3f + (float)rng.NextDouble() * 0.35f);
                 var pos = center + new Vector2(Mathf.Cos(ang), Mathf.Sin(ang)) * dist;
-                if (Portals.Any(p => p.DistanceTo(pos) < 90f)) continue;
-                AddObstacle(pos, 34f + (float)rng.NextDouble() * 30f);
+                if (Portals.Any(p => p.DistanceTo(pos) < 100f)) continue;
+                AddObstacle(pos, 30f + (float)rng.NextDouble() * 26f);
             }
         }
     }
@@ -104,44 +147,52 @@ public partial class ZoneLayout : Node2D
     {
         var body = new StaticBody2D { Position = pos, CollisionLayer = 4, CollisionMask = 0 };
         body.AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = size } });
+        body.AddChild(new ObstacleVisual { Radius = size });
         AddChild(body);
-
-        // wizualny głaz/kolumna (rysowany w node przeszkody)
-        var rock = new ObstacleVisual { Radius = size };
-        body.AddChild(rock);
     }
 
     public override void _Draw()
     {
-        // ciemne tło strefy (duży prostokąt) — komnaty rozjaśniają
-        DrawRect(new Rect2(-3000, -2400, 6000, 4800), Dark);
+        DrawRect(new Rect2(-3400, -2700, 6800, 5400), Dark); // ciemność poza strukturą
 
-        // korytarze najpierw (pod komnatami) — grube jasne pasy
+        // korytarze (pod komnatami)
         foreach (var (a, b) in _corridors)
         {
             var dir = (b - a).Normalized();
-            var perp = new Vector2(-dir.Y, dir.X) * 66f;
-            DrawColoredPolygon(new[] { a + perp, b + perp, b - perp, a - perp }, FloorLit);
+            var perp = new Vector2(-dir.Y, dir.X) * CorridorHalfWidth;
+            DrawColoredPolygon(new[] { a + perp, b + perp, b - perp, a - perp }, FloorBase);
         }
-        // komnaty: wypełnienie + obrys
-        foreach (var (pos, r) in _rooms)
+        // komnaty: podłoga z subtelną wariacją + obrys; pierścień "podłogowy" pod ścianą
+        foreach (var (pos, r, hue) in _rooms)
         {
-            DrawCircle(pos, r, FloorLit);
-            DrawArc(pos, r, 0, Mathf.Tau, 48, FloorEdge, 4f);
+            var floor = new Color(FloorBase.R + hue, FloorBase.G + hue * 0.7f, FloorBase.B + hue);
+            DrawCircle(pos, r, floor);
+            DrawArc(pos, r, 0, Mathf.Tau, 52, FloorEdge, 3f);
+            DrawArc(pos, r * 0.5f, 0, Mathf.Tau, 40, new Color(FloorEdge, 0.15f), 2f); // detal
         }
     }
 }
 
-/// <summary>Wizual przeszkody (głaz/kolumna) — dziecko kolizyjnego StaticBody2D.</summary>
+/// <summary>Ściana — ciemny kamienny blok z obrysem.</summary>
+public partial class WallVisual : Node2D
+{
+    public float Radius = 30f;
+    public override void _Ready() { ZIndex = 1; QueueRedraw(); }
+    public override void _Draw()
+    {
+        DrawCircle(Vector2.Zero, Radius, new Color(0.09f, 0.08f, 0.13f));
+        DrawArc(Vector2.Zero, Radius, 0, Mathf.Tau, 20, new Color(0.26f, 0.22f, 0.34f), 3f);
+    }
+}
+
+/// <summary>Taktyczna przeszkoda (głaz/kolumna) w komnacie.</summary>
 public partial class ObstacleVisual : Node2D
 {
     public float Radius = 40f;
-
     public override void _Ready() => QueueRedraw();
-
     public override void _Draw()
     {
         DrawCircle(Vector2.Zero, Radius, new Color(0.20f, 0.17f, 0.28f));
-        DrawArc(Vector2.Zero, Radius, 0, Mathf.Tau, 24, new Color(0.34f, 0.30f, 0.46f), 3f);
+        DrawArc(Vector2.Zero, Radius, 0, Mathf.Tau, 24, new Color(0.36f, 0.31f, 0.48f), 3f);
     }
 }
