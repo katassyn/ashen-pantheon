@@ -303,6 +303,54 @@ public static class UiIcons
         ci.DrawArc(c + new Vector2(0, -r * 0.15f), r * 0.59f, Mathf.Pi, Mathf.Tau, 18, col, 3f);                 // łuk bramy
     }
 
+    // ── SPOŁECZNOŚĆ (znajomi / gildia / poczta) ──
+    public static void People(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        void Person(Vector2 o, float s, Color k)
+        {
+            ci.DrawCircle(c + o + new Vector2(0, -r * 0.25f), r * 0.3f * s, k); // głowa
+            ci.DrawColoredPolygon(new[] {
+                c + o + new Vector2(-r * 0.5f * s, r * 0.75f), c + o + new Vector2(-r * 0.4f * s, r * 0.05f),
+                c + o + new Vector2(r * 0.4f * s, r * 0.05f), c + o + new Vector2(r * 0.5f * s, r * 0.75f)
+            }, k); // barki
+        }
+        Person(new Vector2(r * 0.4f, r * 0.05f), 0.8f, new Color(col, 0.55f));
+        Person(new Vector2(-r * 0.25f, 0), 1f, col);
+    }
+    public static void Banner(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawLine(c + new Vector2(-r * 0.5f, -r * 0.9f), c + new Vector2(-r * 0.5f, r * 0.9f), col, 2.5f); // maszt
+        ci.DrawColoredPolygon(new[] {
+            c + new Vector2(-r * 0.5f, -r * 0.8f), c + new Vector2(r * 0.7f, -r * 0.55f), c + new Vector2(r * 0.35f, -r * 0.1f),
+            c + new Vector2(r * 0.7f, r * 0.35f), c + new Vector2(-r * 0.5f, r * 0.1f)
+        }, col); // proporzec z wcięciem
+    }
+    public static void Envelope(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        var rect = new Rect2(c + new Vector2(-r * 0.8f, -r * 0.55f), new Vector2(r * 1.6f, r * 1.1f));
+        ci.DrawRect(rect, col, false, 2.5f);
+        ci.DrawLine(rect.Position, c + new Vector2(0, r * 0.1f), col, 2.5f);                                  // klapa L
+        ci.DrawLine(rect.Position + new Vector2(rect.Size.X, 0), c + new Vector2(0, r * 0.1f), col, 2.5f);    // klapa P
+    }
+    public static void Crown(CanvasItem ci, Vector2 c, float r, Color col) =>
+        ci.DrawColoredPolygon(new[] {
+            c + new Vector2(-r * 0.8f, r * 0.5f), c + new Vector2(-r * 0.8f, -r * 0.4f), c + new Vector2(-r * 0.35f, r * 0.05f),
+            c + new Vector2(0, -r * 0.6f), c + new Vector2(r * 0.35f, r * 0.05f), c + new Vector2(r * 0.8f, -r * 0.4f), c + new Vector2(r * 0.8f, r * 0.5f)
+        }, col);
+    public static void Chat(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.8f, -r * 0.7f), new Vector2(r * 1.6f, r * 1.1f)), col, false, 2.5f); // dymek
+        ci.DrawColoredPolygon(new[] { c + new Vector2(-r * 0.3f, r * 0.35f), c + new Vector2(-r * 0.1f, r * 0.85f), c + new Vector2(r * 0.05f, r * 0.35f) }, col); // ogonek
+        for (int i = -1; i <= 1; i++) ci.DrawCircle(c + new Vector2(i * r * 0.35f, -r * 0.15f), r * 0.08f, col); // wielokropek
+    }
+    public static void Book(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.75f, -r * 0.6f), new Vector2(r * 1.5f, r * 1.2f)), col, false, 2.5f); // okładka
+        ci.DrawLine(c + new Vector2(0, -r * 0.6f), c + new Vector2(0, r * 0.6f), col, 2f);                                 // grzbiet
+        ci.DrawLine(c + new Vector2(-r * 0.5f, -r * 0.25f), c + new Vector2(-r * 0.15f, -r * 0.25f), new Color(col, 0.7f), 1.5f);
+        ci.DrawLine(c + new Vector2(r * 0.15f, -r * 0.25f), c + new Vector2(r * 0.5f, -r * 0.25f), new Color(col, 0.7f), 1.5f);
+    }
+
     // ── HERBY TRUDNOŚCI (endgame: blood/hell/infernal/bloodshed) ──
     public static Color DifficultyColor(string id) => id switch
     {
@@ -519,7 +567,28 @@ public partial class GlyphIcon : Control
             case "gate":  UiIcons.Gate(this, c, r, IconColor); break;
             case "skull": UiIcons.Skull(this, c, r, IconColor); break;
             case "pin":   UiIcons.Pin(this, c, r, IconColor); break;
+            case "people": UiIcons.People(this, c, r, IconColor); break;
+            case "banner": UiIcons.Banner(this, c, r, IconColor); break;
+            case "mail":  UiIcons.Envelope(this, c, r, IconColor); break;
+            case "crown": UiIcons.Crown(this, c, r, IconColor); break;
+            case "book":  UiIcons.Book(this, c, r, IconColor); break;
+            case "chat":  UiIcons.Chat(this, c, r, IconColor); break;
         }
+    }
+}
+
+/// <summary>Kropka statusu online/offline (znajomi, party).</summary>
+public partial class StatusDot : Control
+{
+    public bool Online;
+
+    public override void _Draw()
+    {
+        var c = Size / 2f;
+        float r = Mathf.Min(Size.X, Size.Y) * 0.3f;
+        var col = Online ? new Color(0.42f, 0.87f, 0.42f) : new Color(0.5f, 0.5f, 0.55f);
+        DrawCircle(c, r + 1.5f, new Color(col, 0.3f)); // poświata
+        DrawCircle(c, r, col);
     }
 }
 

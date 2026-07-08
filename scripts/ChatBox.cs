@@ -6,6 +6,7 @@ public partial class ChatBox : CanvasLayer
 {
     private VBoxContainer _log;
     private LineEdit _input;
+    private HBoxContainer _inputRow;
     private readonly List<(Label label, float age)> _lines = new();
     private bool _typing;
 
@@ -24,9 +25,19 @@ public partial class ChatBox : CanvasLayer
         _log.AddThemeConstantOverride("separation", 1);
         root.AddChild(_log);
 
-        _input = new LineEdit { PlaceholderText = "say something…  (/g = guild chat)  (Enter to send, Esc to cancel)", Visible = false, MaxLength = 200 };
+        _inputRow = new HBoxContainer { Visible = false };
+        _inputRow.AddThemeConstantOverride("separation", 6);
+        _inputRow.AddChild(new GlyphIcon { Kind = "chat", IconColor = new Color(0.72f, 0.8f, 1f), CustomMinimumSize = new Vector2(22, 22), MouseFilter = Control.MouseFilterEnum.Ignore });
+        _input = new LineEdit { PlaceholderText = "say something…  (/g = guild chat)  (Enter to send, Esc to cancel)", MaxLength = 200, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        var inStyle = new StyleBoxFlat { BgColor = new Color(0.08f, 0.07f, 0.12f, 0.9f), BorderColor = new Color(0.5f, 0.44f, 0.66f) };
+        inStyle.SetBorderWidthAll(1); inStyle.SetCornerRadiusAll(5); inStyle.SetContentMarginAll(6);
+        _input.AddThemeStyleboxOverride("normal", inStyle);
+        var inFocus = (StyleBoxFlat)inStyle.Duplicate();
+        inFocus.BorderColor = new Color(0.72f, 0.62f, 0.92f); inFocus.SetBorderWidthAll(2);
+        _input.AddThemeStyleboxOverride("focus", inFocus);
         _input.TextSubmitted += OnSubmit;
-        root.AddChild(_input);
+        _inputRow.AddChild(_input);
+        root.AddChild(_inputRow);
 
         Net.ChatReceived += OnChat;
     }
@@ -88,7 +99,7 @@ public partial class ChatBox : CanvasLayer
         if (!_typing && k.PhysicalKeycode is Key.Enter or Key.KpEnter)
         {
             _typing = true;
-            _input.Visible = true;
+            _inputRow.Visible = true;
             _input.GrabFocus();
             GetViewport().SetInputAsHandled();
         }
@@ -122,7 +133,7 @@ public partial class ChatBox : CanvasLayer
     private void CloseInput()
     {
         _input.Text = "";
-        _input.Visible = false;
+        _inputRow.Visible = false;
         _input.ReleaseFocus();
         _typing = false;
     }

@@ -24,7 +24,13 @@ public partial class QuestJournal : CanvasLayer
         var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 16, OffsetTop = 12, OffsetRight = -16, OffsetBottom = -12 };
         vb.AddThemeConstantOverride("separation", 8);
         _root.AddChild(vb);
-        vb.AddChild(new Label { Text = "QUEST JOURNAL    [J] close" });
+        var titleRow = new HBoxContainer();
+        titleRow.AddThemeConstantOverride("separation", 8);
+        titleRow.AddChild(new GlyphIcon { Kind = "book", IconColor = new Color(0.85f, 0.78f, 0.55f), CustomMinimumSize = new Vector2(22, 22), MouseFilter = Control.MouseFilterEnum.Ignore });
+        var titleLbl = new Label { Text = "QUEST JOURNAL    [J] close" };
+        titleLbl.AddThemeFontSizeOverride("font_size", 16);
+        titleRow.AddChild(titleLbl);
+        vb.AddChild(titleRow);
 
         var scroll = UiKit.VScroll();
         _text = new RichTextLabel { BbcodeEnabled = true, FitContent = true, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };

@@ -39,7 +39,7 @@ public partial class SocialPanel : CanvasLayer
 
         // ── znajomi ──
         var fcol = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        fcol.AddChild(new Label { Text = "FRIENDS" });
+        fcol.AddChild(ColHeader("people", "FRIENDS", new Color(0.6f, 0.9f, 1f)));
         var addRow = new HBoxContainer();
         _friendName = new LineEdit { PlaceholderText = "username", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, MaxLength = 24 };
         var addBtn = new Button { Text = "Add" };
@@ -54,7 +54,7 @@ public partial class SocialPanel : CanvasLayer
 
         // ── guildia ──
         var gcol = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        gcol.AddChild(new Label { Text = "GUILD" });
+        gcol.AddChild(ColHeader("banner", "GUILD", new Color(1f, 0.85f, 0.5f)));
         var gRow = new HBoxContainer();
         _guildInput = new LineEdit { PlaceholderText = "guild name / invite username", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, MaxLength = 24 };
         gRow.AddChild(_guildInput);
@@ -67,7 +67,7 @@ public partial class SocialPanel : CanvasLayer
 
         // ── poczta ──
         var mcol = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        mcol.AddChild(new Label { Text = "MAIL" });
+        mcol.AddChild(ColHeader("mail", "MAIL", new Color(1f, 0.9f, 0.6f)));
         _mailTo = new LineEdit { PlaceholderText = "to (username)", MaxLength = 24 };
         mcol.AddChild(_mailTo);
         _mailBody = new LineEdit { PlaceholderText = "message", MaxLength = 300 };
@@ -148,6 +148,18 @@ public partial class SocialPanel : CanvasLayer
         Refresh();
     }
 
+    /// <summary>Nagłówek kolumny: glif + tytuł w kolorze.</summary>
+    private static HBoxContainer ColHeader(string glyph, string text, Color col)
+    {
+        var h = new HBoxContainer();
+        h.AddThemeConstantOverride("separation", 8);
+        h.AddChild(new GlyphIcon { Kind = glyph, IconColor = col, CustomMinimumSize = new Vector2(22, 22), MouseFilter = Control.MouseFilterEnum.Ignore });
+        var l = new Label { Text = text, Modulate = col };
+        l.AddThemeFontSizeOverride("font_size", 16);
+        h.AddChild(l);
+        return h;
+    }
+
     private void Refresh()
     {
         foreach (Node c in _friends.GetChildren()) c.QueueFree();
@@ -194,9 +206,13 @@ public partial class SocialPanel : CanvasLayer
 
             var box = new VBoxContainer();
             string attach = (gold > 0 ? $"  [+{gold}g]" : "") + (hasItem ? "  [+item]" : "");
-            var head = new Label { Text = $"✉ {from}{attach}" + (claimed ? "   (claimed)" : "") };
-            head.Modulate = claimed ? new Color(0.6f, 0.6f, 0.65f) : new Color(1f, 0.9f, 0.6f);
-            box.AddChild(head);
+            var headRow = new HBoxContainer();
+            headRow.AddThemeConstantOverride("separation", 6);
+            var envCol = claimed ? new Color(0.6f, 0.6f, 0.65f) : new Color(1f, 0.9f, 0.6f);
+            headRow.AddChild(new GlyphIcon { Kind = "mail", IconColor = envCol, CustomMinimumSize = new Vector2(20, 20), MouseFilter = Control.MouseFilterEnum.Ignore });
+            var head = new Label { Text = $"{from}{attach}" + (claimed ? "   (claimed)" : ""), Modulate = envCol };
+            headRow.AddChild(head);
+            box.AddChild(headRow);
             if (body.Length > 0)
             {
                 var b = new Label { Text = body, AutowrapMode = TextServer.AutowrapMode.WordSmart };
@@ -275,7 +291,8 @@ public partial class SocialPanel : CanvasLayer
             string name = f.GetProperty("Name").GetString()!;
             bool online = f.GetProperty("Online").GetBoolean();
             var row = new HBoxContainer();
-            var lbl = new Label { Text = $"● {name}" + (online ? "" : "   (offline)"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+            row.AddChild(new StatusDot { Online = online, CustomMinimumSize = new Vector2(18, 18), MouseFilter = Control.MouseFilterEnum.Ignore });
+            var lbl = new Label { Text = name + (online ? "" : "   (offline)"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
             lbl.Modulate = online ? new Color(0.45f, 0.9f, 0.45f) : new Color(0.55f, 0.55f, 0.6f);
             row.AddChild(lbl);
             var mailBtn = new Button { Text = "Mail", TooltipText = "prefill recipient" };
@@ -326,7 +343,19 @@ public partial class SocialPanel : CanvasLayer
             _guild.AddChild(inviteBtn);
         }
         foreach (var m in guild.GetProperty("Members").EnumerateArray())
-            _guild.AddChild(new Label { Text = (m.GetProperty("Leader").GetBoolean() ? "★ " : "• ") + m.GetProperty("Name").GetString() });
+        {
+            bool leader = m.GetProperty("Leader").GetBoolean();
+            var mrow = new HBoxContainer();
+            mrow.AddThemeConstantOverride("separation", 6);
+            mrow.AddChild(new GlyphIcon
+            {
+                Kind = leader ? "crown" : "people",
+                IconColor = leader ? new Color(0.95f, 0.8f, 0.35f) : new Color(0.6f, 0.7f, 0.85f),
+                CustomMinimumSize = new Vector2(18, 18), MouseFilter = Control.MouseFilterEnum.Ignore,
+            });
+            mrow.AddChild(new Label { Text = m.GetProperty("Name").GetString() });
+            _guild.AddChild(mrow);
+        }
 
         var leave = new Button { Text = isLeader ? "Disband guild (leave as leader)" : "Leave guild" };
         leave.Pressed += () => Do(AccountClient.Post("/guild/leave", new { }));
