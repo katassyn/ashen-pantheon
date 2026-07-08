@@ -2,6 +2,34 @@ using System;
 using Godot;
 using AshenPantheon.Core;
 
+/// <summary>Kafelek składnika w sakwie: kolorowa ikona-diament w ramce; materiały upgrade
+/// dostają ramkę koloru rzadkości (common/rare/legendary).</summary>
+public partial class IngredientSwatch : Control
+{
+    public IngredientDefinition Def;
+
+    public override void _Draw()
+    {
+        var rect = new Rect2(Vector2.Zero, Size);
+        var tint = Color.FromString(Def.Tint, new Color(0.75f, 0.75f, 0.75f));
+        var border = Def.Rarity switch
+        {
+            "legendary" => new Color(1f, 0.5f, 0.15f),
+            "rare" => new Color(0.35f, 0.55f, 1f),
+            "common" => new Color(0.7f, 0.7f, 0.75f),
+            _ => new Color(0.4f, 0.38f, 0.5f),
+        };
+        DrawRect(rect, new Color(0.06f, 0.05f, 0.09f, 0.9f));
+        DrawRect(rect, border, false, 2f);
+        // diament w kolorze składnika
+        var c = Size / 2f; float r = Size.X * 0.30f;
+        DrawColoredPolygon(new[] {
+            c + new Vector2(0, -r), c + new Vector2(r, 0), c + new Vector2(0, r), c + new Vector2(-r, 0)
+        }, tint);
+        DrawArc(c, r * 1.02f, 0, Mathf.Tau, 4, new Color(tint, 0.5f), 1.5f);
+    }
+}
+
 /// <summary>Podniesienie składnika: wejście = prosto do SAKWY (nie do plecaka) + floating text.</summary>
 public partial class IngredientPickup : Area2D
 {
@@ -95,12 +123,7 @@ public partial class PouchPanel : CanvasLayer
             var row = new HBoxContainer();
             row.AddThemeConstantOverride("separation", 10);
 
-            var swatch = new ColorRect
-            {
-                Color = Color.FromString(def.Tint, new Color(0.75f, 0.75f, 0.75f)),
-                CustomMinimumSize = new Vector2(22, 22),
-            };
-            row.AddChild(swatch);
+            row.AddChild(new IngredientSwatch { Def = def, CustomMinimumSize = new Vector2(30, 30) });
 
             var name = new Label
             {

@@ -218,47 +218,64 @@ public partial class Hud : CanvasLayer
 public partial class SkillSlotUi : PanelContainer
 {
 	public int SlotIndex;
-	private Label _label;
+	private SkillIcon _icon;
+	private Label _key;    // klawisz [Q] w rogu
+	private Label _status; // cooldown / 🔒 lvl na dole
 
 	public override void _Ready()
 	{
-		_label = new Label
-		{
-			HorizontalAlignment = HorizontalAlignment.Center,
-			VerticalAlignment = VerticalAlignment.Center,
-			AutowrapMode = TextServer.AutowrapMode.WordSmart,
-		};
-		AddChild(_label);
-		var style = new StyleBoxFlat
-		{
-			BgColor = new Color(0.08f, 0.07f, 0.12f, 0.9f),
-			BorderColor = new Color(0.4f, 0.35f, 0.55f),
-		};
+		_icon = new SkillIcon { AnchorRight = 1f, AnchorBottom = 1f, MouseFilter = MouseFilterEnum.Ignore };
+		AddChild(_icon);
+		_key = new Label { Position = new Vector2(4, 1), MouseFilter = MouseFilterEnum.Ignore };
+		_key.AddThemeFontSizeOverride("font_size", 12);
+		_key.AddThemeColorOverride("font_color", new Color(0.85f, 0.82f, 0.95f));
+		_key.AddThemeColorOverride("font_outline_color", Colors.Black);
+		_key.AddThemeConstantOverride("outline_size", 3);
+		AddChild(_key);
+		_status = new Label { AnchorTop = 1f, AnchorBottom = 1f, AnchorRight = 1f, OffsetTop = -18, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
+		_status.AddThemeFontSizeOverride("font_size", 12);
+		_status.AddThemeColorOverride("font_outline_color", Colors.Black);
+		_status.AddThemeConstantOverride("outline_size", 3);
+		AddChild(_status);
+		ApplyBorder(new Color(0.4f, 0.35f, 0.55f));
+	}
+
+	private void ApplyBorder(Color border)
+	{
+		var style = new StyleBoxFlat { BgColor = new Color(0.08f, 0.07f, 0.12f, 0.9f), BorderColor = border };
 		style.SetBorderWidthAll(2);
+		style.SetCornerRadiusAll(5);
 		AddThemeStyleboxOverride("panel", style);
 	}
 
 	public void Refresh(PlayerController player)
 	{
 		string key = Keybinds.SlotKeyName(SlotIndex);
+		_key.Text = key;
 		string skillId = GameState.Loadout.Slots[SlotIndex];
 		if (skillId == null)
 		{
-			_label.Text = $"[{key}]\n—";
-			Modulate = Colors.White;
+			_icon.SkillId = "";
+			_status.Text = "—";
+			_status.Modulate = new Color(0.5f, 0.5f, 0.55f);
+			ApplyBorder(new Color(0.3f, 0.28f, 0.4f));
+			_icon.QueueRedraw();
 			return;
 		}
-		var info = GameState.Class.Skill(skillId);
 		float cd = player?.CooldownLeft(skillId) ?? 0f;
 		bool god = GameState.GodSkills.Contains(skillId) && GameState.PledgedGod != GodId.None;
 		int reqLvl = GameState.ClassSpec.Skill(skillId)?.RequiredLevel ?? 1;
 		bool locked = reqLvl > GameState.Progress.Level;
-		_label.Text = locked
-			? $"[{key}] {info?.Name}\n🔒 lvl {reqLvl}"
-			: cd > 0f
-				? $"[{key}] {info?.Name}\n{cd:0.0}s"
-				: $"[{key}] {info?.Name}{(god ? " ✦" : "")}";
-		Modulate = locked || cd > 0f ? new Color(0.55f, 0.55f, 0.55f) : Colors.White;
+
+		_icon.SkillId = skillId;
+		_icon.IconColor = locked ? new Color(0.4f, 0.4f, 0.45f)
+			: cd > 0f ? new Color(0.5f, 0.5f, 0.58f)
+			: god ? new Color(1f, 0.85f, 0.4f) : new Color(0.85f, 0.82f, 0.95f);
+		_icon.QueueRedraw();
+
+		_status.Text = locked ? $"🔒{reqLvl}" : cd > 0f ? $"{cd:0.0}" : "";
+		_status.Modulate = locked ? new Color(0.9f, 0.5f, 0.5f) : new Color(0.7f, 0.85f, 1f);
+		ApplyBorder(god ? new Color(0.9f, 0.75f, 0.35f) : locked ? new Color(0.35f, 0.3f, 0.4f) : new Color(0.45f, 0.4f, 0.6f));
 	}
 
 	public override bool _CanDropData(Vector2 atPosition, Variant data) =>
