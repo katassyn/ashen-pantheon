@@ -23,7 +23,27 @@ public partial class MainMenu : Control
         DataLoader.LoadAll();
 
         AddChild(new AmbientBackground { Seed = 11 }); // animowane tło menu (gwiazdy/iskry/aura)
-        AddChild(new SceneFadeIn());                   // miękkie wejście
+
+        // czytelna karta-tło pod treścią menu (żeby napisy nie ginęły na animowanym tle)
+        var card = new Panel
+        {
+            AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0f, AnchorBottom = 1f,
+            OffsetLeft = -400, OffsetRight = 400, OffsetTop = 18, OffsetBottom = -18,
+            MouseFilter = MouseFilterEnum.Ignore,
+        };
+        var cardStyle = new StyleBoxFlat
+        {
+            BgColor = new Color(0.07f, 0.06f, 0.11f, 0.82f),
+            BorderColor = new Color(0.45f, 0.38f, 0.62f, 0.9f),
+            ShadowColor = new Color(0f, 0f, 0f, 0.5f), ShadowSize = 12,
+        };
+        cardStyle.SetBorderWidthAll(2);
+        cardStyle.SetCornerRadiusAll(10);
+        card.AddThemeStyleboxOverride("panel", cardStyle);
+        AddChild(card);
+        card.AddChild(new PanelDecor { Name = "PanelDecor" }); // narożniki + akcent
+
+        AddChild(new SceneFadeIn());                   // miękkie wejście (na wierzchu)
 
         var center = new VBoxContainer
         {
@@ -76,11 +96,9 @@ public partial class MainMenu : Control
         _creator.AddChild(_nick);
         var classRow = new HBoxContainer();
         classRow.AddThemeConstantOverride("separation", 8);
-        classRow.AddChild(new Button { Text = "🏹 Ranger", Disabled = false, TooltipText = "Hunter — Concentration, Mark" });
-        var dk = new Button { Text = "Dragonknight (soon)", Disabled = true };
-        var sw = new Button { Text = "Spellweaver (soon)", Disabled = true };
-        classRow.AddChild(dk);
-        classRow.AddChild(sw);
+        classRow.AddChild(ClassPickButton("ranger", "Ranger", "Hunter — Concentration, Mark", false));
+        classRow.AddChild(ClassPickButton("dragonknight", "Dragonknight (soon)", "Coming soon", true));
+        classRow.AddChild(ClassPickButton("spellweaver", "Spellweaver (soon)", "Coming soon", true));
         _creator.AddChild(classRow);
         var create = new Button { Text = "Create & play" };
         create.Pressed += CreateAndPlay;
@@ -171,10 +189,30 @@ public partial class MainMenu : Control
             var main = new Button
             {
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                CustomMinimumSize = new Vector2(0, 48),
+                Alignment = HorizontalAlignment.Left,
                 Text = meta == null
-                    ? $"{i + 1}.  — empty slot —"
-                    : $"{i + 1}.  {meta.Name}   ({ClassName(meta.ClassId)}, level {meta.Level})",
+                    ? $"        {i + 1}.   — empty slot —"
+                    : $"        {i + 1}.   {meta.Name}      {ClassName(meta.ClassId)}",
             };
+            StyleSlot(main, meta != null);
+            // herb klasy po lewej (złoty dla postaci, "+" szary dla pustego slotu)
+            main.AddChild(new ClassCrestIcon
+            {
+                ClassId = meta?.ClassId ?? "",
+                IconColor = meta != null ? new Color(0.9f, 0.78f, 0.45f) : new Color(0.45f, 0.42f, 0.55f),
+                AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -15, OffsetBottom = 15,
+                OffsetLeft = 10, Size = new Vector2(30, 30),
+                MouseFilter = Control.MouseFilterEnum.Ignore,
+            });
+            if (meta != null) // żeton poziomu po prawej
+                main.AddChild(new LevelBadge
+                {
+                    Level = meta.Level,
+                    AnchorLeft = 1f, AnchorRight = 1f, AnchorTop = 0.5f, AnchorBottom = 0.5f,
+                    OffsetLeft = -44, OffsetRight = -12, OffsetTop = -16, OffsetBottom = 16,
+                    MouseFilter = Control.MouseFilterEnum.Ignore,
+                });
             int slot = i;
             main.Pressed += () => SelectSlot(slot, meta != null);
             row.AddChild(main);
@@ -182,6 +220,7 @@ public partial class MainMenu : Control
             if (meta != null)
             {
                 var del = new Button { Text = "Delete", TooltipText = "Deletes the character permanently" };
+                StyleDanger(del);
                 del.Pressed += () =>
                 {
                     File.Delete(SlotPath(slot));
@@ -196,6 +235,59 @@ public partial class MainMenu : Control
 
     private static string ClassName(string id) =>
         GameData.Classes.TryGetValue(id, out var c) ? c.Name : id;
+
+    /// <summary>Kafelek wyboru klasy w kreatorze: herb + nazwa + styl (nieaktywne klasy przygaszone).</summary>
+    private static Button ClassPickButton(string classId, string label, string tip, bool disabled)
+    {
+        var b = new Button
+        {
+            Text = "      " + label, TooltipText = tip, Disabled = disabled,
+            Alignment = HorizontalAlignment.Left,
+            CustomMinimumSize = new Vector2(0, 44),
+            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+        };
+        b.AddChild(new ClassCrestIcon
+        {
+            ClassId = classId,
+            IconColor = disabled ? new Color(0.5f, 0.48f, 0.58f) : new Color(0.55f, 0.85f, 0.5f),
+            AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -13, OffsetBottom = 13,
+            OffsetLeft = 6, Size = new Vector2(26, 26),
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        });
+        return b;
+    }
+
+    /// <summary>Styl karty slotu postaci (normal/hover/pressed) — zamiast płaskiego przycisku.</summary>
+    private static void StyleSlot(Button b, bool occupied)
+    {
+        var bg = occupied ? new Color(0.12f, 0.11f, 0.17f, 0.95f) : new Color(0.09f, 0.085f, 0.13f, 0.9f);
+        var border = occupied ? new Color(0.5f, 0.44f, 0.68f) : new Color(0.3f, 0.28f, 0.4f);
+        void S(string name, Color fill, Color bord, int w)
+        {
+            var sb = new StyleBoxFlat { BgColor = fill, BorderColor = bord };
+            sb.SetBorderWidthAll(w); sb.SetCornerRadiusAll(6); sb.SetContentMarginAll(6);
+            b.AddThemeStyleboxOverride(name, sb);
+        }
+        S("normal", bg, border, 2);
+        S("hover", bg.Lightened(0.08f), border.Lightened(0.2f), 2);
+        S("pressed", bg.Darkened(0.1f), border, 2);
+        b.AddThemeColorOverride("font_color", occupied ? new Color(0.92f, 0.9f, 1f) : new Color(0.6f, 0.58f, 0.7f));
+    }
+
+    /// <summary>Styl przycisku-zagrożenia (Delete) — czerwonawy.</summary>
+    private static void StyleDanger(Button b)
+    {
+        b.CustomMinimumSize = new Vector2(80, 0);
+        var col = new Color(0.42f, 0.14f, 0.16f);
+        void S(string n, Color f)
+        {
+            var sb = new StyleBoxFlat { BgColor = f, BorderColor = new Color(0.7f, 0.3f, 0.3f) };
+            sb.SetBorderWidthAll(2); sb.SetCornerRadiusAll(6); sb.SetContentMarginAll(6);
+            b.AddThemeStyleboxOverride(n, sb);
+        }
+        S("normal", col); S("hover", col.Lightened(0.12f)); S("pressed", col.Darkened(0.1f));
+        b.AddThemeColorOverride("font_color", new Color(1f, 0.85f, 0.85f));
+    }
 
     private void SelectSlot(int slot, bool occupied)
     {

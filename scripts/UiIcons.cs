@@ -221,6 +221,36 @@ public static class UiIcons
         }
     }
 
+    // ── HERBY KLAS (emblemat/portret klasy) ──
+    public static void ClassCrest(CanvasItem ci, string classId, Vector2 c, float r, Color col)
+    {
+        switch (classId)
+        {
+            case "ranger": // łuk + strzała
+                ci.DrawArc(c + new Vector2(-r * 0.55f, 0), r * 0.9f, -Mathf.Pi * 0.5f, Mathf.Pi * 0.5f, 18, col, 2.5f); // łuk ")"
+                ci.DrawLine(c + new Vector2(-r * 0.55f, -r * 0.9f), c + new Vector2(-r * 0.55f, r * 0.9f), new Color(col, 0.5f), 1.5f); // cięciwa
+                ci.DrawLine(c + new Vector2(-r * 0.5f, 0), c + new Vector2(r * 0.85f, 0), col, 2.5f); // trzon strzały
+                ci.DrawColoredPolygon(new[] { c + new Vector2(r * 0.85f, 0), c + new Vector2(r * 0.55f, -r * 0.2f), c + new Vector2(r * 0.55f, r * 0.2f) }, col); // grot
+                break;
+            case "dragonknight": // miecz + skrzydła
+                ci.DrawLine(c + new Vector2(0, -r * 0.85f), c + new Vector2(0, r * 0.7f), col, 3f); // ostrze
+                ci.DrawLine(c + new Vector2(-r * 0.4f, r * 0.3f), c + new Vector2(r * 0.4f, r * 0.3f), col, 2.5f); // gard
+                ci.DrawLine(c + new Vector2(-r * 0.15f, -r * 0.35f), c + new Vector2(-r * 0.85f, -r * 0.7f), col, 2f); // skrzydło L
+                ci.DrawLine(c + new Vector2(r * 0.15f, -r * 0.35f), c + new Vector2(r * 0.85f, -r * 0.7f), col, 2f);   // skrzydło P
+                break;
+            case "spellweaver": // kostur + kula + iskry
+                ci.DrawLine(c + new Vector2(-r * 0.55f, r * 0.85f), c + new Vector2(r * 0.35f, -r * 0.5f), col, 3f); // kostur
+                ci.DrawArc(c + new Vector2(r * 0.4f, -r * 0.55f), r * 0.32f, 0, Mathf.Tau, 18, col, 2.5f); // kula
+                foreach (var d in new[] { Vector2.Up, Vector2.Right, new Vector2(0.7f, 0.7f) })
+                    ci.DrawLine(c + new Vector2(r * 0.4f, -r * 0.55f) + d * r * 0.45f, c + new Vector2(r * 0.4f, -r * 0.55f) + d * r * 0.7f, new Color(col, 0.7f), 1.5f);
+                break;
+            default: // pusty slot: "+" (nowa postać)
+                ci.DrawLine(c + new Vector2(0, -r * 0.6f), c + new Vector2(0, r * 0.6f), col, 3f);
+                ci.DrawLine(c + new Vector2(-r * 0.6f, 0), c + new Vector2(r * 0.6f, 0), col, 3f);
+                break;
+        }
+    }
+
     // ── STATY / ATRYBUTY (małe symbole obok liczb) ──
     public static void Stat(CanvasItem ci, string kind, Vector2 c, float r, Color col)
     {
@@ -356,4 +386,35 @@ public partial class StatIcon : Control
 
     public override void _Draw() =>
         UiIcons.Stat(this, Kind, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.34f, IconColor);
+}
+
+/// <summary>Herb/emblemat klasy (karty postaci w menu, kreator).</summary>
+public partial class ClassCrestIcon : Control
+{
+    public string ClassId = "";
+    public Color IconColor = new(0.9f, 0.82f, 0.5f);
+
+    public override void _Draw() =>
+        UiIcons.ClassCrest(this, ClassId, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.36f, IconColor);
+}
+
+/// <summary>Okrągły żeton z poziomem postaci (karty slotów, party frame).</summary>
+public partial class LevelBadge : Control
+{
+    public int Level = 1;
+    public Color Fill = new(0.18f, 0.15f, 0.26f);
+    public Color Border = new(0.6f, 0.5f, 0.85f);
+
+    public override void _Draw()
+    {
+        var c = Size / 2f;
+        float r = Mathf.Min(Size.X, Size.Y) * 0.5f - 1f;
+        DrawCircle(c, r, Fill);
+        DrawArc(c, r, 0, Mathf.Tau, 24, Border, 2f);
+        var f = ThemeDB.FallbackFont;
+        string t = Level.ToString();
+        int fs = (int)(r * 1.05f);
+        var sz = f.GetStringSize(t, HorizontalAlignment.Left, -1, fs);
+        DrawString(f, c + new Vector2(-sz.X / 2f, sz.Y * 0.32f), t, HorizontalAlignment.Left, -1, fs, new Color(0.95f, 0.92f, 1f));
+    }
 }
