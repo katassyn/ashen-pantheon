@@ -72,7 +72,11 @@ public partial class AuctionPanel : CanvasLayer
             var dto = JsonSerializer.Deserialize<ItemDto>(l.ItemJson);
             var row = new HBoxContainer();
             var name = new Label { Text = $"{dto?.Name} [{dto?.Rarity}]  —  {l.Price}g  ({l.SellerName})", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-            if (dto != null) name.Modulate = ItemPickup.RarityColor(System.Enum.Parse<Rarity>(dto.Rarity));
+            if (dto != null)
+            {
+                name.Modulate = ItemPickup.RarityColor(System.Enum.Parse<Rarity>(dto.Rarity));
+                row.AddChild(UiIcons.Chip(System.Enum.Parse<ItemKind>(dto.Kind), System.Enum.Parse<Rarity>(dto.Rarity)));
+            }
             row.AddChild(name);
             var id = l.Id;
             if (l.Seller == Net.MyId)
@@ -98,6 +102,7 @@ public partial class AuctionPanel : CanvasLayer
             var row = new HBoxContainer();
             var name = new Label { Text = $"{item.Name} [{item.Rarity}]", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
             name.Modulate = ItemPickup.RarityColor(item.Rarity);
+            row.AddChild(UiIcons.Chip(item.Kind, item.Rarity));
             row.AddChild(name);
             var price = new SpinBox { MinValue = 1, MaxValue = 9999999, Value = System.Math.Max(1, Vendor.SellPrice(item) * 3), CustomMinimumSize = new Vector2(110, 0) };
             row.AddChild(price);
@@ -151,6 +156,7 @@ public partial class AuctionPanel : CanvasLayer
                 MouseFilter = Control.MouseFilterEnum.Stop,
             };
             name.Modulate = ItemPickup.RarityColor(item.Rarity);
+            row.AddChild(UiIcons.Chip(item.Kind, item.Rarity));
             row.AddChild(name);
             if (sellerId == me)
             {
@@ -174,6 +180,7 @@ public partial class AuctionPanel : CanvasLayer
             var row = new HBoxContainer();
             var name = new Label { Text = $"{item.Name} [{item.Rarity}]", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
             name.Modulate = ItemPickup.RarityColor(item.Rarity);
+            row.AddChild(UiIcons.Chip(item.Kind, item.Rarity));
             row.AddChild(name);
             var price = new SpinBox { MinValue = 1, MaxValue = 99_999_999, Value = System.Math.Max(1, Vendor.SellPrice(item) * 3), CustomMinimumSize = new Vector2(110, 0) };
             row.AddChild(price);

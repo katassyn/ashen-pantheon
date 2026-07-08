@@ -188,6 +188,23 @@ public static class UiIcons
             ci.DrawLine(c + d * r * 0.4f, c + d * r * 0.9f, new Color(col, 0.6f), 2f);
     }
 
+    /// <summary>Typ ikony dla PUSTEGO slotu ekwipunku (sylwetka-placeholder).</summary>
+    public static AshenPantheon.Core.ItemKind SlotKind(EquipmentSlot slot) => slot switch
+    {
+        EquipmentSlot.Helmet => AshenPantheon.Core.ItemKind.Helmet,
+        EquipmentSlot.Shoulders => AshenPantheon.Core.ItemKind.Shoulders,
+        EquipmentSlot.BodyArmour => AshenPantheon.Core.ItemKind.BodyArmour,
+        EquipmentSlot.Gloves => AshenPantheon.Core.ItemKind.Gloves,
+        EquipmentSlot.Boots => AshenPantheon.Core.ItemKind.Boots,
+        EquipmentSlot.Belt => AshenPantheon.Core.ItemKind.Belt,
+        EquipmentSlot.Amulet => AshenPantheon.Core.ItemKind.Amulet,
+        EquipmentSlot.Ring1 or EquipmentSlot.Ring2 => AshenPantheon.Core.ItemKind.Ring,
+        EquipmentSlot.Weapon => AshenPantheon.Core.ItemKind.OneHandWeapon,
+        EquipmentSlot.OffHand => AshenPantheon.Core.ItemKind.OffHand,
+        EquipmentSlot.Soul => AshenPantheon.Core.ItemKind.Soul,
+        _ => AshenPantheon.Core.ItemKind.Ring,
+    };
+
     // ── RAMKA RZADKOŚCI (obramowanie slotu itemu) ──
     public static void RarityFrame(CanvasItem ci, Rect2 rect, Rarity rarity, float width = 2.5f)
     {
@@ -203,6 +220,29 @@ public static class UiIcons
             ci.DrawLine(p + s, p + s - new Vector2(k, 0), col, width + 1.5f);
             ci.DrawLine(p + s, p + s - new Vector2(0, k), col, width + 1.5f);
         }
+    }
+
+    /// <summary>Mała ikona itemu do wstawienia w wiersz HBox (przed nazwą) — listy AH/handlu.</summary>
+    public static ItemIcon Chip(AshenPantheon.Core.ItemKind kind, Rarity rarity) => new()
+    {
+        Kind = kind, IconColor = ItemPickup.RarityColor(rarity),
+        CustomMinimumSize = new Vector2(26, 26), MouseFilter = Control.MouseFilterEnum.Ignore,
+    };
+
+    /// <summary>Dodaje ikonę typu itemu (kolor rzadkości) po lewej stronie przycisku listy + wcięcie tekstu.
+    /// Reużywalne w Vendor/Stash/AH/Blacksmith/Inspect zamiast gołych przycisków tekstowych.</summary>
+    public static void DecorateItemButton(Button b, AshenPantheon.Core.ItemKind kind, Rarity rarity)
+    {
+        b.Alignment = HorizontalAlignment.Left;
+        b.Text = "      " + b.Text; // miejsce na ikonę
+        var icon = new ItemIcon
+        {
+            Kind = kind, IconColor = ItemPickup.RarityColor(rarity),
+            AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -13, OffsetBottom = 13,
+            OffsetLeft = 6, Size = new Vector2(26, 26),
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        b.AddChild(icon);
     }
 }
 

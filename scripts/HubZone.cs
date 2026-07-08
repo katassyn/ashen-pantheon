@@ -195,7 +195,7 @@ public partial class VendorPanel : CanvasLayer
             var item = placed.Item;
             long price = Vendor.SellPrice(item);
             var b = new Button { Text = $"{item.Name}  [{item.Rarity}]  —  sell for {price} gold", TooltipText = CharacterPanel.Describe(item) };
-            b.Modulate = ItemPickup.RarityColor(item.Rarity);
+            UiIcons.DecorateItemButton(b, item.Kind, item.Rarity);
             b.Pressed += () =>
             {
                 GameState.Bag.Remove(item);
@@ -221,7 +221,7 @@ public partial class VendorPanel : CanvasLayer
                 TooltipText = CharacterPanel.Describe(item),
                 Disabled = GameState.Wallet.Gold < price,
             };
-            b.Modulate = ItemPickup.RarityColor(item.Rarity);
+            UiIcons.DecorateItemButton(b, item.Kind, item.Rarity);
             b.Pressed += () =>
             {
                 if (GameState.Wallet.Gold < price) return;
@@ -259,7 +259,7 @@ public partial class VendorPanel : CanvasLayer
                 TooltipText = CharacterPanel.Describe(item),
                 Disabled = GameState.Wallet.Gold < price,
             };
-            b.Modulate = ItemPickup.RarityColor(item.Rarity);
+            UiIcons.DecorateItemButton(b, item.Kind, item.Rarity);
             b.Pressed += () =>
             {
                 if (GameState.Wallet.Gold < price) return;
@@ -333,7 +333,7 @@ public partial class StashPanel : CanvasLayer
         {
             var item = placed.Item;
             var b = new Button { Text = $"{item.Name}  [{item.Rarity}]", TooltipText = CharacterPanel.Describe(item) };
-            b.Modulate = ItemPickup.RarityColor(item.Rarity);
+            UiIcons.DecorateItemButton(b, item.Kind, item.Rarity);
             b.Pressed += () =>
             {
                 if (!to.TryAutoPlace(item)) return; // brak miejsca

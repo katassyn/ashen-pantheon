@@ -119,11 +119,10 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
             var item = GameState.Equipment.Get(slot);
             var b = new EquipSlotButton
             {
-                Slot = slot, Panel = this,
-                Text = item == null ? $"{slot}: —" : $"{slot}: {item.Name}",
+                Slot = slot, Panel = this, Item = item, Flat = true,
+                CustomMinimumSize = new Vector2(0, 44),
                 TooltipText = item == null ? "Drop a matching item here" : Describe(item),
             };
-            if (item != null) b.Modulate = ItemPickup.RarityColor(item.Rarity);
             _slots.AddChild(b);
         }
 
@@ -140,21 +139,18 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
             var (w, h) = placed.Item.Size;
             var btn = new BagItemButton
             {
-                Item = placed.Item, Panel = this,
+                Item = placed.Item, Panel = this, Flat = true,
                 Position = new Vector2(placed.X * Cell, placed.Y * Cell),
                 Size = new Vector2(w * Cell - 2, h * Cell - 2),
-                Text = ShortName(placed.Item),
                 TooltipText = DescribeWithComparison(placed.Item) + "\nRMB = equip · drag onto slot/grid",
-                ClipText = true,
             };
-            btn.Modulate = ItemPickup.RarityColor(placed.Item.Rarity);
             _gridHost.AddChild(btn);
         }
 
         _player?.Refresh();
     }
 
-    private static string ShortName(Item item)
+    public static string ShortName(Item item)
     {
         string letter = item.Kind switch
         {
@@ -241,6 +237,19 @@ public partial class BagItemButton : Button
         SetDragPreview(preview);
         return new GodotObjectRef { Item = Item };
     }
+
+    // kafelek: ramka rzadkości + ikona typu + skrócona nazwa + poziom ulepszenia
+    public override void _Draw()
+    {
+        var rect = new Rect2(Vector2.Zero, Size);
+        UiIcons.RarityFrame(this, rect, Item.Rarity);
+        UiIcons.ItemKind(this, Item.Kind, new Vector2(Size.X / 2f, Size.Y * 0.42f), Mathf.Min(Size.X, Size.Y) * 0.28f, ItemPickup.RarityColor(Item.Rarity));
+
+        var font = ThemeDB.FallbackFont;
+        DrawString(font, new Vector2(4, Size.Y - 5), CharacterPanel.ShortName(Item), HorizontalAlignment.Left, Size.X - 6, 11, new Color(0.85f, 0.83f, 0.9f));
+        if (Item.UpgradeLevel > 0)
+            DrawString(font, new Vector2(Size.X - 22, 14), $"+{Item.UpgradeLevel}", HorizontalAlignment.Left, -1, 12, new Color(0.6f, 0.95f, 0.6f));
+    }
 }
 
 /// <summary>Tło siatki: przyjmuje dropy itemów (precyzyjne ułożenie w komórkach).</summary>
@@ -276,9 +285,29 @@ public partial class GridDropArea : ColorRect
 public partial class EquipSlotButton : Button
 {
     public EquipmentSlot Slot;
+    public Item Item;
     public CharacterPanel Panel;
 
     public override void _Pressed() => Panel.UnequipToBag(Slot);
+
+    // poziomy kafelek slotu: ikona po lewej (item albo szara sylwetka pustego slotu) + nazwy
+    public override void _Draw()
+    {
+        var rect = new Rect2(Vector2.Zero, Size);
+        if (Item != null) UiIcons.RarityFrame(this, rect, Item.Rarity);
+        else { DrawRect(rect, new Color(0.06f, 0.05f, 0.09f, 0.85f)); DrawRect(rect, new Color(0.3f, 0.27f, 0.4f), false, 2f); }
+
+        var kind = Item?.Kind ?? UiIcons.SlotKind(Slot);
+        var iconCol = Item != null ? ItemPickup.RarityColor(Item.Rarity) : new Color(0.36f, 0.34f, 0.44f);
+        UiIcons.ItemKind(this, kind, new Vector2(Size.Y * 0.5f, Size.Y * 0.5f), Size.Y * 0.30f, iconCol);
+
+        var font = ThemeDB.FallbackFont;
+        float tx = Size.Y + 6;
+        DrawString(font, new Vector2(tx, Size.Y * 0.42f), Slot.ToString(), HorizontalAlignment.Left, -1, 11, new Color(0.6f, 0.58f, 0.68f));
+        string name = Item == null ? "— empty —" : Item.Name + (Item.UpgradeLevel > 0 ? $" +{Item.UpgradeLevel}" : "");
+        DrawString(font, new Vector2(tx, Size.Y * 0.82f), name, HorizontalAlignment.Left, Size.X - tx - 4, 13,
+            Item != null ? ItemPickup.RarityColor(Item.Rarity) : new Color(0.5f, 0.48f, 0.56f));
+    }
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
     {
