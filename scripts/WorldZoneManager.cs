@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using AshenPantheon.Core;
 
@@ -139,9 +140,30 @@ public partial class WorldZoneManager : Node
         var waystone = new Waystone { Position = new Vector2(_zone.SpawnX - 120f, _zone.SpawnY - 120f) };
         GetParent().CallDeferred(Node.MethodName.AddChild, waystone);
 
+        // STRUKTURA MAPY: komnaty (spawn + packi + wyjścia) połączone korytarzami zamiast płaskiego prostokąta.
+        // Deterministyczne z RunSeed → identyczny layout u wszystkich w co-op (kolizyjne przeszkody spójne).
+        var layout = new ZoneLayout
+        {
+            Seed = Net.RunSeed != 0 ? Net.RunSeed : zoneId.GetHashCode(),
+            Spawn = SpawnPoint,
+            RoomCenters = BuildRoomCenters(),
+            Portals = _zone.Exits.Select(e => new Vector2(e.X, e.Y)).Append(SpawnPoint).ToList(),
+        };
+        GetParent().CallDeferred(Node.MethodName.AddChild, layout);
+
         if (!Net.IsServer) return;
         foreach (var packDef in _zone.Packs)
             _packs.Add(new PackState { Def = packDef, RespawnTimer = 0f });
+    }
+
+    /// <summary>Węzły komnat: spawn + każdy pack + każde wyjście + markery (komnaty wokół punktów gry).</summary>
+    private List<Vector2> BuildRoomCenters()
+    {
+        var centers = new List<Vector2> { SpawnPoint };
+        centers.AddRange(_zone.Packs.Select(p => new Vector2(p.X, p.Y)));
+        centers.AddRange(_zone.Exits.Select(e => new Vector2(e.X, e.Y)));
+        centers.AddRange(_zone.Markers.Select(m => new Vector2(m.X, m.Y)));
+        return centers;
     }
 
     public void SetStatusRemote(string top, string center) => TopStatus = top;
