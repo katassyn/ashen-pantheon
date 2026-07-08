@@ -46,14 +46,43 @@ public static class UiPanels
 }
 
 /// <summary>Ozdobna oprawa okna: akcentowa linia pod górną krawędzią + wzmocnione narożniki.
+/// Dodatkowo animuje WEJŚCIE panelu (fade + lekkie skalowanie) gdy rodzic staje się widoczny.
 /// Wspólna dla wszystkich paneli (UiPanels.Solidify) — spójny „ramowany" wygląd.</summary>
 public partial class PanelDecor : Godot.Control
 {
+    private Godot.Control _panel;
+    private float _intro = -1f; // >=0 gdy trwa animacja wejścia
+
     public override void _Ready()
     {
         AnchorRight = 1f; AnchorBottom = 1f;
         MouseFilter = MouseFilterEnum.Ignore;
-        (GetParent() as Godot.Control)!.Resized += QueueRedraw;
+        _panel = GetParent() as Godot.Control;
+        if (_panel == null) return;
+        _panel.Resized += QueueRedraw;
+        _panel.PivotOffset = _panel.Size / 2f;
+        _panel.VisibilityChanged += OnVis;
+        if (_panel.Visible) StartIntro();
+    }
+
+    private void OnVis() { if (_panel.Visible) StartIntro(); }
+
+    private void StartIntro()
+    {
+        _panel.PivotOffset = _panel.Size / 2f;
+        _intro = 0f;
+        SetProcess(true);
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_intro < 0f) { SetProcess(false); return; }
+        _intro += (float)delta;
+        float k = Godot.Mathf.Min(1f, _intro / 0.16f);
+        float e = 1f - (1f - k) * (1f - k); // ease-out
+        _panel.Scale = new Godot.Vector2(0.97f + 0.03f * e, 0.97f + 0.03f * e);
+        _panel.Modulate = new Godot.Color(1f, 1f, 1f, e);
+        if (k >= 1f) { _panel.Scale = Godot.Vector2.One; _panel.Modulate = Godot.Colors.White; _intro = -1f; }
     }
 
     public override void _Draw()

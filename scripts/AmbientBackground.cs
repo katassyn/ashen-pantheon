@@ -20,7 +20,7 @@ public partial class AmbientBackground : Control
     {
         AnchorRight = 1f; AnchorBottom = 1f;
         MouseFilter = MouseFilterEnum.Ignore;
-        ZIndex = -50;
+        // kolejność dodania decyduje o warstwie (ambient dodawany jako pierwsze dziecko = pod resztą)
         var rng = new Random(Seed);
 
         _stars = new Star[120];
@@ -101,6 +101,53 @@ public partial class AmbientBackground : Control
             float h = s.Y * 0.28f;
             DrawRect(new Rect2(0, 0, s.X, h), new Color(0, 0, 0, 0.28f)); // subtelne u góry
             DrawRect(new Rect2(0, s.Y - h, s.X, h), edge);                 // mocniejsze u dołu
+        }
+    }
+}
+
+/// <summary>Subtelne pyłki ambient dryfujące po ekranie (głębia świata) — bardzo niska alpha,
+/// nie przeszkadza w rozgrywce. Dodawane w Hud (hub/strefy/arena).</summary>
+public partial class AmbientDust : Control
+{
+    private struct Mote { public Vector2 P, V; public float R, Phase; }
+    private Mote[] _motes;
+    private float _t;
+
+    public override void _Ready()
+    {
+        AnchorRight = 1f; AnchorBottom = 1f;
+        MouseFilter = MouseFilterEnum.Ignore;
+        var rng = new Random(3);
+        _motes = new Mote[34];
+        for (int i = 0; i < _motes.Length; i++)
+            _motes[i] = new Mote
+            {
+                P = new Vector2((float)rng.NextDouble(), (float)rng.NextDouble()),
+                V = new Vector2(((float)rng.NextDouble() - 0.5f) * 0.012f, -0.006f - (float)rng.NextDouble() * 0.01f),
+                R = 1f + (float)rng.NextDouble() * 2f,
+                Phase = (float)(rng.NextDouble() * Math.Tau),
+            };
+    }
+
+    public override void _Process(double delta)
+    {
+        _t += (float)delta;
+        for (int i = 0; i < _motes.Length; i++)
+        {
+            _motes[i].P += _motes[i].V * (float)delta;
+            if (_motes[i].P.Y < -0.02f) _motes[i].P.Y = 1.02f;
+            if (_motes[i].P.X < -0.02f) _motes[i].P.X = 1.02f;
+            else if (_motes[i].P.X > 1.02f) _motes[i].P.X = -0.02f;
+        }
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        foreach (var m in _motes)
+        {
+            float fl = 0.5f + 0.5f * Mathf.Sin(_t * 0.8f + m.Phase);
+            DrawCircle(m.P * Size, m.R, new Color(0.75f, 0.7f, 0.9f, 0.10f * fl));
         }
     }
 }

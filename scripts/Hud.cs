@@ -18,6 +18,7 @@ public partial class Hud : CanvasLayer
 	{
 		_info = GetNode<Label>("%Info");
 		_center = GetNode<Label>("%Center");
+		AddChild(new AmbientDust()); // subtelne pyłki głębi (pod resztą HUD)
 		BuildBottomBar();
 		AddChild(new SceneFadeIn()); // miękkie wejście do sceny
 	}
@@ -708,11 +709,13 @@ public partial class DeathScreen : CanvasLayer
 	{
 		var dim = new ColorRect
 		{
-			Color = new Color(0.06f, 0f, 0f, 0.75f),
+			Color = new Color(0.06f, 0f, 0f, 0.78f),
 			AnchorRight = 1f, AnchorBottom = 1f,
 			MouseFilter = Control.MouseFilterEnum.Stop, // blokuje klikanie w świat pod spodem
 		};
 		AddChild(dim);
+		// ambient dusz nad przyciemnieniem (czerwonawa aura śmierci) + winieta
+		dim.AddChild(new AmbientBackground { Seed = 66, Vignette = true, Modulate = new Color(1f, 0.6f, 0.6f, 0.5f) });
 
 		var vb = new VBoxContainer
 		{
