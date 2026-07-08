@@ -188,6 +188,39 @@ public static class UiIcons
             ci.DrawLine(c + d * r * 0.4f, c + d * r * 0.9f, new Color(col, 0.6f), 2f);
     }
 
+    /// <summary>Czaszka (pasek bossa, śmierć).</summary>
+    public static void Skull(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawCircle(c + new Vector2(0, -r * 0.15f), r * 0.6f, col);                              // czaszka
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.28f, r * 0.25f), new Vector2(r * 0.56f, r * 0.4f)), col); // szczęka
+        var eye = new Color(0f, 0f, 0f, 0.7f);
+        ci.DrawCircle(c + new Vector2(-r * 0.22f, -r * 0.18f), r * 0.15f, eye);
+        ci.DrawCircle(c + new Vector2(r * 0.22f, -r * 0.18f), r * 0.15f, eye);
+    }
+
+    // ── HERBY BOGÓW ──
+    public static void GodCrest(CanvasItem ci, GodId god, Vector2 c, float r, Color col)
+    {
+        switch (god)
+        {
+            case GodId.Wilds: // dzika natura: rogi/liść
+                ci.DrawArc(c + new Vector2(0, r * 0.2f), r * 0.55f, Mathf.Pi * 0.15f, Mathf.Pi * 0.85f, 16, col, 2.5f);
+                ci.DrawLine(c + new Vector2(-r * 0.5f, 0), c + new Vector2(-r * 0.9f, -r * 0.8f), col, 2.5f); // róg L
+                ci.DrawLine(c + new Vector2(r * 0.5f, 0), c + new Vector2(r * 0.9f, -r * 0.8f), col, 2.5f);   // róg P
+                ci.DrawLine(c + new Vector2(-r * 0.75f, -r * 0.4f), c + new Vector2(-r * 0.55f, -r * 0.7f), col, 2f);
+                ci.DrawLine(c + new Vector2(r * 0.75f, -r * 0.4f), c + new Vector2(r * 0.55f, -r * 0.7f), col, 2f);
+                break;
+            case GodId.Blood: // kropla krwi + pazur
+                ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r * 0.85f), c + new Vector2(r * 0.6f, r * 0.35f), c + new Vector2(0, r * 0.8f), c + new Vector2(-r * 0.6f, r * 0.35f) }, col);
+                ci.DrawCircle(c + new Vector2(-r * 0.15f, -r * 0.1f), r * 0.12f, new Color(0f, 0f, 0f, 0.4f));
+                break;
+            default: // brak patrona — pusty krąg z ukośnikiem
+                ci.DrawArc(c, r * 0.7f, 0, Mathf.Tau, 24, col, 2f);
+                ci.DrawLine(c + new Vector2(-r * 0.45f, r * 0.45f), c + new Vector2(r * 0.45f, -r * 0.45f), col, 2f);
+                break;
+        }
+    }
+
     // ── STATY / ATRYBUTY (małe symbole obok liczb) ──
     public static void Stat(CanvasItem ci, string kind, Vector2 c, float r, Color col)
     {
@@ -303,6 +336,16 @@ public partial class ItemIcon : Control
 
     public override void _Draw() =>
         UiIcons.ItemKind(this, Kind, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.32f, IconColor);
+}
+
+/// <summary>Herb boga (przyciski wyboru patrona).</summary>
+public partial class GodCrestIcon : Control
+{
+    public GodId God;
+    public Color IconColor = new(0.85f, 0.82f, 0.95f);
+
+    public override void _Draw() =>
+        UiIcons.GodCrest(this, God, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.36f, IconColor);
 }
 
 /// <summary>Mały widget: symbol statystyki (StatsPanel, obok liczby).</summary>

@@ -643,6 +643,31 @@ public partial class BuffBar : CanvasLayer
 	}
 }
 
+/// <summary>Ozdobna rama paska bossa: tło, obrys z akcentem + czaszki po bokach.</summary>
+public partial class BossBarFrame : Control
+{
+	public override void _Ready()
+	{
+		AnchorRight = 1f; AnchorBottom = 1f;
+		OffsetLeft = -6; OffsetTop = -4; OffsetRight = 6; OffsetBottom = 6;
+		MouseFilter = MouseFilterEnum.Ignore;
+		QueueRedraw();
+	}
+
+	public override void _Draw()
+	{
+		var s = Size;
+		DrawRect(new Rect2(0, 0, s.X, s.Y), new Color(0.08f, 0.04f, 0.05f, 0.82f));
+		DrawRect(new Rect2(0, 0, s.X, s.Y), new Color(0.6f, 0.25f, 0.25f), false, 2f);
+		// akcentowa linia u góry
+		DrawLine(new Vector2(10, 3), new Vector2(s.X - 10, 3), new Color(0.85f, 0.4f, 0.35f, 0.7f), 1.5f);
+		// czaszki po bokach nazwy
+		var sk = new Color(0.85f, 0.75f, 0.6f);
+		UiIcons.Skull(this, new Vector2(16, 16), 9f, sk);
+		UiIcons.Skull(this, new Vector2(s.X - 16, 16), 9f, sk);
+	}
+}
+
 /// <summary>Duży pasek HP bossa (góra-środek) — pojawia się, gdy w scenie żyje potwór z fazami (IsBoss).
 /// Działa u hosta i klientów (puppet synchronizuje HP).</summary>
 public partial class BossBar : CanvasLayer
@@ -662,21 +687,27 @@ public partial class BossBar : CanvasLayer
 			MouseFilter = Control.MouseFilterEnum.Ignore,
 		};
 		AddChild(_root);
+		_root.AddChild(new BossBarFrame()); // ozdobna rama + czaszki po bokach
 
-		var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f };
-		vb.AddThemeConstantOverride("separation", 2);
+		var vb = new VBoxContainer { AnchorRight = 1f, AnchorBottom = 1f, OffsetLeft = 8, OffsetRight = -8, OffsetTop = 4 };
+		vb.AddThemeConstantOverride("separation", 3);
 		_root.AddChild(vb);
 
 		_name = new Label { HorizontalAlignment = HorizontalAlignment.Center };
-		_name.AddThemeFontSizeOverride("font_size", 18);
-		_name.AddThemeColorOverride("font_color", new Color(1f, 0.75f, 0.35f));
+		_name.AddThemeFontSizeOverride("font_size", 19);
+		_name.AddThemeColorOverride("font_color", new Color(1f, 0.78f, 0.4f));
 		_name.AddThemeColorOverride("font_outline_color", Colors.Black);
 		_name.AddThemeConstantOverride("outline_size", 5);
 		vb.AddChild(_name);
 
 		_hp = new ProgressBar { MinValue = 0, MaxValue = 1, ShowPercentage = false, CustomMinimumSize = new Vector2(0, 16) };
-		_hp.AddThemeStyleboxOverride("fill", new StyleBoxFlat { BgColor = new Color(0.7f, 0.15f, 0.15f) });
-		_hp.AddThemeStyleboxOverride("background", new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0.65f) });
+		var fill = new StyleBoxFlat { BgColor = new Color(0.72f, 0.14f, 0.14f) };
+		fill.SetCornerRadiusAll(3);
+		var bg = new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0.7f), BorderColor = new Color(0.5f, 0.2f, 0.2f) };
+		bg.SetBorderWidthAll(1);
+		bg.SetCornerRadiusAll(3);
+		_hp.AddThemeStyleboxOverride("fill", fill);
+		_hp.AddThemeStyleboxOverride("background", bg);
 		vb.AddChild(_hp);
 	}
 

@@ -46,8 +46,15 @@ public partial class SkillPanel : CanvasLayer, IUiPanel
         vb.AddChild(godRow);
         foreach (var god in Gods.All)
         {
-            var b = new Button { Text = Gods.Name(god), TooltipText = Gods.Passive(god) };
             var captured = god;
+            var col = god switch { GodId.Wilds => new Color(0.5f, 0.85f, 0.45f), GodId.Blood => new Color(0.9f, 0.3f, 0.35f), _ => new Color(0.7f, 0.68f, 0.78f) };
+            var b = new Button { Text = "     " + Gods.Name(god), TooltipText = Gods.Passive(god), Alignment = HorizontalAlignment.Left, CustomMinimumSize = new Vector2(0, 40) };
+            b.AddChild(new GodCrestIcon
+            {
+                God = god, IconColor = col,
+                AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -14, OffsetBottom = 14, OffsetLeft = 6, Size = new Vector2(28, 28),
+                MouseFilter = Control.MouseFilterEnum.Ignore,
+            });
             b.Pressed += () => { GameState.PledgedGod = captured; GameState.Save(); PlayerController.Local?.Refresh(); Refresh(); };
             godRow.AddChild(b);
         }
