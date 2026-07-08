@@ -7,7 +7,9 @@ namespace AshenPantheon.Core;
 public enum EquipmentSlot
 {
     Helmet, Shoulders, BodyArmour, Gloves, Boots, Belt,
-    Amulet, Ring1, Ring2, Weapon, OffHand
+    Amulet, Ring1, Ring2, Weapon, OffHand,
+    /// <summary>Specjalny slot na Duszę Bossa (mega-rare trinket z Q-Bloodshed).</summary>
+    Soul
 }
 
 public enum ItemKind
@@ -15,7 +17,9 @@ public enum ItemKind
     Helmet, Shoulders, BodyArmour, Gloves, Boots, Belt,
     Amulet, Ring, OneHandWeapon, TwoHandWeapon, OffHand,
     /// <summary>Klejnot do socketa (DsoCraft: Emberfang, Windstep, ...). 1×1, nie zakładany bezpośrednio.</summary>
-    Jewel
+    Jewel,
+    /// <summary>Dusza Bossa — do slotu Soul; globalna pasywka (kanon TrinketsPlugin Boss Hearts).</summary>
+    Soul
 }
 
 /// <summary>Staty, które może dawać affix na itemie.</summary>
@@ -134,6 +138,7 @@ public sealed class Item
         ItemKind.OneHandWeapon => new[] { EquipmentSlot.Weapon },
         ItemKind.TwoHandWeapon => new[] { EquipmentSlot.Weapon },
         ItemKind.OffHand => new[] { EquipmentSlot.OffHand },
+        ItemKind.Soul => new[] { EquipmentSlot.Soul },
         _ => System.Array.Empty<EquipmentSlot>()
     };
 }

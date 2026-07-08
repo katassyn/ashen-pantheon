@@ -155,6 +155,39 @@ public class EndgameTests
     }
 
     [Fact]
+    public void BossSouls_TenSoulsSlotAndBloodshedDrop()
+    {
+        // 10 dusz per boss Q — Mythic, slot Soul, każda z affiksami
+        string[] souls = { "soul_grimmor", "soul_arachnia", "soul_haradur", "soul_bharok", "soul_khaliss",
+            "soul_morthys", "soul_herald", "soul_sigrimar", "soul_medusa", "soul_gorgatha" };
+        foreach (var id in souls)
+        {
+            var s = UniqueCatalog.ById(id);
+            Assert.NotNull(s);
+            Assert.Equal(Rarity.Mythic, s!.Rarity);
+            Assert.Equal(ItemKind.Soul, s.Kind);
+            Assert.NotEmpty(s.Affixes);
+            Assert.Equal(new[] { EquipmentSlot.Soul }, Item.SlotsFor(ItemKind.Soul)); // wchodzi tylko w slot Soul
+        }
+        // dusza wchodzi do slotu Soul i jej affiksy liczą się w arkuszu
+        var eq = new Equipment();
+        eq.Equip(UniqueCatalog.ById("soul_haradur")!, EquipmentSlot.Soul); // +70 life
+        var sheet = eq.BuildSheet(new Attributes { Strength = 12, Dexterity = 15, Intelligence = 5 }, 50);
+        Assert.True(sheet.MaxLife > 70);
+
+        // każdy główny boss Q ma przypisaną duszę; mini-bossy i trash NIE
+        Assert.Equal("soul_grimmor", Bestiary.Monster("grimmor_the_risen").SoulDrop);
+        Assert.Equal("soul_gorgatha", Bestiary.Monster("gorgatha").SoulDrop);
+        Assert.Equal("", Bestiary.Monster("xarib_hunchback").SoulDrop);     // mini-boss
+        Assert.Equal("", Bestiary.Monster("gremlin_marauder").SoulDrop);    // trash
+
+        // walidator: dusza z założona = Mythic z ważnym UniqueId → przechodzi
+        var save = new SaveData { Name = "T", ClassId = "ranger", Level = 50 };
+        save.Equipment["Soul"] = ItemMapper.ToDto(UniqueCatalog.ById("soul_medusa")!);
+        Assert.True(SaveValidator.Validate(save).Ok);
+    }
+
+    [Fact]
     public void LegendaryBossParts_CanonPerQFromBosses()
     {
         // 10 kanonicznych "części bossów" (IngredientPouchPlugin) — kategoria upgrade, rzadkość legendary

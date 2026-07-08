@@ -2,7 +2,8 @@
   "id": "medusa", "name": "Medusa",
   "hp": 5000, "armour": 50, "resChaos": 70, "speed": 105, "movement": "keep_distance", "preferredRange": 240, "scale": 2.4, "tint": "#3aa06a",
   "level": 55, "xp": 2600, "lootTable": "boss",
-  "legendaryEssence": "medusas_stone_scales", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.7,
+  "legendaryEssence": "medusas_stone_scales", "legendaryChance": 1.0, "legendaryCount": 2,
+  "soulDrop": "soul_medusa", "soulChance": 0.08, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [

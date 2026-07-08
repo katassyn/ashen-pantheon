@@ -43,6 +43,29 @@ public static class UniqueCatalog
             Affixes = { new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.45f }, new Affix { Stat = AffixStat.Strength, Value = 10 }, new Affix { Stat = AffixStat.Dexterity, Value = 10 } } },
         new Item { UniqueId = "shroud_ashes", Name = "Shroud of Ashes", Kind = ItemKind.BodyArmour, Rarity = Rarity.Mythic,
             Affixes = { new Affix { Stat = AffixStat.FlatEnergyShield, Value = 80 }, new Affix { Stat = AffixStat.FlatLife, Value = 30 }, new Affix { Stat = AffixStat.Intelligence, Value = 12 } } },
+
+        // ── DUSZE BOSSÓW (kanon TrinketsPlugin Boss Hearts): slot Soul, Mythic, mega-rare z Q-Bloodshed.
+        //    Jedna dusza per główny boss Q; globalna pasywka przez affiksy (część z UniqueEffect dla smaczku). ──
+        new Item { UniqueId = "soul_grimmor", Name = "Soul of Grimmor", Kind = ItemKind.Soul, Rarity = Rarity.Mythic, Effect = UniqueEffect.Overcharge,
+            Affixes = { new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.25f }, new Affix { Stat = AffixStat.FireResist, Value = 25 }, new Affix { Stat = AffixStat.Strength, Value = 12 } } },
+        new Item { UniqueId = "soul_arachnia", Name = "Soul of Arachnia", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.CritChance, Value = 0.08f }, new Affix { Stat = AffixStat.ChaosResist, Value = 20 }, new Affix { Stat = AffixStat.Dexterity, Value = 12 } } },
+        new Item { UniqueId = "soul_haradur", Name = "Soul of Haradur", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.FlatLife, Value = 70 }, new Affix { Stat = AffixStat.ColdResist, Value = 25 }, new Affix { Stat = AffixStat.FlatArmour, Value = 60 } } },
+        new Item { UniqueId = "soul_bharok", Name = "Soul of Bharok", Kind = ItemKind.Soul, Rarity = Rarity.Mythic, Effect = UniqueEffect.SwiftDash,
+            Affixes = { new Affix { Stat = AffixStat.MoveSpeed, Value = 0.10f }, new Affix { Stat = AffixStat.LightningResist, Value = 25 }, new Affix { Stat = AffixStat.Strength, Value = 10 } } },
+        new Item { UniqueId = "soul_khaliss", Name = "Soul of Khaliss", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.FlatEnergyShield, Value = 90 }, new Affix { Stat = AffixStat.Intelligence, Value = 14 }, new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.15f } } },
+        new Item { UniqueId = "soul_morthys", Name = "Soul of Morthys", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.FlatLife, Value = 55 }, new Affix { Stat = AffixStat.ChaosResist, Value = 20 }, new Affix { Stat = AffixStat.CritMultiplier, Value = 0.30f } } },
+        new Item { UniqueId = "soul_herald", Name = "Soul of the Herald", Kind = ItemKind.Soul, Rarity = Rarity.Mythic, Effect = UniqueEffect.MarkOnHit,
+            Affixes = { new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.20f }, new Affix { Stat = AffixStat.AttackSpeed, Value = 0.12f }, new Affix { Stat = AffixStat.Dexterity, Value = 10 } } },
+        new Item { UniqueId = "soul_sigrimar", Name = "Soul of Sigrimar", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.ColdResist, Value = 30 }, new Affix { Stat = AffixStat.FlatArmour, Value = 70 }, new Affix { Stat = AffixStat.LifeRegen, Value = 8 } } },
+        new Item { UniqueId = "soul_medusa", Name = "Soul of Medusa", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.FlatArmour, Value = 55 }, new Affix { Stat = AffixStat.ChaosResist, Value = 20 }, new Affix { Stat = AffixStat.FlatEvasion, Value = 70 } } },
+        new Item { UniqueId = "soul_gorgatha", Name = "Soul of Gorgatha", Kind = ItemKind.Soul, Rarity = Rarity.Mythic,
+            Affixes = { new Affix { Stat = AffixStat.FlatLife, Value = 60 }, new Affix { Stat = AffixStat.IncreasedAttackDamage, Value = 0.25f }, new Affix { Stat = AffixStat.CritChance, Value = 0.06f }, new Affix { Stat = AffixStat.ChaosResist, Value = 25 } } },
     };
 
     public static Item? ById(string uniqueId) => Items.FirstOrDefault(i => i.UniqueId == uniqueId);

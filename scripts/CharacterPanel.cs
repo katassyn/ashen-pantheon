@@ -11,7 +11,7 @@ public partial class CharacterPanel : CanvasLayer, IUiPanel
     {
         EquipmentSlot.Helmet, EquipmentSlot.Shoulders, EquipmentSlot.BodyArmour, EquipmentSlot.Gloves,
         EquipmentSlot.Boots, EquipmentSlot.Belt, EquipmentSlot.Amulet, EquipmentSlot.Ring1,
-        EquipmentSlot.Ring2, EquipmentSlot.Weapon, EquipmentSlot.OffHand
+        EquipmentSlot.Ring2, EquipmentSlot.Weapon, EquipmentSlot.OffHand, EquipmentSlot.Soul
     };
 
     public const int Cell = 40;

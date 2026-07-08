@@ -35,6 +35,9 @@ public sealed class MonsterDefinition
     /// <summary>Szansa + ilość dropu legendary essence (main boss = 1.0/2 szt, mini-boss ~0.5/1).</summary>
     public float LegendaryChance { get; set; } = 0.5f;
     public int LegendaryCount { get; set; } = 1;
+    /// <summary>Dusza Bossa (UniqueId z UniqueCatalog) — mega-rare drop TYLKO z tego bossa na Q-Bloodshed. Pusty = brak.</summary>
+    public string SoulDrop { get; set; } = "";
+    public float SoulChance { get; set; } = 0.08f;
 
     // obrona (typy obrażeń graczy mają znaczenie)
     public float Armour { get; set; }

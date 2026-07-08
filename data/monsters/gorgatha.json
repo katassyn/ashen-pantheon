@@ -2,7 +2,8 @@
   "id": "gorgatha", "name": "Gorgatha",
   "hp": 5000, "armour": 55, "resChaos": 75, "speed": 30, "movement": "keep_distance", "preferredRange": 320, "scale": 2.6, "tint": "#2a9a5a",
   "level": 55, "xp": 2800, "lootTable": "boss",
-  "legendaryEssence": "gorgathas_broken_tooth", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.6,
+  "legendaryEssence": "gorgathas_broken_tooth", "legendaryChance": 1.0, "legendaryCount": 2,
+  "soulDrop": "soul_gorgatha", "soulChance": 0.08, "attackInterval": 1.6,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.6, "abilities": [

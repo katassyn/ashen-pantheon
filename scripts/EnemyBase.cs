@@ -41,6 +41,9 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
     protected virtual string LegendaryEssenceId => "";
     protected virtual float LegendaryEssenceChance => 0f;
     protected virtual int LegendaryEssenceCount => 1;
+    /// <summary>Dusza Bossa (UniqueId) — mega-rare, TYLKO na Q-Bloodshed. Pusty = brak.</summary>
+    protected virtual string SoulDropId => "";
+    protected virtual float SoulDropChance => 0f;
     /// <summary>Poziom potwora (= poziom dropu / skala affixów).</summary>
     protected virtual int MonsterLevel => 1;
 
@@ -248,6 +251,10 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
 
     protected virtual bool DropsLoot => true;
 
+    /// <summary>Czy aktualne wyzwanie to run Q na trudności Bloodshed (gate dusz bossów).</summary>
+    private static bool IsBloodshedRun() =>
+        EndgameCatalog.TryParseQ(Net.TravelChallengeId, out _, out var qd) && qd?.Id == "blood";
+
     protected void Die()
     {
         if (_dying) return;
@@ -289,6 +296,11 @@ public abstract partial class EnemyBase : CharacterBody2D, IHittable
                 if (LegendaryEssenceId.Length > 0 && GD.Randf() < LegendaryEssenceChance)
                     Net.GiveIngredient(peer, LegendaryEssenceId, LegendaryEssenceCount,
                         GlobalPosition + new Vector2(0, -30));
+
+                // DUSZA BOSSA — mega-rare, TYLKO na Q-Bloodshed (kanon: souls z Bloodshed)
+                if (SoulDropId.Length > 0 && IsBloodshedRun() && GD.Randf() < SoulDropChance
+                    && UniqueCatalog.ById(SoulDropId) is { } soul)
+                    Net.GivePickup(peer, soul, GlobalPosition + new Vector2(0, -50));
             }
 
         if (Net.Online) Net.DespawnEnemy(this, died: true);

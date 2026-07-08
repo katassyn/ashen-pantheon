@@ -27,6 +27,8 @@ public partial class Monster : EnemyBase
     protected override string LegendaryEssenceId => _def?.LegendaryEssence ?? "";
     protected override float LegendaryEssenceChance => _def?.LegendaryChance ?? 0f;
     protected override int LegendaryEssenceCount => _def?.LegendaryCount ?? 1;
+    protected override string SoulDropId => _def?.SoulDrop ?? "";
+    protected override float SoulDropChance => _def?.SoulChance ?? 0f;
     protected override int MonsterLevel => _def?.Level ?? 1;
     public override string DisplayName => _def?.Name is { Length: > 0 } n ? n : MonsterId;
     public int Level => _def?.Level ?? 1;

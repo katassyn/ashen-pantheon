@@ -2,7 +2,8 @@
   "id": "herald_of_the_void", "name": "Herald of the Void",
   "hp": 5000, "armour": 50, "resChaos": 75, "speed": 115, "movement": "keep_distance", "preferredRange": 220, "scale": 2.4, "tint": "#5a30a0",
   "level": 55, "xp": 2600, "lootTable": "boss",
-  "legendaryEssence": "heralds_dragon_skin", "legendaryChance": 1.0, "legendaryCount": 2, "attackInterval": 1.7,
+  "legendaryEssence": "heralds_dragon_skin", "legendaryChance": 1.0, "legendaryCount": 2,
+  "soulDrop": "soul_herald", "soulChance": 0.08, "attackInterval": 1.7,
   "abilities": [],
   "phases": [
     { "hpBelow": 1.0, "attackInterval": 1.7, "abilities": [
