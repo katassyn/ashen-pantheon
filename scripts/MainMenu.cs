@@ -22,6 +22,9 @@ public partial class MainMenu : Control
     {
         DataLoader.LoadAll();
 
+        AddChild(new AmbientBackground { Seed = 11 }); // animowane tło menu (gwiazdy/iskry/aura)
+        AddChild(new SceneFadeIn());                   // miękkie wejście
+
         var center = new VBoxContainer
         {
             AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0f, AnchorBottom = 1f,
@@ -31,8 +34,17 @@ public partial class MainMenu : Control
         AddChild(center);
 
         var title = new Label { Text = "ASHEN PANTHEON", HorizontalAlignment = HorizontalAlignment.Center };
-        title.AddThemeFontSizeOverride("font_size", 34);
+        title.AddThemeFontSizeOverride("font_size", 40);
+        title.AddThemeColorOverride("font_color", new Color(0.92f, 0.82f, 1f));
+        title.AddThemeColorOverride("font_outline_color", new Color(0.35f, 0.2f, 0.5f));
+        title.AddThemeConstantOverride("outline_size", 6);
         center.AddChild(title);
+
+        var sub = new Label { Text = "· a dark-fantasy loot ARPG ·", HorizontalAlignment = HorizontalAlignment.Center };
+        sub.AddThemeFontSizeOverride("font_size", 13);
+        sub.AddThemeColorOverride("font_color", new Color(0.6f, 0.55f, 0.72f));
+        center.AddChild(sub);
+        center.AddChild(new TitleRule { CustomMinimumSize = new Vector2(0, 14) });
 
         var realmRow = new HBoxContainer();
         realmRow.AddThemeConstantOverride("separation", 8);

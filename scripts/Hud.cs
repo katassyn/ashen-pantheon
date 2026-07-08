@@ -19,6 +19,7 @@ public partial class Hud : CanvasLayer
 		_info = GetNode<Label>("%Info");
 		_center = GetNode<Label>("%Center");
 		BuildBottomBar();
+		AddChild(new SceneFadeIn()); // miękkie wejście do sceny
 	}
 
 	private void BuildBottomBar()
