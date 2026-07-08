@@ -290,6 +290,39 @@ public static class UiIcons
         }
         ci.DrawArc(c, r * 0.55f, 0, Mathf.Tau, 24, col, 2.5f);
     }
+    public static void Pin(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawColoredPolygon(new[] { c + new Vector2(0, r * 0.95f), c + new Vector2(-r * 0.6f, -r * 0.15f), c + new Vector2(r * 0.6f, -r * 0.15f) }, col); // ostrze pinezki
+        ci.DrawCircle(c + new Vector2(0, -r * 0.3f), r * 0.55f, col);                                   // główka
+        ci.DrawCircle(c + new Vector2(0, -r * 0.3f), r * 0.22f, new Color(0.1f, 0.09f, 0.12f));         // oczko
+    }
+    public static void Gate(CanvasItem ci, Vector2 c, float r, Color col)
+    {
+        ci.DrawRect(new Rect2(c + new Vector2(-r * 0.72f, -r * 0.15f), new Vector2(r * 0.26f, r * 1.05f)), col); // filar L
+        ci.DrawRect(new Rect2(c + new Vector2(r * 0.46f, -r * 0.15f), new Vector2(r * 0.26f, r * 1.05f)), col);  // filar P
+        ci.DrawArc(c + new Vector2(0, -r * 0.15f), r * 0.59f, Mathf.Pi, Mathf.Tau, 18, col, 3f);                 // łuk bramy
+    }
+
+    // ── HERBY TRUDNOŚCI (endgame: blood/hell/infernal/bloodshed) ──
+    public static Color DifficultyColor(string id) => id switch
+    {
+        "blood" => new Color(0.78f, 0.22f, 0.24f),
+        "bloodshed" => new Color(0.62f, 0.12f, 0.16f),
+        "hell" => new Color(0.62f, 0.32f, 0.74f),
+        "infernal" => new Color(0.9f, 0.48f, 0.2f),
+        _ => new Color(0.6f, 0.6f, 0.66f),
+    };
+
+    public static void Difficulty(CanvasItem ci, string id, Vector2 c, float r)
+    {
+        var col = DifficultyColor(id);
+        ci.DrawCircle(c, r, new Color(col, 0.22f));        // aura
+        ci.DrawArc(c, r, 0, Mathf.Tau, 28, col, 2f);       // ramka
+        if (id is "blood" or "bloodshed")                  // kropla krwi
+            ci.DrawColoredPolygon(new[] { c + new Vector2(0, -r * 0.55f), c + new Vector2(r * 0.42f, r * 0.3f), c + new Vector2(0, r * 0.55f), c + new Vector2(-r * 0.42f, r * 0.3f) }, col);
+        else                                               // płomień (hell/infernal)
+            ci.DrawColoredPolygon(Flame(c, r * 0.6f), col);
+    }
 
     // ── PORTRET NPC (popiersie w medalionie, rysowane kodem) ──
     public static void Portrait(CanvasItem ci, string npcId, Vector2 c, float r, Color accent)
@@ -483,8 +516,20 @@ public partial class GlyphIcon : Control
             case "home":  UiIcons.Home(this, c, r, IconColor); break;
             case "power": UiIcons.Power(this, c, r, IconColor); break;
             case "gear":  UiIcons.Gear(this, c, r, IconColor); break;
+            case "gate":  UiIcons.Gate(this, c, r, IconColor); break;
+            case "skull": UiIcons.Skull(this, c, r, IconColor); break;
+            case "pin":   UiIcons.Pin(this, c, r, IconColor); break;
         }
     }
+}
+
+/// <summary>Herb trudności endgame (blood/hell/infernal/bloodshed) — wiersze dungeonów/Q.</summary>
+public partial class DifficultyIcon : Control
+{
+    public string Id = "";
+
+    public override void _Draw() =>
+        UiIcons.Difficulty(this, Id, Size / 2f, Mathf.Min(Size.X, Size.Y) * 0.42f);
 }
 
 /// <summary>Portret NPC w medalionie (dialogi questowe).</summary>

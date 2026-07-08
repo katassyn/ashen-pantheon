@@ -74,7 +74,7 @@ public partial class WorldMapPanel : CanvasLayer
         bool turnInReady = GameState.Quests.Active.Keys
             .Select(QuestCatalog.Find)
             .Any(q => q != null && GameState.Quests.ReadyToTurnIn(q));
-        AddRow("⌂ Town  (hub)" + (turnInReady ? "   ❓ quest turn-in" : ""),
+        AddRow("home", new Color(0.9f, 0.8f, 0.45f), "Town  (hub)" + (turnInReady ? "   ❓ quest turn-in" : ""),
             curScene: GetTree().CurrentScene?.Name == "Hub",
             enabled: canTravel, () => Travel("res://scenes/Main.tscn", ""));
 
@@ -85,7 +85,8 @@ public partial class WorldMapPanel : CanvasLayer
             string label = $"{z.Name}   (levels {z.LevelMin}-{z.LevelMax})" +
                            (ZoneHasActiveQuest(z.Id) ? "   ❗ quest" : "") +
                            (discovered ? "" : "   — undiscovered");
-            AddRow(label, isCurrent, enabled: canTravel && discovered, () => Travel("res://scenes/WorldZone.tscn", z.Id));
+            var pinCol = discovered ? new Color(0.7f, 0.85f, 0.5f) : new Color(0.5f, 0.5f, 0.55f);
+            AddRow("pin", pinCol, label, isCurrent, enabled: canTravel && discovered, () => Travel("res://scenes/WorldZone.tscn", z.Id));
         }
     }
 
@@ -95,18 +96,29 @@ public partial class WorldMapPanel : CanvasLayer
             .Select(QuestCatalog.Find)
             .Any(q => q != null && q.Zone == zoneId && !GameState.Quests.ReadyToTurnIn(q));
 
-    private void AddRow(string label, bool curScene, bool enabled, System.Action onTravel)
+    private void AddRow(string glyph, Color glyphCol, string label, bool curScene, bool enabled, System.Action onTravel)
     {
         var row = new HBoxContainer();
         row.AddThemeConstantOverride("separation", 8);
-        var name = new Label { Text = (curScene ? "▶ " : "   ") + label, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        row.AddChild(new GlyphIcon
+        {
+            Kind = glyph, IconColor = curScene ? new Color(0.6f, 0.9f, 1f) : glyphCol,
+            CustomMinimumSize = new Vector2(24, 24), MouseFilter = Control.MouseFilterEnum.Ignore,
+        });
+        var name = new Label { Text = (curScene ? "▶ " : "") + label, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         if (curScene) name.Modulate = new Color(0.6f, 0.9f, 1f);
         else if (!enabled) name.Modulate = new Color(0.5f, 0.5f, 0.55f);
         row.AddChild(name);
 
         if (!curScene)
         {
-            var btn = new Button { Text = "Travel", Disabled = !enabled, CustomMinimumSize = new Vector2(90, 0) };
+            var btn = new Button { Text = "   Travel", Disabled = !enabled, CustomMinimumSize = new Vector2(96, 0), Alignment = HorizontalAlignment.Center };
+            btn.AddChild(new GlyphIcon
+            {
+                Kind = "play", IconColor = new Color(0.85f, 1f, 0.85f),
+                AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -8, OffsetBottom = 8,
+                OffsetLeft = 8, Size = new Vector2(15, 15), MouseFilter = Control.MouseFilterEnum.Ignore,
+            });
             btn.Pressed += () => onTravel();
             row.AddChild(btn);
         }

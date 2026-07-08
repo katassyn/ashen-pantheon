@@ -33,6 +33,29 @@ public partial class EndgamePanel : CanvasLayer
         Refresh();
     }
 
+    /// <summary>Nagłówek sekcji: glif + tytuł w kolorze.</summary>
+    private static HBoxContainer HeaderRow(string glyph, string text, Color col)
+    {
+        var h = new HBoxContainer();
+        h.AddThemeConstantOverride("separation", 8);
+        h.AddChild(new GlyphIcon { Kind = glyph, IconColor = col, CustomMinimumSize = new Vector2(22, 22), MouseFilter = Control.MouseFilterEnum.Ignore });
+        h.AddChild(new Label { Text = text, Modulate = col });
+        return h;
+    }
+
+    /// <summary>Przycisk „Enter" z glifem play.</summary>
+    private static void DecorateEnter(Button b)
+    {
+        b.Text = "   " + b.Text;
+        b.Alignment = HorizontalAlignment.Center;
+        b.AddChild(new GlyphIcon
+        {
+            Kind = "play", IconColor = new Color(0.85f, 1f, 0.85f),
+            AnchorTop = 0.5f, AnchorBottom = 0.5f, OffsetTop = -8, OffsetBottom = 8,
+            OffsetLeft = 8, Size = new Vector2(16, 16), MouseFilter = Control.MouseFilterEnum.Ignore,
+        });
+    }
+
     private static VBoxContainer MakeColumn(HBoxContainer parent, string title)
     {
         var vb = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
@@ -73,9 +96,8 @@ public partial class EndgamePanel : CanvasLayer
         // ── dungeony grupowe ──
         foreach (var dun in EndgameCatalog.Dungeons)
         {
-            var header = new Label { Text = $"T{dun.Tier}  {dun.Name}" + (dun.Enabled ? "" : "   — coming soon") };
-            header.Modulate = dun.Enabled ? new Color(1f, 0.85f, 0.5f) : new Color(0.5f, 0.5f, 0.55f);
-            _group.AddChild(header);
+            _group.AddChild(HeaderRow("gate", $"T{dun.Tier}  {dun.Name}" + (dun.Enabled ? "" : "   — coming soon"),
+                dun.Enabled ? new Color(1f, 0.85f, 0.5f) : new Color(0.5f, 0.5f, 0.55f)));
             if (!dun.Enabled) continue;
 
             foreach (var diff in EndgameCatalog.Difficulties)
@@ -87,9 +109,10 @@ public partial class EndgamePanel : CanvasLayer
 
                 var row = new HBoxContainer();
                 row.AddThemeConstantOverride("separation", 8);
+                row.AddChild(new DifficultyIcon { Id = diff.Id, CustomMinimumSize = new Vector2(26, 26), MouseFilter = Control.MouseFilterEnum.Ignore });
                 var info = new Label
                 {
-                    Text = $"   {diff.Name}   —   HP x{diff.HpMult:0.0}, item lvl {diff.ItemLevel}, [T{dun.Tier}] key + {diff.GoldFee}g" +
+                    Text = $"{diff.Name}   —   HP x{diff.HpMult:0.0}, item lvl {diff.ItemLevel}, [T{dun.Tier}] key + {diff.GoldFee}g" +
                            (cleared ? "   ✔" : ""),
                     SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 };
@@ -105,6 +128,7 @@ public partial class EndgamePanel : CanvasLayer
                 else if (GameState.Wallet.Gold < diff.GoldFee) { enter.Disabled = true; enter.TooltipText = "Not enough gold"; }
                 var dunId = dun.Id; var diffId = diff.Id; var zone = dun.Zone; long fee = diff.GoldFee; string capturedKey = keyId;
                 enter.Pressed += () => EnterChallenge(zone, EndgameCatalog.GroupChallenge(dunId, diffId), fee, capturedKey);
+                DecorateEnter(enter);
                 row.AddChild(enter);
                 _group.AddChild(row);
             }
@@ -120,18 +144,18 @@ public partial class EndgamePanel : CanvasLayer
         for (int q = 1; q <= EndgameCatalog.QMax; q++)
         {
             bool unlocked = q <= GameState.EndgameQ;
-            var head = new Label { Text = $"Q{q}" + (unlocked ? "" : "   🔒 clear the previous stage first") };
-            head.Modulate = unlocked ? new Color(1f, 0.85f, 0.5f) : new Color(0.55f, 0.55f, 0.6f);
-            _solo.AddChild(head);
+            _solo.AddChild(HeaderRow("skull", $"Q{q}" + (unlocked ? "" : "   🔒 clear the previous stage first"),
+                unlocked ? new Color(1f, 0.85f, 0.5f) : new Color(0.55f, 0.55f, 0.6f)));
             if (!unlocked) continue;
 
             foreach (var qd in EndgameCatalog.QDifficulties)
             {
                 var row = new HBoxContainer();
                 row.AddThemeConstantOverride("separation", 8);
+                row.AddChild(new DifficultyIcon { Id = qd.Id, CustomMinimumSize = new Vector2(26, 26), MouseFilter = Control.MouseFilterEnum.Ignore });
                 var info = new Label
                 {
-                    Text = $"   {qd.Name}   —   req lvl {qd.LevelReq}, HP x{qd.HpMult:0.#}, item lvl {qd.ItemLevel}, entry {qd.IpsFee} IPS",
+                    Text = $"{qd.Name}   —   req lvl {qd.LevelReq}, HP x{qd.HpMult:0.#}, item lvl {qd.ItemLevel}, entry {qd.IpsFee} IPS",
                     SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 };
                 bool levelOk = level >= qd.LevelReq;
@@ -145,6 +169,7 @@ public partial class EndgamePanel : CanvasLayer
                 else if (!ipsOk) enter.TooltipText = $"Requires {qd.IpsFee} Fragments of Infernal Passage";
                 int cq = q; string cd = qd.Id; int fee = qd.IpsFee;
                 enter.Pressed += () => EnterQ(cq, cd, fee);
+                DecorateEnter(enter);
                 row.AddChild(enter);
                 _solo.AddChild(row);
             }
