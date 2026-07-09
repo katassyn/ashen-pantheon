@@ -176,6 +176,103 @@ public partial class SceneFadeIn : CanvasLayer
     }
 }
 
+/// <summary>Ekran ładowania: ciemna zasłona + obracający się pierścień z iskrami + tytuł + losowa
+/// wskazówka; trzyma się chwilę i płynnie zanika. Dodawany przy wejściu do scen rozgrywki (Hud).</summary>
+public partial class LoadingScreen : CanvasLayer
+{
+    private ColorRect _cover;
+    private float _t;
+    private const float Hold = 0.3f;
+    private const float Fade = 0.5f;
+
+    private static readonly string[] Tips =
+    {
+        "Tip: Mark enemies, then strike — your Ranger skills hit marked foes harder.",
+        "Tip: Dash through danger — a well-timed roll grants brief invulnerability.",
+        "Tip: Pledge to a god to transform your skills into new forms.",
+        "Tip: Socket jewels into your gear to reshape your build.",
+        "Tip: Upgrade Rare+ items at the Blacksmith using boss parts.",
+        "Tip: Bloodshed difficulty is the only source of Boss Souls.",
+        "Tip: Fragments of Infernal Passage open the harder trials.",
+        "Tip: Press TAB for the map, J for your journal, K for skills.",
+    };
+
+    public override void _Ready()
+    {
+        Layer = 95;
+        // nieblokujący (Ignore) — czysto wizualny, nie gatuje ruchu przy wejściu do strefy
+        _cover = new ColorRect { Color = new Color(0.04f, 0.03f, 0.06f), AnchorRight = 1f, AnchorBottom = 1f, MouseFilter = Control.MouseFilterEnum.Ignore };
+        AddChild(_cover);
+
+        _cover.AddChild(new LoadingSpinner
+        {
+            AnchorLeft = 0.5f, AnchorTop = 0.5f, AnchorRight = 0.5f, AnchorBottom = 0.5f,
+            OffsetLeft = -66, OffsetTop = -66, OffsetRight = 66, OffsetBottom = 66,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        });
+
+        AddCenteredLabel("ASHEN PANTHEON", 28, new Color(0.9f, 0.82f, 1f), -150, -118, 300);
+        AddCenteredLabel("Loading…", 16, new Color(0.7f, 0.65f, 0.82f), 82, 108, 200);
+
+        var tip = new Label
+        {
+            Text = Tips[(int)(GD.Randi() % Tips.Length)], HorizontalAlignment = HorizontalAlignment.Center,
+            AutowrapMode = TextServer.AutowrapMode.WordSmart,
+            AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 1f, AnchorBottom = 1f,
+            OffsetLeft = -360, OffsetRight = 360, OffsetTop = -80, OffsetBottom = -36,
+        };
+        tip.AddThemeColorOverride("font_color", new Color(0.6f, 0.56f, 0.72f));
+        _cover.AddChild(tip);
+    }
+
+    private void AddCenteredLabel(string text, int fontSize, Color col, float top, float bottom, float halfWidth)
+    {
+        var l = new Label
+        {
+            Text = text, HorizontalAlignment = HorizontalAlignment.Center,
+            AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0.5f, AnchorBottom = 0.5f,
+            OffsetLeft = -halfWidth, OffsetRight = halfWidth, OffsetTop = top, OffsetBottom = bottom,
+        };
+        l.AddThemeFontSizeOverride("font_size", fontSize);
+        l.AddThemeColorOverride("font_color", col);
+        _cover.AddChild(l);
+    }
+
+    public override void _Process(double delta)
+    {
+        _t += (float)delta;
+        if (_t < Hold) return;
+        float k = (_t - Hold) / Fade;
+        if (k >= 1f) { QueueFree(); return; }
+        _cover.Modulate = new Color(1f, 1f, 1f, 1f - k); // dzieci (spinner/tekst) gasną razem z zasłoną
+    }
+}
+
+/// <summary>Obracający się pierścień ładowania (łuk z przerwą + orbitujące iskry + pulsujący rdzeń).</summary>
+public partial class LoadingSpinner : Control
+{
+    private float _t;
+
+    public override void _Ready() => MouseFilter = MouseFilterEnum.Ignore;
+    public override void _Process(double delta) { _t += (float)delta; QueueRedraw(); }
+
+    public override void _Draw()
+    {
+        var c = Size / 2f;
+        float r = Mathf.Min(Size.X, Size.Y) * 0.42f;
+        DrawArc(c, r, 0, Mathf.Tau, 40, new Color(0.3f, 0.26f, 0.4f, 0.5f), 3f);       // pierścień tła
+        float a0 = _t * 3f;
+        DrawArc(c, r, a0, a0 + Mathf.Pi * 0.6f, 24, new Color(0.75f, 0.6f, 1f), 4f);    // obracający się łuk
+        for (int i = 0; i < 3; i++)                                                     // orbitujące iskry
+        {
+            float a = _t * 2.2f + i * Mathf.Tau / 3f;
+            DrawCircle(c + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * r, 3.5f, new Color(0.85f, 0.72f, 1f));
+        }
+        float pulse = 0.6f + 0.4f * Mathf.Sin(_t * 4f);                                 // pulsujący rdzeń-dusza
+        DrawCircle(c, 7f * pulse, new Color(0.7f, 0.5f, 0.95f, 0.8f));
+    }
+}
+
 /// <summary>Ozdobna linia pod tytułem menu — akcent z diamentem w środku.</summary>
 public partial class TitleRule : Control
 {

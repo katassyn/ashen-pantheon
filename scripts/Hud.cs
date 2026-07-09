@@ -20,7 +20,7 @@ public partial class Hud : CanvasLayer
 		_center = GetNode<Label>("%Center");
 		AddChild(new AmbientDust()); // subtelne pyłki głębi (pod resztą HUD)
 		BuildBottomBar();
-		AddChild(new SceneFadeIn()); // miękkie wejście do sceny
+		AddChild(new LoadingScreen()); // tematyczny ekran ładowania (spinner + wskazówka), nieblokujący
 	}
 
 	private void BuildBottomBar()
