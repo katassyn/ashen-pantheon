@@ -17,7 +17,7 @@ public partial class ZoneLayout : Node2D
     private readonly List<(Vector2 A, Vector2 B)> _corridors = new();
     private readonly List<(Vector2 Pos, float R, float Hue)> _rooms = new();
 
-    private const float CorridorHalfWidth = 70f;
+    private const float CorridorHalfWidth = 92f; // szersze korytarze (gracz r=16, wrogowie) — nie „jaskinia"
     private const float WallStep = 52f;
 
     private static readonly Color FloorBase = new(0.15f, 0.13f, 0.19f);
@@ -33,7 +33,7 @@ public partial class ZoneLayout : Node2D
 
         foreach (var c in RoomCenters)
         {
-            float r = 155f + (float)rng.NextDouble() * 95f;
+            float r = 175f + (float)rng.NextDouble() * 100f; // większe komnaty = bardziej otwarte, mniej „ciasno"
             float hue = (float)rng.NextDouble() * 0.06f - 0.03f; // subtelna wariacja koloru per komnata
             _rooms.Add((c, r, hue));
         }
@@ -120,10 +120,36 @@ public partial class ZoneLayout : Node2D
 
     private void AddWall(Vector2 pos, float size)
     {
+        // KLUCZOWE: nie stawiaj ściany wewnątrz JAKIEJKOLWIEK przechodniej powierzchni (komnata/korytarz).
+        // Bez tego ściany sąsiednich komnat/korytarzy nachodziły na siebie i ZAMUROWYWAŁY przejścia
+        // (mapa „jaskinia", nieprzechodnia). Carve zostawia tylko realny obrys unii = spójny, otwarty loch.
+        if (IsWalkable(pos)) return;
+
         var body = new StaticBody2D { Position = pos, CollisionLayer = 4, CollisionMask = 0 };
         body.AddChild(new CollisionShape2D { Shape = new CircleShape2D { Radius = size } });
         body.AddChild(new WallVisual { Radius = size });
         AddChild(body);
+    }
+
+    /// <summary>Czy punkt leży wewnątrz przechodniej powierzchni (podłoga komnaty lub korytarza).
+    /// Ściana własnej komnaty jest na r+6 (poza podłogą), ściana własnego korytarza na halfWidth+6 —
+    /// więc własne obrysy przetrwają; carve usuwa tylko ściany nachodzące na CUDZE floory.</summary>
+    private bool IsWalkable(Vector2 p)
+    {
+        foreach (var (pos, r, _) in _rooms)
+            if (p.DistanceTo(pos) < r) return true;
+        foreach (var (a, b) in _corridors)
+            if (DistToSegment(p, a, b) < CorridorHalfWidth) return true;
+        return false;
+    }
+
+    private static float DistToSegment(Vector2 p, Vector2 a, Vector2 b)
+    {
+        var ab = b - a;
+        float len2 = ab.LengthSquared();
+        if (len2 < 1f) return p.DistanceTo(a);
+        float t = Mathf.Clamp((p - a).Dot(ab) / len2, 0f, 1f);
+        return p.DistanceTo(a + ab * t);
     }
 
     private void SpawnObstacles(Random rng)
@@ -138,6 +164,7 @@ public partial class ZoneLayout : Node2D
                 float dist = radius * (0.3f + (float)rng.NextDouble() * 0.35f);
                 var pos = center + new Vector2(Mathf.Cos(ang), Mathf.Sin(ang)) * dist;
                 if (Portals.Any(p => p.DistanceTo(pos) < 100f)) continue;
+                if (_corridors.Any(c => DistToSegment(pos, c.A, c.B) < CorridorHalfWidth + 34f)) continue; // nie zawężaj ścieżek
                 AddObstacle(pos, 30f + (float)rng.NextDouble() * 26f);
             }
         }

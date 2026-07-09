@@ -41,6 +41,13 @@ public partial class Projectile : Area2D
 
     private void TryHit(Node node)
     {
+        // ściana/przeszkoda (StaticBody na warstwie terenu 4) — pocisk pęka o mur
+        if (node is StaticBody2D)
+        {
+            if (_skill.Explodes) ExplodeAround();
+            QueueFree();
+            return;
+        }
         if (node is not IHittable target) return;
         if (_hit.Contains(node.GetInstanceId())) return;
         _hit.Add(node.GetInstanceId());

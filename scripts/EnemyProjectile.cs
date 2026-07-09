@@ -20,6 +20,16 @@ public partial class EnemyProjectile : Node2D
         _life -= dt;
         if (_life <= 0f) { QueueFree(); return; }
 
+        // ściana? (StaticBody na warstwie terenu 4) — pocisk pęka; deterministyczne (te same ściany u wszystkich)
+        var q = new PhysicsPointQueryParameters2D
+        {
+            Position = GlobalPosition,
+            CollisionMask = 4,
+            CollideWithBodies = true,
+            CollideWithAreas = false,
+        };
+        if (GetWorld2D().DirectSpaceState.IntersectPoint(q, 1).Count > 0) { QueueFree(); return; }
+
         var p = PlayerController.Local;
         if (p != null && IsInstanceValid(p) && !p.Dead && !p.IsInvulnerable
             && GlobalPosition.DistanceTo(p.GlobalPosition) <= HitRadius)
